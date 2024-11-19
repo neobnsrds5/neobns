@@ -11,16 +11,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class BootGatewayServerApplication {
 	
-	@Bean
-	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-		return builder.routes()
-				.route("transfer_app",
-						r -> r.path("/transfer/**").filters(f -> f.stripPrefix(1)).uri("http://localhost:8082"))
-				.route("main_app",
-						r -> r.path("/main/**").filters(f -> f.stripPrefix(1)).uri("http://localhost:7777"))
-				.build();
-	}
-	
 	public static void main(String[] args) {
 		SpringApplication.run(BootGatewayServerApplication.class, args);
 	}

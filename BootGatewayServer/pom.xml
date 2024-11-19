@@ -9,11 +9,11 @@
 		<version>3.3.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.neo.gatewayserver</groupId>
-	<artifactId>Boot_5_Eureka</artifactId>
+	<groupId>com.neo</groupId>
+	<artifactId>gatewayserver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>BootGatewayServer</name>
-	<description>gatewayServer</description>
+	<name>gatewayserver</name>
+	<description>spring cloud gateway server</description>
 	<url />
 	<licenses>
 		<license />
@@ -32,24 +32,27 @@
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
 	</properties>
 	<dependencies>
+	
+		<!-- gateway -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
-		<!--
-		https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client -->
+		
+		<!-- eureka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

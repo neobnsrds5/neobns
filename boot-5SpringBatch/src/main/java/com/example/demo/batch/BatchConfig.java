@@ -17,7 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.MyDTO;
-import com.example.demo.entity.MyEntity;
+import com.example.demo.entity.TransferEntity;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +37,11 @@ public class BatchConfig {
 	}
 	
 	@Bean
-	public Step sendDataStep(ItemReader<MyEntity> myReader,
-			ItemProcessor<MyEntity, MyDTO> processor,
+	public Step sendDataStep(ItemReader<TransferEntity> myReader,
+			ItemProcessor<TransferEntity, MyDTO> processor,
 			ItemWriter<MyDTO> writer) {
 		return new StepBuilder("sendDataStep", jobRepository)
-				.<MyEntity, MyDTO> chunk(10, transactionManager)
+				.<TransferEntity, MyDTO> chunk(10, transactionManager)
 				.reader(myReader)
 				.processor(processor)
 				.writer(writer)
@@ -49,8 +49,8 @@ public class BatchConfig {
 	}
 	
 	@Bean
-	public JpaPagingItemReader<MyEntity> myReader(EntityManagerFactory entityManagerFactory){
-		return new JpaPagingItemReaderBuilder<MyEntity>()
+	public JpaPagingItemReader<TransferEntity> myReader(EntityManagerFactory entityManagerFactory){
+		return new JpaPagingItemReaderBuilder<TransferEntity>()
 				.name("myReader")
 				.entityManagerFactory(entityManagerFactory)
 				.queryString("SELECT e from MyEntity e")
@@ -59,7 +59,7 @@ public class BatchConfig {
 	}
 	
 	@Bean
-	public ItemProcessor<MyEntity, MyDTO> processor(){
+	public ItemProcessor<TransferEntity, MyDTO> processor(){
 		return entity -> MyDTO.builder()
 				.fromAccount(entity.getFromAccount())
 				.toAccount(entity.getToAccount())

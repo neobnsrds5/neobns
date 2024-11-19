@@ -15,6 +15,11 @@ import java.util.List;
 public class QuickController {
 
     private final QuickService quickService;
+    
+    @GetMapping("/")
+    public String main() {
+    	return "메인 어플리케이션 홈페이지";
+    }
 
     @GetMapping("/dummy")
     public String dummy(){

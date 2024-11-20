@@ -4,8 +4,8 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +35,17 @@ public class MainController {
 		
 		jobLauncher.run(jobRegistry.getJob("secondJob"), jobParameters);
 		return "ok";
+	}
+	
+	@GetMapping("/transfer/{date}")
+	public String transferBatch(@PathVariable("date") String date) throws Exception {
+		JobParameters jobParameters = new JobParametersBuilder()
+				.addString("date", date)
+				.toJobParameters();
+		
+		jobLauncher.run(jobRegistry.getJob("SendDataJob"), jobParameters);
+		
+		return new String();
 	}
 	
 	

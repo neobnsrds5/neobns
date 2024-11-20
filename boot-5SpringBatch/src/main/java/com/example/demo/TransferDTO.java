@@ -4,13 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MyDTO {
+public class TransferDTO {
 	private String fromAccount;
 	private String toAccount;
 	private Long money;
 	
 	@Builder
-	public MyDTO(String fromAccount, String toAccount, Long money) {
+	public TransferDTO(String fromAccount, String toAccount, Long money) {
 		this.fromAccount = fromAccount;
 		this.toAccount = toAccount;
 		this.money = money;

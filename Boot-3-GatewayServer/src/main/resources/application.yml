@@ -1,0 +1,32 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: GatewayServer
+  boot:
+    admin:
+      client:
+        url: http://localhost:9000
+  cloud:
+    gateway:
+      routes:
+        - id: quitstart
+          uri: lb://QUITSTART
+          predicates:
+            - Path=/quitstart/**
+          filters:
+            - RewritePath=/quitstart/(?<path>.*), /$\{path}
+        - id: transfer
+          uri: lb://transfer
+          predicates:
+            - Path=/transfer/**
+          filters:
+            - RewritePath=/transfer/(?<path>.*), /$\{path}

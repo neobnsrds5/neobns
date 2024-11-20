@@ -11,6 +11,10 @@ eureka:
 spring:
   application:
     name: BootGatewayServer
+  boot:
+    admin:
+      client:
+        url: http://localhost:9000
   cloud:
     gateway:
       routes:

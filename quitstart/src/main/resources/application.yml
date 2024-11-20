@@ -5,6 +5,10 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
+  boot:
+    admin:
+      client:
+        url: http://localhost:9000
 
   batch:
     job:
@@ -14,12 +18,12 @@ spring:
       schema: classpath:org/springframework/batch/core/schema-mysql.sql
   datasource-meta:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/db1
+    url: jdbc:mysql://172.30.1.70:3307/db1
     username: root
     password: 1234
   datasource-data:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/db2
+    url: jdbc:mysql://172.30.1.70:3307/db2
     username: root
     password: 1234
   jpa:

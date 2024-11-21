@@ -19,7 +19,7 @@ public class MetaDBConfig {
 	public DataSource metaDBSource() {
 		
 		return DataSourceBuilder.create()
-				.url("jdbc:mysql://localhost:3307/db1")
+				.url("jdbc:mysql://localhost:3306/db1")
 				.driverClassName("com.mysql.cj.jdbc.Driver")
 				.username("root")
 				.password("1234")

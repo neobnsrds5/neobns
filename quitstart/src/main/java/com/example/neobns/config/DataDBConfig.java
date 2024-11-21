@@ -4,10 +4,14 @@ import java.util.HashMap;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -25,7 +29,7 @@ public class DataDBConfig {
 	@ConfigurationProperties(prefix = "spring.datasource-data")
 	public DataSource dataDBSource() {
 		return DataSourceBuilder.create()
-				.url("jdbc:mysql://localhost:3307/db2")
+				.url("jdbc:mysql://localhost:3306/db2")
 				.driverClassName("com.mysql.cj.jdbc.Driver")
 				.username("root")
 				.password("1234")
@@ -54,6 +58,22 @@ public class DataDBConfig {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(dataEntityManager().getObject());
 		return transactionManager;
+	}
+	
+	@Bean
+	public SqlSessionFactory sqlSessionFactory() throws Exception{
+		SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
+		factory.setDataSource(dataDBSource());
+		factory.setMapperLocations(new PathMatchingResourcePatternResolver()
+				.getResources("classpath:mappers/*.xml"));
+		
+		return factory.getObject();
+		
+	}
+	
+	@Bean
+	public SqlSessionTemplate sqlSessionTemplate() throws Exception {
+		return new SqlSessionTemplate(sqlSessionFactory());
 	}
 	
 }

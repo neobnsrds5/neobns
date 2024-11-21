@@ -15,5 +15,11 @@
             FROM item
         ]]>
     </select>
-
+    <insert id="addItem" parameterType="com.example.neobns.dto.ItemDto">
+        <![CDATA[ 
+            INSERT INTO item(ID, NAME)
+            VALUE(#{id}, #{name})
+        ]]>
+    </insert>
+    
 </mapper>

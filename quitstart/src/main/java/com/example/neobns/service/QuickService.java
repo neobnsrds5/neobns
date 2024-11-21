@@ -17,6 +17,7 @@ public class QuickService {
 
     public boolean registerItem(ItemDto itemDto){
         log.info("Service....");
+        mapper.addItem(itemDto);
         return true;
     }
 

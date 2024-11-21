@@ -17,9 +17,15 @@ spring:
         url: http://localhost:9000
   cloud:
     gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
       routes:
         - id: quitstart
-          uri: lb://QUITSTART
+          uri: lb://quitstart
           predicates:
             - Path=/quitstart/**
           filters:

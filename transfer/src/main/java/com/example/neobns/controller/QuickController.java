@@ -2,6 +2,7 @@ package com.example.neobns.controller;
 
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
+import com.example.neobns.dto.TransferDTO;
 import com.example.neobns.service.QuickService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,8 +75,8 @@ public class QuickController {
     }
     
     @PostMapping("/transfer")
-    public String transferBatchTest() {
-    	
+    public String transferBatchTest(@RequestBody TransferDTO item) {
+    	System.out.print("from: " + item.getFromAccount() + ", to: " + item.getToAccount() + ", money: " + item.getMoney());
     	return "OK";
     }
     

@@ -22,7 +22,7 @@ public class BatchController {
 				.addString("date", value)
 				.toJobParameters();
 		
-		jobLauncher.run(jobRegistry.getJob("firstJob"), jobParameters);
+		jobLauncher.run(jobRegistry.getJob("toRestJob"), jobParameters);
 		return "OK";
 	}
 	

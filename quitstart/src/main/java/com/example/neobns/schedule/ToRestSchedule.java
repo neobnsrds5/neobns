@@ -18,7 +18,7 @@ public class ToRestSchedule {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 	
-	@Scheduled(cron = "0 0 0 * * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "* * 0 * * * *", zone = "Asia/Seoul")
 	public void runTransferSchedule() throws Exception {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 		String date = dateFormat.format(new Date());

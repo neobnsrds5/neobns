@@ -72,4 +72,11 @@ public class QuickController {
         }
         return results;
     }
+    
+    @PostMapping("/transfer")
+    public String transferBatchTest() {
+    	
+    	return "OK";
+    }
+    
 }

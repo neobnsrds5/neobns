@@ -82,7 +82,8 @@ public class BatchDBToRest {
 	public ItemWriter<TransferDTO> transferBatchWriter(){
 		return items -> {
 			for (TransferDTO item : items) {
-				restTemplate.postForObject("http://localhost:8080/transfer", item, Void.class);
+				Boolean success = restTemplate.postForObject("http://localhost:8082/transfer", item, Boolean.class);
+				System.out.println("transaction : " + success);
 			}
 		};
 	}

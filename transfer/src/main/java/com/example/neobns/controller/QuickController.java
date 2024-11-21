@@ -30,7 +30,7 @@ public class QuickController {
     @GetMapping("/dummy2")
     public String dummy2(){
         log.info("dummy2");
-        return "dummy2";
+        return "transfer의 dummy2";
     }
     @GetMapping("/member")
     public String getMember(@RequestParam("empNo") String empNo, @RequestParam("year") int year){

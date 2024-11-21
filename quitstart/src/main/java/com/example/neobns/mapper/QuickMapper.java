@@ -9,4 +9,5 @@ import java.util.List;
 public interface QuickMapper {
     ItemDto findById(String id);
     List<ItemDto> findAll();
+    void addItem(ItemDto item);
 }

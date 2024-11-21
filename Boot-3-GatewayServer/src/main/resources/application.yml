@@ -28,11 +28,13 @@ spring:
           uri: lb://quitstart
           predicates:
             - Path=/quitstart/**
+            - Method=GET, POST
           filters:
             - RewritePath=/quitstart/(?<path>.*), /$\{path}
         - id: transfer
           uri: lb://transfer
           predicates:
             - Path=/transfer/**
+            - Method=GET, POST
           filters:
             - RewritePath=/transfer/(?<path>.*), /$\{path}

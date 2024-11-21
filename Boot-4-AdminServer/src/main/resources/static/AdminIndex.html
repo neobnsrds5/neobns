@@ -57,24 +57,23 @@ Client : 서버에 등록하고 actuator 엔드포인트에 액세스하는데 �
     &lt;version&gt;3.3.3&lt;/version&gt;
 &lt;/dependency&gt;
     </code></pre>
-    <p><code>application.properties</code>에서 주요 설정:</p>
+
+    <p>어노테이션을 이용해 스프링 어드민 서버 설정을 해줍니다</p>
     <pre><code class="code">
-spring.application.name=AdminServer
-management.httpexchanges.recording.enabled=true
-management.endpoints.web.exposure.include=*
-management.endpoint.health.show-details=always
-management.info.env.enabled=true
-info.app.name=AdminServer
-info.app.description=This is an application to manage banking services
-info.app.version=1.0
-spring.jmx.enabled=true
-management.endpoints.jmx.exposure.include=*
-management.endpoints.web.base-path=/actuator
-server.port=9000
+@SpringBootApplication
+@EnableAdminServer
+public class AdminServerApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(AdminServerApplication.class, args);
+	}
+
+}
     </code></pre>
 
+
     <h3>2.3 클라이언트 애플리케이션 연결</h3>
-    <p>클라이언트 애플리케이션 의존성 및 설정:</p>
+    <p>클라이언트 애플리케이션 의존성 및 설정</p>
     <pre><code class="code">
 &lt;dependency&gt;
     &lt;groupId&gt;de.codecentric&lt;/groupId&gt;
@@ -84,16 +83,23 @@ server.port=9000
 
 spring.boot.admin.client.url=http://localhost:9000
 management.endpoint.shutdown.enabled=true
-management.endpoint.info.enabled=true
-management.endpoint.health.enabled=true
 management.endpoints.web.exposure.include=*
 management.endpoint.health.show-details=always
     </code></pre>
 
     <h2>3. Actuator 커스텀 엔드포인트(클라이언트)</h2>
+    
+    <h3>3.1 Actuator 설정</h3>
+    <p>클라이언트 actuator 의존성 및 설정</p>
+    <pre><code class="code">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
 
-    <h3>3.1 커스텀 엔드포인트 생성</h3>
-    <p><code>@Endpoint</code> 애너테이션을 사용하여 커스텀 엔드포인트를 구현합니다.:</p>
+    <h3>3.2 커스텀 엔드포인트 생성</h3>
+    <p>@Endpoint 애너테이션을 사용하여 커스텀 엔드포인트를 구현합니다</p>
     <pre><code class="code">
 @Endpoint(id = "custom")
 @Component
@@ -108,7 +114,7 @@ public class CustomActuatorEndpoint {
 }
     </code></pre>
     
-    <p><code>@Endpoint</code> HealthIndicator 등을 구현합니다.:</p>
+    <p>HealthIndicator 등을 구현합니다</p>
     <pre><code class="code">
 @Component
 public class DatabaseService implements HealthIndicator {
@@ -130,21 +136,29 @@ public class DatabaseService implements HealthIndicator {
 }
     </code></pre>
 
-    <h3>3.2 엔드포인트 노출</h3>
-    <p>Actuator 노출 설정에 포함되도록 보장합니다:</p>
+    <h3>3.3 엔드포인트 노출</h3>
+    <p>Actuator 노출 설정에 포함되도록 보장합니다</p>
     <pre><code class="code">
 management.endpoints.web.exposure.include=*
     </code></pre>
 
-    <h3>3.3 엔드포인트 테스트</h3>
-    <p>브라우저로 엔드포인트에 접근합니다:</p>
+    <h3>3.4 엔드포인트 테스트</h3>
+    <p>브라우저로 엔드포인트에 접근합니다</p>
     <pre><code class="code">
 curl http://localhost:8888/custom
     </code></pre>
 
     <h2>4. Liquibase를 활용한 데이터 변경 관리</h2>
+    
+        <h3>4.2 Liquibase 소개</h3>
+    <p>
+Liquibase는 Changelog를 통해 데이터베이스의 변경사항을 순차적으로 관리합니다.<br>
+Changelog의 형식은 각기 다른 데이터베이스에 구애받지 않기 위해 SQL만을 이용하는 Flyway와 달리<br> 
+SQL, XML, JSON, YAML로 구성되어있습니다.<br>
 
-    <h3>4.1 Liquibase 소개</h3>
+    </p>
+
+    <h3>4.2 Liquibase 소개</h3>
     <p>
 Liquibase는 Changelog를 통해 데이터베이스의 변경사항을 순차적으로 관리합니다.<br>
 Changelog의 형식은 각기 다른 데이터베이스에 구애받지 않기 위해 SQL만을 이용하는 Flyway와 달리<br> 

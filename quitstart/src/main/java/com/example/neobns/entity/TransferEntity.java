@@ -26,7 +26,4 @@ public class TransferEntity {
 	@NotNull
 	private Long money;
 	
-	
-	
-	
 }

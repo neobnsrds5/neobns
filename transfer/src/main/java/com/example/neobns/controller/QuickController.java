@@ -82,6 +82,11 @@ public class QuickController {
     public Map<String, String> checkForChanges() {
         return quickService.checkForChanges();
     }
+    
+    @GetMapping("/properties")
+    public Map<String, String> getProperties() {
+        return quickService.loadCurrentProperties();
+    }
 
     
 }

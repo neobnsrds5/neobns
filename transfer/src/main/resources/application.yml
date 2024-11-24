@@ -24,7 +24,21 @@ eureka:
       defaultZone: http://eureka:1234@localhost:8761/eureka
 
 management:
+  httpexchanges:
+    recording:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: refresh, health
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+  web:
+    base-path: /actuator

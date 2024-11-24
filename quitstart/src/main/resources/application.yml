@@ -10,6 +10,7 @@ spring:
       client:
         url: http://localhost:9000
 
+
   batch:
     job:
       enabled: false
@@ -47,3 +48,25 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+      
+      
+management:
+  httpexchanges:
+    recording:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+  web:
+    base-path: /actuator
+  

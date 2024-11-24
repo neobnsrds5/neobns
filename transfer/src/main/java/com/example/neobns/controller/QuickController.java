@@ -6,9 +6,11 @@ import com.example.neobns.dto.TransferDTO;
 import com.example.neobns.service.QuickService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -75,5 +77,11 @@ public class QuickController {
     	System.out.print("from: " + item.getFromAccount() + ", to: " + item.getToAccount() + ", money: " + item.getMoney());
     	return true;
     }
+    
+    @PostMapping("/check-changes")
+    public Map<String, String> checkForChanges() {
+        return quickService.checkForChanges();
+    }
+
     
 }

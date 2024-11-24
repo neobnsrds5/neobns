@@ -9,6 +9,8 @@ spring:
     admin:
       client:
         url: http://localhost:9000
+#        username: admin
+#        password: admin
 
 
   batch:
@@ -64,9 +66,21 @@ management:
   endpoint:
     health:
       show-details: always
+    env:
+      sensitive: false
+      show-sensitive: true
   info:
     env:
       enabled: true
   web:
     base-path: /actuator
+  metrics:
+    enable
+      hikaricp=true
+      
+      
+#logging:
+#  config: classpath:logback-spring.xml
+#  file:
+#    name: D:\logs\logback.log
   

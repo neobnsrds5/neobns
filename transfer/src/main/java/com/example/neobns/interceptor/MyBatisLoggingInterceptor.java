@@ -5,6 +5,7 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,13 @@ public class MyBatisLoggingInterceptor implements Interceptor {
             return invocation.proceed(); // 실제 SQL 실행
         } finally {
             long endTime = System.currentTimeMillis(); // 종료 시간 측정
-            // TODO: SQL문 자체를 log 찍는 방법은?, DB 저장까지 하면 Best
-            log.info("[SQL] [{}ms]", (endTime - startTime));
+            
+            // TODO: sql문이 출력이 안 돼...
+            StatementHandler handler = (StatementHandler) invocation.getTarget();
+            String sql = handler.getBoundSql().getSql();
+            
+            // TODO: DB 저장까지 하면 Best
+            log.info("[{}-SQL] [{}ms] []", MDC.get("requestId"), (endTime - startTime), sql);
         }
     }
 

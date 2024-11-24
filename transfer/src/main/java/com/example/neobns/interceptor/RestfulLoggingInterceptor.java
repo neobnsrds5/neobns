@@ -38,7 +38,7 @@ public class RestfulLoggingInterceptor implements HandlerInterceptor {
     	response.setHeader(REQUEST_ID_HEADER, requestId);
     	
         // 요청 정보 로그 출력
-    	log.info("[{}-Request] [{}] [{}]", requestId, request.getRequestURI(), request.getMethod());
+    	log.info("[Request] [{}] [{}]", request.getRequestURI(), request.getMethod());
         return true; // 요청 계속 진행
     }
 
@@ -48,7 +48,7 @@ public class RestfulLoggingInterceptor implements HandlerInterceptor {
         
     	// 응답 정보 로그 출력
     	String requestId = MDC.get(MDC_REQUEST_ID_KEY);
-        log.info("[{}-Response] [{}ms] [{}] [{}]", requestId, (endTime-startTime), request.getRequestURI(), response.getStatus());
+        log.info("[Response] [{}ms] [{}] [{}]", (endTime-startTime), request.getRequestURI(), response.getStatus());
         
         // requestId 제거
         MDC.remove(MDC_REQUEST_ID_KEY);

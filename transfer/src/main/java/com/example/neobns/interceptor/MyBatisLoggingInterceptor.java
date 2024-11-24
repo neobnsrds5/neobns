@@ -14,7 +14,7 @@ import java.util.Properties;
 
 @Intercepts({
 	// select문에 대해서만 수행 시간 측정
-    @Signature(type = StatementHandler.class, method = "query", args = {Statement.class, ResultHandler.class}),
+    @Signature(type = StatementHandler.class, method = "query", args = {Statement.class, ResultHandler.class})
 })
 @Component // bean 등록
 @Profile("dev") // 개발 환경에서만 활성화 (spring.profiles.active=dev 인 경우만 활성화)
@@ -24,18 +24,19 @@ public class MyBatisLoggingInterceptor implements Interceptor {
 	
     @Override
     public Object intercept(Invocation invocation) throws Throwable { // MyBatis의 특정 동작을 가로채 처리하는 메소드
-        long startTime = System.currentTimeMillis(); // 시작 시간 측정
+    	StatementHandler handler = (StatementHandler) invocation.getTarget();
+        String sql = handler.getBoundSql().getSql();
+        
+    	long startTime = System.currentTimeMillis(); // 시작 시간 측정
+        
         try {
+        	
             return invocation.proceed(); // 실제 SQL 실행
         } finally {
             long endTime = System.currentTimeMillis(); // 종료 시간 측정
-            
-            // TODO: sql문이 출력이 안 돼...
-            StatementHandler handler = (StatementHandler) invocation.getTarget();
-            String sql = handler.getBoundSql().getSql();
-            
+                    
             // TODO: DB 저장까지 하면 Best
-            log.info("[{}-SQL] [{}ms] []", MDC.get("requestId"), (endTime - startTime), sql);
+            log.info("[SQL] [{}ms] [{}]", (endTime - startTime), sql.trim());
         }
     }
 

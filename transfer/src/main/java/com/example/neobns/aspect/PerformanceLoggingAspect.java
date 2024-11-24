@@ -31,18 +31,18 @@ public class PerformanceLoggingAspect {
 
     @Around("execution(* com..example.neobns.mapper..*(..))")
     public Object logMyBatisLayer(ProceedingJoinPoint joinPoint) throws Throwable {
-        return logExecutionTime(joinPoint, "MyBatis");
+        return logExecutionTime(joinPoint, "Mapper");
     }
     
     private Object logExecutionTime(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
         long startTime = System.currentTimeMillis();
         String requestId = MDC.get("requestId");
-        log.info("[{}-{}] [{}]", requestId, layer, joinPoint.getSignature());
+        log.info("[{}] [{}]", layer, joinPoint.getSignature());
         try {
             return joinPoint.proceed();
         } finally {
             long endTime = System.currentTimeMillis();
-            log.info("[{}-{}] [{}ms] [{}]", requestId, layer, (endTime - startTime), joinPoint.getSignature());
+            log.info("[{}] [{}ms] [{}]", layer, (endTime - startTime), joinPoint.getSignature());
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.example.neobns.service;
 
 import com.example.neobns.dto.ItemDto;
-import com.example.neobns.mapper.QuickMapper;
+import com.example.neobns.mapper.TransferMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class QuickService {
+public class TransferService {
 
-    private final QuickMapper mapper;
+    private final TransferMapper mapper;
 
     public boolean registerItem(ItemDto itemDto){
         log.info("Service....");

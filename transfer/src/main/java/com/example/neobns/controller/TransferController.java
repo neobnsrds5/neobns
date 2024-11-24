@@ -3,7 +3,7 @@ package com.example.neobns.controller;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
 import com.example.neobns.dto.TransferDTO;
-import com.example.neobns.service.QuickService;
+import com.example.neobns.service.TransferService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class QuickController {
+public class TransferController {
 
-    private final QuickService quickService;
+    private final TransferService quickService;
     
     @GetMapping("/")
     public String main() {
@@ -32,12 +32,12 @@ public class QuickController {
         return "transfer의 dummy2";
     }
     @GetMapping("/member")
-    public String getMember(@RequestParam("empNo") String empNo, @RequestParam("year") int year){
+    public String getMember(@RequestParam String empNo, @RequestParam int year){
         return "ok";
     }
 
     @GetMapping("/company/{id}")
-    public String getCompany(@PathVariable("id") String id){
+    public String getCompany(@PathVariable String id){
         return "ok";
     }
 
@@ -55,7 +55,7 @@ public class QuickController {
     }
 
     @GetMapping("/item")
-    public ItemDto getItem(@RequestParam("id") String id){
+    public ItemDto getItem(@RequestParam String id){
         ItemDto itemDto = quickService.getItemById(id);
         log.info("name: {}", itemDto.getName());
         return itemDto;

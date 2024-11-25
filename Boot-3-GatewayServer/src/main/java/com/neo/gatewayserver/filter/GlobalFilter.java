@@ -10,60 +10,56 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 @Component
-public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config>{
+public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
 
 	public GlobalFilter() {
 		super(Config.class);
 	}
-	
-	 @Override
-	    public GatewayFilter apply(Config config) {
-	        return (exchange, chain) -> {
-	            ServerHttpRequest request = exchange.getRequest();
-	            String requestId = request.getHeaders().getFirst("X-Request-ID");
 
-	            if (requestId == null || requestId.isEmpty()) {
-	                requestId = UUID.randomUUID().toString(); // 고유 Request ID 생성
-	            }
+	@Override
+	public GatewayFilter apply(Config config) {
+		return (exchange, chain) -> {
+			ServerHttpRequest request = exchange.getRequest();
+			String requestId = request.getHeaders().getFirst("X-Request-ID");
 
-	            // Request ID를 MDC에 설정하여 로깅에 포함
-	            MDC.put("requestId", requestId);
+			if (requestId == null || requestId.isEmpty()) {
+				requestId = UUID.randomUUID().toString(); // 고유 Request ID 생성
+			}
 
-	            // Request Header에 Request ID 추가
-	            ServerHttpRequest updatedRequest = request.mutate()
-	                .header("X-Request-ID", requestId)
-	                .build();
+			// Request ID를 MDC에 설정하여 로깅에 포함
+			MDC.put("requestId", requestId);
 
-	            ServerWebExchange updatedExchange = exchange.mutate()
-	                .request(updatedRequest)
-	                .build();
+			// Request Header에 Request ID 추가
+			ServerHttpRequest updatedRequest = request.mutate().header("X-Request-ID", requestId).build();
 
-	            // 로그 출력: 게이트웨이에서 요청 시작
-	            logRequestDetails(updatedRequest);
+			ServerWebExchange updatedExchange = exchange.mutate().request(updatedRequest).build();
 
-	            return chain.filter(updatedExchange)
-	                .doFinally(signalType -> {
-	                    // 로그 출력: 게이트웨이에서 요청 완료
-	                    logResponseDetails(updatedExchange);
-	                    MDC.clear();
-	                });
-	        };
-	    }
+			// 로그 출력: 게이트웨이에서 요청 시작
+			logRequestDetails(updatedRequest);
 
-	    private void logRequestDetails(ServerHttpRequest request) {
-	        String requestId = MDC.get("requestId");
+			return chain.filter(updatedExchange).doFinally(signalType -> {
+				// 로그 출력: 게이트웨이에서 요청 완료
+				logResponseDetails(updatedExchange);
+				MDC.clear();
+			});
+		};
+	}
+
+	private void logRequestDetails(ServerHttpRequest request) {
+		String requestId = MDC.get("requestId");
 //	        String method = request.getMethodValue();
-	        String uri = request.getURI().toString();
-	        System.out.println(String.format("[%s] Gateway Request: %s", requestId, uri));
-	    }
+		String uri = request.getURI().toString();
+		System.out.println(String.format("[%s] Gateway Request: %s", requestId, uri));
+	}
 
-	    private void logResponseDetails(ServerWebExchange exchange) {
-	        String requestId = MDC.get("requestId");
-	        System.out.println(String.format("[%s] Gateway Response: %s", requestId, exchange.getResponse().getStatusCode()));
-	    }
+	private void logResponseDetails(ServerWebExchange exchange) {
+		String requestId = MDC.get("requestId");
+		System.out
+				.println(String.format("[%s] Gateway Response: %s", requestId, exchange.getResponse().getStatusCode()));
+	}
 
-	    public static class Config {
-	        // 필요 시 사용자 정의 설정 추가
-	    }
+	public static class Config {
+		// 필요 시 사용자 정의 설정 추가
+	}
 
 }

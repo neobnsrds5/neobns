@@ -1,7 +1,5 @@
 package com.example.neobns.batch;
 
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -23,7 +21,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.example.neobns.dto.ItemDto;
+import com.example.neobns.dto.AccountDTO;
 
 @Configuration
 public class FileToDbBatch {
@@ -50,7 +48,7 @@ public class FileToDbBatch {
 	@Bean
 	public Step fileToDBStep() {
 		return new StepBuilder("fileToDBStep", jobRepository)
-				.<ItemDto, ItemDto>chunk(100, transactionManager)
+				.<AccountDTO, AccountDTO>chunk(100, transactionManager)
 				.reader(fileReader())
 				.writer(fileToDbWriter())
 				.taskExecutor(fileToDBTaskExecutor())
@@ -70,19 +68,19 @@ public class FileToDbBatch {
 	}
 	
 	@Bean
-	public FlatFileItemReader<ItemDto> fileReader(){
-		FlatFileItemReader<ItemDto> reader = new FlatFileItemReader<>();
+	public FlatFileItemReader<AccountDTO> fileReader(){
+		FlatFileItemReader<AccountDTO> reader = new FlatFileItemReader<>();
 		String path = "C:/csv/test.csv";
 		reader.setResource(new FileSystemResource(path));
 		reader.setLinesToSkip(1);
 		
-		DefaultLineMapper<ItemDto> lineMapper = new DefaultLineMapper<>();
+		DefaultLineMapper<AccountDTO> lineMapper = new DefaultLineMapper<>();
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
-		tokenizer.setNames("id", "name");
+		tokenizer.setNames("id", "accountNumber", "money", "name");
 		lineMapper.setLineTokenizer(tokenizer);
 		
-		BeanWrapperFieldSetMapper<ItemDto> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-		fieldSetMapper.setTargetType(ItemDto.class);
+		BeanWrapperFieldSetMapper<AccountDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+		fieldSetMapper.setTargetType(AccountDTO.class);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		
 		reader.setLineMapper(lineMapper);
@@ -90,10 +88,10 @@ public class FileToDbBatch {
 	}
 	
 	@Bean
-	public JdbcBatchItemWriter<ItemDto> fileToDbWriter(){
-		return new JdbcBatchItemWriterBuilder<ItemDto>()
+	public JdbcBatchItemWriter<AccountDTO> fileToDbWriter(){
+		return new JdbcBatchItemWriterBuilder<AccountDTO>()
 				.dataSource(datasource)
-				.sql("INSERT INTO after(id, name) VALUES (:id, :name)")
+				.sql("INSERT INTO account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
 				.beanMapped()
 				.build();
 	}

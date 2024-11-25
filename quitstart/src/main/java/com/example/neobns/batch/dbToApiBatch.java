@@ -23,7 +23,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.neobns.dto.ItemDto;
+import com.example.neobns.dto.AccountDTO;
 
 @Configuration
 public class dbToApiBatch {
@@ -66,7 +66,7 @@ public class dbToApiBatch {
 	@Bean
 	public Step toApiStep() throws Exception{
 		return new StepBuilder("dbToApiStep", jobRepository)
-				.<Map<String, String>, ItemDto>chunk(10, transactionManager)
+				.<Map<String, Object>, AccountDTO>chunk(10, transactionManager)
 				.reader(toApiReader())
 				.processor(toApiProcessor())
 				.writer(toApiWriter())
@@ -75,13 +75,13 @@ public class dbToApiBatch {
 	}
 	
 	@Bean
-	public JdbcPagingItemReader<Map<String, String>> toApiReader() throws Exception{
-		JdbcPagingItemReader<Map<String, String>> reader = new JdbcPagingItemReader<Map<String, String>>();
+	public JdbcPagingItemReader<Map<String, Object>> toApiReader() throws Exception{
+		JdbcPagingItemReader<Map<String, Object>> reader = new JdbcPagingItemReader<Map<String, Object>>();
 		reader.setDataSource(datasource);
 		reader.setName("pagingReader");
 		reader.setQueryProvider(toApiQueryProvider());
 		reader.setRowMapper((rs, rowNum) -> {
-			Map<String, String> map = new HashMap<>();
+			Map<String, Object> map = new HashMap<>();
 			map.put("id", rs.getString("id"));
 			map.put("accountNumber", rs.getString("accountNumber"));
 			map.put("money", rs.getString("money"));
@@ -96,32 +96,34 @@ public class dbToApiBatch {
 	public PagingQueryProvider toApiQueryProvider() throws Exception{
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(datasource);
-		factory.setSelectClause("SELECT accountNumber, money, name");
+		factory.setSelectClause("SELECT id, accountNumber, money, name");
 		factory.setFromClause("FROM account");
 		factory.setSortKey("id");
 		return factory.getObject();
 	}
 	
 	@Bean
-	public ItemProcessor<Map<String, String>, ItemDto> toApiProcessor(){
-		return new ItemProcessor<Map<String, String>, ItemDto>() {
+	public ItemProcessor<Map<String, Object>, AccountDTO> toApiProcessor(){
+		return new ItemProcessor<Map<String, Object>, AccountDTO>() {
 			
 			@Override
-			public ItemDto process(Map<String, String> item) throws Exception {
-				ItemDto result = new ItemDto();
-				result.setId(item.get("id"));
-				result.setName(item.get("name"));
+			public AccountDTO process(Map<String, Object> item) throws Exception {
+				AccountDTO result = new AccountDTO();
+				result.setId((long)item.get("id"));
+				result.setAccountNumber((String)item.get("accountNumber"));
+				result.setMoney((long)item.get("money"));
+				result.setName((String)item.get("name"));
 				return result;
 			}
 		};
 	}
 	
 	@Bean
-	public ItemWriter<ItemDto> toApiWriter(){
+	public ItemWriter<AccountDTO> toApiWriter(){
 		return chunk -> chunk.getItems().parallelStream().forEach(this::sendToApi);
 	}
 	
-	private void sendToApi(ItemDto data) {
+	private void sendToApi(AccountDTO data) {
 		String result = restTemplate.postForObject("http://localhost:8084/test", data, String.class);
 		System.out.println(result);
 	}

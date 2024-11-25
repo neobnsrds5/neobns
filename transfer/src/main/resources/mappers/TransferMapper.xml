@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.neobns.mapper.TransferMapper">
+    
+    <insert id="insertTransferDetails" parameterType="com.example.neobns.dto.TransferDTO">
+    	INSERT INTO transfer_details (from_account, to_account, money)
+    	VALUES (#{fromAccount}, #{toAccount}, #{money})
+    </insert>
+
+</mapper>

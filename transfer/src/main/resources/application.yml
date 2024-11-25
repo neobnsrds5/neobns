@@ -5,6 +5,11 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db1
+    username: root
+    password: 1234
 
 eureka:
   client:
@@ -12,3 +17,23 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://eureka:1234@localhost:8761/eureka
+
+management:
+  httpexchanges:
+    recording:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+  web:
+    base-path: /actuator

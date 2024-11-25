@@ -14,20 +14,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class MetaDBConfig {
 	
 	@Primary
-	@Bean
+	@Bean(name = "dataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-meta")
 	public DataSource metaDBSource() {
 		
 		return DataSourceBuilder.create()
 				.url("jdbc:mysql://localhost:3306/db1")
-				.driverClassName("com.mysql.cj.jdbc.Driver")
-				.username("root")
-				.password("1234")
 				.build();
 	}
 	
 	@Primary
-	@Bean
+	@Bean(name = "transactionManager")
 	public PlatformTransactionManager metaTransactionManager() {
 		return new DataSourceTransactionManager(metaDBSource());
 	}

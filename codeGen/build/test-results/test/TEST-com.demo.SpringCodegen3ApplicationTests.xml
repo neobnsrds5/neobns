@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.demo.SpringCodegen3ApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-21T10:53:28" hostname="JEREMY" time="0.865">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.demo.SpringCodegen3ApplicationTests" time="0.865"/>
+  <system-out><![CDATA[13:53:26.600 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.demo.SpringCodegen3ApplicationTests]: SpringCodegen3ApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:53:26.802 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.demo.SpringCodegen3Application for test class com.demo.SpringCodegen3ApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.5)
+
+2024-11-21T13:53:27.420+03:00  INFO 13996 --- [spring-codegen3] [    Test worker] c.demo.SpringCodegen3ApplicationTests    : Starting SpringCodegen3ApplicationTests using Java 17.0.10 with PID 13996 (started by Jerem in C:\Users\Jerem\Downloads\codeGen)
+2024-11-21T13:53:27.423+03:00  INFO 13996 --- [spring-codegen3] [    Test worker] c.demo.SpringCodegen3ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2024-11-21T13:53:28.389+03:00  INFO 13996 --- [spring-codegen3] [    Test worker] c.demo.SpringCodegen3ApplicationTests    : Started SpringCodegen3ApplicationTests in 1.293 seconds (process running for 3.241)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

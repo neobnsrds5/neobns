@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: Banking Account Management API
+  version: 1.0.0
+paths:
+  /accounts:
+    get:
+      summary: Get a list of accounts
+      parameters:
+        - name: filters
+          in: query
+          required: false
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+          default: 1
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+          default: 10
+      responses:
+        '200':
+          description: List of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+    post:
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '201':
+          description: Account created successfully
+  /accounts/{accountId}:
+    get:
+      summary: Get account details by ID
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Account details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+    put:
+      summary: Update account by ID
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '200':
+          description: Account updated successfully
+    delete:
+      summary: Delete account by ID
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Account deleted successfully
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        accountId:
+          type: integer
+          example: 1
+        accountNumber:
+          type: string
+          example: "123456789"
+        accountName:
+          type: string
+          example: "John Doe"
+        accountType:
+          type: string
+          enum:
+            - savings
+            - checking
+          example: savings
+        balance:
+          type: number
+          format: double
+          example: 1000.50
+        currency:
+          type: string
+          example: "USD"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T12:00:00Z"
+        createdBy:
+          type: string
+          example: "system"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-02T15:00:00Z"
+        updatedBy:
+          type: string
+          example: "admin"

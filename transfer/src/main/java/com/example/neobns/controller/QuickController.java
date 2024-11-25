@@ -6,9 +6,11 @@ import com.example.neobns.dto.TransferDTO;
 import com.example.neobns.service.QuickService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -24,24 +26,20 @@ public class QuickController {
 
     @GetMapping("/dummy")
     public String dummy(){
-        log.info("dummy");
         return "{}";
     }
 
     @GetMapping("/dummy2")
     public String dummy2(){
-        log.info("dummy2");
         return "transfer의 dummy2";
     }
     @GetMapping("/member")
     public String getMember(@RequestParam("empNo") String empNo, @RequestParam("year") int year){
-        log.info("empNo : {}, year : {}", empNo, year);
         return "ok";
     }
 
     @GetMapping("/company/{id}")
     public String getCompany(@PathVariable("id") String id){
-        log.info("id : {}", id);
         return "ok";
     }
 
@@ -75,9 +73,20 @@ public class QuickController {
     }
     
     @PostMapping("/transfer")
-    public String transferBatchTest(@RequestBody TransferDTO item) {
+    public boolean transferBatchTest(@RequestBody TransferDTO item) {
     	System.out.print("from: " + item.getFromAccount() + ", to: " + item.getToAccount() + ", money: " + item.getMoney());
-    	return "OK";
+    	return true;
     }
+    
+    @PostMapping("/check-changes")
+    public Map<String, String> checkForChanges() {
+        return quickService.checkForChanges();
+    }
+    
+    @GetMapping("/properties")
+    public Map<String, String> getProperties() {
+        return quickService.loadCurrentProperties();
+    }
+
     
 }

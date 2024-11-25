@@ -1,0 +1,35 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.account.AccountMapper">
+
+    <select id="findAll" resultType="AccountDto">
+        SELECT * FROM account WHERE 1=1
+        <!-- Add dynamic filters here -->
+    </select>
+
+    <select id="findByPage" resultType="AccountDto">
+        SELECT * FROM account
+        WHERE 1=1
+        <!-- Add dynamic filters here -->
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findById" resultType="AccountDto">
+        SELECT * FROM account WHERE id = #{id}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO account (accountId, accountNumber, accountName, accountType, balance, currency, createdAt, createdBy, updatedAt, updatedBy)
+        VALUES (#{accountId}, #{accountNumber}, #{accountName}, #{accountType}, #{balance}, #{currency}, #{createdAt}, #{createdBy}, #{updatedAt}, #{updatedBy})
+    </insert>
+
+    <update id="update">
+        UPDATE account
+        SET accountId = #{accountId}, accountNumber = #{accountNumber}, accountName = #{accountName}, accountType = #{accountType}, balance = #{balance}, currency = #{currency}, createdAt = #{createdAt}, createdBy = #{createdBy}, updatedAt = #{updatedAt}, updatedBy = #{updatedBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM account WHERE id = #{id}
+    </delete>
+
+</mapper>

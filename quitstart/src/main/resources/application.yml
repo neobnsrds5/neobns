@@ -9,6 +9,9 @@ spring:
     admin:
       client:
         url: http://localhost:9000
+#        username: admin
+#        password: admin
+
 
   batch:
     job:
@@ -20,12 +23,17 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db1
     username: root
-    password: 
+    password: 1234
   datasource-data:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db2
     username: root
-    password: 
+    password: 1234
+  datasource-target:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db3
+    username: root
+    password: 1234
   jpa:
     properties:
       hibernate:
@@ -43,5 +51,36 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
       
-gateway:
-  url: http://localhost:8080
+      
+management:
+  httpexchanges:
+    recording:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    env:
+      sensitive: false
+      show-sensitive: true
+  info:
+    env:
+      enabled: true
+  web:
+    base-path: /actuator
+  metrics:
+    enable:
+      hikaricp: true
+      
+      
+#logging:
+#  config: classpath:logback-spring.xml
+#  file:
+#    name: D:\logs\logback.log
+  

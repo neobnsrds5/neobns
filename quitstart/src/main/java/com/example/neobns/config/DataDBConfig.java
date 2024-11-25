@@ -25,14 +25,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 		, transactionManagerRef = "dataTransactionsManager")
 public class DataDBConfig {
 	
-	@Bean
+	@Bean(name = "dataDBSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
 	public DataSource dataDBSource() {
 		return DataSourceBuilder.create()
 				.url("jdbc:mysql://localhost:3306/db2")
-				.driverClassName("com.mysql.cj.jdbc.Driver")
-				.username("root")
-				.password("1234")
 				.build();
 	}
 	

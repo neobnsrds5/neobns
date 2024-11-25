@@ -1,0 +1,74 @@
+= API Documentation
+:toc: left
+:toc-title: Contents
+:doctype: book
+:source-highlighter: highlightjs
+
+== Overview
+This document provides API details for the `/customer` endpoints, including request, response, and usage examples.
+
+== API Details
+
+=== Find All Customer
+Description: This endpoint find all customer.
+
+include::{snippets}/customer-find-all/curl-request.adoc[]
+include::{snippets}/customer-find-all/httpie-request.adoc[]
+include::{snippets}/customer-find-all/http-request.adoc[]
+include::{snippets}/customer-find-all/http-response.adoc[]
+include::{snippets}/customer-find-all/request-body.adoc[]
+include::{snippets}/customer-find-all/request-fields.adoc[]
+include::{snippets}/customer-find-all/response-body.adoc[]
+
+=== Find By ID Customer
+Description: This endpoint find by id customer.
+
+include::{snippets}/customer-find-by-id/curl-request.adoc[]
+include::{snippets}/customer-find-by-id/httpie-request.adoc[]
+include::{snippets}/customer-find-by-id/http-request.adoc[]
+include::{snippets}/customer-find-by-id/http-response.adoc[]
+include::{snippets}/customer-find-by-id/request-body.adoc[]
+include::{snippets}/customer-find-by-id/request-fields.adoc[]
+include::{snippets}/customer-find-by-id/response-body.adoc[]
+
+=== Create Customer
+Description: This endpoint create customer.
+
+include::{snippets}/customer-create/curl-request.adoc[]
+include::{snippets}/customer-create/httpie-request.adoc[]
+include::{snippets}/customer-create/http-request.adoc[]
+include::{snippets}/customer-create/http-response.adoc[]
+include::{snippets}/customer-create/request-body.adoc[]
+include::{snippets}/customer-create/request-fields.adoc[]
+include::{snippets}/customer-create/response-body.adoc[]
+
+=== Update Customer
+Description: This endpoint update customer.
+
+include::{snippets}/customer-update/curl-request.adoc[]
+include::{snippets}/customer-update/httpie-request.adoc[]
+include::{snippets}/customer-update/http-request.adoc[]
+include::{snippets}/customer-update/http-response.adoc[]
+include::{snippets}/customer-update/request-body.adoc[]
+include::{snippets}/customer-update/request-fields.adoc[]
+include::{snippets}/customer-update/response-body.adoc[]
+
+=== Delete Customer
+Description: This endpoint delete customer.
+
+include::{snippets}/customer-delete/curl-request.adoc[]
+include::{snippets}/customer-delete/httpie-request.adoc[]
+include::{snippets}/customer-delete/http-request.adoc[]
+include::{snippets}/customer-delete/http-response.adoc[]
+include::{snippets}/customer-delete/request-body.adoc[]
+include::{snippets}/customer-delete/request-fields.adoc[]
+include::{snippets}/customer-delete/response-body.adoc[]
+
+=== Examples
+Examples of how to use the API with sample requests and responses.
+
+* Curl Example: include::{snippets}/customer/curl-request.adoc[]
+* HTTPie Example: include::{snippets}/customer/httpie-request.adoc[]
+
+== References
+For additional details, visit our [API Documentation Portal](#).

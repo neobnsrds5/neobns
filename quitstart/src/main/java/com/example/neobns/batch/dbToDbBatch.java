@@ -50,7 +50,8 @@ public class dbToDbBatch {
 		reader.setQueryProvider(queryProvider());
 		reader.setRowMapper((rs, rowNum) -> {
 			Map<String, Object> map = new HashMap<>();
-			map.put("id", rs.getString("id"));
+			map.put("accountNumber", rs.getString("accountNumber"));
+			map.put("money", rs.getLong("money"));
 			map.put("name", rs.getString("name"));
 			return map;
 		});
@@ -62,8 +63,8 @@ public class dbToDbBatch {
 	public PagingQueryProvider queryProvider() throws Exception{
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
-		factory.setSelectClause("SELECT id, name");
-		factory.setFromClause("FROM `before`");
+		factory.setSelectClause("SELECT *");
+		factory.setFromClause("FROM account");
 		factory.setSortKey("id");
 		return factory.getObject();
 	}
@@ -72,10 +73,11 @@ public class dbToDbBatch {
 	public JdbcBatchItemWriter<Map<String, Object>> writer(){
 		return new JdbcBatchItemWriterBuilder<Map<String, Object>>()
 				.dataSource(targetSource)
-				.sql("INSERT INTO after(id, name) VALUES (:id, :name)")
+				.sql("INSERT INTO account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
 				.itemSqlParameterSourceProvider(item -> {
 					MapSqlParameterSource params = new MapSqlParameterSource();
-					params.addValue("id", item.get("id"));
+					params.addValue("accountNumber", item.get("accountNumber"));
+					params.addValue("money", item.get("money"));
 					params.addValue("name", item.get("name"));
 					return params;
 				}).build();

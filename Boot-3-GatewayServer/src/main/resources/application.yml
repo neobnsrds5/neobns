@@ -1,5 +1,4 @@
-server:
-  port: 8000
+
 
 eureka:
   client:
@@ -30,6 +29,7 @@ spring:
             - Path=/quitstart/**
             - Method=GET, POST
           filters:
+            - name: GlobalFilter
             - RewritePath=/quitstart/(?<path>.*), /$\{path}
         - id: transfer
           uri: lb://transfer

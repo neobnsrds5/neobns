@@ -75,8 +75,8 @@ management:
   web:
     base-path: /actuator
   metrics:
-    enable
-      hikaricp=true
+    enable:
+      hikaricp: true
       
       
 #logging:

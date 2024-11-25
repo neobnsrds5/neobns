@@ -8,6 +8,7 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -30,15 +31,14 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			return invocation.proceed();
 		} finally {
 			// 종료 시간 측정
-			long end = System.currentTimeMillis();
-			long duration = end - start;
+			long elapsedTime = System.currentTimeMillis() - start;
 
 			// 쿼리 정보 가져오기
 			StatementHandler handler = (StatementHandler) invocation.getTarget();
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 
 			// 로깅
-			logger.info("Executed SQL: [{}], Duration: {} ms", sql, duration);
+			logger.info("[{}] Executed SQL: [{}] executed in {} ms", MDC.get("requestId"), sql, elapsedTime);
 		}
 	}
 

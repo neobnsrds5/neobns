@@ -82,9 +82,9 @@ public class dbToApiBatch {
 		reader.setQueryProvider(toApiQueryProvider());
 		reader.setRowMapper((rs, rowNum) -> {
 			Map<String, Object> map = new HashMap<>();
-			map.put("id", rs.getString("id"));
+			map.put("id", rs.getLong("id"));
 			map.put("accountNumber", rs.getString("accountNumber"));
-			map.put("money", rs.getString("money"));
+			map.put("money", rs.getLong("money"));
 			map.put("name", rs.getString("name"));
 			return map;
 		});
@@ -96,7 +96,7 @@ public class dbToApiBatch {
 	public PagingQueryProvider toApiQueryProvider() throws Exception{
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(datasource);
-		factory.setSelectClause("SELECT id, accountNumber, money, name");
+		factory.setSelectClause("SELECT *");
 		factory.setFromClause("FROM account");
 		factory.setSortKey("id");
 		return factory.getObject();

@@ -27,7 +27,7 @@ public class ToRestSchedule {
 				.addString("date", date)
 				.toJobParameters();
 		
-		jobLauncher.run(jobRegistry.getJob("toRestJob"), jobParameters);
+		jobLauncher.run(jobRegistry.getJob("dbToApiJob"), jobParameters);
 	}
 	
 }

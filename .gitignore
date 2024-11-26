@@ -10,3 +10,37 @@ Boot-4-AdminServer/target/classes/META-INF/MANIFEST.MF
 Boot-4-AdminServer/.settings/org.eclipse.jdt.core.prefs
 Boot-4-AdminServer/.settings/org.eclipse.core.resources.prefs
 Boot-4-AdminServer/.classpath
+
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/

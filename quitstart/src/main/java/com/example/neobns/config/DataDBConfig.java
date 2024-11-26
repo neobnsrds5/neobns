@@ -23,6 +23,7 @@ import com.example.neobns.properties.DBProperties;
 
 import lombok.RequiredArgsConstructor;
 
+
 @Configuration
 @EnableJpaRepositories(
 		basePackages = "com.example.neobns.repository"

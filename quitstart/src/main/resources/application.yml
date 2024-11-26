@@ -87,6 +87,9 @@ management:
   metrics:
     enable:
       hikaricp: true
+
+gateway:
+  url: http://localhost:8080/
       
 gateway:
   url: http://localhost:8080

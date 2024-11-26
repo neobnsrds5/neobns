@@ -1,4 +1,5 @@
-
+server:
+  port: 8000
 
 eureka:
   client:
@@ -75,3 +76,4 @@ management:
   info:
     env:
       enabled: true
+

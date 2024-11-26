@@ -1,4 +1,4 @@
-package com.example.neobns.logging.common;
+package com.example.neobns.logging.common; // transfer
 
 import java.sql.Statement;
 import java.util.Properties;
@@ -38,7 +38,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 
 			// 로깅
-			logger.info("[{}] Executed SQL: [{}] executed in {} ms", MDC.get("requestId"), sql, elapsedTime);
+			logger.info("[{}] SQL [{}] executed in {} ms", MDC.get("requestId"), sql, elapsedTime);
 		}
 	}
 

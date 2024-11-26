@@ -18,18 +18,27 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.example.neobns.logging.common.MybatisLoggingInterceptor;
+import com.example.neobns.properties.DBProperties;
+
+import lombok.RequiredArgsConstructor;
+
+
 @Configuration
 @EnableJpaRepositories(
 		basePackages = "com.example.neobns.repository"
 		,entityManagerFactoryRef = "dataEntityManager"
 		, transactionManagerRef = "dataTransactionsManager")
+@RequiredArgsConstructor
 public class DataDBConfig {
+	
+	private final DBProperties dbProperties;
 	
 	@Bean(name = "dataDBSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
 	public DataSource dataDBSource() {
 		return DataSourceBuilder.create()
-				.url("jdbc:mysql://localhost:3306/db2")
+				.url(dbProperties.getDataUrl())
 				.build();
 	}
 	
@@ -60,9 +69,15 @@ public class DataDBConfig {
 	@Bean
 	public SqlSessionFactory sqlSessionFactory() throws Exception{
 		SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
+		
+		// Mybatis interceptor 등록
+		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+		configuration.addInterceptor(new MybatisLoggingInterceptor());
+		
 		factory.setDataSource(dataDBSource());
 		factory.setMapperLocations(new PathMatchingResourcePatternResolver()
 				.getResources("classpath:mappers/*.xml"));
+		factory.setConfiguration(configuration); // Mybatis interceptor 등록
 		
 		return factory.getObject();
 		

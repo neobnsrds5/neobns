@@ -1,10 +1,14 @@
 package com.example.neobns.logging.common; // quitstart
 
 import java.sql.Statement;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.plugin.*;
@@ -12,6 +16,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -25,18 +30,19 @@ public class MybatisLoggingInterceptor implements Interceptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(MybatisLoggingInterceptor.class);
 
-	// 슬로우 쿼리 저장소, 동시성 문제 해결을 위해 ConcurrentHashMap 사용
-	// 일단은 SQL문과 걸린 시간만 출력할 수 있도록 구현
-	// 추후 requestId 등 필요한 정보 추가하기
-	private static final ConcurrentHashMap<String, Long> slowQueryStore = new ConcurrentHashMap<>();
+	// 슬로우 쿼리 저장소
+	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
+	
+	// 슬로우 쿼리 저장소 최대 크기
+	private static int SLOW_QUERIES_SIZE = 10;
+	// 슬로우 쿼리 기준 시간
+	public static long SLOW_QUERY_THRESHOLD_MS = 0;
 
-	// 슬로우 쿼리 기준 시간 - 추후 properties로 빼기
-	public static final long SLOW_QUERY_THRESHOLD_MS = 0;
-
-	// 슬로우 쿼리 상위 10개 반환
-	public static Map<String, Long> getSlowQueries() {
-		return slowQueryStore.entrySet().stream().sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-				.limit(10).collect(LinkedHashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), Map::putAll);
+	// 슬로우 쿼리 최근 10개 반환
+	public static List<Map<String, Object>> getSlowQueries() {
+		synchronized (SLOW_QUERIES) {
+            return new ArrayList<>(SLOW_QUERIES);
+        }
 	}
 
 	@Override
@@ -59,11 +65,18 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			logger.info("[{}] SQL [{}] executed in {} ms", MDC.get("requestId"), sql, elapsedTime);
 
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-				slowQueryStore.put(sql, elapsedTime);
-
-				slowQueryStore.forEach((key, value) -> {
-					System.out.println(key + " : " + value);
-				});
+				Map<String, Object> slowQuery = new HashMap<>();
+				slowQuery.put("requestId", MDC.get("requestId"));
+				slowQuery.put("sql", sql);
+				slowQuery.put("executeTime", elapsedTime);
+				slowQuery.put("timestamp", new Date());
+				
+				synchronized (SLOW_QUERIES) {
+					if(SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
+						SLOW_QUERIES.poll(); // 오래된 데이터 제거
+					}
+					SLOW_QUERIES.add(slowQuery);
+				}
 			}
 		}
 	}

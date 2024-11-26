@@ -38,3 +38,22 @@ spring:
             - Method=GET, POST
           filters:
             - RewritePath=/transfer/(?<path>.*), /$\{path}
+            
+            
+management:
+  httpexchanges:
+    recording:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true

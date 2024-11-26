@@ -3,6 +3,8 @@ package com.example.neobns.controller;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
 import com.example.neobns.service.QuickService;
+
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +24,14 @@ public class QuickController {
     }
 
     @GetMapping("/dummy")
+    @Timed(value = "quick.dummyone", longTask = true)
     public String dummy(){
         log.info("dummy");
         return "{}";
     }
 
     @GetMapping("/dummy2")
+    @Timed(value = "quick.dummytwo", longTask = true)
     public String dummy2(){
         log.info("dummy2");
         return "quitstart의 dummy2";

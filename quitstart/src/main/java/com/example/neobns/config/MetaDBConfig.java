@@ -10,8 +10,15 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.example.neobns.properties.DBProperties;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class MetaDBConfig {
+	
+	private final DBProperties properties;
 	
 	@Primary
 	@Bean(name = "dataSource")
@@ -19,7 +26,7 @@ public class MetaDBConfig {
 	public DataSource metaDBSource() {
 		
 		return DataSourceBuilder.create()
-				.url("jdbc:mysql://localhost:3306/db1")
+				.url(properties.getMetaUrl())
 				.build();
 	}
 	

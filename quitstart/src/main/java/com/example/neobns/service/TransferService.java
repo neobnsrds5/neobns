@@ -13,7 +13,8 @@ public class TransferService {
 	
 	private final RestTemplate restTemplate;
 	
-	@Value("${gateway.url}")
+//	@Value("${gateway.url}")
+	@Value("http://localhost:8000")
 	private String transferServiceUrl;
 		
 	public TransferService(RestTemplate restTemplate) {

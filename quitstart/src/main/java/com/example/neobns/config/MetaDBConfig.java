@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.example.neobns.properties.MetaDBProperties;
+import com.example.neobns.properties.DBProperties;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MetaDBConfig {
 	
-	private final MetaDBProperties dbProperties;
+	private final DBProperties properties;
 	
 	@Primary
 	@Bean(name = "dataSource")
@@ -26,7 +26,7 @@ public class MetaDBConfig {
 	public DataSource metaDBSource() {
 		
 		return DataSourceBuilder.create()
-				.url(dbProperties.getUrl())
+				.url(properties.getMetaUrl())
 				.build();
 	}
 	

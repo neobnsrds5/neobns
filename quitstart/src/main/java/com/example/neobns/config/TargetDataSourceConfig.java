@@ -7,7 +7,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.neobns.properties.TargetDBProperties;
+import com.example.neobns.properties.DBProperties;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TargetDataSourceConfig {
 	
-	private final TargetDBProperties dbProperties;
+	private final DBProperties dbProperties;
 	
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource-target")
 	public DataSource targetDataSource() {
-		return DataSourceBuilder.create().url(dbProperties.getUrl()).build();
+		return DataSourceBuilder.create().url(dbProperties.getTargetUrl()).build();
 	}
 }

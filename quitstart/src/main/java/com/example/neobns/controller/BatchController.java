@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -19,7 +18,6 @@ public class BatchController {
 	private final JobRegistry jobRegistry;
 	
 	@GetMapping("/batch/dbtoapi/{value}")
-	@Timed(value = "batch.firstapi", longTask = true)
 	public String firstApi(@PathVariable("value") String value) throws Exception{
 		JobParameters jobParameters = new JobParametersBuilder()
 				.addString("dbtoapi", value)
@@ -30,7 +28,6 @@ public class BatchController {
 	}
 	
 	@GetMapping("/batch/dbtodb/{value}")
-	@Timed(value = "batch.dbtodbtest", longTask = true)
 	public String dbtodbTest(@PathVariable("value") String value) throws Exception {
 		JobParameters jobParameters = new JobParametersBuilder()
 				.addString("dbtodb", value)
@@ -40,7 +37,6 @@ public class BatchController {
 	}
 	
 	@GetMapping("/batch/filetodb/{value}")
-	@Timed(value = "batch.fileToDbTest", longTask = true)
 	public String fileToDbTest(@PathVariable("value") String value) {
 		JobParameters jobParameters = new JobParametersBuilder()
 				.addString("filetodb", value)

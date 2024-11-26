@@ -91,9 +91,6 @@ management:
 gateway:
   url: http://localhost:8080/
       
-gateway:
-  url: http://localhost:8080
-      
 #logging:
 #  config: classpath:logback-spring.xml
 #  file:

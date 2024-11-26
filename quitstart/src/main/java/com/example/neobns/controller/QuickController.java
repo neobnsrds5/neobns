@@ -25,7 +25,8 @@ public class QuickController {
 
     @GetMapping("/dummy")
     @Timed(value = "quick.dummyone", longTask = true)
-    public String dummy(){
+    public String dummy() throws InterruptedException{
+    	Thread.sleep(300);
         log.info("dummy");
         return "{}";
     }

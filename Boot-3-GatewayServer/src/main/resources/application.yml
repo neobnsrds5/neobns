@@ -31,11 +31,29 @@ spring:
           filters:
             - name: GlobalFilter
             - RewritePath=/quitstart/(?<path>.*), /$\{path}
+            
+        - id: quitstart
+          uri: lb://quitstart
+          predicates:
+            - Path=/quitstart/actuator/**
+            - Method=GET
+          filters:
+            - name: GlobalFilter
+            - RewritePath=/quitstart/(?<path>.*), /$\{path}
+            
         - id: transfer
           uri: lb://transfer
           predicates:
             - Path=/transfer/**
             - Method=GET, POST
+          filters:
+            - RewritePath=/transfer/(?<path>.*), /$\{path}
+            
+        - id: transfer
+          uri: lb://transfer
+          predicates:
+            - Path=/transfer/actuator/**
+            - Method=GET
           filters:
             - RewritePath=/transfer/(?<path>.*), /$\{path}
             

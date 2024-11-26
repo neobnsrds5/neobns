@@ -3,14 +3,13 @@ package com.example.neobns.properties;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class DBProperties {
 	
-	private Environment environement;
-	
-	public DBProperties(Environment environment) {
-		this.environement = environment;
-	}
+	private final Environment environement;
 	
 	public String getMetaUrl() {
 		return environement.getProperty("spring.datasource-meta.url");

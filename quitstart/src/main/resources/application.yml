@@ -77,6 +77,9 @@ management:
   metrics:
     enable:
       hikaricp: true
+
+gateway:
+  url: http://localhost:8080/
       
       
 #logging:

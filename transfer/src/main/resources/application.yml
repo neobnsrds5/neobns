@@ -32,8 +32,15 @@ management:
   endpoint:
     health:
       show-details: always
+    env:
+      sensitive: false
+      show-sensitive: true
   info:
     env:
       enabled: true
   web:
     base-path: /actuator
+  metrics:
+    enable:
+      hikaricp: true
+  

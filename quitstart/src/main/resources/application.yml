@@ -44,12 +44,19 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka:1234@localhost:8761/eureka
       
       
 management:
@@ -64,6 +71,9 @@ management:
       exposure:
         include: "*"
   endpoint:
+    metrics:
+      enable:
+        all: true
     health:
       show-details: always
     env:
@@ -80,7 +90,6 @@ management:
 
 gateway:
   url: http://localhost:8080/
-      
       
 #logging:
 #  config: classpath:logback-spring.xml

@@ -9,13 +9,6 @@
 		</encoder>
 	</appender>
 
-	<!-- 파일에 로그 저장 -->
-	<!-- <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
-		<file>logs/app.log</file> <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
-		<fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern> <maxHistory>30</maxHistory> 
-		로그 보관 기간 </rollingPolicy> <encoder> <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] 
-		[%X{requestId}] %-5level %logger{36} - %msg%n</pattern> </encoder> </appender> -->
-
 	<!-- 데이터베이스에 로그 저장 -->
 	<appender name="DB"
 		class="ch.qos.logback.classic.db.DBAppender">

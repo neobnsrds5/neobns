@@ -6,5 +6,5 @@ export interface Enviroments {
 
 export const environment = {
     production: false,
-    serverUrl: 'http://localhost:9000/actuator'
+    serverUrl: 'http://localhost:8000/actuator'
 };

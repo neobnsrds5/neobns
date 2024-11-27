@@ -12,3 +12,115 @@
 2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Mapper $Proxy116_insertTransferDetails completed in 35ms
 2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Service TransferService_insertTransferDetail completed in 75ms
 2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Controller TransferController_transfer completed in 130ms
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e; Controller; TransferController_transfer; start
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e; Service; TransferService_insertTransferDetail; start
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e; Mapper; $Proxy164_insertTransferDetails; start
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 4
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e, Mapper, $Proxy164_insertTransferDetails, 81
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e, Service, TransferService_insertTransferDetail, 111
+2024-11-27 16:26:08, abba5798-802b-4ebf-99e2-0d03ee955f2e, Controller, TransferController_transfer, 160
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.logging.common.LoggingAspect, 55519d14-2c0f-483f-b386-7eae0bc4f8dc; Controller; TransferController_transfer; start
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.logging.common.LoggingAspect, 55519d14-2c0f-483f-b386-7eae0bc4f8dc; Service; TransferService_insertTransferDetail; start
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.logging.common.LoggingAspect, 55519d14-2c0f-483f-b386-7eae0bc4f8dc; Mapper; $Proxy181_insertTransferDetails; start
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.l.c.MybatisLoggingInterceptor, 55519d14-2c0f-483f-b386-7eae0bc4f8dc; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 3
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.logging.common.LoggingAspect, 55519d14-2c0f-483f-b386-7eae0bc4f8dc, Mapper, $Proxy181_insertTransferDetails, 38
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.logging.common.LoggingAspect, 55519d14-2c0f-483f-b386-7eae0bc4f8dc, Service, TransferService_insertTransferDetail, 64
+2024-11-27 16:36:40, http-nio-8090-exec-1, c.e.n.logging.common.LoggingAspect, 55519d14-2c0f-483f-b386-7eae0bc4f8dc, Controller, TransferController_transfer, 89
+2024-11-27 16:38:04,206; http-nio-8090-exec-2; com.example.neobns.logging.common.LoggingAspect; ecce6f54-93b8-47ba-89c6-c4aca4a021cf; Controller; TransferController_transfer; start
+2024-11-27 16:38:04,218; http-nio-8090-exec-2; com.example.neobns.logging.common.LoggingAspect; ecce6f54-93b8-47ba-89c6-c4aca4a021cf; Service; TransferService_insertTransferDetail; start
+2024-11-27 16:38:04,230; http-nio-8090-exec-2; com.example.neobns.logging.common.LoggingAspect; ecce6f54-93b8-47ba-89c6-c4aca4a021cf; Mapper; $Proxy191_insertTransferDetails; start
+2024-11-27 16:38:04,255; http-nio-8090-exec-2; com.example.neobns.logging.common.MybatisLoggingInterceptor; ecce6f54-93b8-47ba-89c6-c4aca4a021cf; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 16:38:04,268; http-nio-8090-exec-2; com.example.neobns.logging.common.LoggingAspect; ecce6f54-93b8-47ba-89c6-c4aca4a021cf, Mapper, $Proxy191_insertTransferDetails, 38
+2024-11-27 16:38:04,280; http-nio-8090-exec-2; com.example.neobns.logging.common.LoggingAspect; ecce6f54-93b8-47ba-89c6-c4aca4a021cf, Service, TransferService_insertTransferDetail, 62
+2024-11-27 16:38:04,293; http-nio-8090-exec-2; com.example.neobns.logging.common.LoggingAspect; ecce6f54-93b8-47ba-89c6-c4aca4a021cf, Controller, TransferController_transfer, 87
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc; Controller; TransferController_transfer; start
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc; Service; TransferService_insertTransferDetail; start
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc; Mapper; $Proxy201_insertTransferDetails; start
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.MybatisLoggingInterceptor; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc, Mapper, $Proxy201_insertTransferDetails, 36
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc, Service, TransferService_insertTransferDetail, 60
+2024-11-27 16:48:40; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; af9309a7-fda7-4d13-a0e1-78f0e13e6ffc, Controller, TransferController_transfer, 87
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705; Controller; TransferController_transfer; start
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705; Service; TransferService_insertTransferDetail; start
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705, Mapper, $Proxy206_insertTransferDetails, 43
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705, Service, TransferService_insertTransferDetail, 78
+2024-11-27 16:54:10; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 955ddf18-bf52-4fb3-8057-022f073b3705, Controller, TransferController_transfer, 105
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29; Controller; TransferController_transfer; start
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29, Mapper, $Proxy206_insertTransferDetails, 30
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29, Service, TransferService_insertTransferDetail, 53
+2024-11-27 17:18:42; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; b4609711-fac0-4487-bb86-816b2fb4ef29, Controller, TransferController_transfer, 76
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.LoggingAspect; INFO; 891567bd-9506-486d-9b0e-3e913036850f; Controller; TransferController_transfer; start
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.LoggingAspect; INFO; 891567bd-9506-486d-9b0e-3e913036850f; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.LoggingAspect; INFO; 891567bd-9506-486d-9b0e-3e913036850f; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; 891567bd-9506-486d-9b0e-3e913036850f; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.LoggingAspect; INFO; 891567bd-9506-486d-9b0e-3e913036850f, Mapper, $Proxy206_insertTransferDetails, 24
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.LoggingAspect; INFO; 891567bd-9506-486d-9b0e-3e913036850f, Service, TransferService_insertTransferDetail, 48
+2024-11-27 17:25:24; http-nio-8090-exec-5; com.example.neobns.logging.common.LoggingAspect; INFO; 891567bd-9506-486d-9b0e-3e913036850f, Controller, TransferController_transfer, 78
+2024-11-27 17:27:37; http-nio-8090-exec-9; com.example.neobns.logging.common.LoggingAspect; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a; Controller; TransferController_transfer; start
+2024-11-27 17:27:37; http-nio-8090-exec-9; com.example.neobns.logging.common.LoggingAspect; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:27:37; http-nio-8090-exec-9; com.example.neobns.logging.common.LoggingAspect; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:27:37; http-nio-8090-exec-9; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:27:37; http-nio-8090-exec-9; com.example.neobns.logging.common.LoggingAspect; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a, Mapper, $Proxy206_insertTransferDetails, 27
+2024-11-27 17:27:38; http-nio-8090-exec-9; com.example.neobns.logging.common.LoggingAspect; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a, Service, TransferService_insertTransferDetail, 49
+2024-11-27 17:27:38; http-nio-8090-exec-9; com.example.neobns.logging.common.LoggingAspect; INFO; ece73931-3f7d-40c8-9793-097bb3d7615a, Controller, TransferController_transfer, 74
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.LoggingAspect; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1; Controller; TransferController_transfer; start
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.LoggingAspect; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.LoggingAspect; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.LoggingAspect; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1, Mapper, $Proxy206_insertTransferDetails, 25
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.LoggingAspect; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1, Service, TransferService_insertTransferDetail, 48
+2024-11-27 17:27:46; http-nio-8090-exec-10; com.example.neobns.logging.common.LoggingAspect; INFO; ce798a4f-5385-43f5-9c9b-e8c0e114dbc1, Controller, TransferController_transfer, 70
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.LoggingAspect; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a; Controller; TransferController_transfer; start
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.LoggingAspect; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.LoggingAspect; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 1
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.LoggingAspect; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a, Mapper, $Proxy206_insertTransferDetails, 26
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.LoggingAspect; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a, Service, TransferService_insertTransferDetail, 50
+2024-11-27 17:27:49; http-nio-8090-exec-6; com.example.neobns.logging.common.LoggingAspect; INFO; ac53fe23-af7a-48dc-8fbe-719cc499ea2a, Controller, TransferController_transfer, 74
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.LoggingAspect; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d; Controller; TransferController_transfer; start
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.LoggingAspect; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.LoggingAspect; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.LoggingAspect; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d, Mapper, $Proxy206_insertTransferDetails, 25
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.LoggingAspect; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d, Service, TransferService_insertTransferDetail, 45
+2024-11-27 17:27:52; http-nio-8090-exec-7; com.example.neobns.logging.common.LoggingAspect; INFO; f7bd73ca-a9f1-4fa2-8e9d-cc6c6ba7958d, Controller, TransferController_transfer, 69
+2024-11-27 17:27:54; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8; Controller; TransferController_transfer; start
+2024-11-27 17:27:54; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:27:54; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:27:55; http-nio-8090-exec-1; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:27:55; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8, Mapper, $Proxy206_insertTransferDetails, 24
+2024-11-27 17:27:55; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8, Service, TransferService_insertTransferDetail, 46
+2024-11-27 17:27:55; http-nio-8090-exec-1; com.example.neobns.logging.common.LoggingAspect; INFO; 498ea60b-c47a-4a6e-956c-121fd7f5a0b8, Controller, TransferController_transfer, 68
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b; Controller; TransferController_transfer; start
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b; Mapper; $Proxy206_insertTransferDetails; start
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b, Mapper, $Proxy206_insertTransferDetails, 24
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b, Service, TransferService_insertTransferDetail, 48
+2024-11-27 17:30:11; http-nio-8090-exec-3; com.example.neobns.logging.common.LoggingAspect; INFO; 4d6243c3-b3cc-4fc8-b73e-09be5946ba9b, Controller, TransferController_transfer, 74
+2024-11-27 17:33:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e; Controller; TransferController_transfer; start
+2024-11-27 17:33:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:33:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e; Mapper; $Proxy211_insertTransferDetails; start
+2024-11-27 17:33:21; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:33:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e, Mapper, $Proxy211_insertTransferDetails, 38
+2024-11-27 17:33:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e, Service, TransferService_insertTransferDetail, 61
+2024-11-27 17:33:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-1; f6eadbae-48ba-460a-80e7-b4be7fb5963e, Controller, TransferController_transfer, 86
+2024-11-27 17:33:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159; Controller; TransferController_transfer; start
+2024-11-27 17:33:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:33:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159; Mapper; $Proxy211_insertTransferDetails; start
+2024-11-27 17:33:27; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 7
+2024-11-27 17:33:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159, Mapper, $Proxy211_insertTransferDetails, 40
+2024-11-27 17:33:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159, Service, TransferService_insertTransferDetail, 77
+2024-11-27 17:33:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; 8957a99e-02e0-44a3-a3f7-6def44cdf159, Controller, TransferController_transfer, 117
+2024-11-27 17:33:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e; Controller; TransferController_transfer; start
+2024-11-27 17:33:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e; Service; TransferService_insertTransferDetail; start
+2024-11-27 17:33:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e; Mapper; $Proxy211_insertTransferDetails; start
+2024-11-27 17:33:31; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-11-27 17:33:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e, Mapper, $Proxy211_insertTransferDetails, 27
+2024-11-27 17:33:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e, Service, TransferService_insertTransferDetail, 51
+2024-11-27 17:33:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-6; cedbbe21-6699-40b9-84d7-50c30b143f4e, Controller, TransferController_transfer, 76

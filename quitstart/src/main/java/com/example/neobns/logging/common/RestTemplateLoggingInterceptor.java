@@ -31,17 +31,17 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 
         // Before REST Call
         long startTime = System.currentTimeMillis();
-        logger.info("[{}] REST call to {} started", requestId, uri);
+        logger.info("{}; {}; {}; {}", requestId, "REST call", uri, "start");
 
         try {
             ClientHttpResponse response = execution.execute(request, body);
             long elapsedTime = System.currentTimeMillis() - startTime;
 
             // After REST Call
-            logger.info("[{}] REST call to {} completed in {}ms", requestId, uri, elapsedTime);
+            logger.info("{}; {}; {}; {}", requestId, "REST call", uri, elapsedTime);
             return response;
         } catch (Exception ex) {
-            logger.error("[{}] REST call to {} failed: {}", requestId, uri, ex.getMessage());
+            logger.error("{}; {}; {}; {}", requestId, "REST call", uri, "failed: "+ex.getMessage());
             throw ex;
         }
 		

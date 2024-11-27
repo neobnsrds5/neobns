@@ -1,0 +1,10 @@
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Controller TransferController_transfer entered
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Service TransferService_initiateTransfer entered
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Service TransferService_initiateTransfer completed in 208ms
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Controller TransferController_transfer completed in 255ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Controller TransferController_transfer entered
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Service TransferService_initiateTransfer entered
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] REST call to http://localhost:8000/transfer/ex started
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] REST call to http://localhost:8000/transfer/ex completed in 173ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Service TransferService_initiateTransfer completed in 197ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Controller TransferController_transfer completed in 240ms

@@ -1,0 +1,14 @@
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Controller TransferController_transfer entered
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Service TransferService_insertTransferDetail entered
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Mapper $Proxy116_insertTransferDetails entered
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] SQL [INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?)] executed in 4 ms
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Mapper $Proxy116_insertTransferDetails completed in 42ms
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Service TransferService_insertTransferDetail completed in 78ms
+2024-11-27 14:59:10 - [588f31a7-d710-48b2-b0aa-1ee366ee1c0e] Controller TransferController_transfer completed in 132ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Controller TransferController_transfer entered
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Service TransferService_insertTransferDetail entered
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Mapper $Proxy116_insertTransferDetails entered
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] SQL [INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?)] executed in 1 ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Mapper $Proxy116_insertTransferDetails completed in 35ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Service TransferService_insertTransferDetail completed in 75ms
+2024-11-27 15:05:22 - [65fadcb1-8646-4fc9-ae6c-117bad28875d] Controller TransferController_transfer completed in 130ms

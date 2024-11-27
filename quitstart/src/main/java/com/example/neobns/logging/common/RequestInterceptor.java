@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RequestInterceptor implements HandlerInterceptor {
 
 	 private static final String REQUEST_ID_HEADER = "X-Request-ID";
-	    private static final String MDC_REQUEST_ID_KEY = "requestId";
+	 private static final String MDC_REQUEST_ID_KEY = "requestId";
 	
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -31,7 +31,7 @@ public class RequestInterceptor implements HandlerInterceptor {
         //HttpServletResponse의 메서드이므로 동작하지 않음.
 //        response.setHeader(REQUEST_ID_HEADER, requestId);
         
-        return true;
+        return true; //요청을 다음 단계로 전달할지에 대한 여부. true면 요청 처리 계속 진행하여 컨트롤러 호출. false면 요청 처리 중단하고 응답을 직접 작성하거나 다른 작업 수행
     }
 	
 	@Override

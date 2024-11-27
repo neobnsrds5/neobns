@@ -9,6 +9,8 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: GatewayServer
   boot:
@@ -17,6 +19,18 @@ spring:
         url: http://localhost:9000
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allow-credentials: true # 요청 시 인증 정보를 전송하도록 허가
+            allowedHeaders: '*' # 허용하려는 헤더
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
       default-filters:
         - name: GlobalFilter
           args:

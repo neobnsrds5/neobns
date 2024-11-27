@@ -22,4 +22,11 @@
         ]]>
     </insert>
     
+    <insert id="addAccount" parameterType="com.example.neobns.dto.AccountDTO">
+    	<![CDATA[
+    		INSERT INTO ACCOUNT(accountNumber, money, name)
+    		VALUES (#{accountNumber}, #{money}, #{name})
+    	]]>
+    </insert>
+    
 </mapper>

@@ -1,5 +1,6 @@
 package com.example.neobns.service;
 
+import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.mapper.QuickMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +31,9 @@ public class QuickService {
         List<ItemDto> results = mapper.findAll();
         return results;
     }
+
+	public void addAccount(AccountDTO dto) {
+		// TODO Auto-generated method stub
+		mapper.addAccount(dto);
+	}
 }

@@ -1,5 +1,6 @@
 package com.example.neobns.controller;
 
+import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
 import com.example.neobns.service.QuickService;
@@ -7,9 +8,12 @@ import com.example.neobns.service.QuickService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -76,5 +80,12 @@ public class QuickController {
             System.out.println(item.getId()+ " " + item.getName());
         }
         return results;
+    }
+    
+    @PostMapping("/addAccount")
+    public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto){
+    	quickService.addAccount(dto);
+    	
+    	return ResponseEntity.ok("OK");
     }
 }

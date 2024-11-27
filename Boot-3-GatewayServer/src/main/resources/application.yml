@@ -22,8 +22,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:4200"
-            allow-credentials: true # 요청 시 인증 정보를 전송하도록 허가
+            allowedOrigins: "*"
             allowedHeaders: '*' # 허용하려는 헤더
             allowedMethods:
               - PUT
@@ -32,6 +31,7 @@ spring:
               - DELETE
               - OPTIONS
       default-filters:
+#        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
         - name: GlobalFilter
           args:
             baseMessage: Spring Cloud Gateway Global Filter

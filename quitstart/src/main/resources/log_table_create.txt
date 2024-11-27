@@ -31,3 +31,11 @@ CREATE TABLE logging_event_exception (
     PRIMARY KEY (event_id, i),
     FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
 );
+
+CREATE TABLE `transfer_details` (
+  `transfer_idx` int NOT NULL AUTO_INCREMENT,
+  `from_account` varchar(30) DEFAULT NULL,
+  `to_account` varchar(30) DEFAULT NULL,
+  `money` bigint DEFAULT NULL,
+  PRIMARY KEY (`transfer_idx`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;

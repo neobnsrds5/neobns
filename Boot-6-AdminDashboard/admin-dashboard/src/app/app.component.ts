@@ -4,6 +4,8 @@ import { SystemCpu } from './interface/system-cpu';
 import { DashboardService } from './service/dashboard.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { time } from 'console';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 // console.log 전부 제거할 것
 @Component({
@@ -39,6 +41,8 @@ export class AppComponent implements OnInit {
     this.dashboardService.getHttpTraces().subscribe(
       (response: any) => {
         this.processTraces(response.exchanges);
+        this.initializeBarChart();
+        this.initializePieChart();
       },
 
       (error: HttpErrorResponse) => {
@@ -73,7 +77,12 @@ export class AppComponent implements OnInit {
     );
   }
 
-  public onRefreshData() : void{
+  public onRefreshData(): void {
+    this.http200Traces = [];
+    this.http400Traces = [];
+    this.http404Traces = [];
+    this.http500Traces = [];
+    this.httpDefaultTraces = [];
     this.getTraces();
     this.getCpuUsage();
     this.getSystemHealth();
@@ -93,7 +102,7 @@ export class AppComponent implements OnInit {
       }
     );
   }
-  
+
   formatUptime(timestamp: number): string {
     const hours = Math.floor(timestamp / 60 / 60);
     const minutes = Math.floor(timestamp / 60) - (hours * 60);
@@ -153,6 +162,101 @@ export class AppComponent implements OnInit {
 
   }
 
+
+  private initializeBarChart(): Chart {
+    const barChartElement = document.getElementById('barChart') as HTMLCanvasElement;
+
+    if (!barChartElement) {
+      throw new Error("Bar Chart Not Found!");
+    }
+
+    return new Chart(barChartElement, {
+      type: 'bar',
+      data: {
+        labels: ['200', '400', '404', '500'],
+        datasets: [
+          {
+            data: [
+              this.http200Traces.length,
+              this.http404Traces.length,
+              this.http400Traces.length,
+              this.http500Traces.length],
+
+            backgroundColor: [
+              'rgb(40,167,69)',
+              'rgb(0,123,255)',
+              'rgb(253,126,20)',
+              'rgb(220,53,69)'
+            ],
+            borderColor: [
+              'rgb(40,167,69)',
+              'rgb(0,123,255)',
+              'rgb(253,126,20)',
+              'rgb(220,53,69)'
+            ],
+            borderWidth: 3
+          }],
+      },
+      options: {
+
+        plugins: {
+
+          title: { display: true, text: [`Last 100 Requests as of ${new Date()}`] },
+          legend: { display: false },
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  private initializePieChart(): Chart<"pie", number[], string> {
+    const pieChartElement = document.getElementById('pieChart') as HTMLCanvasElement;
+
+    if (!pieChartElement) {
+      throw new Error("Bar Chart Not Found!");
+    }
+
+    return new Chart(pieChartElement, {
+      type: 'pie',
+      data: {
+        labels: ['200', '400', '404', '500'],
+        datasets: [
+          {
+            data: [
+              this.http200Traces.length,
+              this.http404Traces.length,
+              this.http400Traces.length,
+              this.http500Traces.length],
+
+            backgroundColor: [
+              'rgb(40,167,69)',
+              'rgb(0,123,255)',
+              'rgb(253,126,20)',
+              'rgb(220,53,69)'
+            ],
+            borderColor: [
+              'rgb(40,167,69)',
+              'rgb(0,123,255)',
+              'rgb(253,126,20)',
+              'rgb(220,53,69)'
+            ],
+            borderWidth: 3
+          }],
+      },
+      options: {
+
+        plugins: {
+
+          title: { display: true, text: [`Last 100 Requests as of ${new Date()}`] },
+          legend: { display: true },
+        }
+      }
+    });
+  }
+
+
   public onSelectTrace(trace: any): void {
     this.selectedTrace = trace;
     document.getElementById('trace-modal')?.click();
@@ -160,8 +264,8 @@ export class AppComponent implements OnInit {
   }
 
   private updateTime(): void {
-    setInterval(() =>{
-      this.processUpTime= this.formatUptime(this.timestamp + 1);
+    setInterval(() => {
+      this.processUpTime = this.formatUptime(this.timestamp + 1);
       this.timestamp++;
     }, 1000);
   }

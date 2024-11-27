@@ -12,7 +12,7 @@ public class OpenApiCodeGenerator {
 
     public static void main(String[] args) {
         try {
-            String yamlFilePath = System.getProperty("yamlFilePath", "./src/main/resources/banking-api.yml");
+            String yamlFilePath = System.getProperty("yamlFilePath", "./src/main/resources/api-docs.yml");
             String outputDir = System.getProperty("outputDir", "./Customer/");
             
             File targetDir = new File(outputDir);

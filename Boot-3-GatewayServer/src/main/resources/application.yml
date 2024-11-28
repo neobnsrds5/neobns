@@ -62,6 +62,7 @@ spring:
             - Path=/transfer/**
             - Method=GET, POST
           filters:
+            - name: GlobalFilter
             - RewritePath=/transfer/(?<path>.*), /$\{path}
             
         - id: transfer
@@ -70,6 +71,7 @@ spring:
             - Path=/transfer/actuator/**
             - Method=GET
           filters:
+            - name: GlobalFilter
             - RewritePath=/transfer/(?<path>.*), /$\{path}
             
             

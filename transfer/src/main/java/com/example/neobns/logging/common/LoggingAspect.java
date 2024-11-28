@@ -48,7 +48,7 @@ public class LoggingAspect {
         String fullMethodName = String.format("%s_%s", className, methodName);
 
         // 메서드 실행 전 로깅
-        logger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, "start");
+        logger.info("{}; {}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, "start", MDC.get("userId"));
 
         Object result;
         try {
@@ -57,7 +57,7 @@ public class LoggingAspect {
             long elapsedTime = System.currentTimeMillis() - start;
 
             // 메서드 실행 후 로깅
-            logger.info("{}, {}, {}, {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime);
+            logger.info("{}, {}, {}, {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime, MDC.get("userId"));
         }
 
         return result;

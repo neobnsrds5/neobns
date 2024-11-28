@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class OpenApiCodeGenerator {
+	
+	private static final String PACKAGEPRIFIX = "com.demo.";
 
     public static void main(String[] args) {
         try {
@@ -33,7 +35,7 @@ public class OpenApiCodeGenerator {
 
         for (String schemaName : schemas.keySet()) {
             String resourceName = capitalize(schemaName);
-            String packageName = "com.demo." + resourceName.toLowerCase();
+            String packageName = PACKAGEPRIFIX + ((!PACKAGEPRIFIX.endsWith("."))? ".":"") + resourceName.toLowerCase();
             String packageDir = outputDir + packageName.replace(".", "/") + "/";
 
             new File(packageDir).mkdirs();

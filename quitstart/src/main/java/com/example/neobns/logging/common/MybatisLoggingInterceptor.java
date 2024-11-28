@@ -62,7 +62,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 
 			// 로깅
-			logger.info("[{}] SQL [{}] executed in {} ms", MDC.get("requestId"), sql, elapsedTime);
+			logger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
 
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 				Map<String, Object> slowQuery = new HashMap<>();

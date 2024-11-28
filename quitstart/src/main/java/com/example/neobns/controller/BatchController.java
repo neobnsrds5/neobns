@@ -50,4 +50,18 @@ public class BatchController {
 		}
 	}
 	
+	@GetMapping("/batch/logtodb/{value}")
+	public String logToDbTest(@PathVariable("value") String value) {
+		JobParameters jobParameters = new JobParametersBuilder()
+				.addString("logtodb", value)
+				.toJobParameters();
+		
+		try {
+			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
+			return "OK";
+		} catch (Exception e) {
+			return "FAIL";
+		}
+	}
+	
 }

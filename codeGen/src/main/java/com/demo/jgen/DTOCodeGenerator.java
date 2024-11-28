@@ -11,7 +11,7 @@ public class DTOCodeGenerator implements BaseCodeGenerator {
         dtoCode.append("package ").append(packageName).append(";\n\n")
                 .append("import com.fasterxml.jackson.annotation.JsonProperty;\n")  // Import JsonProperty
                 .append("import lombok.*;\n")
-                .append("import jakarta.validation.constraints.*;\n\n")
+//                .append("import jakarta.validation.constraints.*;\n\n")
                 .append("@Getter\n@Setter\n@NoArgsConstructor\n@AllArgsConstructor\n@Builder\n")
                 .append("public class ").append(resourceName).append("Dto {\n");
 

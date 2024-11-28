@@ -93,7 +93,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Value"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -117,22 +142,15 @@
       "pluginVersion": "11.3.1",
       "targets": [
         {
-          "editorMode": "code",
-          "expr": "sum(prometheus_http_request_duration_seconds_sum) / sum(prometheus_http_request_duration_seconds_count)",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        },
-        {
           "datasource": {
             "type": "prometheus",
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(prometheus_http_request_duration_seconds_sum{job=\"gateway\"}) / sum(prometheus_http_request_duration_seconds_count{job=\"gateway\"})",
+          "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\"}) / sum(http_client_requests_seconds_count{job=\"gateway\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "gateway",
           "range": true,
           "refId": "B"
         },
@@ -142,10 +160,10 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(prometheus_http_request_duration_seconds_sum{job=\"quitstart\"}) / sum(prometheus_http_request_duration_seconds_count{job=\"quitstart\"})",
+          "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\"}) / sum(http_client_requests_seconds_sum{job=\"quick_start\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "quick start",
           "range": true,
           "refId": "C"
         },
@@ -155,10 +173,10 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(prometheus_http_request_duration_seconds_sum{job=\"transfer\"}) / sum(prometheus_http_request_duration_seconds_count{job=\"transfer\"})",
+          "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\"}) / sum(http_client_requests_seconds_count{job=\"transfer\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "transfer",
           "range": true,
           "refId": "D"
         },
@@ -168,10 +186,10 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(prometheus_http_request_duration_seconds_sum{method=\"GET\"}) /\r\nsum(prometheus_http_request_duration_seconds_count{method=\"GET\"})",
+          "expr": "sum(http_client_requests_seconds_sum{method=\"GET\"}) /\r\nsum(http_client_requests_seconds_count{method=\"GET\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "GET 전체",
           "range": true,
           "refId": "E"
         },
@@ -181,10 +199,10 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(prometheus_http_request_duration_seconds_sum{method=\"POST\"}) /\r\nsum(prometheus_http_request_duration_seconds_count{method=\"POST\"})",
+          "expr": "sum(http_client_requests_seconds_sum{method=\"POST\"}) /\r\nsum(http_client_requests_seconds_count{method=\"POST\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "POST 전체",
           "range": true,
           "refId": "F"
         }
@@ -476,8 +494,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -568,8 +585,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -677,8 +693,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -763,8 +778,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -849,8 +863,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -970,8 +983,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1100,8 +1112,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1231,8 +1242,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1967,13 +1977,13 @@
     ]
   },
   "time": {
-    "from": "now/d",
-    "to": "now"
+    "from": "2024-11-26T22:03:53.842Z",
+    "to": "2024-11-28T19:13:30.262Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Spring Cloud Gateway",
   "uid": "de52f6s96xkhsd",
-  "version": 53,
+  "version": 62,
   "weekStart": ""
 }

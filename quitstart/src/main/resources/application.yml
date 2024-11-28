@@ -95,4 +95,3 @@ gateway:
 #  config: classpath:logback-spring.xml
 #  file:
 #    name: D:\logs\logback.log
-  

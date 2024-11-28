@@ -32,6 +32,8 @@ management:
   endpoint:
     health:
       show-details: always
+    prometheus:
+      enabled: true  
     env:
       sensitive: false
       show-sensitive: true

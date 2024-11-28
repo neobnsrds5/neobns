@@ -23,17 +23,17 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db1
     username: root
-    password: 
+    password: 1234
   datasource-data:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db2
     username: root
-    password: 
+    password: 1234
   datasource-target:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db3
     username: root
-    password: 
+    password: 1234
   jpa:
     properties:
       hibernate:
@@ -76,6 +76,8 @@ management:
         all: true
     health:
       show-details: always
+    prometheus:
+      enabled: true  
     env:
       sensitive: false
       show-sensitive: true

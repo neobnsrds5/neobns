@@ -14,17 +14,27 @@ public class RequestInterceptor implements HandlerInterceptor {
 
 	 private static final String REQUEST_ID_HEADER = "X-Request-ID";
 	 private static final String MDC_REQUEST_ID_KEY = "requestId";
+	 private static final String USER_ID_HEADER = "X-User-ID";
+	 private static final String MDC_USER_ID_KEY = "userId";
+
 	
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		String requestId = request.getHeader(REQUEST_ID_HEADER);
+		
         if (requestId == null || requestId.isEmpty()) {
 //            requestId = UUID.randomUUID().toString(); // 새로운 Request ID 생성
         	requestId = "MISSED-ID";
         }
+        
+        String userId = request.getHeader(USER_ID_HEADER);
+	        if (userId == null || userId.isEmpty()) {
+	            userId = "MISSED-USER-ID"; 
+        }
 
-        // Request ID를 MDC에 저장
+        // Request ID, User ID를 MDC에 저장
         MDC.put(MDC_REQUEST_ID_KEY, requestId);
+        MDC.put(MDC_USER_ID_KEY, userId);
 
         // Response 헤더에 Request ID 추가 (후속 요청을 위해)
         // 게이트웨이에서부터 추적하려면, 게이트웨이는 WebFlux 기반이지만, response.setHeader()은 동기 방식인
@@ -38,5 +48,6 @@ public class RequestInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         // 요청 완료 후 MDC에서 제거
         MDC.remove(MDC_REQUEST_ID_KEY);
+        MDC.remove(MDC_USER_ID_KEY);
     }
 }

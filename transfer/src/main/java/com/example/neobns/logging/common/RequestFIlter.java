@@ -16,6 +16,8 @@ public class RequestFIlter extends OncePerRequestFilter{
 	
 	private static final String REQUEST_ID_HEADER = "X-Request-ID";
 	private static final String MDC_REQUEST_ID_KEY = "requestId";
+	private static final String USER_ID_HEADER = "X-User-ID";
+	private static final String MDC_USER_ID_KEY = "userId";
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -26,10 +28,19 @@ public class RequestFIlter extends OncePerRequestFilter{
 //            requestId = UUID.randomUUID().toString(); // 새로운 Request ID 생성
         	requestId = "MISSED-ID";
         }
+        
+        String userId = request.getHeader(USER_ID_HEADER);
+        if (userId == null || userId.isEmpty()) {
+//          requestId = UUID.randomUUID().toString(); // 새로운 Request ID 생성
+        	userId = "MISSED-USER-ID"; 
+      }
+        
         MDC.put("requestId", requestId);
+        MDC.put("userId", userId);
 
         // 응답 헤더에 Request ID 추가
         response.setHeader(REQUEST_ID_HEADER, requestId);
+        response.setHeader(USER_ID_HEADER, userId);
 
         try {
             filterChain.doFilter(request, response);

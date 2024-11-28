@@ -35,7 +35,7 @@ public class ControllerTestCodeGenerator implements BaseCodeGenerator {
                     @Test
                     public void testFindAll() throws Exception {
                         // Arrange
-                        when(service.findAll(anyMap())).thenReturn(List.of(new %sDto()));
+                        when(service.findAll()).thenReturn(List.of(new %sDto()));
 
                         // Act & Assert
                         mockMvc.perform(get("/%s"))

@@ -17,7 +17,7 @@ public class MapperCodeGenerator implements BaseCodeGenerator {
                 @Mapper
                 public interface %sMapper {
 
-                    List<%sDto> findAll(Map<String, Object> filters);
+                    List<%sDto> findAll();
 
                     List<%sDto> findByPage(Map<String, Object> filters, int offset, int limit);
 

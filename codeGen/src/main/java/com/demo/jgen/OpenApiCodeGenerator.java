@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class OpenApiCodeGenerator {
 	
-	private static final String PACKAGEPRIFIX = "com.demo";
+	private static final String PACKAGEPRIFIX = "com.example.demo";
 
     public static void main(String[] args) {
         try {

@@ -11,11 +11,16 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
         StringBuilder insertFields = new StringBuilder();
         StringBuilder insertValues = new StringBuilder();
         StringBuilder updateFields = new StringBuilder();
+        StringBuilder dynamicFilters = new StringBuilder();
 
         schema.getProperties().forEach((name, property) -> {
             insertFields.append(name).append(", ");
             insertValues.append("#{").append(name).append("}, ");
             updateFields.append(name).append(" = #{").append(name).append("}, ");
+            
+            dynamicFilters.append("<if test=\"").append(name).append(" != null\">")
+            .append(" AND ").append(name).append(" = #{").append(name).append("}")
+            .append("</if>\n");
         });
 
         // Remove trailing commas and spaces
@@ -28,14 +33,17 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
                 <mapper namespace="%s.%sMapper">
                 	
                     <select id="findAll" resultType="%s.%sDto">
-                        SELECT * FROM %s WHERE 1=1
-                        <!-- Add dynamic filters here -->
+                        SELECT * FROM %s
                     </select>
 
                     <select id="findByPage" resultType="%s.%sDto">
                         SELECT * FROM %s
-                        WHERE 1=1
+                        
                         <!-- Add dynamic filters here -->
+                        <where>
+                        	1=1
+                        	%s
+                        </where>
                         LIMIT #{limit} OFFSET #{offset}
                     </select>
 
@@ -62,7 +70,7 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
                 """.formatted(
                 packageName, resourceName,
                 packageName, resourceName, tableName,
-                packageName, resourceName, tableName,
+                packageName, resourceName, tableName, dynamicFilters,
                 packageName, resourceName, tableName,
                 tableName, insertFields, insertValues,
                 tableName, updateFields,

@@ -35,15 +35,15 @@ public class ServiceTestCodeGenerator implements BaseCodeGenerator {
                     public void testFindAll() {
                         // Arrange
                         List<%sDto> mockList = List.of(new %sDto());
-                        when(mapper.findAll(anyMap())).thenReturn(mockList);
+                        when(mapper.findAll()).thenReturn(mockList);
 
                         // Act
-                        List<%sDto> result = service.findAll(Map.of());
+                        List<%sDto> result = service.findAll();
 
                         // Assert
                         assertNotNull(result);
                         assertEquals(1, result.size());
-                        verify(mapper, times(1)).findAll(anyMap());
+                        verify(mapper, times(1)).findAll();
                     }
 
                     @Test

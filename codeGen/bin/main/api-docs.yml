@@ -222,7 +222,7 @@ paths:
                 type: string
 components:
   schemas:
-    TransferDTO:
+    Transfer:
       type: object
       properties:
         fromAccount:
@@ -232,19 +232,19 @@ components:
         money:
           type: integer
           format: int64
-    ItemDto:
+    Item:
       type: object
       properties:
         id:
           type: string
         name:
           type: string
-    ResponseDto:
+    Response:
       type: object
       properties:
         message:
           type: string
-    AccountDTO:
+    Account:
       type: object
       properties:
         id:

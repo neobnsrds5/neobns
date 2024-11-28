@@ -26,20 +26,20 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
         String mapperXml = """
                 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
                 <mapper namespace="%s.%sMapper">
-
-                    <select id="findAll" resultType="%sDto">
+                	
+                    <select id="findAll" resultType="%s.%sDto">
                         SELECT * FROM %s WHERE 1=1
                         <!-- Add dynamic filters here -->
                     </select>
 
-                    <select id="findByPage" resultType="%sDto">
+                    <select id="findByPage" resultType="%s.%sDto">
                         SELECT * FROM %s
                         WHERE 1=1
                         <!-- Add dynamic filters here -->
                         LIMIT #{limit} OFFSET #{offset}
                     </select>
 
-                    <select id="findById" resultType="%sDto">
+                    <select id="findById" resultType="%s.%sDto">
                         SELECT * FROM %s WHERE id = #{id}
                     </select>
 
@@ -60,9 +60,10 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
 
                 </mapper>
                 """.formatted(
-                packageName, resourceName, resourceName, tableName,
-                resourceName, tableName,
-                resourceName, tableName,
+                packageName, resourceName,
+                packageName, resourceName, tableName,
+                packageName, resourceName, tableName,
+                packageName, resourceName, tableName,
                 tableName, insertFields, insertValues,
                 tableName, updateFields,
                 tableName

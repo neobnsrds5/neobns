@@ -101,7 +101,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "GET 전체"
+                  "Value"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -293,8 +293,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"gateway\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"gateway\"}[10s]) > bool 0.005",
-          "legendFormat": "gateway",
+          "expr": "1 - (sum(rate(prometheus_http_request_duration_seconds_bucket{le=\"1.0\"}[1s])) / sum(rate(prometheus_http_request_duration_seconds_count[1s])))",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         },
@@ -304,7 +304,7 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"quick_start\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"quick_start\"}[10s]) > bool 0.005",
+          "expr": "1 - (\r\n  sum(rate(prometheus_http_request_duration_seconds_bucket{le=\"1.0\", method=\"GET\"}[1s])) /\r\n  sum(rate(prometheus_http_request_duration_seconds_count{method=\"GET\"}[1s]))\r\n)",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -317,29 +317,16 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"transfer\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"transfer\"}[10s]) > bool 0.005",
+          "expr": "1 - (\r\n  sum(rate(prometheus_http_request_duration_seconds_bucket{le=\"1.0\", method=\"POST\"}[1s])) /\r\n  sum(rate(prometheus_http_request_duration_seconds_count{method=\"POST\"}[1s]))\r\n)",
           "hide": false,
           "instant": false,
-          "legendFormat": "POST 1초 초과",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "C"
         }
       ],
-      "title": "느린 쿼리 단위시간 당 발생 여부",
+      "title": "느린 쿼리 초당 발생 비율",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 17
-      },
-      "id": 80,
-      "panels": [],
-      "title": "ERROR",
-      "type": "row"
     },
     {
       "datasource": {
@@ -405,7 +392,124 @@
         "h": 8,
         "w": 12,
         "x": 1,
-        "y": 18
+        "y": 17
+      },
+      "id": 85,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(http_request_duration_seconds_count[5m])) - sum(increase(http_request_duration_seconds_bucket{le=\"1.0\"}[5m]))",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "de4zsqld2lh4wd"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_request_duration_seconds_count{job=\"gateway\", method=\"GET\"}[5m])) -\r\nsum(increase(http_request_duration_seconds_bucket{job=\"gateway\", le=\"1.0\", method=\"GET\"}[5m]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "1초 초과 요청 수",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 80,
+      "panels": [],
+      "title": "ERROR",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "de4zsqld2lh4wd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 1,
+        "y": 26
       },
       "id": 86,
       "options": {
@@ -424,8 +528,99 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\"2..\"})",
-          "legendFormat": "gateway 정상",
+          "expr": "sum(prometheus_http_request_duration_seconds_sum{status=~\"4..|5..\"}) / \r\nsum(prometheus_http_request_duration_seconds_count{status=~\"4..|5..\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "평균 에러 발생 시간",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "de4zsqld2lh4wd"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 1,
+        "y": 34
+      },
+      "id": 83,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(increase(prometheus_http_requests_total{status=~\"400\"}[5m]))",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         },
@@ -435,10 +630,10 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"2..\"})",
+          "expr": "sum(increase(prometheus_http_requests_total{status=~\"404\"}[5m]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "quick start 정상",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "B"
         },
@@ -448,54 +643,15 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\".*ERROR|4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\".*ERROR|4..|5..\"})",
+          "expr": "sum(increase(prometheus_http_requests_total{status=\"5..\"}[5m]))",
           "hide": false,
           "instant": false,
-          "legendFormat": "gateway 에러",
+          "legendFormat": "__auto",
           "range": true,
           "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"4..|5..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "quick start 에러",
-          "range": true,
-          "refId": "D"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"2..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "transfer 정상",
-          "range": true,
-          "refId": "E"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"4..|5..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "transfer 에러",
-          "range": true,
-          "refId": "F"
         }
       ],
-      "title": "평균 에러 발생 시간",
+      "title": "에러 초당 발생 빈도",
       "type": "timeseries"
     },
     {
@@ -504,7 +660,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 42
       },
       "id": 50,
       "panels": [],
@@ -537,8 +693,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -554,7 +709,7 @@
         "h": 3,
         "w": 8,
         "x": 0,
-        "y": 27
+        "y": 43
       },
       "id": 28,
       "maxDataPoints": 100,
@@ -623,8 +778,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -640,7 +794,7 @@
         "h": 3,
         "w": 8,
         "x": 8,
-        "y": 27
+        "y": 43
       },
       "id": 29,
       "maxDataPoints": 100,
@@ -709,8 +863,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -726,7 +879,7 @@
         "h": 3,
         "w": 8,
         "x": 16,
-        "y": 27
+        "y": 43
       },
       "id": 30,
       "maxDataPoints": 100,
@@ -775,7 +928,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 46
       },
       "id": 51,
       "panels": [],
@@ -830,8 +983,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -846,7 +998,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 31
+        "y": 47
       },
       "id": 49,
       "options": {
@@ -904,7 +1056,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 54
       },
       "id": 52,
       "panels": [],
@@ -960,8 +1112,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -976,7 +1127,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 39
+        "y": 55
       },
       "id": 2,
       "options": {
@@ -1035,7 +1186,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 46
+        "y": 62
       },
       "id": 53,
       "panels": [],
@@ -1091,8 +1242,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1107,7 +1257,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 47
+        "y": 63
       },
       "id": 3,
       "options": {
@@ -1165,7 +1315,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 70
       },
       "id": 54,
       "panels": [],
@@ -1236,7 +1386,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 55
+        "y": 71
       },
       "id": 35,
       "options": {
@@ -1294,7 +1444,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 78
       },
       "id": 64,
       "panels": [],
@@ -1365,7 +1515,7 @@
         "h": 9,
         "w": 6,
         "x": 0,
-        "y": 63
+        "y": 79
       },
       "id": 62,
       "options": {
@@ -1491,7 +1641,7 @@
         "h": 9,
         "w": 6,
         "x": 6,
-        "y": 63
+        "y": 79
       },
       "id": 69,
       "options": {
@@ -1617,7 +1767,7 @@
         "h": 9,
         "w": 6,
         "x": 12,
-        "y": 63
+        "y": 79
       },
       "id": 77,
       "options": {
@@ -1742,7 +1892,7 @@
         "h": 9,
         "w": 6,
         "x": 18,
-        "y": 63
+        "y": 79
       },
       "id": 79,
       "options": {
@@ -1827,13 +1977,13 @@
     ]
   },
   "time": {
-    "from": "now/d",
-    "to": "now"
+    "from": "2024-11-26T22:03:53.842Z",
+    "to": "2024-11-28T19:13:30.262Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Spring Cloud Gateway",
   "uid": "de52f6s96xkhsd",
-  "version": 74,
+  "version": 62,
   "weekStart": ""
 }

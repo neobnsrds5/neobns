@@ -1208,8 +1208,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1337,8 +1336,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1452,8 +1450,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1592,8 +1589,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1740,6 +1736,109 @@
         "type": "prometheus",
         "uid": "de4zsqld2lh4wd"
       },
+      "description": "The percent of time spent on Garbage Collection over all CPUs assigned to the JVM process.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 28
+      },
+      "id": 138,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "de4zsqld2lh4wd"
+          },
+          "expr": "sum(rate(jvm_gc_pause_seconds_sum{application=\"$application\", instance=\"$instance\"}[1m])) by (application, instance) / on(application, instance) system_cpu_count",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "CPU time spent on GC",
+          "refId": "A"
+        }
+      ],
+      "title": "GC Pressure",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "de4zsqld2lh4wd"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1785,8 +1884,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1877,7 +1975,7 @@
       "gridPos": {
         "h": 7,
         "w": 12,
-        "x": 0,
+        "x": 6,
         "y": 28
       },
       "id": 91,
@@ -2020,7 +2118,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 43
       },
       "id": 144,
       "panels": [],
@@ -2040,7 +2138,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 58
+        "y": 44
       },
       "id": 78,
       "maxPerRow": 3,
@@ -2103,7 +2201,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 65
+        "y": 51
       },
       "id": 145,
       "panels": [],
@@ -2173,7 +2271,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 66
+        "y": 52
       },
       "id": 98,
       "options": {
@@ -2269,7 +2367,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 66
+        "y": 52
       },
       "id": 101,
       "options": {
@@ -2379,7 +2477,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 66
+        "y": 52
       },
       "id": 99,
       "options": {
@@ -2430,7 +2528,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 59
       },
       "id": 146,
       "panels": [],
@@ -2500,7 +2598,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 60
       },
       "id": 37,
       "options": {
@@ -2597,7 +2695,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 60
       },
       "id": 38,
       "options": {
@@ -2639,7 +2737,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 81
+        "y": 67
       },
       "id": 147,
       "panels": [],
@@ -2659,7 +2757,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 82
+        "y": 68
       },
       "id": 131,
       "maxPerRow": 3,
@@ -2803,6 +2901,6 @@
   "timezone": "browser",
   "title": "JVM (Micrometer)",
   "uid": "de4ztvthp95a8b",
-  "version": 9,
+  "version": 7,
   "weekStart": ""
 }

@@ -7,30 +7,32 @@
 			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{requestId}] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
+	
+	
+	<!-- CustomDBAppender: 데이터베이스에 로그 저장 -->
+    <appender name="CUSTOM_DB" class="com.example.neobns.logging.common.CustomDBAppender">
+        <!-- 필터 설정 -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>logger.contains("com.example.neobns.logging.common.LoggingAspect")
+                    ||
+                    logger.contains("com.example.neobns.logging.common.MybatisLoggingInterceptor")
+                    ||
+                    logger.contains("com.example.neobns.logging.common.RestTemplateLoggingInterceptor")
+                </expression>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
 
-	<!-- 데이터베이스에 로그 저장 -->
-	<appender name="DB"
-		class="ch.qos.logback.classic.db.DBAppender">
-		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-			<evaluator>
-				<expression>logger.contains("com.example.neobns.logging.common.LoggingAspect")
-					||
-					logger.contains("com.example.neobns.logging.common.MybatisLoggingInterceptor")
-					||
-					logger.contains("com.example.neobns.logging.common.RestTemplateLoggingInterceptor")
-				</expression>
-			</evaluator>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-		<connectionSource
-			class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-			<driverClass>com.mysql.cj.jdbc.Driver</driverClass>
-			<url>jdbc:mysql://localhost:3306/db2</url>
-			<user>root</user>
-			<password>1234</password>
-		</connectionSource>
-	</appender>
+        <!-- 데이터베이스 연결 설정 -->
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <driverClass>com.mysql.cj.jdbc.Driver</driverClass>
+            <url>jdbc:mysql://localhost:3306/db2</url>
+            <user>root</user>
+            <password>1234</password>
+        </connectionSource>
+    </appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
@@ -59,7 +61,7 @@
 	<!-- 루트 로거 -->
 	<root level="info">
 		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="DB" />
+		<appender-ref ref="CUSTOM_DB" />
 		<appender-ref ref="FILE" />
 	</root>
 </configuration>

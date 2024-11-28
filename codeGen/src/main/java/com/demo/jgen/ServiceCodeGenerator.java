@@ -22,8 +22,8 @@ public class ServiceCodeGenerator implements BaseCodeGenerator {
                     @Autowired
                     private %sMapper mapper;
 
-                    public List<%sDto> findAll(Map<String, Object> filters) {
-                        return mapper.findAll(filters);
+                    public List<%sDto> findAll() {
+                        return mapper.findAll();
                     }
 
                     public List<%sDto> findByPage(Map<String, Object> filters, int page, int size) {

@@ -23,8 +23,8 @@ public class ControllerCodeGenerator implements BaseCodeGenerator {
                     private %sService service;
 
                     @GetMapping
-                    public List<%sDto> findAll(@RequestParam("id") Map<String, Object> filters) {
-                        return service.findAll(filters);
+                    public List<%sDto> findAll() {
+                        return service.findAll();
                     }
 
                     @GetMapping("/page")

@@ -60,6 +60,9 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "decimals": 1,
           "mappings": [
             {
@@ -99,9 +102,9 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
-        "orientation": "horizontal",
+        "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
@@ -121,11 +124,13 @@
             "type": "prometheus",
             "uid": "de4zsqld2lh4wd"
           },
+          "editorMode": "code",
           "expr": "process_uptime_seconds{application=\"$application\", instance=\"$instance\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 14400
         }
@@ -2103,7 +2108,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 65
+        "y": 79
       },
       "id": 145,
       "panels": [],
@@ -2158,7 +2163,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2173,7 +2179,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 66
+        "y": 80
       },
       "id": 98,
       "options": {
@@ -2254,7 +2260,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2269,7 +2276,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 66
+        "y": 80
       },
       "id": 101,
       "options": {
@@ -2364,7 +2371,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2379,7 +2387,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 66
+        "y": 80
       },
       "id": 99,
       "options": {
@@ -2430,7 +2438,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 87
       },
       "id": 146,
       "panels": [],
@@ -2485,7 +2493,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2500,7 +2509,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 88
       },
       "id": 37,
       "options": {
@@ -2582,7 +2591,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2597,7 +2607,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 88
       },
       "id": 38,
       "options": {
@@ -2639,7 +2649,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 81
+        "y": 95
       },
       "id": 147,
       "panels": [],
@@ -2659,7 +2669,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 82
+        "y": 96
       },
       "id": 131,
       "maxPerRow": 3,
@@ -2803,6 +2813,6 @@
   "timezone": "browser",
   "title": "JVM (Micrometer)",
   "uid": "de4ztvthp95a8b",
-  "version": 9,
+  "version": 11,
   "weekStart": ""
 }

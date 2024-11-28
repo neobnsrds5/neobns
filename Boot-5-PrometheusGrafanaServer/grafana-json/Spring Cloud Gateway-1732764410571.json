@@ -101,7 +101,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "GET 전체"
+                  "gateway"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -1221,7 +1221,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1349,7 +1350,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1388,12 +1390,14 @@
             "uid": "de4zsqld2lh4wd"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "process_cpu_usage{job=~\"gateway\"}",
           "format": "time_series",
           "hide": false,
+          "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{ instance }}",
+          "legendFormat": "gateway",
           "range": true,
           "refId": "A"
         },
@@ -1406,7 +1410,7 @@
           "expr": "process_cpu_usage{job=~\"quick_start\"}",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "quick start",
           "range": true,
           "refId": "B"
         },
@@ -1419,7 +1423,7 @@
           "expr": "process_cpu_usage{job=~\"transfer\"}",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "transfer",
           "range": true,
           "refId": "C"
         }
@@ -1475,7 +1479,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1601,7 +1606,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1726,7 +1732,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent"
+                "color": "transparent",
+                "value": null
               },
               {
                 "color": "red",
@@ -1784,12 +1791,8 @@
     "list": [
       {
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "de4zsqld2lh4wd",
         "includeAll": true,
@@ -1805,12 +1808,8 @@
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "de4zsqld2lh4wd",
         "includeAll": true,
@@ -1834,6 +1833,6 @@
   "timezone": "",
   "title": "Spring Cloud Gateway",
   "uid": "de52f6s96xkhsd",
-  "version": 74,
+  "version": 77,
   "weekStart": ""
 }

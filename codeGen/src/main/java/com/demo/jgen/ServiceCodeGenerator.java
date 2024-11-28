@@ -22,33 +22,27 @@ public class ServiceCodeGenerator implements BaseCodeGenerator {
                     @Autowired
                     private %sMapper mapper;
 
-                    @Transactional(readOnly = true)
                     public List<%sDto> findAll(Map<String, Object> filters) {
                         return mapper.findAll(filters);
                     }
 
-                    @Transactional(readOnly = true)
                     public List<%sDto> findByPage(Map<String, Object> filters, int page, int size) {
                         int offset = (page - 1) * size;
                         return mapper.findByPage(filters, offset, size);
                     }
 
-                    @Transactional(readOnly = true)
                     public %sDto findById(Long id) {
                         return mapper.findById(id);
                     }
 
-                    @Transactional
                     public void create(%sDto dto) {
                         mapper.insert(dto);
                     }
 
-                    @Transactional
                     public void update(Long id, %sDto dto) {
                         mapper.update(dto);
                     }
 
-                    @Transactional
                     public void delete(Long id) {
                         mapper.deleteById(id);
                     }

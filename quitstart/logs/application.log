@@ -41,3 +41,10 @@
 2024-11-27 17:33:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; MISSED-ID; Controller; BatchController_logToDbTest; 74
 2024-11-27 17:39:39; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Controller; BatchController_logToDbTest; start
 2024-11-27 17:39:39; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Controller; BatchController_logToDbTest; 70
+2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; start
+2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Service; QuickService_getItemById; start
+2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Mapper; $Proxy168_findById; start
+2024-11-28 12:51:49; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-10; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 15
+2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Mapper; $Proxy168_findById; 69
+2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Service; QuickService_getItemById; 101
+2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; 148

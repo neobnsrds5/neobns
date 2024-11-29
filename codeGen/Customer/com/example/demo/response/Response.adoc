@@ -1,0 +1,74 @@
+= API Documentation
+:toc: left
+:toc-title: Contents
+:doctype: book
+:source-highlighter: highlightjs
+
+== Overview
+This document provides API details for the `/response` endpoints, including request, response, and usage examples.
+
+== API Details
+
+=== Find All Response
+Description: This endpoint find all response.
+
+include::{snippets}/response-find-all/curl-request.adoc[]
+include::{snippets}/response-find-all/httpie-request.adoc[]
+include::{snippets}/response-find-all/http-request.adoc[]
+include::{snippets}/response-find-all/http-response.adoc[]
+include::{snippets}/response-find-all/request-body.adoc[]
+include::{snippets}/response-find-all/request-fields.adoc[]
+include::{snippets}/response-find-all/response-body.adoc[]
+
+=== Find By ID Response
+Description: This endpoint find by id response.
+
+include::{snippets}/response-find-by-id/curl-request.adoc[]
+include::{snippets}/response-find-by-id/httpie-request.adoc[]
+include::{snippets}/response-find-by-id/http-request.adoc[]
+include::{snippets}/response-find-by-id/http-response.adoc[]
+include::{snippets}/response-find-by-id/request-body.adoc[]
+include::{snippets}/response-find-by-id/request-fields.adoc[]
+include::{snippets}/response-find-by-id/response-body.adoc[]
+
+=== Create Response
+Description: This endpoint create response.
+
+include::{snippets}/response-create/curl-request.adoc[]
+include::{snippets}/response-create/httpie-request.adoc[]
+include::{snippets}/response-create/http-request.adoc[]
+include::{snippets}/response-create/http-response.adoc[]
+include::{snippets}/response-create/request-body.adoc[]
+include::{snippets}/response-create/request-fields.adoc[]
+include::{snippets}/response-create/response-body.adoc[]
+
+=== Update Response
+Description: This endpoint update response.
+
+include::{snippets}/response-update/curl-request.adoc[]
+include::{snippets}/response-update/httpie-request.adoc[]
+include::{snippets}/response-update/http-request.adoc[]
+include::{snippets}/response-update/http-response.adoc[]
+include::{snippets}/response-update/request-body.adoc[]
+include::{snippets}/response-update/request-fields.adoc[]
+include::{snippets}/response-update/response-body.adoc[]
+
+=== Delete Response
+Description: This endpoint delete response.
+
+include::{snippets}/response-delete/curl-request.adoc[]
+include::{snippets}/response-delete/httpie-request.adoc[]
+include::{snippets}/response-delete/http-request.adoc[]
+include::{snippets}/response-delete/http-response.adoc[]
+include::{snippets}/response-delete/request-body.adoc[]
+include::{snippets}/response-delete/request-fields.adoc[]
+include::{snippets}/response-delete/response-body.adoc[]
+
+=== Examples
+Examples of how to use the API with sample requests and responses.
+
+* Curl Example: include::{snippets}/response/curl-request.adoc[]
+* HTTPie Example: include::{snippets}/response/httpie-request.adoc[]
+
+== References
+For additional details, visit our [API Documentation Portal](#).

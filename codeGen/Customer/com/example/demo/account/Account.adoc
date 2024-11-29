@@ -1,0 +1,74 @@
+= API Documentation
+:toc: left
+:toc-title: Contents
+:doctype: book
+:source-highlighter: highlightjs
+
+== Overview
+This document provides API details for the `/account` endpoints, including request, response, and usage examples.
+
+== API Details
+
+=== Find All Account
+Description: This endpoint find all account.
+
+include::{snippets}/account-find-all/curl-request.adoc[]
+include::{snippets}/account-find-all/httpie-request.adoc[]
+include::{snippets}/account-find-all/http-request.adoc[]
+include::{snippets}/account-find-all/http-response.adoc[]
+include::{snippets}/account-find-all/request-body.adoc[]
+include::{snippets}/account-find-all/request-fields.adoc[]
+include::{snippets}/account-find-all/response-body.adoc[]
+
+=== Find By ID Account
+Description: This endpoint find by id account.
+
+include::{snippets}/account-find-by-id/curl-request.adoc[]
+include::{snippets}/account-find-by-id/httpie-request.adoc[]
+include::{snippets}/account-find-by-id/http-request.adoc[]
+include::{snippets}/account-find-by-id/http-response.adoc[]
+include::{snippets}/account-find-by-id/request-body.adoc[]
+include::{snippets}/account-find-by-id/request-fields.adoc[]
+include::{snippets}/account-find-by-id/response-body.adoc[]
+
+=== Create Account
+Description: This endpoint create account.
+
+include::{snippets}/account-create/curl-request.adoc[]
+include::{snippets}/account-create/httpie-request.adoc[]
+include::{snippets}/account-create/http-request.adoc[]
+include::{snippets}/account-create/http-response.adoc[]
+include::{snippets}/account-create/request-body.adoc[]
+include::{snippets}/account-create/request-fields.adoc[]
+include::{snippets}/account-create/response-body.adoc[]
+
+=== Update Account
+Description: This endpoint update account.
+
+include::{snippets}/account-update/curl-request.adoc[]
+include::{snippets}/account-update/httpie-request.adoc[]
+include::{snippets}/account-update/http-request.adoc[]
+include::{snippets}/account-update/http-response.adoc[]
+include::{snippets}/account-update/request-body.adoc[]
+include::{snippets}/account-update/request-fields.adoc[]
+include::{snippets}/account-update/response-body.adoc[]
+
+=== Delete Account
+Description: This endpoint delete account.
+
+include::{snippets}/account-delete/curl-request.adoc[]
+include::{snippets}/account-delete/httpie-request.adoc[]
+include::{snippets}/account-delete/http-request.adoc[]
+include::{snippets}/account-delete/http-response.adoc[]
+include::{snippets}/account-delete/request-body.adoc[]
+include::{snippets}/account-delete/request-fields.adoc[]
+include::{snippets}/account-delete/response-body.adoc[]
+
+=== Examples
+Examples of how to use the API with sample requests and responses.
+
+* Curl Example: include::{snippets}/account/curl-request.adoc[]
+* HTTPie Example: include::{snippets}/account/httpie-request.adoc[]
+
+== References
+For additional details, visit our [API Documentation Portal](#).

@@ -1,0 +1,5 @@
+[source,bash]
+----
+curl -X GET 'http://localhost:8080/account' \
+     -H 'Content-Type: application/json'
+----

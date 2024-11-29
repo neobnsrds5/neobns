@@ -1,0 +1,13 @@
+|===
+|Field|Type|Description|Required
+
+|id
+|String
+|The unique identifier
+|Yes
+
+|name
+|String
+|The name of the resource
+|Yes
+|===

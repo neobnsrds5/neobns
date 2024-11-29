@@ -1,0 +1,5 @@
+[source,bash]
+----
+curl -X GET 'http://localhost:8080/transfer' \
+     -H 'Content-Type: application/json'
+----

@@ -48,3 +48,117 @@
 2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Mapper; $Proxy168_findById; 69
 2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Service; QuickService_getItemById; 101
 2024-11-28 12:51:49; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; 148
+2024-11-29 09:56:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; Controller; QuickController_getItem; start
+2024-11-29 09:56:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; Service; QuickService_getItemById; start
+2024-11-29 09:56:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; Mapper; $Proxy168_findById; start
+2024-11-29 09:56:43; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; SQL; SELECT * FROM item WHERE id = ?; 11
+2024-11-29 09:56:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; Mapper; $Proxy168_findById; 59
+2024-11-29 09:56:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; Service; QuickService_getItemById; 78
+2024-11-29 09:56:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; fb7b694f-4cdf-4bca-9abd-e68fe8564150; Controller; QuickController_getItem; 116
+2024-11-29 10:16:26; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; Controller; QuickController_getItem; start
+2024-11-29 10:16:26; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; Service; QuickService_getItemById; start
+2024-11-29 10:16:26; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; Mapper; $Proxy168_findById; start
+2024-11-29 10:16:26; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; SQL; SELECT * FROM item WHERE id = ?; 3
+2024-11-29 10:16:26; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; Mapper; $Proxy168_findById; 40
+2024-11-29 10:16:26; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; Service; QuickService_getItemById; 61
+2024-11-29 10:16:26; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; ce7b01ae-946a-441d-ab41-745b6894ee9d; Controller; QuickController_getItem; 85
+2024-11-29 10:28:25; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-3; 43f3e9ab-8a3a-49c9-9077-6f596ee28564; Controller; TransferController_transfer; start
+2024-11-29 10:28:25; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-3; 43f3e9ab-8a3a-49c9-9077-6f596ee28564; Service; TransferService_initiateTransfer; start
+2024-11-29 10:28:25; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-3; 43f3e9ab-8a3a-49c9-9077-6f596ee28564; REST call; http://localhost:8000/transfer/ex; start; user-4788bd08
+2024-11-29 10:28:26; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-3; 43f3e9ab-8a3a-49c9-9077-6f596ee28564; REST call; http://localhost:8000/transfer/ex; 1031; user-4788bd08
+2024-11-29 10:28:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-3; 43f3e9ab-8a3a-49c9-9077-6f596ee28564; Service; TransferService_initiateTransfer; 1091
+2024-11-29 10:28:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-3; 43f3e9ab-8a3a-49c9-9077-6f596ee28564; Controller; TransferController_transfer; 1127
+2024-11-29 10:28:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; Controller; QuickController_getItem; start
+2024-11-29 10:28:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; Service; QuickService_getItemById; start
+2024-11-29 10:28:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; Mapper; $Proxy168_findById; start
+2024-11-29 10:28:30; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; SQL; SELECT * FROM item WHERE id = ?; 18
+2024-11-29 10:28:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; Mapper; $Proxy168_findById; 58
+2024-11-29 10:28:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; Service; QuickService_getItemById; 79
+2024-11-29 10:28:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; cbdbad7a-d262-48e2-91c6-7932423b9ba4; Controller; QuickController_getItem; 97
+2024-11-29 10:28:34; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; 1f610b3f-a2bb-474b-88cb-7e37bf3feedd; Controller; TransferController_transfer; start
+2024-11-29 10:28:34; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; 1f610b3f-a2bb-474b-88cb-7e37bf3feedd; Service; TransferService_initiateTransfer; start
+2024-11-29 10:28:34; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-7; 1f610b3f-a2bb-474b-88cb-7e37bf3feedd; REST call; http://localhost:8000/transfer/ex; start; user-88a3b435
+2024-11-29 10:28:36; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-7; 1f610b3f-a2bb-474b-88cb-7e37bf3feedd; REST call; http://localhost:8000/transfer/ex; 1039; user-88a3b435
+2024-11-29 10:28:36; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; 1f610b3f-a2bb-474b-88cb-7e37bf3feedd; Service; TransferService_initiateTransfer; 1080
+2024-11-29 10:28:36; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; 1f610b3f-a2bb-474b-88cb-7e37bf3feedd; Controller; TransferController_transfer; 1113
+2024-11-29 10:29:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 425657a4-bd88-42aa-8595-b8041570f6fa; Controller; TransferController_transfer; start
+2024-11-29 10:29:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 425657a4-bd88-42aa-8595-b8041570f6fa; Service; TransferService_initiateTransfer; start
+2024-11-29 10:29:17; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-2; 425657a4-bd88-42aa-8595-b8041570f6fa; REST call; http://localhost:8000/transfer/ex; start; user-dfee56a8
+2024-11-29 10:29:17; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-2; 425657a4-bd88-42aa-8595-b8041570f6fa; REST call; http://localhost:8000/transfer/ex; 225; user-dfee56a8
+2024-11-29 10:29:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 425657a4-bd88-42aa-8595-b8041570f6fa; Service; TransferService_initiateTransfer; 244
+2024-11-29 10:29:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 425657a4-bd88-42aa-8595-b8041570f6fa; Controller; TransferController_transfer; 263
+2024-11-29 10:30:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; Controller; QuickController_getItem; start
+2024-11-29 10:30:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; Service; QuickService_getItemById; start
+2024-11-29 10:30:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; Mapper; $Proxy216_findById; start
+2024-11-29 10:30:27; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; SQL; SELECT * FROM item WHERE id = ?; 1
+2024-11-29 10:30:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; Mapper; $Proxy216_findById; 23
+2024-11-29 10:30:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; Service; QuickService_getItemById; 43
+2024-11-29 10:30:27; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; aaf7458f-279b-4b34-8174-3176dcaa1981; Controller; QuickController_getItem; 66
+2024-11-29 10:30:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; 7902470d-e23a-4a3e-94b7-e5df776f8fe8; Controller; TransferController_transfer; start
+2024-11-29 10:30:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; 7902470d-e23a-4a3e-94b7-e5df776f8fe8; Service; TransferService_initiateTransfer; start
+2024-11-29 10:30:31; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-4; 7902470d-e23a-4a3e-94b7-e5df776f8fe8; REST call; http://localhost:8000/transfer/ex; start; user-53dd7b2e
+2024-11-29 10:30:31; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-4; 7902470d-e23a-4a3e-94b7-e5df776f8fe8; REST call; http://localhost:8000/transfer/ex; 103; user-53dd7b2e
+2024-11-29 10:30:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; 7902470d-e23a-4a3e-94b7-e5df776f8fe8; Service; TransferService_initiateTransfer; 135
+2024-11-29 10:30:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; 7902470d-e23a-4a3e-94b7-e5df776f8fe8; Controller; TransferController_transfer; 167
+2024-11-29 10:31:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; 71050acd-7fac-45b2-8a72-f7c51c76c98c; Controller; TransferController_transfer; start
+2024-11-29 10:31:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; 71050acd-7fac-45b2-8a72-f7c51c76c98c; Controller; TransferController_transfer; 10
+2024-11-29 10:31:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; 130d5465-7b3b-4286-9631-eba77459a7f8; Controller; TransferController_transfer; start
+2024-11-29 10:31:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; 130d5465-7b3b-4286-9631-eba77459a7f8; Service; TransferService_initiateTransfer; start
+2024-11-29 10:31:54; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-8; 130d5465-7b3b-4286-9631-eba77459a7f8; REST call; http://localhost:8000/transfer/ex; start; user-1e44eb89
+2024-11-29 10:31:54; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-8; 130d5465-7b3b-4286-9631-eba77459a7f8; REST call; http://localhost:8000/transfer/ex; 99; user-1e44eb89
+2024-11-29 10:31:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; 130d5465-7b3b-4286-9631-eba77459a7f8; Service; TransferService_initiateTransfer; 117
+2024-11-29 10:31:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; 130d5465-7b3b-4286-9631-eba77459a7f8; Controller; TransferController_transfer; 136
+2024-11-29 10:59:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; b26600c3-2623-4f92-a79b-a6eec65417a8; Controller; TransferController_transfer; start
+2024-11-29 10:59:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; b26600c3-2623-4f92-a79b-a6eec65417a8; Service; TransferService_initiateTransfer; start
+2024-11-29 10:59:10; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-7; b26600c3-2623-4f92-a79b-a6eec65417a8; REST call; http://localhost:8000/transfer/ex; start; user-73e3f00c
+2024-11-29 10:59:10; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-7; b26600c3-2623-4f92-a79b-a6eec65417a8; REST call; http://localhost:8000/transfer/ex; 198; user-73e3f00c
+2024-11-29 10:59:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; b26600c3-2623-4f92-a79b-a6eec65417a8; Service; TransferService_initiateTransfer; 220
+2024-11-29 10:59:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; b26600c3-2623-4f92-a79b-a6eec65417a8; Controller; TransferController_transfer; 245
+2024-11-29 10:59:12; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; Controller; QuickController_getItem; start
+2024-11-29 10:59:12; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; Service; QuickService_getItemById; start
+2024-11-29 10:59:12; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; Mapper; $Proxy168_findById; start
+2024-11-29 10:59:12; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; SQL; SELECT * FROM item WHERE id = ?; 5
+2024-11-29 10:59:12; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; Mapper; $Proxy168_findById; 40
+2024-11-29 10:59:12; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; Service; QuickService_getItemById; 63
+2024-11-29 10:59:12; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; af73cfd7-21bf-469f-b01e-7ce7cfe482fc; Controller; QuickController_getItem; 85
+2024-11-29 11:21:51; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; Controller; QuickController_getItem; start
+2024-11-29 11:21:51; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; Service; QuickService_getItemById; start
+2024-11-29 11:21:51; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; Mapper; $Proxy168_findById; start
+2024-11-29 11:21:51; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; SQL; SELECT * FROM item WHERE id = ?; 1
+2024-11-29 11:21:51; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; Mapper; $Proxy168_findById; 20
+2024-11-29 11:21:51; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; Service; QuickService_getItemById; 37
+2024-11-29 11:21:51; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 4515b5e0-5810-4047-b838-3e245047388c; Controller; QuickController_getItem; 55
+2024-11-29 11:21:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; Controller; QuickController_getItem; start
+2024-11-29 11:21:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; Service; QuickService_getItemById; start
+2024-11-29 11:21:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; Mapper; $Proxy168_findById; start
+2024-11-29 11:21:58; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; SQL; SELECT * FROM item WHERE id = ?; 0
+2024-11-29 11:21:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; Mapper; $Proxy168_findById; 20
+2024-11-29 11:21:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; Service; QuickService_getItemById; 39
+2024-11-29 11:21:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; b2eb09fe-d522-465b-996a-1aa49ec0cccb; Controller; QuickController_getItem; 59
+2024-11-29 12:19:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; Controller; QuickController_getItem; start
+2024-11-29 12:19:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; Service; QuickService_getItemById; start
+2024-11-29 12:19:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; Mapper; $Proxy168_findById; start
+2024-11-29 12:19:21; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; SQL; SELECT * FROM item WHERE id = ?; 1
+2024-11-29 12:19:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; Mapper; $Proxy168_findById; 22
+2024-11-29 12:19:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; Service; QuickService_getItemById; 40
+2024-11-29 12:19:21; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; 58b0506d-25f7-4abf-be90-75f48fe1804b; Controller; QuickController_getItem; 61
+2024-11-29 12:31:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; Controller; QuickController_getItem; start
+2024-11-29 12:31:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; Service; QuickService_getItemById; start
+2024-11-29 12:31:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; Mapper; $Proxy168_findById; start
+2024-11-29 12:31:13; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; SQL; SELECT * FROM item WHERE id = ?; 1
+2024-11-29 12:31:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; Mapper; $Proxy168_findById; 25
+2024-11-29 12:31:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; Service; QuickService_getItemById; 47
+2024-11-29 12:31:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 8cf9fcd6-920b-4f8d-9155-781bdcf907d9; Controller; QuickController_getItem; 80
+2024-11-29 13:05:42; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 88b2e656-3a33-4eac-a917-461e30151864; Controller; TransferController_transfer; start
+2024-11-29 13:05:42; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 88b2e656-3a33-4eac-a917-461e30151864; Service; TransferService_initiateTransfer; start
+2024-11-29 13:05:42; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-6; 88b2e656-3a33-4eac-a917-461e30151864; REST call; http://localhost:8000/transfer/ex; start; user-13ee533a
+2024-11-29 13:05:43; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-6; 88b2e656-3a33-4eac-a917-461e30151864; REST call; http://localhost:8000/transfer/ex; 207; user-13ee533a
+2024-11-29 13:05:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 88b2e656-3a33-4eac-a917-461e30151864; Service; TransferService_initiateTransfer; 230
+2024-11-29 13:05:43; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; 88b2e656-3a33-4eac-a917-461e30151864; Controller; TransferController_transfer; 262
+2024-11-29 13:05:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; Controller; QuickController_getItem; start
+2024-11-29 13:05:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; Service; QuickService_getItemById; start
+2024-11-29 13:05:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; Mapper; $Proxy168_findById; start
+2024-11-29 13:05:45; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; SQL; SELECT * FROM item WHERE id = ?; 34
+2024-11-29 13:05:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; Mapper; $Proxy168_findById; 71
+2024-11-29 13:05:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; Service; QuickService_getItemById; 91
+2024-11-29 13:05:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; b334b3bb-c619-4c3a-a7f2-b3e07a507db5; Controller; QuickController_getItem; 110

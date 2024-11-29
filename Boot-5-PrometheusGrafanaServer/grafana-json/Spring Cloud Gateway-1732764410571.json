@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 13,
   "links": [],
   "panels": [
     {
@@ -38,7 +38,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -144,7 +144,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\"}) / sum(http_client_requests_seconds_count{job=\"gateway\"})",
@@ -157,7 +157,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\"}) / sum(http_client_requests_seconds_sum{job=\"quick_start\"})",
@@ -170,7 +170,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\"}) / sum(http_client_requests_seconds_count{job=\"transfer\"})",
@@ -183,7 +183,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{method=\"GET\"}) /\r\nsum(http_client_requests_seconds_count{method=\"GET\"})",
@@ -196,7 +196,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{method=\"POST\"}) /\r\nsum(http_client_requests_seconds_count{method=\"POST\"})",
@@ -213,7 +213,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -301,7 +301,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"quick_start\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"quick_start\"}[10s]) > bool 0.005",
@@ -314,7 +314,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"transfer\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"transfer\"}[10s]) > bool 0.005",
@@ -344,7 +344,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -432,7 +432,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"2..\"})",
@@ -445,7 +445,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\".*ERROR|4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\".*ERROR|4..|5..\"})",
@@ -458,7 +458,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"4..|5..\"})",
@@ -471,7 +471,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"2..\"})",
@@ -484,7 +484,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"4..|5..\"})",
@@ -514,7 +514,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "description": "",
       "fieldConfig": {
@@ -537,8 +537,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -580,7 +579,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "builder",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{job=~\"gateway\"})",
@@ -600,7 +599,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "description": "",
       "fieldConfig": {
@@ -623,8 +622,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -666,7 +664,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", job=~\"gateway\"})",
@@ -686,7 +684,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "description": "",
       "fieldConfig": {
@@ -709,8 +707,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -752,7 +749,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", job=~\"gateway\"})",
@@ -785,7 +782,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -830,8 +827,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -868,7 +864,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_sum{routeId=~\"quitstart\", job=~\"gateway\"}/spring_cloud_gateway_requests_seconds_count{routeId=~\"quitstart\", job=~\"gateway\"}",
@@ -884,7 +880,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_sum{routeId=~\"transfer\", job=~\"gateway\"}/spring_cloud_gateway_requests_seconds_count{routeId=~\"transfer\", job=~\"gateway\"}",
@@ -914,7 +910,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "description": "",
       "fieldConfig": {
@@ -960,8 +956,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -998,7 +993,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", routeId=~\"quitstart\", job=~\"gateway\"}",
@@ -1015,7 +1010,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", routeId=~\"transfer\", job=~\"gateway\"}",
@@ -1045,7 +1040,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "description": "",
       "fieldConfig": {
@@ -1091,8 +1086,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1129,7 +1123,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", routeId=~\"quitstart\", job=~\"gateway\"}",
@@ -1145,7 +1139,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", routeId=~\"transfer\", job=~\"gateway\"}",
@@ -1175,7 +1169,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "description": "",
       "fieldConfig": {
@@ -1221,8 +1215,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1259,7 +1252,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{routeId=~\"quitstart\", job=~\"gateway\"}) by (job, status)",
@@ -1275,7 +1268,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{routeId=~\"transfer\", job=~\"gateway\"}) by (job, status)",
@@ -1305,7 +1298,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -1350,8 +1343,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1387,7 +1379,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1404,7 +1396,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "process_cpu_usage{job=~\"quick_start\"}",
@@ -1417,7 +1409,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "process_cpu_usage{job=~\"transfer\"}",
@@ -1434,7 +1426,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -1479,8 +1471,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1516,7 +1507,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{job=~\"gateway\"}) by (job, instance)",
@@ -1531,7 +1522,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{job=~\"quitstart\"}) by (job, instance)",
@@ -1544,7 +1535,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{job=~\"transfer\"}) by (job, instance)",
@@ -1561,7 +1552,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -1606,8 +1597,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1643,7 +1633,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "jvm_threads_live_threads{job=~\"gateway\"}",
@@ -1657,7 +1647,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "jvm_threads_live_threads{job=~\"quitstart\"}",
@@ -1670,7 +1660,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "editorMode": "code",
           "expr": "jvm_threads_live_threads{job=~\"transfer\"}",
@@ -1687,7 +1677,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "be59hysv7ottsf"
       },
       "fieldConfig": {
         "defaults": {
@@ -1732,8 +1722,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent",
-                "value": null
+                "color": "transparent"
               },
               {
                 "color": "red",
@@ -1769,7 +1758,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "be59hysv7ottsf"
           },
           "expr": "jvm_gc_memory_promoted_bytes_total/jvm_gc_memory_allocated_bytes_total",
           "format": "time_series",
@@ -1794,7 +1783,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "de4zsqld2lh4wd",
+        "datasource": "be59hysv7ottsf",
         "includeAll": true,
         "label": "Gateway Service",
         "multi": true,
@@ -1811,7 +1800,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "de4zsqld2lh4wd",
+        "datasource": "be59hysv7ottsf",
         "includeAll": true,
         "label": "Route Id",
         "multi": true,
@@ -1833,6 +1822,6 @@
   "timezone": "",
   "title": "Spring Cloud Gateway",
   "uid": "de52f6s96xkhsd",
-  "version": 77,
+  "version": 3,
   "weekStart": ""
 }

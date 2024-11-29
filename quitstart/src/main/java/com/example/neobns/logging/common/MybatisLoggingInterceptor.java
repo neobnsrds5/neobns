@@ -16,23 +16,27 @@ import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import lombok.RequiredArgsConstructor;
 
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
 		@Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
 		@Signature(type = StatementHandler.class, method = "batch", args = { Statement.class }) })
-@Profile("dev")
+@Profile("dev") // 개발 환경에서만 활성화
 @Component
+@RequiredArgsConstructor
 public class MybatisLoggingInterceptor implements Interceptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(MybatisLoggingInterceptor.class);
+	private final MeterRegistry meterRegistry;
 
 	// 슬로우 쿼리 저장소
 	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
-	
+
 	// 슬로우 쿼리 저장소 최대 크기
 	private static int SLOW_QUERIES_SIZE = 10;
 	// 슬로우 쿼리 기준 시간
@@ -41,27 +45,39 @@ public class MybatisLoggingInterceptor implements Interceptor {
 	// 슬로우 쿼리 최근 10개 반환
 	public static List<Map<String, Object>> getSlowQueries() {
 		synchronized (SLOW_QUERIES) {
-            return new ArrayList<>(SLOW_QUERIES);
-        }
+			return new ArrayList<>(SLOW_QUERIES);
+		}
 	}
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
+
 		// 시작 시간 측정
 		long start = System.currentTimeMillis();
 
+		// 쿼리 정보 가져오기
+		StatementHandler handler = (StatementHandler) invocation.getTarget();
+		String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
+
 		try {
+			// SQL 실행 횟수 카운터 증가
+			meterRegistry.counter("database.query.count", "sql", sql).increment();
+
 			// 실제 쿼리 실행
 			return invocation.proceed();
+		} catch (Throwable e) {
+			// SQL 에러 발생 카운터 증가
+			meterRegistry.counter("database.query.errors", "sql", sql).increment();
+
+			logger.error("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, "error");
+			throw e;
 		} finally {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
 
-			// 쿼리 정보 가져오기
-			StatementHandler handler = (StatementHandler) invocation.getTarget();
-			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
-
-			// 로깅
+			meterRegistry.timer("database.query.execution.time", "sql", sql)
+						.record(elapsedTime, java.util.concurrent.TimeUnit.MILLISECONDS);
+			
 			logger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
 
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
@@ -70,9 +86,9 @@ public class MybatisLoggingInterceptor implements Interceptor {
 				slowQuery.put("sql", sql);
 				slowQuery.put("executeTime", elapsedTime);
 				slowQuery.put("timestamp", new Date());
-				
+
 				synchronized (SLOW_QUERIES) {
-					if(SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
+					if (SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
 						SLOW_QUERIES.poll(); // 오래된 데이터 제거
 					}
 					SLOW_QUERIES.add(slowQuery);

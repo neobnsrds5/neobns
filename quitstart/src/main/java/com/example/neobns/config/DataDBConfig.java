@@ -21,8 +21,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.example.neobns.logging.common.MybatisLoggingInterceptor;
 import com.example.neobns.properties.DBProperties;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
-
 
 @Configuration
 @EnableJpaRepositories(
@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class DataDBConfig {
 	
 	private final DBProperties dbProperties;
+	private final MeterRegistry meterRegistry;
 	
 	@Bean(name = "dataDBSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
@@ -72,7 +73,7 @@ public class DataDBConfig {
 		
 		// Mybatis interceptor 등록
 		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-		configuration.addInterceptor(new MybatisLoggingInterceptor());
+		configuration.addInterceptor(new MybatisLoggingInterceptor(meterRegistry));
 		
 		factory.setDataSource(dataDBSource());
 		factory.setMapperLocations(new PathMatchingResourcePatternResolver()

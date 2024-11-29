@@ -35,9 +35,6 @@ public class CustomDBAppender extends DBAppender {
             Object[] args = event.getArgumentArray();
             for (int i = 0; i < 4; i++) {
                 stmt.setString(7 + i, (args != null && i < args.length) ? args[i].toString() : null);
-                if (i == 0) {
-                	requestId = args[0].toString();
-                }
             }
 
             // Caller 데이터 매핑
@@ -52,13 +49,14 @@ public class CustomDBAppender extends DBAppender {
             // MDC에서 userId 가져오기
             String userId = MDC.get("userId");
             stmt.setString(15, (userId != null) ? userId : "UNKNOWN_USER");
+            
+            requestId = MDC.get("requestId");
             stmt.setString(16, requestId);
             
             String userAgent = MDC.get("userAgent");
             stmt.setString(17, userAgent);
             
             String userIp = MDC.get("clientIp");
-            System.out.println("\t\t\t\t\tuserIp : " + userIp);
             stmt.setString(18, userIp);
 
             stmt.executeUpdate();

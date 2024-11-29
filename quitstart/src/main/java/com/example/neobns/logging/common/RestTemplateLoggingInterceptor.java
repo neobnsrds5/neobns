@@ -19,6 +19,8 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 	private static final String MDC_REQUEST_ID_KEY = "requestId";
 	private static final String USER_ID_HEADER = "X-User-ID";
 	private static final String MDC_USER_ID_KEY = "userId";
+	private static final String MDC_USER_AGENT = "userAgent";
+	private static final String MDC_USER_IP = "clientIp";
 	
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
@@ -30,12 +32,23 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
         String userId = MDC.get(MDC_USER_ID_KEY);
         String userUri = request.getURI().toString();
         
+        String clientIp = MDC.get(MDC_USER_IP);
+        String userAgent = MDC.get(MDC_USER_AGENT);
+        
         if(requestId != null) {
         	request.getHeaders().add(REQUEST_ID_HEADER, requestId);
         }
         
         if(userId != null) {
         	request.getHeaders().add(USER_ID_HEADER, userId);
+        }
+        
+        if (clientIp != null && !clientIp.isEmpty()) {
+        	request.getHeaders().set("X-Forwarded-For", clientIp);
+        }
+        
+        if (userAgent!= null && !clientIp.isEmpty()) {
+        	request.getHeaders().set("User-Agent", userAgent);
         }
 
         // Before REST Call

@@ -19,6 +19,8 @@ spring:
         url: http://localhost:9000
   cloud:
     gateway:
+      forwarded:
+        enabled: true
       globalcors:
         cors-configurations:
           '[/**]':

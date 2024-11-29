@@ -18,7 +18,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 	private static final String REQUEST_ID_HEADER = "X-Request-ID";
 	private static final String MDC_REQUEST_ID_KEY = "requestId";
 	private static final String USER_ID_HEADER = "X-User-ID";
-	 private static final String MDC_USER_ID_KEY = "userId";
+	private static final String MDC_USER_ID_KEY = "userId";
 	
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)

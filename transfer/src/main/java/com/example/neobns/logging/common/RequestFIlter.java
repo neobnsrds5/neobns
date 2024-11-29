@@ -61,8 +61,8 @@ public class RequestFIlter extends OncePerRequestFilter{
         // 응답 헤더에 Request ID 추가
         response.setHeader(REQUEST_ID_HEADER, requestId);
         response.setHeader(USER_ID_HEADER, userId);
-        response.setHeader(MDC_USER_IP, ip);
-        response.setHeader(MDC_USER_AGENT, userAgent);
+        response.setHeader("X-Forwarded-For", ip);
+        response.setHeader("User-Agent", userAgent);
         
 
         try {

@@ -1,5 +1,0 @@
-[source,bash]
-----
-curl -X GET 'http://localhost:8080/response' \
-     -H 'Content-Type: application/json'
-----

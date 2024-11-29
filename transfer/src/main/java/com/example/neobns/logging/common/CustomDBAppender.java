@@ -14,8 +14,8 @@ public class CustomDBAppender extends DBAppender {
     protected String getInsertSQL() {
         // 기본 SQL에 user_id 컬럼 추가
         return "INSERT INTO logging_event (timestmp, formatted_message, logger_name, level_string, thread_name, "
-                + "reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, user_id) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, user_id, trace_id, device, ip_address) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     }
 
 	@Override
@@ -30,9 +30,14 @@ public class CustomDBAppender extends DBAppender {
             stmt.setShort(6, computeReferenceMask(event));
 
             // Argument 처리 (최대 4개, 부족하면 null로 채움)
+            String requestId = "";
+            
             Object[] args = event.getArgumentArray();
             for (int i = 0; i < 4; i++) {
                 stmt.setString(7 + i, (args != null && i < args.length) ? args[i].toString() : null);
+                if (i == 0) {
+                	requestId = args[0].toString();
+                }
             }
 
             // Caller 데이터 매핑
@@ -47,6 +52,14 @@ public class CustomDBAppender extends DBAppender {
             // MDC에서 userId 가져오기
             String userId = MDC.get("userId");
             stmt.setString(15, (userId != null) ? userId : "UNKNOWN_USER");
+            stmt.setString(16, requestId);
+            
+            String userAgent = MDC.get("userAgent");
+            stmt.setString(17, userAgent);
+            
+            String userIp = MDC.get("clientIp");
+            System.out.println("\t\t\t\t\tuserIp : " + userIp);
+            stmt.setString(18, userIp);
 
             stmt.executeUpdate();
        

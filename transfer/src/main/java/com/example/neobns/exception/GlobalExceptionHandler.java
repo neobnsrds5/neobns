@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -14,19 +16,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.error("Illegal argument: {}", e.getMessage(), e); // 로그 기록
+        log.error("IllegalArgumentException occurred - Class: {}, Message: {}, Status : {}", 
+                e.getClass().getName(), e.getMessage(), ResponseEntity.status(HttpStatus.BAD_REQUEST).toString(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-        log.error("Runtime exception: {}", e.getMessage(), e); // 로그 기록
+        log.error("RuntimeException occurred - Class: {}, Message: {}, Status : {}", 
+                e.getClass().getName(), e.getMessage(), ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).toString(), e);
+        System.out.println("transfer-e2.getMessage : " + e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred transfer");
     }
-
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
-        log.error("Unhandled exception: {}", e.getMessage(), e); // 로그 기록
+        log.error("Exception occurred - Class: {}, Message: {}, Status : {}", 
+                e.getClass().getName(), e.getMessage(), ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).toString(), e);
+        System.out.println("transfer-e3.getMessage : " + e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred transfer");
     }
 }

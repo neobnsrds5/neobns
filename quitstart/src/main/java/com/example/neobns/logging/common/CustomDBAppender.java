@@ -74,35 +74,71 @@ public class CustomDBAppender extends DBAppender {
 		}
 	}
 
-	private void saveErrorLog(ILoggingEvent event, Connection connection) {
-		String errorLogSQL = "INSERT INTO error_logs (timestmp, level_string, logger_name, message, exception, user_id) "
-				+ "VALUES (?, ?, ?, ?, ?, ?)";
+private void saveErrorLog(ILoggingEvent event, Connection connection) {
+        
+        String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query_log, uri, error_name) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement errorStmt = connection.prepareStatement(errorLogSQL)) {
+            // 현재 시간
+            errorStmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
 
-		try (PreparedStatement errorStmt = connection.prepareStatement(errorLogSQL)) {
-			// 현재 시간
-			errorStmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
+            String userId = MDC.get("userId");
+            errorStmt.setString(2, userId != null ? userId : "UNKNOWN_USER");
+            
+            String traceId = MDC.get("requestId");
+            errorStmt.setString(3, traceId);
+            
+            String userIp = MDC.get("clientIp");
+            errorStmt.setString(4, userIp);
+            
+            String userAgent = MDC.get("userAgent");
+            errorStmt.setString(5, userAgent);
+            
+            // Caller 데이터 매핑
+            StackTraceElement callerData = event.getCallerData() != null && event.getCallerData().length > 0
+                    ? event.getCallerData()[0]
+                    : null;
+            errorStmt.setString(6, callerData != null ? callerData.getClassName() : null);
+            errorStmt.setString(7, callerData != null ? callerData.getMethodName() : null);
+            
+            System.out.println("callerData.getClassName() : " + callerData.getClassName());
+            
+            System.out.println("event.getThrowableProxy().getClassName() : " + event.getThrowableProxy().getClassName());
+            
+            
+            
+            errorStmt.setString(8, "query_log");
+            errorStmt.setString(9, "uri");
+            
+            String errorName = "No Exception";
+            if (event.getThrowableProxy() != null) {
+                String causeMessage = (event.getThrowableProxy().getCause() != null) 
+                        ? event.getThrowableProxy().getCause().toString() 
+                        : "No Cause";
+                System.out.println("causeMessage : " + causeMessage);
+                System.out.println("causeMessgae.toString() : " + causeMessage.toString());
+                errorName = event.getThrowableProxy().getClassName() + ": " + causeMessage;
+            }
+            errorStmt.setString(10, errorName);
+            
+            
+            
+     
+            // 예외 메시지 처리
+//            String exceptionMessage = event.getThrowableProxy() != null 
+//                ? event.getThrowableProxy().getClassName() + ": " + event.getThrowableProxy().getMessage() 
+//                : null;
+//            errorStmt.setString(5, exceptionMessage);
+            
 
-			// 에러 로그 데이터 매핑
-			errorStmt.setString(2, event.getLevel().toString());
-			errorStmt.setString(3, event.getLoggerName());
-			errorStmt.setString(4, event.getFormattedMessage());
+            // DB에 삽입 실행
+            errorStmt.executeUpdate();
+        } catch (SQLException e) {
+            addError("Failed to append error log entry to database", e);
+        }
+    }
 
-			// 예외 메시지 처리
-			String exceptionMessage = event.getThrowableProxy() != null
-					? event.getThrowableProxy().getClassName() + ": " + event.getThrowableProxy().getMessage()
-					: null;
-			errorStmt.setString(5, exceptionMessage);
-
-			// MDC에서 사용자 ID 가져오기
-			String userId = MDC.get("userId");
-			errorStmt.setString(6, userId != null ? userId : "UNKNOWN_USER");
-
-			// DB에 삽입 실행
-			errorStmt.executeUpdate();
-		} catch (SQLException e) {
-			addError("Failed to append error log entry to database", e);
-		}
-	}
 
 	private short computeReferenceMask(ILoggingEvent event) {
 		short mask = 0;

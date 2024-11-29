@@ -1,21 +1,28 @@
-CREATE TABLE logging_event (
-    event_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    timestmp BIGINT NOT NULL,
-    formatted_message TEXT NOT NULL,
-    logger_name VARCHAR(255) NOT NULL,
-    level_string VARCHAR(10) NOT NULL,
-    thread_name VARCHAR(255),
-    reference_flag SMALLINT,
-    arg0 VARCHAR(255),
-    arg1 VARCHAR(255),
-    arg2 VARCHAR(255),
-    arg3 VARCHAR(255),
-    caller_filename VARCHAR(255),
-    caller_class VARCHAR(255),
-    caller_method VARCHAR(255),
-    caller_line CHAR(4)
+CREATE TABLE `logging_event` (
+  `event_id` bigint NOT NULL AUTO_INCREMENT,
+  `timestmp` bigint NOT NULL,
+  `logger_name` varchar(255) NOT NULL,
+  `level_string` varchar(10) NOT NULL,
+  `caller_class` varchar(255) DEFAULT NULL,
+  `caller_method` varchar(255) DEFAULT NULL,
+  `caller_line` char(4) DEFAULT NULL,
+  `user_id` varchar(255) DEFAULT NULL,
+  `trace_id` varchar(255) DEFAULT NULL,
+  `ip_address` varchar(255) DEFAULT NULL,
+  `device` varchar(255) DEFAULT NULL,
+  `execute_time` bigint DEFAULT NULL, -- 여기가지가 우리한테 필요한 내용...
+  `formatted_message` text DEFAULT NULL,
+  `thread_name` varchar(255) DEFAULT NULL,
+  `reference_flag` smallint DEFAULT NULL,
+  `arg0` varchar(255) DEFAULT NULL,
+  `arg1` varchar(255) DEFAULT NULL,
+  `arg2` varchar(255) DEFAULT NULL,
+  `arg3` varchar(255) DEFAULT NULL,
+  `caller_filename` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`event_id`)
 );
 
+-- 아래 두 테이블이 없으면 logging_event에도 데이터가 insert 되지 않음...
 CREATE TABLE logging_event_property (
     event_id BIGINT NOT NULL,
     mapped_key VARCHAR(254) NOT NULL,
@@ -38,4 +45,4 @@ CREATE TABLE `transfer_details` (
   `to_account` varchar(30) DEFAULT NULL,
   `money` bigint DEFAULT NULL,
   PRIMARY KEY (`transfer_idx`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
+);

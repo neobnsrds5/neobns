@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
+	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	private static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로 빼기..!
 
 	/**
      * Controller 계층의 메서드 로깅
@@ -48,7 +50,7 @@ public class LoggingAspect {
         String fullMethodName = String.format("%s_%s", className, methodName);
 
         // 메서드 실행 전 로깅
-        logger.info("{}; {}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, "start", MDC.get("userId"));
+        traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, "start");
 
         Object result;
         try {
@@ -56,8 +58,12 @@ public class LoggingAspect {
         } finally {
             long elapsedTime = System.currentTimeMillis() - start;
 
-            // 메서드 실행 후 로깅
-            logger.info("{}, {}, {}, {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime, MDC.get("userId"));
+            // 메서드 실행 후 trace 로깅
+            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime);
+            // 설정 시간보다 느리면 slow 로깅
+            if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
+            	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime);
+            }
         }
 
         return result;

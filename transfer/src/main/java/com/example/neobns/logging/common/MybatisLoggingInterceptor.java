@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component;
 @Profile("dev")
 @Component
 public class MybatisLoggingInterceptor implements Interceptor {
-	private static final Logger logger = LoggerFactory.getLogger(MybatisLoggingInterceptor.class);
+
+	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
+	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	public static final long SLOW_QUERY_THRESHOLD_MS = 0; // slow query 기준, 나중에 환경 변수로...
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -37,8 +40,12 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			StatementHandler handler = (StatementHandler) invocation.getTarget();
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 
-			// 로깅
-			logger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			// SQL 실행 후 trace 로깅
+			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			// 설정 시간보다 느리면 slow 로깅
+			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
+				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			}
 		}
 	}
 

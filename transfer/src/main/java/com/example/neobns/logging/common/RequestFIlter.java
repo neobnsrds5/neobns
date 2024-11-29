@@ -53,8 +53,8 @@ public class RequestFIlter extends OncePerRequestFilter{
         	userAgent = "PC";
         }
         
-        MDC.put("requestId", requestId);
-        MDC.put("userId", userId);
+        MDC.put(MDC_REQUEST_ID_KEY, requestId);
+        MDC.put(MDC_USER_ID_KEY, userId);
         MDC.put(MDC_USER_IP, ip);
         MDC.put(MDC_USER_AGENT, userAgent);
 

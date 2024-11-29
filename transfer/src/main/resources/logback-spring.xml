@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
 	<!-- 콘솔에 로그 출력 -->
-	<appender name="CONSOLE"
-		class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{requestId}] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
@@ -13,12 +12,7 @@
         <!-- 필터 설정 -->
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator>
-                <expression>logger.contains("com.example.neobns.logging.common.LoggingAspect")
-                    ||
-                    logger.contains("com.example.neobns.logging.common.MybatisLoggingInterceptor")
-                    ||
-                    logger.contains("com.example.neobns.logging.common.RestTemplateLoggingInterceptor")
-                </expression>
+                <expression>logger.contains("TRACE") || logger.contains("SLOW") || level == ERROR</expression>
             </evaluator>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
@@ -40,10 +34,7 @@
 		<!-- 필터 설정 (DB와 동일) -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
-				<expression>logger.contains("com.example.neobns.logging.common.LoggingAspect")
-					||
-					logger.contains("com.example.neobns.logging.common.MybatisLoggingInterceptor")
-				</expression>
+				<expression>logger.contains("TRACE") || logger.contains("SLOW") || level == ERROR</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
 			<onMismatch>DENY</onMismatch>
@@ -56,7 +47,7 @@
 	</appender>
 
 	<!-- 루트 로거 -->
-	<root level="info">
+	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="CUSTOM_DB" />
 		<appender-ref ref="FILE" />

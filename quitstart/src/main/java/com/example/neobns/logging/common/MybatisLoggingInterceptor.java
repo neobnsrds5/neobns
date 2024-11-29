@@ -28,22 +28,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MybatisLoggingInterceptor implements Interceptor {
 
-	private static final Logger logger = LoggerFactory.getLogger(MybatisLoggingInterceptor.class);
-
-	// 슬로우 쿼리 저장소
-	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
-	
-	// 슬로우 쿼리 저장소 최대 크기
-	private static int SLOW_QUERIES_SIZE = 10;
-	// 슬로우 쿼리 기준 시간
-	public static long SLOW_QUERY_THRESHOLD_MS = 0;
-
-	// 슬로우 쿼리 최근 10개 반환
-	public static List<Map<String, Object>> getSlowQueries() {
-		synchronized (SLOW_QUERIES) {
-            return new ArrayList<>(SLOW_QUERIES);
-        }
-	}
+	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
+	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	public static final long SLOW_QUERY_THRESHOLD_MS = 0; // slow query 기준, 나중에 환경 변수로...
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -61,22 +48,11 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			StatementHandler handler = (StatementHandler) invocation.getTarget();
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 
-			// 로깅
-			logger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
-
+			// SQL 실행 후 trace 로깅
+			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			// 설정 시간보다 느리면 slow 로깅
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-				Map<String, Object> slowQuery = new HashMap<>();
-				slowQuery.put("requestId", MDC.get("requestId"));
-				slowQuery.put("sql", sql);
-				slowQuery.put("executeTime", elapsedTime);
-				slowQuery.put("timestamp", new Date());
-				
-				synchronized (SLOW_QUERIES) {
-					if(SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
-						SLOW_QUERIES.poll(); // 오래된 데이터 제거
-					}
-					SLOW_QUERIES.add(slowQuery);
-				}
+				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
 			}
 		}
 	}

@@ -58,12 +58,10 @@ public class CustomDBAppender extends DBAppender {
             stmt.setString(17, userAgent);
             
             String userIp = MDC.get("clientIp");
-            System.out.println("\t\t\t\t\tuserIp : " + userIp);
             stmt.setString(18, userIp);
 
             stmt.executeUpdate();
        
-            
         } catch (SQLException e) {
             addError("Failed to append log entry to database", e);
             throw e;

@@ -49,11 +49,46 @@ public class CustomDBAppender extends DBAppender {
             stmt.setString(15, (userId != null) ? userId : "UNKNOWN_USER");
 
             stmt.executeUpdate();
+            
+         // 로그 레벨이 ERROR인 경우 추가적으로 error_logs 테이블에 저장
+            if ("ERROR".equals(event.getLevel().toString())) {
+                saveErrorLog(event, connection);
+            }
        
             
         } catch (SQLException e) {
             addError("Failed to append log entry to database", e);
             throw e;
+        }
+    }
+	
+	private void saveErrorLog(ILoggingEvent event, Connection connection) {
+        String errorLogSQL = "INSERT INTO error_logs (timestmp, level_string, logger_name, message, exception, user_id) "
+                           + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement errorStmt = connection.prepareStatement(errorLogSQL)) {
+            // 현재 시간
+            errorStmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
+
+            // 에러 로그 데이터 매핑
+            errorStmt.setString(2, event.getLevel().toString());
+            errorStmt.setString(3, event.getLoggerName());
+            errorStmt.setString(4, event.getFormattedMessage());
+
+            // 예외 메시지 처리
+            String exceptionMessage = event.getThrowableProxy() != null 
+                ? event.getThrowableProxy().getClassName() + ": " + event.getThrowableProxy().getMessage() 
+                : null;
+            errorStmt.setString(5, exceptionMessage);
+
+            // MDC에서 사용자 ID 가져오기
+            String userId = MDC.get("userId");
+            errorStmt.setString(6, userId != null ? userId : "UNKNOWN_USER");
+
+            // DB에 삽입 실행
+            errorStmt.executeUpdate();
+        } catch (SQLException e) {
+            addError("Failed to append error log entry to database", e);
         }
     }
 

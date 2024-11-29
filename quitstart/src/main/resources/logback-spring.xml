@@ -33,6 +33,27 @@
             <password>1234</password>
         </connectionSource>
     </appender>
+    
+    <!-- 새로운 ERROR 레벨 전용 DB Appender -->
+    <appender name="ERROR_DB" class="com.example.neobns.logging.common.CustomDBAppender">
+        <!-- 필터: ERROR 레벨 로그만 처리 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        	<evaluator>
+                <expression>logger.contains("apache.catalina")</expression>
+            </evaluator>
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <!-- 데이터베이스 연결 설정 -->
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <driverClass>com.mysql.cj.jdbc.Driver</driverClass>
+            <url>jdbc:mysql://localhost:3306/db2</url>
+            <user>root</user>
+            <password>1234</password>
+        </connectionSource>
+    </appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
@@ -63,5 +84,6 @@
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="CUSTOM_DB" />
 		<appender-ref ref="FILE" />
+		<appender-ref ref="ERROR_DB" />
 	</root>
 </configuration>

@@ -20,72 +20,92 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuickController {
 
-    private final QuickService quickService;
-    
-    @GetMapping("/")
-    public String main() {
-    	return "메인 어플리케이션 홈페이지";
-    }
+	private final QuickService quickService;
 
-    @GetMapping("/dummy")
-    @Timed(value = "quick.dummyone", longTask = true)
-    public String dummy() throws InterruptedException{
-    	Thread.sleep(300);
-        log.info("dummy");
-        return "{}";
-    }
+	@GetMapping("/")
+	public String main() {
+		return "메인 어플리케이션 홈페이지";
+	}
 
-    @GetMapping("/dummy2")
-    @Timed(value = "quick.dummytwo", longTask = true)
-    public String dummy2(){
-        log.info("dummy2");
-        return "quitstart의 dummy2";
-    }
-    @GetMapping("/member")
-    public String getMember(@RequestParam("empNo") String empNo, @RequestParam("year") int year){
-        log.info("empNo : {}, year : {}", empNo, year);
-        return "ok";
-    }
+	@GetMapping("/dummy")
+	@Timed(value = "quick.dummyone", longTask = true)
+	public String dummy() throws InterruptedException {
+		Thread.sleep(300);
+		log.info("dummy");
+		return "{}";
+	}
 
-    @GetMapping("/company/{id}")
-    public String getCompany(@PathVariable("id") String id){
-        log.info("id : {}", id);
-        return "ok";
-    }
+	@GetMapping("/dummy2")
+	@Timed(value = "quick.dummytwo", longTask = true)
+	public String dummy2() {
+		log.info("dummy2");
+		return "quitstart의 dummy2";
+	}
 
-    @PostMapping("/item")
-    public ResponseDto registerItem(@RequestBody ItemDto item){
-        log.info("item : {}", item);
-        boolean b = quickService.registerItem(item);
-        ResponseDto response = new ResponseDto();
-        if (b){
-            response.setMessage("ok");
-        } else {
-            response.setMessage("fail");
-        }
-        return response;
-    }
+	@GetMapping("/member")
+	public String getMember(@RequestParam("empNo") String empNo, @RequestParam("year") int year) {
+		log.info("empNo : {}, year : {}", empNo, year);
+		return "ok";
+	}
 
-    @GetMapping("/item")
-    public ItemDto getItem(@RequestParam("id") String id){
-        ItemDto itemDto = quickService.getItemById(id);
-        log.info("name: {}", itemDto.getName());
-        return itemDto;
-    }
+	@GetMapping("/company/{id}")
+	public String getCompany(@PathVariable("id") String id) {
+		log.info("id : {}", id);
+		return "ok";
+	}
 
-    @GetMapping("/findAll")
-    public List<ItemDto> getAll(){
-        List<ItemDto> results = quickService.getAll();
-        for (ItemDto item : results){
-            System.out.println(item.getId()+ " " + item.getName());
-        }
-        return results;
-    }
-    
-    @PostMapping("/addAccount")
-    public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto){
-    	quickService.addAccount(dto);
-    	
-    	return ResponseEntity.ok("OK");
-    }
+	@PostMapping("/item")
+	public ResponseDto registerItem(@RequestBody ItemDto item) {
+		log.info("item : {}", item);
+		boolean b = quickService.registerItem(item);
+		ResponseDto response = new ResponseDto();
+		if (b) {
+			response.setMessage("ok");
+		} else {
+			response.setMessage("fail");
+		}
+		return response;
+	}
+
+	@GetMapping("/item")
+	public ItemDto getItem(@RequestParam("id") String id) {
+		ItemDto itemDto = quickService.getItemById(id);
+		log.info("name: {}", itemDto.getName());
+		return itemDto;
+	}
+
+	@GetMapping("/findAll")
+	public List<ItemDto> getAll() {
+		List<ItemDto> results = quickService.getAll();
+		for (ItemDto item : results) {
+			System.out.println(item.getId() + " " + item.getName());
+		}
+		return results;
+	}
+
+	@PostMapping("/addAccount")
+	public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto) {
+		quickService.addAccount(dto);
+
+		return ResponseEntity.ok("OK");
+	}
+
+	@GetMapping("/getAccount")
+	public AccountDTO getAccount(@RequestParam("id") String id) {
+		AccountDTO accountDTO = quickService.getAccountById(id);
+		log.info("name: {}", accountDTO.getName());
+		return accountDTO;
+	}
+
+	@PutMapping("/updateAccount")
+	public ResponseEntity<String> updateAccount(@RequestBody AccountDTO dto) {
+
+		if (dto == null) {
+			System.out.println("dto is null");
+		}
+		System.out.println("account dto : " + dto.toString());
+		quickService.updateAccount(dto);
+
+		return ResponseEntity.ok("OK");
+	}
 }

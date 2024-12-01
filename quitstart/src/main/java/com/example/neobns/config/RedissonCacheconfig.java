@@ -1,8 +1,12 @@
 package com.example.neobns.config;
 
+import java.util.Map;
+
 import org.apache.hc.core5.http.nio.NHttpMessageWriter;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.spring.cache.CacheConfig;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;

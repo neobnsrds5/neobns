@@ -11,8 +11,7 @@ spring:
         url: http://localhost:9000
 #        username: admin
 #        password: admin
-  redis:
-    host: localhost
+
   batch:
     job:
       enabled: false
@@ -96,3 +95,9 @@ management:
   metrics:
     enable:
       hikaricp: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true

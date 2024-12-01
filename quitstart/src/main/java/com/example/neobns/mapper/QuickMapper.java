@@ -12,4 +12,6 @@ public interface QuickMapper {
     List<ItemDto> findAll();
     void addItem(ItemDto item);
     void addAccount(AccountDTO dto);
+	void updateAccount(AccountDTO dto);
+	AccountDTO findAccountById(String id);
 }

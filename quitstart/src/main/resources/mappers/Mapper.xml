@@ -29,4 +29,22 @@
     	]]>
     </insert>
     
+    <update id="updateAccount" parameterType="com.example.neobns.dto.AccountDTO">
+    	<![CDATA[
+    		UPDATE ACCOUNT
+    		SET accountNumber = #{accountNumber},
+    			money = #{money},
+    			name = #{name}
+			WHERE id = #{id}
+    	]]>
+    </update>
+    
+    <select id="findAccountById" resultType="com.example.neobns.dto.AccountDTO" parameterType="string">
+        <![CDATA[
+            SELECT *
+            FROM account
+            WHERE id = #{id}
+        ]]>
+    </select>
+    
 </mapper>

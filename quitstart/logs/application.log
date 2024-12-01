@@ -268,3 +268,241 @@
 2024-11-29 13:19:19; com.example.neobns.logging.common.RestTemplateLoggingInterceptor; INFO; http-nio-7777-exec-5; e6b759ab-4c8a-4de3-a249-98d0c1b8dabc; REST call; http://localhost:8000/transfer/ex; 123; user-da08ccd5
 2024-11-29 13:19:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; e6b759ab-4c8a-4de3-a249-98d0c1b8dabc; Service; TransferService_initiateTransfer; 161
 2024-11-29 13:19:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; e6b759ab-4c8a-4de3-a249-98d0c1b8dabc; Controller; TransferController_transfer; 199
+2024-12-01 02:50:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Controller; QuickController_main; start
+2024-12-01 02:50:45; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Controller; QuickController_main; 63
+2024-12-01 02:57:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 02:57:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 02:57:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Mapper; $Proxy168_findById; start
+2024-12-01 02:57:00; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-1; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 2
+2024-12-01 02:57:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Mapper; $Proxy168_findById; 114
+2024-12-01 02:57:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Service; QuickService_getItemById; 147
+2024-12-01 02:57:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-1; MISSED-ID; Controller; QuickController_getItem; 175
+2024-12-01 02:57:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 02:57:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 02:57:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; MISSED-ID; Mapper; $Proxy168_findById; start
+2024-12-01 02:57:30; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-2; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 1
+2024-12-01 02:57:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; MISSED-ID; Mapper; $Proxy168_findById; 26
+2024-12-01 02:57:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; MISSED-ID; Service; QuickService_getItemById; 49
+2024-12-01 02:57:30; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-2; MISSED-ID; Controller; QuickController_getItem; 73
+2024-12-01 02:57:37; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 02:57:37; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 02:57:37; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Mapper; $Proxy168_findById; start
+2024-12-01 02:57:37; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-6; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 1
+2024-12-01 02:57:37; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Mapper; $Proxy168_findById; 22
+2024-12-01 02:57:37; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Service; QuickService_getItemById; 47
+2024-12-01 02:57:37; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; 74
+2024-12-01 02:57:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 02:57:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 02:57:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Mapper; $Proxy168_findById; start
+2024-12-01 02:57:47; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-10; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 0
+2024-12-01 02:57:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Mapper; $Proxy168_findById; 21
+2024-12-01 02:57:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Service; QuickService_getItemById; 44
+2024-12-01 02:57:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; 73
+2024-12-01 02:59:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 02:59:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 02:59:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Mapper; $Proxy168_findById; start
+2024-12-01 02:59:19; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-9; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 5
+2024-12-01 02:59:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Mapper; $Proxy168_findById; 34
+2024-12-01 02:59:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Service; QuickService_getItemById; 61
+2024-12-01 02:59:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getItem; 88
+2024-12-01 03:31:09; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 03:31:09; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 03:31:09; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy170_findById; start
+2024-12-01 03:31:09; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 5
+2024-12-01 03:31:09; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy170_findById; 45
+2024-12-01 03:31:09; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; 71
+2024-12-01 03:31:09; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 142
+2024-12-01 03:44:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 03:44:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 03:44:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy170_findById; start
+2024-12-01 03:44:57; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 5
+2024-12-01 03:44:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy170_findById; 45
+2024-12-01 03:44:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; 71
+2024-12-01 03:44:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 150
+2024-12-01 03:45:22; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 03:45:22; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; 23
+2024-12-01 03:54:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 03:54:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 03:54:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Mapper; $Proxy170_findById; start
+2024-12-01 03:54:31; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-9; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 0
+2024-12-01 03:54:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Mapper; $Proxy170_findById; 30
+2024-12-01 03:54:32; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Service; QuickService_getItemById; 58
+2024-12-01 03:54:32; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getItem; 91
+2024-12-01 03:54:32; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 03:54:32; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getItem; 13
+2024-12-01 04:00:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 04:00:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 38
+2024-12-01 10:58:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 10:58:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 10:58:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy170_findById; start
+2024-12-01 10:58:10; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 5
+2024-12-01 10:58:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy170_findById; 57
+2024-12-01 10:58:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; 89
+2024-12-01 10:58:10; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 157
+2024-12-01 10:58:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 10:58:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; 20
+2024-12-01 11:25:52; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 11:25:52; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 11:25:52; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Mapper; $Proxy172_findById; start
+2024-12-01 11:25:52; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-6; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 10
+2024-12-01 11:25:52; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Mapper; $Proxy172_findById; 61
+2024-12-01 11:25:52; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Service; QuickService_getItemById; 93
+2024-12-01 11:25:52; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; 174
+2024-12-01 11:25:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 11:25:57; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-4; MISSED-ID; Controller; QuickController_getItem; 22
+2024-12-01 11:26:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_registerItem; start
+2024-12-01 11:26:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Service; QuickService_registerItem; start
+2024-12-01 11:26:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Mapper; $Proxy172_addItem; start
+2024-12-01 11:26:29; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-7; MISSED-ID; SQL; INSERT INTO item(ID, NAME) VALUE(?, ?); 1
+2024-12-01 11:26:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Mapper; $Proxy172_addItem; 78
+2024-12-01 11:26:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Service; QuickService_registerItem; 103
+2024-12-01 11:26:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_registerItem; 134
+2024-12-01 11:35:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:35:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:35:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:35:00; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 3
+2024-12-01 11:35:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 40
+2024-12-01 11:35:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 63
+2024-12-01 11:35:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 104
+2024-12-01 11:38:11; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:38:11; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:38:11; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:38:11; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 11:38:11; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 36
+2024-12-01 11:38:11; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 57
+2024-12-01 11:38:11; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 92
+2024-12-01 11:39:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:39:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:39:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:39:29; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 11:39:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 37
+2024-12-01 11:39:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 60
+2024-12-01 11:39:29; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 93
+2024-12-01 11:40:06; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:40:06; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:40:06; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:40:06; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 0
+2024-12-01 11:40:06; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 40
+2024-12-01 11:40:07; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 71
+2024-12-01 11:40:07; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 108
+2024-12-01 11:42:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:42:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:42:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:42:17; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 1
+2024-12-01 11:42:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 38
+2024-12-01 11:42:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 64
+2024-12-01 11:42:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 103
+2024-12-01 11:43:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:43:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:43:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:43:24; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 1
+2024-12-01 11:43:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 37
+2024-12-01 11:43:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 60
+2024-12-01 11:43:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 103
+2024-12-01 11:46:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:46:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:46:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:46:13; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 1
+2024-12-01 11:46:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 39
+2024-12-01 11:46:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 62
+2024-12-01 11:46:13; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 113
+2024-12-01 11:51:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:51:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:51:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:51:58; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 11:51:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 39
+2024-12-01 11:51:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 61
+2024-12-01 11:51:58; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 106
+2024-12-01 11:57:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 11:57:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 11:57:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 11:57:41; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-7; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 11:57:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Mapper; $Proxy173_updateAccount; 39
+2024-12-01 11:57:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Service; QuickService_updateAccount; 64
+2024-12-01 11:57:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_updateAccount; 102
+2024-12-01 12:07:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:07:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 12:07:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 12:07:47; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 12:07:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 41
+2024-12-01 12:07:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 64
+2024-12-01 12:07:47; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 113
+2024-12-01 12:11:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:11:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 12:11:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; start
+2024-12-01 12:11:08; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 12:11:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy173_updateAccount; 38
+2024-12-01 12:11:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 63
+2024-12-01 12:11:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 117
+2024-12-01 12:11:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 12:11:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 12:11:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Mapper; $Proxy173_findById; start
+2024-12-01 12:11:41; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-6; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 5
+2024-12-01 12:11:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Mapper; $Proxy173_findById; 29
+2024-12-01 12:11:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Service; QuickService_getItemById; 53
+2024-12-01 12:11:41; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; 87
+2024-12-01 12:13:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:13:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 12:13:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_updateAccount; start
+2024-12-01 12:13:08; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 12:13:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_updateAccount; 39
+2024-12-01 12:13:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 63
+2024-12-01 12:13:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 116
+2024-12-01 12:24:35; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:24:35; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 12:24:35; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_updateAccount; start
+2024-12-01 12:24:35; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 12:24:35; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_updateAccount; 40
+2024-12-01 12:24:35; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 65
+2024-12-01 12:24:35; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 112
+2024-12-01 12:25:38; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; MISSED-ID; Controller; QuickController_getAccount; start
+2024-12-01 12:25:38; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; MISSED-ID; Service; QuickService_getAccountById; start
+2024-12-01 12:25:38; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; MISSED-ID; Mapper; $Proxy172_findAccountById; start
+2024-12-01 12:25:38; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-8; MISSED-ID; SQL; SELECT * FROM account WHERE id = ?; 3
+2024-12-01 12:25:38; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; MISSED-ID; Mapper; $Proxy172_findAccountById; 28
+2024-12-01 12:25:38; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; MISSED-ID; Service; QuickService_getAccountById; 51
+2024-12-01 12:25:38; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-8; MISSED-ID; Controller; QuickController_getAccount; 77
+2024-12-01 12:26:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getAccount; start
+2024-12-01 12:26:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getAccount; 23
+2024-12-01 12:39:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:39:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 12:39:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_updateAccount; start
+2024-12-01 12:39:54; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 2
+2024-12-01 12:39:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_updateAccount; 39
+2024-12-01 12:39:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_updateAccount; 64
+2024-12-01 12:39:54; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 109
+2024-12-01 12:40:14; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getAccount; start
+2024-12-01 12:40:14; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getAccount; 18
+2024-12-01 12:42:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:42:31; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_updateAccount; 22
+2024-12-01 12:44:33; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 12:44:33; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 16
+2024-12-01 12:47:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 12:47:00; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_getItem; 14
+2024-12-01 12:49:07; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 12:49:07; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 22
+2024-12-01 12:51:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 12:51:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; start
+2024-12-01 12:51:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_findById; start
+2024-12-01 12:51:17; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-5; MISSED-ID; SQL; SELECT * FROM item WHERE id = ?; 3
+2024-12-01 12:51:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Mapper; $Proxy172_findById; 40
+2024-12-01 12:51:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Service; QuickService_getItemById; 62
+2024-12-01 12:51:17; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-5; MISSED-ID; Controller; QuickController_getItem; 110
+2024-12-01 12:51:34; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; start
+2024-12-01 12:51:34; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-6; MISSED-ID; Controller; QuickController_getItem; 19
+2024-12-01 12:52:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_updateAccount; start
+2024-12-01 12:52:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Service; QuickService_updateAccount; start
+2024-12-01 12:52:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Mapper; $Proxy172_updateAccount; start
+2024-12-01 12:52:08; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-7; MISSED-ID; SQL; UPDATE ACCOUNT SET accountNumber = ?, money = ?, name = ? WHERE id = ?; 1
+2024-12-01 12:52:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Mapper; $Proxy172_updateAccount; 27
+2024-12-01 12:52:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Service; QuickService_updateAccount; 51
+2024-12-01 12:52:08; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-7; MISSED-ID; Controller; QuickController_updateAccount; 85
+2024-12-01 12:53:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getAccount; start
+2024-12-01 12:53:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Service; QuickService_getAccountById; start
+2024-12-01 12:53:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Mapper; $Proxy172_findAccountById; start
+2024-12-01 12:53:03; com.example.neobns.logging.common.MybatisLoggingInterceptor; INFO; http-nio-7777-exec-9; MISSED-ID; SQL; SELECT * FROM account WHERE id = ?; 1
+2024-12-01 12:53:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Mapper; $Proxy172_findAccountById; 22
+2024-12-01 12:53:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Service; QuickService_getAccountById; 45
+2024-12-01 12:53:03; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-9; MISSED-ID; Controller; QuickController_getAccount; 72
+2024-12-01 12:53:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getAccount; start
+2024-12-01 12:53:24; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-7777-exec-10; MISSED-ID; Controller; QuickController_getAccount; 15

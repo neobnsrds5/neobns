@@ -45,8 +45,7 @@ public class QuickService {
 		mapper.addAccount(dto);
 	}
 
-//	@CacheEvict(value = "account:id", key = "#dto.id", condition = "#dto.money >=0")
-	@CachePut(value = "account:id", key = "#dto.id", condition = "#dto.money >=0")
+	@CacheEvict(value = "account:id", key = "#dto.id")
 	public AccountDTO updateAccount(AccountDTO dto) {
 		// TODO Auto-generated method stub
 		System.out.println("update account service : " + dto);

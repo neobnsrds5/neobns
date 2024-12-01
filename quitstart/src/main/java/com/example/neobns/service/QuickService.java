@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +59,12 @@ public class QuickService {
 		System.out.println("getAccountById : " + id + " 실행됨~");
 		AccountDTO accountDTO = mapper.findAccountById(id);
 		return accountDTO;
+	}
+	
+	@Scheduled(fixedRate = 100_000)
+	@CacheEvict(value = "account:id", allEntries = true)
+	public void clearAllAccountCache() {
+		System.out.println("All account cash evicted. fixedRate = 10000");
+		
 	}
 }

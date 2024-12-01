@@ -108,4 +108,5 @@ public class QuickController {
 
 		return ResponseEntity.ok("OK");
 	}
+
 }

@@ -1,14 +1,8 @@
 package com.example.neobns.logging.common; // quitstart
 
+import java.sql.Connection;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.plugin.*;
@@ -16,14 +10,15 @@ import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
 		@Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
-		@Signature(type = StatementHandler.class, method = "batch", args = { Statement.class }) })
+		@Signature(type = StatementHandler.class, method = "batch", args = { Statement.class }),
+		@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
+		})
 @Profile("dev")
 @Component
 public class MybatisLoggingInterceptor implements Interceptor {
@@ -35,7 +30,11 @@ public class MybatisLoggingInterceptor implements Interceptor {
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		// 시작 시간 측정
+		StatementHandler handler = (StatementHandler) invocation.getTarget();
 		long start = System.currentTimeMillis();
+		// sql error 저장
+		String errorSQL = handler.getBoundSql().getSql();
+		MDC.put("queryLog", errorSQL.trim());
 
 		try {
 			// 실제 쿼리 실행
@@ -45,7 +44,6 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			long elapsedTime = System.currentTimeMillis() - start;
 
 			// 쿼리 정보 가져오기
-			StatementHandler handler = (StatementHandler) invocation.getTarget();
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 
 			// SQL 실행 후 trace 로깅
@@ -54,6 +52,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
 			}
+			MDC.remove("queryLog");
 		}
 	}
 

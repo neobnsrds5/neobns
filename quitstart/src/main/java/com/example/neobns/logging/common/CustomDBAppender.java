@@ -12,10 +12,10 @@ public class CustomDBAppender extends DBAppender {
 
 	@Override
 	protected String getInsertSQL() {
-		// 기본 SQL에 user_id 컬럼 추가
 		return "INSERT INTO logging_event (timestmp, formatted_message, logger_name, level_string, thread_name, "
-				+ "reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, user_id, trace_id, device, ip_address) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, "
+				+ "user_id, trace_id, device, ip_address, execute_time) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	}
 
 	@Override
@@ -30,35 +30,51 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setShort(6, computeReferenceMask(event));
 
 			// Argument 처리 (최대 4개, 부족하면 null로 채움)
-			String requestId = "";
-
 			Object[] args = event.getArgumentArray();
 			for (int i = 0; i < 4; i++) {
 				stmt.setString(7 + i, (args != null && i < args.length) ? args[i].toString() : null);
-				if (i == 0) {
-					requestId = args[0].toString();
-				}
 			}
 
-			// Caller 데이터 매핑
-			StackTraceElement callerData = event.getCallerData() != null && event.getCallerData().length > 0
-					? event.getCallerData()[0]
-					: null;
-			stmt.setString(11, callerData != null ? callerData.getFileName() : null);
-			stmt.setString(12, callerData != null ? callerData.getClassName() : null);
-			stmt.setString(13, callerData != null ? callerData.getMethodName() : null);
-			stmt.setString(14, callerData != null ? Integer.toString(callerData.getLineNumber()) : null);
+			// Caller 데이터와 MDC 값 우선순위 처리
+			StackTraceElement callerData = (event.getCallerData() != null && event.getCallerData().length > 0)
+			        ? event.getCallerData()[0]
+			        : null;
 
-			// MDC에서 userId 가져오기
+			// MDC 값 우선 사용, 없으면 callerData 사용
+			String callerClass = MDC.get("className") != null
+			        ? MDC.get("className")
+			        : (callerData != null ? callerData.getClassName() : null);
+
+			String callerMethod = MDC.get("methodName") != null
+			        ? MDC.get("methodName")
+			        : (callerData != null ? callerData.getMethodName() : null);
+
+			String callerFileName = callerData != null ? callerData.getFileName() : null;
+			String callerLineNumber = callerData != null ? Integer.toString(callerData.getLineNumber()) : null;
+
+			stmt.setString(11, callerFileName);
+			stmt.setString(12, callerClass);
+			stmt.setString(13, callerMethod);
+			stmt.setString(14, callerLineNumber);
+
+			// MDC에서 데이터 가져오기
 			String userId = MDC.get("userId");
-			stmt.setString(15, (userId != null) ? userId : "UNKNOWN_USER");
-			stmt.setString(16, requestId);
-
+			String requestId = MDC.get("requestId");
 			String userAgent = MDC.get("userAgent");
-			stmt.setString(17, userAgent);
-
 			String userIp = MDC.get("clientIp");
-			stmt.setString(18, userIp);
+			String executeTime = MDC.get("executeTime");
+			
+			stmt.setString(15, userId != null ? userId : "UNKNOWN");
+			stmt.setString(16, requestId != null ? requestId : "UNKNOWN");
+			stmt.setString(17, userAgent != null ? userAgent : "UNKNOWN");
+			stmt.setString(18, userIp != null ? userIp : "UNKNOWN");
+			
+			// setLong은 null 처리 불가능하므로 아래와 같은 방식으로 구현
+			if (executeTime != null && !executeTime.isEmpty()) {
+			    stmt.setLong(19, Long.parseLong(executeTime));
+			} else {
+			    stmt.setNull(19, java.sql.Types.BIGINT);
+			}
 
 			stmt.executeUpdate();
 
@@ -67,14 +83,17 @@ public class CustomDBAppender extends DBAppender {
 				saveErrorLog(event, connection);
 			}
 			// 로그 이름이 SLOW인 경우 추가적으로 logging_slow 테이블에 저장
+			if("SLOW".equals(event.getLoggerName().toString())) {
+				saveSlowLog(event, connection);
+			}
 
 		} catch (SQLException e) {
 			addError("Failed to append log entry to database", e);
 			throw e;
 		}
 	}
-
-private void saveErrorLog(ILoggingEvent event, Connection connection) {
+	
+	private void saveErrorLog(ILoggingEvent event, Connection connection) {
         
         String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query_log, uri, error_name) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -139,6 +158,59 @@ private void saveErrorLog(ILoggingEvent event, Connection connection) {
         }
     }
 
+	private void saveSlowLog(ILoggingEvent event, Connection connection) {
+		String slowLogSQL = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, query, uri, user_id, trace_id, ip_address, device, execute_time) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		try (PreparedStatement stmt = connection.prepareStatement(slowLogSQL)) {
+			
+			stmt.setLong(1, event.getTimeStamp());
+
+			// Caller 데이터와 MDC 값 우선순위 처리
+			StackTraceElement callerData = (event.getCallerData() != null && event.getCallerData().length > 0)
+					? event.getCallerData()[0]
+					: null;
+			
+			// MDC 값 우선 사용, 없으면 callerData 사용
+			String callerClass = MDC.get("className") != null
+					? MDC.get("className")
+					: (callerData != null ? callerData.getClassName() : null);
+
+			String callerMethod = MDC.get("methodName") != null
+					? MDC.get("methodName")
+					: (callerData != null ? callerData.getMethodName() : null);
+
+			stmt.setString(2, callerClass);
+			stmt.setString(3, callerMethod);
+			
+			// TODO: query, uri 저장 필요...!
+			stmt.setNull(4, java.sql.Types.VARCHAR);
+			stmt.setNull(5, java.sql.Types.VARCHAR);
+
+			// MDC에서 데이터 가져오기
+			String userId = MDC.get("userId");
+			String requestId = MDC.get("requestId");
+			String userAgent = MDC.get("userAgent");
+			String userIp = MDC.get("clientIp");
+			String executeTime = MDC.get("executeTime");
+
+			stmt.setString(6, userId != null ? userId : "UNKNOWN");
+			stmt.setString(7, requestId != null ? requestId : "UNKNOWN");
+			stmt.setString(8, userAgent != null ? userAgent : "UNKNOWN");
+			stmt.setString(9, userIp != null ? userIp : "UNKNOWN");
+
+			// setLong은 null 처리 불가능하므로 아래와 같은 방식으로 구현
+			if (executeTime != null && !executeTime.isEmpty()) {
+				stmt.setLong(10, Long.parseLong(executeTime));
+			} else {
+				stmt.setNull(10, java.sql.Types.BIGINT);
+			}
+
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			addError("Failed to append slow log entry to database", e);
+		}
+	}
 
 	private short computeReferenceMask(ILoggingEvent event) {
 		short mask = 0;

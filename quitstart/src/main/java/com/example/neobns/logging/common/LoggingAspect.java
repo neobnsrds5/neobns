@@ -45,25 +45,38 @@ public class LoggingAspect {
      */
     private Object logExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
         long start = System.currentTimeMillis();
-        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String className = layer.equals("Mapper") ? "Mapper" : joinPoint.getTarget().getClass().getSimpleName();
         String methodName = joinPoint.getSignature().getName();
-        String fullMethodName = String.format("%s_%s", className, methodName);
+        
+        MDC.put("className", className);
+        MDC.put("methodName", methodName);
 
         // 메서드 실행 전 로깅
-        traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, "start");
+        traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), "start");
+        
+        MDC.remove("className");
+        MDC.remove("methodName");
 
         Object result;
         try {
             result = joinPoint.proceed(); // 실제 메서드 실행
         } finally {
             long elapsedTime = System.currentTimeMillis() - start;
+            
+            MDC.put("className", className);
+            MDC.put("methodName", methodName);
+            MDC.put("executeTime", Long.toString(elapsedTime));
 
             // 메서드 실행 후 trace 로깅
-            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime);
+            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
             // 설정 시간보다 느리면 slow 로깅
             if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-            	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime);
+            	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
             }
+            
+            MDC.remove("className");
+            MDC.remove("methodName");
+            MDC.remove("executeTime");
         }
 
         return result;

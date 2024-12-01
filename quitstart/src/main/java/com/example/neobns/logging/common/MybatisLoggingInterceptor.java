@@ -1,14 +1,7 @@
 package com.example.neobns.logging.common; // quitstart
 
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.plugin.*;
@@ -16,7 +9,6 @@ import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -43,10 +35,14 @@ public class MybatisLoggingInterceptor implements Interceptor {
 		} finally {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
-
+			
 			// 쿼리 정보 가져오기
 			StatementHandler handler = (StatementHandler) invocation.getTarget();
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
+			
+			MDC.put("executeTime", Long.toString(elapsedTime));
+			MDC.put("className", "SQL");
+			MDC.put("methodName", sql);
 
 			// SQL 실행 후 trace 로깅
 			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
@@ -54,6 +50,10 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
 			}
+			
+			MDC.remove("executeTime");
+			MDC.remove("className");
+			MDC.remove("methodName");
 		}
 	}
 

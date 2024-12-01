@@ -1,25 +1,41 @@
+-- 컬럼 순서 변경 시 insert 안됨
 CREATE TABLE `logging_event` (
   `event_id` bigint NOT NULL AUTO_INCREMENT,
-  `timestmp` bigint NOT NULL,
-  `logger_name` varchar(255) NOT NULL,
-  `level_string` varchar(10) NOT NULL,
-  `caller_class` varchar(255) DEFAULT NULL,
-  `caller_method` varchar(255) DEFAULT NULL,
-  `caller_line` char(4) DEFAULT NULL,
-  `user_id` varchar(255) DEFAULT NULL,
-  `trace_id` varchar(255) DEFAULT NULL,
-  `ip_address` varchar(255) DEFAULT NULL,
-  `device` varchar(255) DEFAULT NULL,
-  `execute_time` bigint DEFAULT NULL, -- 여기가지가 우리한테 필요한 내용...
-  `formatted_message` text DEFAULT NULL,
-  `thread_name` varchar(255) DEFAULT NULL,
-  `reference_flag` smallint DEFAULT NULL,
-  `arg0` varchar(255) DEFAULT NULL,
-  `arg1` varchar(255) DEFAULT NULL,
-  `arg2` varchar(255) DEFAULT NULL,
-  `arg3` varchar(255) DEFAULT NULL,
-  `caller_filename` varchar(255) DEFAULT NULL,
+  `timestmp` bigint NOT NULL,					-- 로그 발생 시간
+  `formatted_message` text DEFAULT NULL,		-- 로그 메시지
+  `logger_name` varchar(255) NOT NULL,			-- 로거 이름
+  `level_string` varchar(10) NOT NULL,			-- 로그 레벨 (INFO, DEBUG 등)
+  `thread_name` varchar(255) DEFAULT NULL,		-- 실행 스레드 이름
+  `reference_flag` smallint DEFAULT NULL,		-- 참조 플래그
+  `arg0` varchar(255) DEFAULT NULL,				-- 추가 메시지 매핑 0
+  `arg1` varchar(255) DEFAULT NULL,				-- 추가 메시지 매핑 1
+  `arg2` varchar(255) DEFAULT NULL,				-- 추가 메시지 매핑 2
+  `arg3` varchar(255) DEFAULT NULL,				-- 추가 메시지 매핑 3
+  `caller_filename` varchar(255) DEFAULT NULL,	-- 호출 파일 이름
+  `caller_class` varchar(255) DEFAULT NULL,		-- 호출 클래스 이름
+  `caller_method` varchar(255) DEFAULT NULL,	-- 호출 메소드 이름
+  `caller_line` char(4) DEFAULT NULL,			-- 호출 라인
+  `user_id` varchar(255) DEFAULT NULL,			-- user ID
+  `trace_id` varchar(255) DEFAULT NULL,			-- trace ID
+  `ip_address` varchar(255) DEFAULT NULL,		-- IP address
+  `device` varchar(255) DEFAULT NULL,			-- device
+  `execute_time` bigint DEFAULT NULL, 			-- 실행 시간
   PRIMARY KEY (`event_id`)
+);
+
+create table logging_slow (
+	`event_id` bigint NOT NULL AUTO_INCREMENT,
+	`timestmp` bigint NOT NULL,
+	`caller_class` varchar(255) DEFAULT NULL,
+	`caller_method` varchar(255) DEFAULT NULL,
+	`query` varchar(255) DEFAULT NULL, 			-- query문 저장될 컬럼
+	`uri` varchar(255) DEFAULT NULL, 			-- uri 저장될 컬럼
+	`user_id` varchar(255) DEFAULT NULL,
+	`trace_id` varchar(255) DEFAULT NULL,
+	`ip_address` varchar(255) DEFAULT NULL,
+	`device` varchar(255) DEFAULT NULL,
+	`execute_time` bigint DEFAULT null,
+	PRIMARY KEY (`event_id`)
 );
 
 -- 아래 두 테이블이 없으면 logging_event에도 데이터가 insert 되지 않음...

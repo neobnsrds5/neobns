@@ -41,12 +41,13 @@ public class QuickService {
 		return results;
 	}
 
+	@CachePut(value = "account:id", key = "#dto.id")
 	public void addAccount(AccountDTO dto) {
 		// TODO Auto-generated method stub
 		mapper.addAccount(dto);
 	}
 
-	@CacheEvict(value = "account:id", key = "#dto.id")
+	@CachePut(value = "account:id", key = "#dto.id")
 	public AccountDTO updateAccount(AccountDTO dto) {
 		// TODO Auto-generated method stub
 		System.out.println("update account service : " + dto);

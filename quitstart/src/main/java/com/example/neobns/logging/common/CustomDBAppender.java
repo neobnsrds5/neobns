@@ -101,14 +101,25 @@ public class CustomDBAppender extends DBAppender {
                 stmt.setString(7 + i, (args != null && i < args.length) ? args[i].toString() : null);
             }
 
-            StackTraceElement callerData = (event.getCallerData() != null && event.getCallerData().length > 0)
-                    ? event.getCallerData()[0]
-                    : null;
+			// Caller 데이터와 MDC 값 우선순위 처리
+			StackTraceElement callerData = (event.getCallerData() != null && event.getCallerData().length > 0)
+					? event.getCallerData()[0]
+					: null;
 
-            stmt.setString(11, callerData != null ? callerData.getFileName() : null);
-            stmt.setString(12, callerData != null ? callerData.getClassName() : null);
-            stmt.setString(13, callerData != null ? callerData.getMethodName() : null);
-            stmt.setString(14, callerData != null ? Integer.toString(callerData.getLineNumber()) : null);
+			// MDC 값 우선 사용, 없으면 callerData 사용
+			String callerClass = MDC.get("className") != null ? MDC.get("className")
+					: (callerData != null ? callerData.getClassName() : null);
+
+			String callerMethod = MDC.get("methodName") != null ? MDC.get("methodName")
+					: (callerData != null ? callerData.getMethodName() : null);
+
+			String callerFileName = callerData != null ? callerData.getFileName() : null;
+			String callerLineNumber = callerData != null ? Integer.toString(callerData.getLineNumber()) : null;
+
+			stmt.setString(11, callerFileName);
+			stmt.setString(12, callerClass);
+			stmt.setString(13, callerMethod);
+			stmt.setString(14, callerLineNumber);
 
             String userId = MDC.get("userId");
             String requestId = MDC.get("requestId");
@@ -191,6 +202,10 @@ public class CustomDBAppender extends DBAppender {
             String callerClass = MDC.get("className") != null
                     ? MDC.get("className")
                     : (callerData != null ? callerData.getClassName() : null);
+            String callerMethod = MDC.get("methodName") != null
+					? MDC.get("methodName")
+					: (callerData != null ? callerData.getMethodName() : null);
+            
 			stmt.setString(2, callerClass);
 			stmt.setString(3, callerMethod);
 			

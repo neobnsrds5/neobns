@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 		@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
 		@Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
 		@Signature(type = StatementHandler.class, method = "batch", args = { Statement.class }),
-		@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
+//		@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
 		})
 @Profile("dev")
 @Component
@@ -36,10 +36,14 @@ public class MybatisLoggingInterceptor implements Interceptor {
 		// sql error 저장
 		String errorSQL = handler.getBoundSql().getSql();
 		MDC.put("queryLog", errorSQL.trim());
-				
+		traceLogger.info(errorSQL);
+		
+		Object result = null;
 		try {
 			// 실제 쿼리 실행
-			return invocation.proceed();
+			result = invocation.proceed();
+		} catch (Exception e){
+			traceLogger.error(errorSQL);
 		} finally {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
@@ -63,6 +67,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			MDC.remove("methodName");
 			MDC.remove("queryLog");
 		}
+		return result;
 	}
 
 	@Override

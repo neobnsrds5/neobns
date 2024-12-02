@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
+import com.example.neobns.entity.Account;
 import com.example.neobns.service.QuickService;
 
 import io.micrometer.core.annotation.Timed;
@@ -88,28 +89,48 @@ public class QuickController {
 		return results;
 	}
 
-	@PostMapping("/addAccount")
-	public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto) {
-		quickService.addAccount(dto);
+//	@PostMapping("/addAccount")
+//	public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto) {
+//		quickService.addAccount(dto);
+//
+//		return ResponseEntity.ok("OK");
+//	}
+//
+//	@GetMapping("/getAccount")
+//	public AccountDTO getAccount(@RequestParam("id") long id) {
+//		AccountDTO accountDTO = quickService.getAccountById(id);
+//		log.info("name: {}", accountDTO.getName());
+//		return accountDTO;
+//	}
+//
+//	@PutMapping("/updateAccount")
+//	public ResponseEntity<String> updateAccount(@RequestBody AccountDTO dto) {
+//
+//		System.out.println("account dto : " + dto.toString());
+//		quickService.updateAccount(dto);
+//
+//		return ResponseEntity.ok("OK");
+//	}
+
+	@PostMapping("/addAccountJPA")
+	public ResponseEntity<String> addAccountJPA(@RequestBody Account account) {
+		quickService.addUpdateAccountJPA(account);
 
 		return ResponseEntity.ok("OK");
 	}
 
-	@GetMapping("/getAccount")
-	public AccountDTO getAccount(@RequestParam("id") long id) {
-		AccountDTO accountDTO = quickService.getAccountById(id);
-		log.info("name: {}", accountDTO.getName());
-		return accountDTO;
+	@GetMapping("/getAccountJPA")
+	public Account getAccountJPA(@RequestParam("id") long id) {
+		Account account = quickService.getAccountByIdJPA(id);
+		log.info("name: {}", account.getName());
+		return account;
 	}
 
-	@PutMapping("/updateAccount")
-	public ResponseEntity<String> updateAccount(@RequestBody AccountDTO dto) {
+	@PutMapping("/updateAccountJPA")
+	public ResponseEntity<String> updateAccountJPA(@RequestBody Account account) {
 
-		if (dto == null) {
-			System.out.println("dto is null");
-		}
-		System.out.println("account dto : " + dto.toString());
-		quickService.updateAccount(dto);
+		System.out.println("account : " + account.toString());
+		quickService.addUpdateAccountJPA(account);
 
 		return ResponseEntity.ok("OK");
 	}

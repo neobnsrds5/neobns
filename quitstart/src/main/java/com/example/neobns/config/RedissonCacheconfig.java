@@ -30,7 +30,7 @@ public class RedissonCacheconfig {
 	public CacheManager cacheManager(RedissonClient redissonClient) {
 		
 		RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient);
-		cacheManager.setCodec(new StringCodec());
+		cacheManager.setCodec(new JsonJacksonCodec());
 		return cacheManager;
 
 	}

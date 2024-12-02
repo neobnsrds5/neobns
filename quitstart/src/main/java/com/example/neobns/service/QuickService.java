@@ -56,7 +56,7 @@ public class QuickService {
 	}
 
 	@Cacheable(value = "account:id", key = "#id")
-	public AccountDTO getAccountById(String id) {
+	public AccountDTO getAccountById(long id) {
 		System.out.println("getAccountById : " + id + " 실행됨~");
 		AccountDTO accountDTO = mapper.findAccountById(id);
 		return accountDTO;

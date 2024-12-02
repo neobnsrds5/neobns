@@ -1,5 +1,16 @@
 package com.example.neobns.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
@@ -8,12 +19,6 @@ import com.example.neobns.service.QuickService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -91,7 +96,7 @@ public class QuickController {
 	}
 
 	@GetMapping("/getAccount")
-	public AccountDTO getAccount(@RequestParam("id") String id) {
+	public AccountDTO getAccount(@RequestParam("id") long id) {
 		AccountDTO accountDTO = quickService.getAccountById(id);
 		log.info("name: {}", accountDTO.getName());
 		return accountDTO;

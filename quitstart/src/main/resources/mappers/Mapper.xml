@@ -39,7 +39,7 @@
     	]]>
     </update>
     
-    <select id="findAccountById" resultType="com.example.neobns.dto.AccountDTO" parameterType="string">
+    <select id="findAccountById" resultType="com.example.neobns.dto.AccountDTO" parameterType="long">
         <![CDATA[
             SELECT *
             FROM account

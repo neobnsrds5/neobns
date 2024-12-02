@@ -9,3 +9,8 @@ spring:
       # config 서버가 읽고자 하는 설정 파일 정보, default는 application
       # profiles: active dev 환경 읽고자 함
 #      name: application
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

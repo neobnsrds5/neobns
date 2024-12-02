@@ -1,4 +1,9 @@
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: quitstart
   profiles:
@@ -51,6 +56,7 @@ spring:
       port: 6379
       password: 
 
+    
 mybatis:
   mapper-locations: classpath:mappers/*.xml
   configuration:
@@ -70,7 +76,6 @@ eureka:
     service-url:
       defaultZone: http://eureka:1234@localhost:8761/eureka
       
-      
 management:
   httpexchanges:
     recording:
@@ -88,6 +93,8 @@ management:
     prometheus:
       enabled: true  
     env:
+      enabled: true
+    busrefresh:
       enabled: true
   info:
     env:

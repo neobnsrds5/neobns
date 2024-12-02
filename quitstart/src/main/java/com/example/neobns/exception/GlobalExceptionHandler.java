@@ -53,6 +53,11 @@ public class GlobalExceptionHandler {
         MDC.put("httpStatus", String.valueOf(status.value()));
         MDC.put("requestUri", request.getRequestURI());
         MDC.put("httpMethod", request.getMethod());
+        
+     // 실제 에러 발생 위치 추출
+        StackTraceElement callerLocation = getActualErrorLocation(e);
+        MDC.put("callerClass", callerLocation.getClassName());
+        MDC.put("callerMethod", callerLocation.getMethodName());
     }
 
 
@@ -61,5 +66,20 @@ public class GlobalExceptionHandler {
         MDC.remove("httpStatus");
         MDC.remove("requestUri");
         MDC.remove("httpMethod");
+        MDC.remove("callerClass");
+        MDC.remove("callerMethod");
     }
+    
+    private StackTraceElement getActualErrorLocation(Throwable e) {
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        for (StackTraceElement element : stackTrace) {
+            // 사용자 코드 패키지를 기준으로 필터링 
+            if (element.getClassName().startsWith("com.example.neobns")) {
+                return element;
+            }
+        }
+        // 사용자 코드가 아닌 경우 첫 번째 요소 반환
+        return stackTrace.length > 0 ? stackTrace[0] : new StackTraceElement("UNKNOWN", "UNKNOWN", null, -1);
+    }
+    
 }

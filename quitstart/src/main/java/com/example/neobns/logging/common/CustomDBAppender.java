@@ -103,36 +103,23 @@ public class CustomDBAppender extends DBAppender {
             errorStmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
 
             String userId = MDC.get("userId");
-            errorStmt.setString(2, userId != null ? userId : "UNKNOWN_USER");
-            
             String traceId = MDC.get("requestId");
-            errorStmt.setString(3, traceId);
-            
             String userIp = MDC.get("clientIp");
-            errorStmt.setString(4, userIp);
-            
             String userAgent = MDC.get("userAgent");
-            errorStmt.setString(5, userAgent);
-            
-            // Caller 데이터 매핑
-            StackTraceElement callerData = event.getCallerData() != null && event.getCallerData().length > 0
-                    ? event.getCallerData()[0]
-                    : null;
-            errorStmt.setString(6, callerData != null ? callerData.getClassName() : null);
-            errorStmt.setString(7, callerData != null ? callerData.getMethodName() : null);
-            
-            System.out.println("callerData.getClassName() : " + callerData.getClassName());
-            
-            System.out.println("event.getThrowableProxy().getClassName() : " + event.getThrowableProxy().getClassName());
-            
+            String className = MDC.get("callerClass");
+            String methodName = MDC.get("callerMethod");
             String queryLog = MDC.get("queryLog");
-            System.out.println("queryLog : " + queryLog);
-            errorStmt.setString(8, queryLog);
-            
             String uri = MDC.get("requestUri");
-            errorStmt.setString(9, uri);
-            
             String errorName = MDC.get("errorName");
+            
+            errorStmt.setString(2, userId != null ? userId : "UNKNOWN_USER");
+            errorStmt.setString(3, traceId);   
+            errorStmt.setString(4, userIp);        
+            errorStmt.setString(5, userAgent);         
+            errorStmt.setString(6, className);        
+            errorStmt.setString(7, methodName);          
+            errorStmt.setString(8, queryLog);
+            errorStmt.setString(9, uri);
             errorStmt.setString(10, errorName);
 
             // DB에 삽입 실행

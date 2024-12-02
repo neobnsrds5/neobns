@@ -32,7 +32,6 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 		String userId = MDC.get(MDC_USER_ID_KEY);
 		String uri = request.getURI().toString();
 		String method = request.getMethod().toString();
-		
 
 		if (requestId != null) {
 			request.getHeaders().add(REQUEST_ID_HEADER, requestId);

@@ -10,6 +10,11 @@ spring:
     url: jdbc:mysql://localhost:3306/db1
     username: root
     password: 
+  rabbitmq:
+      host: 127.0.0.1
+      port: 5672
+      username: guest
+      password: guest
 
 eureka:
   client:
@@ -26,7 +31,7 @@ management:
     web:
       exposure:
 #        include: "*"
-        include: health, info, metrics, prometheus
+        include: health, info, metrics, prometheus, busrefresh
       base-path: /actuator
   endpoint:
     metrics:

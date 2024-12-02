@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: testForRabbitMqCommunication
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  config:
+    import: configserver:http://localhost:9393
+server:
+  port: 12346

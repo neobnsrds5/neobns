@@ -51,10 +51,10 @@ public class QuickService {
 	}
 
 //	@CachePut(value = "account:id", key = "#dto.id")
-//	public void addAccount(AccountDTO dto) {
-//		// TODO Auto-generated method stub
-//		mapper.addAccount(dto);
-//	}
+	public void addAccount(AccountDTO dto) {
+		// TODO Auto-generated method stub
+		mapper.addAccount(dto);
+	}
 //
 //	@CachePut(value = "account:id", key = "#dto.id")
 //	public AccountDTO updateAccount(AccountDTO dto) {

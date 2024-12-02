@@ -89,12 +89,12 @@ public class QuickController {
 		return results;
 	}
 
-//	@PostMapping("/addAccount")
-//	public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto) {
-//		quickService.addAccount(dto);
-//
-//		return ResponseEntity.ok("OK");
-//	}
+	@PostMapping("/addAccount")
+	public ResponseEntity<String> addAccount(@RequestBody AccountDTO dto) {
+		quickService.addAccount(dto);
+
+		return ResponseEntity.ok("OK");
+	}
 //
 //	@GetMapping("/getAccount")
 //	public AccountDTO getAccount(@RequestParam("id") long id) {

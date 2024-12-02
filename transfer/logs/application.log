@@ -318,3 +318,58 @@
 2024-11-29 13:19:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; e6b759ab-4c8a-4de3-a249-98d0c1b8dabc, Mapper, $Proxy116_insertTransferDetails, 31; user-da08ccd5
 2024-11-29 13:19:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; e6b759ab-4c8a-4de3-a249-98d0c1b8dabc, Service, TransferService_insertTransferDetail, 60; user-da08ccd5
 2024-11-29 13:19:19; com.example.neobns.logging.common.LoggingAspect; INFO; http-nio-8090-exec-2; e6b759ab-4c8a-4de3-a249-98d0c1b8dabc, Controller, TransferController_transfer, 89; user-da08ccd5
+2024-12-02 10:11:42; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; TransferController; transfer; start
+2024-12-02 10:11:42; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; TransferService; insertTransferDetail; start
+2024-12-02 10:11:43; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; Mapper; insertTransferDetails; start
+2024-12-02 10:11:43; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:11:43; SLOW; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:11:43; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; Mapper; insertTransferDetails; 90
+2024-12-02 10:11:43; SLOW; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; Mapper; insertTransferDetails; 90
+2024-12-02 10:11:43; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; TransferService; insertTransferDetail; 134
+2024-12-02 10:11:43; SLOW; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; TransferService; insertTransferDetail; 134
+2024-12-02 10:11:43; TRACE; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; TransferController; transfer; 202
+2024-12-02 10:11:43; SLOW; INFO; http-nio-8090-exec-1; 236eae33-f791-40e9-8932-1d17f04acb56; TransferController; transfer; 202
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; TransferController; transfer; start
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; TransferService; insertTransferDetail; start
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; Mapper; insertTransferDetails; start
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:11:51; SLOW; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; Mapper; insertTransferDetails; 46
+2024-12-02 10:11:51; SLOW; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; Mapper; insertTransferDetails; 46
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; TransferService; insertTransferDetail; 88
+2024-12-02 10:11:51; SLOW; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; TransferService; insertTransferDetail; 88
+2024-12-02 10:11:51; TRACE; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; TransferController; transfer; 129
+2024-12-02 10:11:51; SLOW; INFO; http-nio-8090-exec-2; decfb80d-72d9-431f-8298-cb55878151b9; TransferController; transfer; 129
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; TransferController; transfer; start
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; TransferService; insertTransferDetail; start
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; Mapper; insertTransferDetails; start
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 3
+2024-12-02 10:19:46; SLOW; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 3
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; Mapper; insertTransferDetails; 99
+2024-12-02 10:19:46; SLOW; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; Mapper; insertTransferDetails; 99
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; TransferService; insertTransferDetail; 146
+2024-12-02 10:19:46; SLOW; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; TransferService; insertTransferDetail; 146
+2024-12-02 10:19:46; TRACE; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; TransferController; transfer; 212
+2024-12-02 10:19:46; SLOW; INFO; http-nio-8090-exec-1; 70a6ae76-8e57-44d9-9030-df69d51ee51b; TransferController; transfer; 212
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; TransferController; transfer; start
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; TransferService; insertTransferDetail; start
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; Mapper; insertTransferDetails; start
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:23:54; SLOW; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; Mapper; insertTransferDetails; 106
+2024-12-02 10:23:54; SLOW; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; Mapper; insertTransferDetails; 106
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; TransferService; insertTransferDetail; 158
+2024-12-02 10:23:54; SLOW; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; TransferService; insertTransferDetail; 158
+2024-12-02 10:23:54; TRACE; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; TransferController; transfer; 245
+2024-12-02 10:23:54; SLOW; INFO; http-nio-8090-exec-1; 0a0a5b4f-56cb-4dbd-bfe9-e33a7ab907d0; TransferController; transfer; 245
+2024-12-02 10:27:27; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; TransferController; transfer; start
+2024-12-02 10:27:27; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; TransferService; insertTransferDetail; start
+2024-12-02 10:27:27; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; Mapper; insertTransferDetails; start
+2024-12-02 10:27:27; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:27:27; SLOW; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; SQL; INSERT INTO transfer_details (from_account, to_account, money) VALUES (?, ?, ?); 2
+2024-12-02 10:27:28; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; Mapper; insertTransferDetails; 42
+2024-12-02 10:27:28; SLOW; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; Mapper; insertTransferDetails; 42
+2024-12-02 10:27:28; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; TransferService; insertTransferDetail; 85
+2024-12-02 10:27:28; SLOW; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; TransferService; insertTransferDetail; 85
+2024-12-02 10:27:28; TRACE; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; TransferController; transfer; 126
+2024-12-02 10:27:28; SLOW; INFO; http-nio-8090-exec-3; 73413d29-b418-4243-b9f4-412118d025c8; TransferController; transfer; 126

@@ -2,6 +2,8 @@ package com.neo.gatewayserver.filter;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -13,6 +15,10 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+	
+	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
+	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	private static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로 빼기..!
 
 	public GlobalFilter() {
 		super(Config.class);
@@ -21,6 +27,8 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 	@Override
 	public GatewayFilter apply(Config config) {
 		return (exchange, chain) -> {
+			
+			// RequestId
 			final String requestId = exchange.getRequest().getHeaders().getFirst("X-Request-ID");
 			String generatedRequestId = (requestId == null || requestId.isEmpty()) ? UUID.randomUUID().toString()
 					: requestId;
@@ -28,8 +36,6 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 			// UserId
 			final String userId = exchange.getRequest().getHeaders().getFirst("X-User-ID");
 			String generatedUserId = (userId == null || userId.isEmpty()) ?  generateRandomUserId() : userId;
-
-			
 
 			// Request ID를 MDC에 설정하여 로깅에 포함
 			MDC.put("requestId", generatedRequestId);
@@ -40,11 +46,15 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 			ServerWebExchange updatedExchange = exchange.mutate().request(updatedRequest).build();
 
 			// 로그 출력: 게이트웨이에서 요청 시작
+			long startTime = System.currentTimeMillis();
 			logRequestDetails(updatedRequest);
 
 			return chain.filter(updatedExchange).then(Mono.fromRunnable(() -> {
+				Long elapsedTime = System.currentTimeMillis() - startTime;
+				
 	        	String responseRequestId = updatedExchange.getResponse().getHeaders().getFirst("X-Request-ID");
 	        	String responseUserId = updatedExchange.getResponse().getHeaders().getFirst("X-User-ID");
+	        	
 	        	if(responseRequestId == null || responseRequestId.isEmpty()) {
 	        		responseRequestId = generatedRequestId;
 	        	}
@@ -52,9 +62,9 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 	        		responseUserId = generatedUserId;
 	        	}
 	        	
-	        	logResponseDetails(updatedExchange, responseRequestId, responseUserId);
+	        	logResponseDetails(updatedExchange, responseRequestId, responseUserId, elapsedTime);
 	        	
-	        	MDC.clear();
+//	        	MDC.clear();
 	        }));
 			
 		};
@@ -69,12 +79,33 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 		String requestId = MDC.get("requestId");
 		String userId = MDC.get("userId");
 		String uri = request.getURI().toString();
-		System.out.println(String.format("[%s][%s] Gateway Request: %s", requestId, userId, uri));
+		
+		MDC.put("className", "Gateway Request");
+		MDC.put("methodName", uri);
+		
+		traceLogger.info("[{}][{}] Gateway Request: {}", requestId, userId, uri);
+		
+		MDC.remove("className");
+        MDC.remove("methodName");
 	}
 
-	private void logResponseDetails(ServerWebExchange exchange, String requestId, String userId) {
-		System.out.println(String.format("[%s][%s] Gateway Response: %s", requestId, userId,
-				exchange.getResponse().getStatusCode()));
+	private void logResponseDetails(ServerWebExchange exchange, String requestId, String userId, long elapsedTime) {
+		String statusCode = exchange.getResponse().getStatusCode().toString();
+		String uri = exchange.getRequest().getURI().toString();
+		
+		MDC.put("requestId", requestId);
+		MDC.put("userId", userId);
+		MDC.put("className", "Gateway Response");
+		MDC.put("methodName", uri);
+		MDC.put("executeTime", Long.toString(elapsedTime));
+		
+		traceLogger.info("[{}][{}] Gateway Response: {} {}ms", requestId, userId, statusCode, elapsedTime);
+		// 설정 시간보다 느리면 slow 로깅
+        if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
+        	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
+        }
+		
+		MDC.clear();
 	}
 
 	public static class Config {

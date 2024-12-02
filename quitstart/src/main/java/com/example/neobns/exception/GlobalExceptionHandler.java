@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 
     
     private void setMDC(Exception e, HttpStatus status, HttpServletRequest request) {
-        MDC.put("errorName", e.getClass().getSimpleName() + " : " + String.valueOf(status.value()));
+        MDC.put("errorName", e.getClass().getSimpleName() + " : " + status.value());
         MDC.put("httpStatus", String.valueOf(status.value()));
         MDC.put("requestUri", request.getRequestURI());
         MDC.put("httpMethod", request.getMethod());
@@ -59,7 +59,6 @@ public class GlobalExceptionHandler {
         MDC.put("callerClass", callerLocation.getClassName());
         MDC.put("callerMethod", callerLocation.getMethodName());
     }
-
 
     private void clearMDC() {
         MDC.remove("errorName");
@@ -78,7 +77,7 @@ public class GlobalExceptionHandler {
                 return element;
             }
         }
-        // 사용자 코드가 아닌 경우 첫 번째 요소 반환
+        // 사용자 코드가 아닌 경우 첫 번째 요소 반환 클래스이름 / 메서드이름 / 파일이름 / 줄 번호
         return stackTrace.length > 0 ? stackTrace[0] : new StackTraceElement("UNKNOWN", "UNKNOWN", null, -1);
     }
     

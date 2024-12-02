@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
                 e.getClass().getName(), e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI(), e);
 
         clearMDC();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred transfer");
     }
 
     @ExceptionHandler(Exception.class)
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         log.error("Exception occurred - Class: {}, Message: {}, Status: {}, Request URI: {}",
                 e.getClass().getName(), e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI(), e);
         clearMDC();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred transfer");
     }
 
     
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
                 return element;
             }
         }
-        // 사용자 코드가 아닌 경우 첫 번째 요소 반환
+        // 사용자 코드가 아닌 경우 첫 번째 요소 반환 클래스이름 / 메서드이름 / 파일이름 / 줄 번호
         return stackTrace.length > 0 ? stackTrace[0] : new StackTraceElement("UNKNOWN", "UNKNOWN", null, -1);
     }
 }

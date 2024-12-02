@@ -1,5 +1,6 @@
 package com.example.neobns.logging.common; // quitstart
 
+import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Component;
 @Intercepts({
 		@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
 		@Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
-		@Signature(type = StatementHandler.class, method = "batch", args = { Statement.class }) })
+		@Signature(type = StatementHandler.class, method = "batch", args = { Statement.class }),
+		@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
+		})
 @Profile("dev")
 @Component
 public class MybatisLoggingInterceptor implements Interceptor {
@@ -27,7 +30,11 @@ public class MybatisLoggingInterceptor implements Interceptor {
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
 		// 시작 시간 측정
+		StatementHandler handler = (StatementHandler) invocation.getTarget();
 		long start = System.currentTimeMillis();
+		// sql error 저장
+		String errorSQL = handler.getBoundSql().getSql();
+		MDC.put("queryLog", errorSQL.trim());
 
 		try {
 			// 실제 쿼리 실행
@@ -37,7 +44,6 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			long elapsedTime = System.currentTimeMillis() - start;
 			
 			// 쿼리 정보 가져오기
-			StatementHandler handler = (StatementHandler) invocation.getTarget();
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 			
 			MDC.put("executeTime", Long.toString(elapsedTime));
@@ -54,6 +60,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			MDC.remove("executeTime");
 			MDC.remove("className");
 			MDC.remove("methodName");
+			MDC.remove("queryLog");
 		}
 	}
 

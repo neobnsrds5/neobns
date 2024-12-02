@@ -28,7 +28,7 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setString(4, event.getLevel().toString());
 			stmt.setString(5, event.getThreadName());
 			stmt.setShort(6, computeReferenceMask(event));
-
+			
 			// Argument 처리 (최대 4개, 부족하면 null로 채움)
 			Object[] args = event.getArgumentArray();
 			for (int i = 0; i < 4; i++) {
@@ -125,31 +125,15 @@ public class CustomDBAppender extends DBAppender {
             
             System.out.println("event.getThrowableProxy().getClassName() : " + event.getThrowableProxy().getClassName());
             
+            String queryLog = MDC.get("queryLog");
+            System.out.println("queryLog : " + queryLog);
+            errorStmt.setString(8, queryLog);
             
+            String uri = MDC.get("requestUri");
+            errorStmt.setString(9, uri);
             
-            errorStmt.setString(8, "query_log");
-            errorStmt.setString(9, "uri");
-            
-            String errorName = "No Exception";
-            if (event.getThrowableProxy() != null) {
-                String causeMessage = (event.getThrowableProxy().getCause() != null) 
-                        ? event.getThrowableProxy().getCause().toString() 
-                        : "No Cause";
-                System.out.println("causeMessage : " + causeMessage);
-                System.out.println("causeMessgae.toString() : " + causeMessage.toString());
-                errorName = event.getThrowableProxy().getClassName() + ": " + causeMessage;
-            }
+            String errorName = MDC.get("errorName");
             errorStmt.setString(10, errorName);
-            
-            
-            
-     
-            // 예외 메시지 처리
-//            String exceptionMessage = event.getThrowableProxy() != null 
-//                ? event.getThrowableProxy().getClassName() + ": " + event.getThrowableProxy().getMessage() 
-//                : null;
-//            errorStmt.setString(5, exceptionMessage);
-            
 
             // DB에 삽입 실행
             errorStmt.executeUpdate();

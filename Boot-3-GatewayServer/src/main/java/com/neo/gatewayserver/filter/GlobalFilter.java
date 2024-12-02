@@ -9,6 +9,8 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import reactor.core.publisher.Mono;
+
 @Component
 public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
 
@@ -19,61 +21,61 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 	@Override
 	public GatewayFilter apply(Config config) {
 		return (exchange, chain) -> {
-			ServerHttpRequest request = exchange.getRequest();
-			String requestId = request.getHeaders().getFirst("X-Request-ID");
-
-			if (requestId == null || requestId.isEmpty()) {
-				requestId = UUID.randomUUID().toString(); // 고유 Request ID 생성
-			}
+			final String requestId = exchange.getRequest().getHeaders().getFirst("X-Request-ID");
+			String generatedRequestId = (requestId == null || requestId.isEmpty()) ? UUID.randomUUID().toString()
+					: requestId;
 			
-			// UserId 
-			 String userId = request.getHeaders().getFirst("X-User-ID");
-	            if (userId == null || userId.isEmpty()) {
-	                userId = generateRandomUserId(); // 랜덤 유저 ID 생성
-	            }
+			// UserId
+			final String userId = exchange.getRequest().getHeaders().getFirst("X-User-ID");
+			String generatedUserId = (userId == null || userId.isEmpty()) ?  generateRandomUserId() : userId;
+
+			
 
 			// Request ID를 MDC에 설정하여 로깅에 포함
-			MDC.put("requestId", requestId);
-			MDC.put("userId", userId);
+			MDC.put("requestId", generatedRequestId);
+			MDC.put("userId", generatedUserId);
 
 			// Request Header에 Request ID, User ID 추가
-			 ServerHttpRequest updatedRequest = request.mutate()
-		                .header("X-Request-ID", requestId)
-		                .header("X-User-ID", userId)
-		                .build();
-
+			ServerHttpRequest updatedRequest = exchange.getRequest().mutate().header("X-Request-ID", generatedRequestId).header("X-User-ID", generatedUserId).build();
 			ServerWebExchange updatedExchange = exchange.mutate().request(updatedRequest).build();
 
 			// 로그 출력: 게이트웨이에서 요청 시작
 			logRequestDetails(updatedRequest);
 
-			return chain.filter(updatedExchange).doFinally(signalType -> {
-				// 로그 출력: 게이트웨이에서 요청 완료
-				logResponseDetails(updatedExchange);
-				MDC.clear();
-			});
+			return chain.filter(updatedExchange).then(Mono.fromRunnable(() -> {
+	        	String responseRequestId = updatedExchange.getResponse().getHeaders().getFirst("X-Request-ID");
+	        	String responseUserId = updatedExchange.getResponse().getHeaders().getFirst("X-User-ID");
+	        	if(responseRequestId == null || responseRequestId.isEmpty()) {
+	        		responseRequestId = generatedRequestId;
+	        	}
+	        	if(responseUserId == null || responseUserId.isEmpty()) {
+	        		responseUserId = generatedUserId;
+	        	}
+	        	
+	        	logResponseDetails(updatedExchange, responseRequestId, responseUserId);
+	        	
+	        	MDC.clear();
+	        }));
+			
 		};
 	}
-	private String generateRandomUserId() {
-        // 고유 User ID 생성 로직
-        return "user-" + UUID.randomUUID().toString().substring(0, 8);
-    }
 
+	private String generateRandomUserId() {
+		// 고유 User ID 생성 로직
+		return "user-" + UUID.randomUUID().toString().substring(0, 8);
+	}
 
 	private void logRequestDetails(ServerHttpRequest request) {
-        String requestId = MDC.get("requestId");
-        String userId = MDC.get("userId");
-        String uri = request.getURI().toString();
-        System.out.println(String.format("[%s][%s] Gateway Request: %s", requestId, userId, uri));
-    }
+		String requestId = MDC.get("requestId");
+		String userId = MDC.get("userId");
+		String uri = request.getURI().toString();
+		System.out.println(String.format("[%s][%s] Gateway Request: %s", requestId, userId, uri));
+	}
 
-    private void logResponseDetails(ServerWebExchange exchange) {
-        String requestId = MDC.get("requestId");
-        String userId = MDC.get("userId");
-        System.out.println(String.format("[%s][%s] Gateway Response: %s", 
-            requestId, userId, exchange.getResponse().getStatusCode()));
-    }
-
+	private void logResponseDetails(ServerWebExchange exchange, String requestId, String userId) {
+		System.out.println(String.format("[%s][%s] Gateway Response: %s", requestId, userId,
+				exchange.getResponse().getStatusCode()));
+	}
 
 	public static class Config {
 		// 필요 시 사용자 정의 설정 추가

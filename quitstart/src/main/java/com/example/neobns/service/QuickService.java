@@ -35,7 +35,8 @@ public class QuickService {
 		ItemDto itemDto = mapper.findById(id);
 		return itemDto;
 	}
-
+	
+	@Cacheable(value = "item:id")
 	public List<ItemDto> getAll() {
 		List<ItemDto> results = mapper.findAll();
 		return results;

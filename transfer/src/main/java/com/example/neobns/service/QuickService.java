@@ -5,6 +5,8 @@ import com.example.neobns.mapper.QuickMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
@@ -24,17 +26,19 @@ public class QuickService {
     private final Environment environment;
     private Map<String, String> cachedProperties = new HashMap<>();
 
-
+    @CachePut(value = "item:id", key = "#itemDto.id")
     public boolean registerItem(ItemDto itemDto){
         log.info("Service....");
         return true;
     }
-
+    
+    @Cacheable(value = "item:id", key = "#id")
     public ItemDto getItemById(String id){
         ItemDto itemDto = mapper.findById(id);
         return itemDto;
     }
-
+    
+    @Cacheable(value = "item:id")
     public List<ItemDto> getAll() {
         List<ItemDto> results = mapper.findAll();
         return results;

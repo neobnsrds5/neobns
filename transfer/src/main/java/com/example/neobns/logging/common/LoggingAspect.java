@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 public class LoggingAspect {
 	
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
-	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
-	private static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로 빼기..!
 
 	/**
      * Controller 계층의 메서드 로깅
@@ -69,10 +67,6 @@ public class LoggingAspect {
 
             // 메서드 실행 후 trace 로깅
             traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
-            // 설정 시간보다 느리면 slow 로깅
-            if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-            	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
-            }
             
             MDC.remove("className");
             MDC.remove("methodName");

@@ -19,8 +19,9 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 	public static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로...
 
 	private static final String REQUEST_ID_HEADER = "X-Request-ID";
-	private static final String MDC_REQUEST_ID_KEY = "requestId";
 	private static final String USER_ID_HEADER = "X-User-ID";
+	
+	private static final String MDC_REQUEST_ID_KEY = "requestId";
 	private static final String MDC_USER_ID_KEY = "userId";
 
 	@Override
@@ -30,6 +31,8 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 		String requestId = MDC.get(MDC_REQUEST_ID_KEY);
 		String userId = MDC.get(MDC_USER_ID_KEY);
 		String uri = request.getURI().toString();
+		String method = request.getMethod().toString();
+		
 
 		if (requestId != null) {
 			request.getHeaders().add(REQUEST_ID_HEADER, requestId);
@@ -42,10 +45,10 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 		// Before REST Call
 		long startTime = System.currentTimeMillis();
 		
-		MDC.put("className", "REST call");
-		MDC.put("methodName", uri);
+		MDC.put("className", uri);
+		MDC.put("methodName", method);
 		
-		traceLogger.info("{}; {}; {}; {}; {}", requestId, "REST call", uri, "start", userId);
+		traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, "start", userId);
 		
 		MDC.remove("className");
         MDC.remove("methodName");
@@ -55,20 +58,20 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			
-			MDC.put("className", "REST call");
-			MDC.put("methodName", uri);
+			MDC.put("className", uri);
+			MDC.put("methodName", method);
 			MDC.put("executeTime", Long.toString(elapsedTime));
 
 			// After REST Call
-			traceLogger.info("{}; {}; {}; {}; {}", requestId, "REST call", uri, elapsedTime, userId);
+			traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
 			
 			if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-				slowLogger.info("{}; {}; {}; {}; {}", requestId, "REST call", uri, elapsedTime, userId);
+				slowLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
 			}
             
 			return response;
 		} catch (Exception ex) {
-			traceLogger.error("{}; {}; {}; {}; {}", requestId, "REST call", uri, "failed: " + ex.getMessage(), userId);
+			traceLogger.error("{}; {}; {}; {}; {}", requestId, uri, method, "failed: " + ex.getMessage(), userId);
 			throw ex;
 		} finally {
 			MDC.remove("className");

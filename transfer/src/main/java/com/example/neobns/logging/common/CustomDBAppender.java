@@ -28,7 +28,7 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setString(4, event.getLevel().toString());
 			stmt.setString(5, event.getThreadName());
 			stmt.setShort(6, computeReferenceMask(event));
-
+			
 			// Argument 처리 (최대 4개, 부족하면 null로 채움)
 			Object[] args = event.getArgumentArray();
 			for (int i = 0; i < 4; i++) {
@@ -125,31 +125,15 @@ public class CustomDBAppender extends DBAppender {
             
             System.out.println("event.getThrowableProxy().getClassName() : " + event.getThrowableProxy().getClassName());
             
+            String queryLog = MDC.get("queryLog");
+            System.out.println("queryLog : " + queryLog);
+            errorStmt.setString(8, queryLog);
             
+            String uri = MDC.get("requestUri");
+            errorStmt.setString(9, uri);
             
-            errorStmt.setString(8, "query_log");
-            errorStmt.setString(9, "uri");
-            
-            String errorName = "No Exception";
-            if (event.getThrowableProxy() != null) {
-                String causeMessage = (event.getThrowableProxy().getCause() != null) 
-                        ? event.getThrowableProxy().getCause().toString() 
-                        : "No Cause";
-                System.out.println("causeMessage : " + causeMessage);
-                System.out.println("causeMessgae.toString() : " + causeMessage.toString());
-                errorName = event.getThrowableProxy().getClassName() + ": " + causeMessage;
-            }
+            String errorName = MDC.get("errorName");
             errorStmt.setString(10, errorName);
-            
-            
-            
-     
-            // 예외 메시지 처리
-//            String exceptionMessage = event.getThrowableProxy() != null 
-//                ? event.getThrowableProxy().getClassName() + ": " + event.getThrowableProxy().getMessage() 
-//                : null;
-//            errorStmt.setString(5, exceptionMessage);
-            
 
             // DB에 삽입 실행
             errorStmt.executeUpdate();
@@ -163,7 +147,7 @@ public class CustomDBAppender extends DBAppender {
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = connection.prepareStatement(slowLogSQL)) {
-
+			
 			stmt.setLong(1, event.getTimeStamp());
 
 			// Caller 데이터와 MDC 값 우선순위 처리
@@ -183,9 +167,13 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setString(2, callerClass);
 			stmt.setString(3, callerMethod);
 			
-			// TODO: query, uri 저장 필요...!
-			stmt.setNull(4, java.sql.Types.VARCHAR);
-			stmt.setNull(5, java.sql.Types.VARCHAR);
+			if(callerClass.equals("SQL")) { // slow query
+				stmt.setString(4, callerMethod);
+				stmt.setNull(5, java.sql.Types.VARCHAR);
+			}else { // slow page
+				stmt.setNull(4, java.sql.Types.VARCHAR);
+				stmt.setString(5, callerClass);
+			}
 
 			// MDC에서 데이터 가져오기
 			String userId = MDC.get("userId");

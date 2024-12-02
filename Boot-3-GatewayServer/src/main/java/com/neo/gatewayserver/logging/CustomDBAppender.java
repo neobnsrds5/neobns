@@ -167,9 +167,13 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setString(2, callerClass);
 			stmt.setString(3, callerMethod);
 			
-			// TODO: query, uri 저장 필요...!
-			stmt.setNull(4, java.sql.Types.VARCHAR);
-			stmt.setNull(5, java.sql.Types.VARCHAR);
+			if(callerClass.equals("SQL")) { // slow query
+				stmt.setString(4, callerMethod);
+				stmt.setNull(5, java.sql.Types.VARCHAR);
+			}else { // slow page
+				stmt.setNull(4, java.sql.Types.VARCHAR);
+				stmt.setString(5, callerClass);
+			}
 
 			// MDC에서 데이터 가져오기
 			String userId = MDC.get("userId");

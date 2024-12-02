@@ -40,9 +40,13 @@ public class RequestFIlter extends OncePerRequestFilter{
         }
         
         String clientIp = request.getHeader(CLIENT_IP_HEADER);
-        if (clientIp == null||clientIp.isEmpty()) {
-        	clientIp = "UNKNOWN";
-        }
+        if(clientIp == null || clientIp.isEmpty()) {
+			clientIp = request.getRemoteAddr();
+			
+			if(clientIp == null || clientIp.isEmpty()) {
+				clientIp = "UNKNOWN";
+			}
+		}
         
         String userAgent = request.getHeader(USER_AGENT_HEADER);        
         if (userAgent == null) {

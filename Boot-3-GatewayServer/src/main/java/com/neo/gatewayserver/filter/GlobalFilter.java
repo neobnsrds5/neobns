@@ -54,7 +54,6 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 			// 로드 밸런서 환경에서 헤더가 비어 있을 수 있으므로 getRemoteAddress 메소드 사용
 			String clientIp = exchange.getRequest().getHeaders().getFirst(CLIENT_IP_HEADER);
 			if(clientIp == null || clientIp.isEmpty()) {
-				System.out.println("클라이언트 아이피가 없음!!");
 				clientIp = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
 				
 				if(clientIp == null || clientIp.isEmpty()) {

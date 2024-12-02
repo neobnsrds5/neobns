@@ -42,8 +42,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        session_factory:
-          statement_inspector: com.example.neobns.logging.common.JPASqlStatementInspector
+
   data:
     redis:
       host: localhost

@@ -18,6 +18,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.example.neobns.logging.common.JPALoggingInspector;
 import com.example.neobns.logging.common.MybatisLoggingInterceptor;
 import com.example.neobns.properties.DBProperties;
 
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class DataDBConfig {
 	
 	private final DBProperties dbProperties;
+	private final JPALoggingInspector inspector; 
 	
 	@Bean(name = "dataDBSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
@@ -54,6 +56,7 @@ public class DataDBConfig {
 		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.show_sql", "true");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		properties.put("hibernate.session_factory.statement_inspector", inspector);
 		em.setJpaPropertyMap(properties);
 		
 		return em;

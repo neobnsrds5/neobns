@@ -1,27 +1,19 @@
 package com.example.neobns.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-import java.util.Objects;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWarDeployment;
-
-import com.example.neobns.logging.common.JPALoggingInterceptor;
-
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-@EntityListeners(JPALoggingInterceptor.class)
 public class Account {
 
 	@Id

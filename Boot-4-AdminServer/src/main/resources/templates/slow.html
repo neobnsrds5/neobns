@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API 관리</title>
+    <title>SLOW 관리</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
@@ -11,7 +11,7 @@
 <body class="bg-light">
 
 <div class="container my-5">
-    <h2 class="mb-4 text-center">API 관리</h2>
+    <h2 class="mb-4 text-center">SLOW 관리</h2>
 
     <div class="d-flex justify-content-end mb-3 gap-2">
 	    <button class="btn-common btn-api-mock">선택한 API 대응답 전환</button>
@@ -24,32 +24,32 @@
 	            <th>
 	            	<input type="checkbox" id="select-all" class="form-check-input">
 				</th>
-	            <th>순번</th>
-	            <th>API 주소</th>
-	            <th>HealthCheck Button</th>
-	            <th>결과</th>
-	            <th>Mode Button</th>
-	            <th>상태</th>
-	            <th>실행</th>
+	            <th>종류</th> <!-- SQL 또는 PAGE -->
+	            <th>TRACE ID</th> <!-- 추적 아이디 -->
+	            <th>QUERY/URI</th> <!-- 느린 쿼리 또는 uri 출력 -->
+	            <th>EXECUTE TIME</th> <!-- 실행 시간 출력 -->
+	            <th>USER ID</th> <!-- 사용자 아이디 -->
+	            <th>CLIENT IP</th> <!-- 사용자 IP -->
+	            <th>DEVICE</th> <!-- 사용자 디바이스 -->
 	        </tr>
         </thead>
         <tbody>
-	        <tr th:each="api : ${apiList}">
+	        <tr th:each="log : ${logList}">
 	            <!-- 선택 체크박스 -->
 	            <td>
-	                <input type="checkbox" class="form-check-input row-checkbox" th:attr="data-id=${api.id}">
+	                <input type="checkbox" class="form-check-input row-checkbox" th:attr="trace-id=${log.traceId}">
 	            </td>
-	            <!-- 순번 -->
-	            <td th:text="${api.id}"></td>
-	            <!-- API 주소 -->
+	            <!-- 종류 -->
+	            <td th:text="${log.callerClass}"></td>
+	            <!-- TRACE ID 주소 -->
 	            <td class="text-start">
-	    			<a th:href="${api.apiUrl}" target="_blank" th:text="${api.apiUrl}"></a>
+	    			<a th:href="" target="_blank" th:text="${log.traceId}"></a>
 				</td>
-	            <!-- HealthCheck Button -->
+	            <!-- QUERY/URI -->
 	            <td>
 				   <button class="btn-common btn-healthcheck btn-sm" th:attr="data-id=${api.id}">서버 확인</button>
 				</td>
-	            <!-- 결과 -->
+	            <!-- EXECUTE TIME -->
 	            <td>
 	            	<span class="badge-result badge-result-on" 
 				          th:if="${api.lastCheckedStatus != null and api.lastCheckedStatus == 0}" 
@@ -59,17 +59,17 @@
 				          th:text="${#temporals.format(api.lastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
 				    <span th:if="${api.lastCheckedStatus == null}">-</span>
 				</td>
-	            <!-- Mode Button -->
+	            <!-- USER ID -->
 	            <td>
 				    <button class="btn-common btn-toggle-mode btn-sm"
 				    th:attr="data-id=${api.id}">대응답/실서버 전환</button>
 				</td>
-	            <!-- 상태 -->
+	            <!-- CLIENT IP -->
 	            <td>
 				    <span class="badge-status badge-status-real" th:if="${api.responseStatus}" th:text="'실서버'"></span>
 				    <span class="badge-status badge-status-mock" th:if="!${api.responseStatus}" th:text="'대응답'"></span>
 				</td>
-	            <!-- 실행 -->
+	            <!-- DEVICE -->
 	            <td>
 				    <button class="btn-execute" th:attr="data-id=${api.id}">
 				        <span class="triangle"></span>

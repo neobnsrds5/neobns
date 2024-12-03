@@ -1,0 +1,25 @@
+package com.neo.adminserver.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class LogDTO {
+
+	private String timestmp;
+	private String loggerName;
+	private String levelString;
+	private String callerClass;
+	private String callerMethod;
+	private String traceId;
+	private String userId;
+	private String ipAddress;
+	private String device;
+	private String executeTime;
+	
+	private String query;
+	private String uri;
+	
+	private String errorName;
+}

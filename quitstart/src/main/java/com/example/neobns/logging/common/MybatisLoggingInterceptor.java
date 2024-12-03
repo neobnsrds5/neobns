@@ -1,6 +1,5 @@
 package com.example.neobns.logging.common; // quitstart
 
-import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -34,16 +33,13 @@ public class MybatisLoggingInterceptor implements Interceptor {
 		long start = System.currentTimeMillis();
 		
 		// sql error 저장
-		String errorSQL = handler.getBoundSql().getSql();
-		MDC.put("queryLog", errorSQL.trim());
-		traceLogger.info(errorSQL);
+		String errorSQL = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
+		MDC.put("queryLog", errorSQL);
 
 		Object result = null;
 		try {
 			// 실제 쿼리 실행
 			result = invocation.proceed();
-		} catch (Exception e) {
-			traceLogger.error(errorSQL);
 		} finally {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
@@ -56,7 +52,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			MDC.put("methodName", sql);
 
 			// SQL 실행 후 trace 로깅
-			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			traceLogger.info("{}; {}; {}; {};", MDC.get("requestId"), "SQL", sql, elapsedTime);
 			// 설정 시간보다 느리면 slow 로깅
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
@@ -65,7 +61,6 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			MDC.remove("executeTime");
 			MDC.remove("className");
 			MDC.remove("methodName");
-			MDC.remove("queryLog");
 		}
 		return result;
 	}

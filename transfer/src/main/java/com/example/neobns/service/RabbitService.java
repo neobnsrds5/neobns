@@ -8,6 +8,6 @@ public class RabbitService {
 
     @RabbitListener(queues = "example-queue")
     public void receive(String message) {
-        System.out.println(message);
+        System.out.println("Received: " + message);
     }
 }

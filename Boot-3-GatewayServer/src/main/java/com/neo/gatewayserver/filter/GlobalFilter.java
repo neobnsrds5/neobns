@@ -143,14 +143,14 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 		MDC.put("userId", userId);
 		MDC.put("className", uri);
 		MDC.put("methodName", method);
-		MDC.put("executeTime", Long.toString(elapsedTime));
+		MDC.put("executeResult", Long.toString(elapsedTime));
 		MDC.put(MDC_CLIENT_IP, clientIp);
         MDC.put(MDC_USER_AGENT, userAgent);
 		
-		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
+		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
 		// 설정 시간보다 느리면 slow 로깅
         if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-        	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
+        	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
         }
 		
 		MDC.clear();

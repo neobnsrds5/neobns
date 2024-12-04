@@ -16,6 +16,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
 	public static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로...
 
 	private static final String REQUEST_ID_HEADER = "X-Request-ID";
@@ -59,7 +60,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 			
 			MDC.put("className", uri);
 			MDC.put("methodName", method);
-			MDC.put("executeTime", Long.toString(elapsedTime));
+			MDC.put("executeResult", Long.toString(elapsedTime));
 
 			// After REST Call
 			traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
@@ -70,12 +71,12 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
             
 			return response;
 		} catch (Exception ex) {
-			traceLogger.error("{}; {}; {}; {}; {}", requestId, uri, method, "failed: " + ex.getMessage(), userId);
+			errorLogger.error("{}; {}; {}; {}; {}", requestId, uri, method, "failed: " + ex.getMessage(), userId);
 			throw ex;
 		} finally {
 			MDC.remove("className");
             MDC.remove("methodName");
-            MDC.remove("executeTime");
+            MDC.remove("executeResult");
 		}
 
 	}

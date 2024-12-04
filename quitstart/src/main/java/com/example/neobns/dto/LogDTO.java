@@ -12,9 +12,11 @@ public class LogDTO {
 	private String levelString;
 	private String callerClass;
 	private String callerMethod;
+	private String query;
+	private String uri;
 	private String traceId;
 	private String userId;
 	private String ipAddress;
 	private String device;
-	private String executeTime;
+	private String executeResult;
 }

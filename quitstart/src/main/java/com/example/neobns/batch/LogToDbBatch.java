@@ -10,7 +10,6 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -79,7 +78,7 @@ public class LogToDbBatch {
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>();
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(";");
-		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId", "ipAddress", "device", "executeTime");
+		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId", "ipAddress", "device", "executeResult");
 		lineMapper.setLineTokenizer(tokenizer);
 
 		BeanWrapperFieldSetMapper<LogDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
@@ -92,16 +91,30 @@ public class LogToDbBatch {
 
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
-		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_time) "
+		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result) "
 				+ "VALUES (UNIX_TIMESTAMP(:timestmp), :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, "
-				+ "CASE WHEN :executeTime = '' OR :executeTime IS NULL THEN NULL ELSE CAST(:executeTime AS UNSIGNED) END)";
+				+ "CASE WHEN :executeResult = '' OR :executeResult IS NULL THEN NULL ELSE CAST(:executeResult AS UNSIGNED) END)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 	}
 	
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingSlowWriter() {
-	    String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_time, query, uri) "
+	    String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
+	    		+ "VALUES (UNIX_TIMESTAMP(:timestmp), :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+	    		+ "CASE WHEN :executeResult = '' OR :executeResult IS NULL THEN NULL ELSE CAST(:executeResult AS UNSIGNED) END, "
+	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
+
+	    return new JdbcBatchItemWriterBuilder<LogDTO>()
+	            .dataSource(datasource)
+	            .sql(sql)
+	            .beanMapped()
+	            .build();
+	}
+	
+	@Bean
+	public JdbcBatchItemWriter<LogDTO> loggingErrorWriter() {
+		String sql = "INSERT INTO logging_error (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
 	    		+ "VALUES (UNIX_TIMESTAMP(:timestmp), :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
 	    		+ "CASE WHEN :executeTime = '' OR :executeTime IS NULL THEN NULL ELSE CAST(:executeTime AS UNSIGNED) END, "
 	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";

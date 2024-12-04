@@ -25,6 +25,7 @@ public class JPAQueryLoggingAspect {
 
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
 //	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
 //	private static int SLOW_QUERIES_SIZE = 10;
 	public static long SLOW_QUERY_THRESHOLD_MS = 0;
@@ -37,16 +38,23 @@ public class JPAQueryLoggingAspect {
 
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
-		
+
 		MDC.put("className", "SQL");
 		long start = System.currentTimeMillis();
-		Object result = joinPoint.proceed();
+		
+		Object result = null;
+		try {
+			result = joinPoint.proceed();
+		} catch (Exception e) {
+			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", MDC.get("methodName"));
+		}
+
 		long elapsedTime = System.currentTimeMillis() - start;
 //		String sql = joinPoint.getSignature().toString();
 //		String shortSql = sql.substring(sql.lastIndexOf(".") + 1);
-		
+
 		MDC.put("executeResult", Long.toString(elapsedTime));
-		
+
 		traceLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
@@ -55,9 +63,7 @@ public class JPAQueryLoggingAspect {
 //			slowQuery.put("methodName", MDC.get("sql"));
 //			slowQuery.put("executeTime", elapsedTime);
 //			slowQuery.put("timestamp", new Date());
-			
-			
-			
+
 			slowLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 //			synchronized (SLOW_QUERIES) {
@@ -67,7 +73,7 @@ public class JPAQueryLoggingAspect {
 //				SLOW_QUERIES.add(slowQuery);
 //				System.out.println("SLOW_QUERIES : " + SLOW_QUERIES.toString());
 //			}
-			
+
 			MDC.remove("executeResult");
 			MDC.remove("className");
 			MDC.remove("methodName");

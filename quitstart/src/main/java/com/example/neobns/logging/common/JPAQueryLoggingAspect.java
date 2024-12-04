@@ -23,16 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JPAQueryLoggingAspect {
 
-	private static final Logger logger = LoggerFactory.getLogger(JPAQueryLoggingAspect.class);
-	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
-	private static int SLOW_QUERIES_SIZE = 10;
+	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
+	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+//	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
+//	private static int SLOW_QUERIES_SIZE = 10;
 	public static long SLOW_QUERY_THRESHOLD_MS = 0;
 
-	public static List<Map<String, Object>> getSlowQueries() {
-		synchronized (SLOW_QUERIES) {
-			return new ArrayList<>(SLOW_QUERIES);
-		}
-	}
+//	public static List<Map<String, Object>> getSlowQueries() {
+//		synchronized (SLOW_QUERIES) {
+//			return new ArrayList<>(SLOW_QUERIES);
+//		}
+//	}
 
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -43,22 +44,27 @@ public class JPAQueryLoggingAspect {
 //		String sql = joinPoint.getSignature().toString();
 //		String shortSql = sql.substring(sql.lastIndexOf(".") + 1);
 
-		logger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("sql"), elapsedTime);
+		traceLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("sql"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-			Map<String, Object> slowQuery = new HashMap<>();
-			slowQuery.put("requestID", MDC.get("requestId"));
-			slowQuery.put("sql", MDC.get("sql"));
-			slowQuery.put("executeTime", elapsedTime);
-			slowQuery.put("timestamp", new Date());
+//			Map<String, Object> slowQuery = new HashMap<>();
+//			slowQuery.put("requestID", MDC.get("requestId"));
+//			slowQuery.put("methodName", MDC.get("sql"));
+//			slowQuery.put("executeTime", elapsedTime);
+//			slowQuery.put("timestamp", new Date());
+			
+			MDC.put("executeTime", Long.toString(elapsedTime));
+			MDC.put("className", "SQL");
+			
+			slowLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
-			synchronized (SLOW_QUERIES) {
-				if (SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
-					SLOW_QUERIES.poll();
-				}
-				SLOW_QUERIES.add(slowQuery);
-				System.out.println("SLOW_QUERIES : " + SLOW_QUERIES.toString());
-			}
+//			synchronized (SLOW_QUERIES) {
+//				if (SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
+//					SLOW_QUERIES.poll();
+//				}
+//				SLOW_QUERIES.add(slowQuery);
+//				System.out.println("SLOW_QUERIES : " + SLOW_QUERIES.toString());
+//			}
 		}
 
 		return result;

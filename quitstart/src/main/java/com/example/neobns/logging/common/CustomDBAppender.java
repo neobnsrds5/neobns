@@ -126,6 +126,8 @@ public class CustomDBAppender extends DBAppender {
             String userAgent = MDC.get("userAgent");
             String userIp = MDC.get("clientIp");
             String executeTime = MDC.get("executeTime");
+            
+            System.out.println("과연 여기에서 뭐라고 저장이 : " + MDC.getCopyOfContextMap());
 
             stmt.setString(15, userId != null ? userId : "UNKNOWN");
             stmt.setString(16, requestId != null ? requestId : "UNKNOWN");

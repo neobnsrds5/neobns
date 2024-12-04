@@ -10,7 +10,7 @@ public class JPALoggingInspector implements StatementInspector{
 	@Override
 	public String inspect(String sql) {
 		System.out.println("sql executed : "  + sql);
-		MDC.put("sql", sql);
+		MDC.put("methodName", sql);
 		return sql;
 	}
 

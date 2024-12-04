@@ -23,7 +23,7 @@ public class LogService {
 		return logMapper.findErrorByPage();
 	}
 	
-	public List<LogDTO> findByTraceId(){
-		return logMapper.findByTraceId();
+	public List<LogDTO> findByTraceId(String traceId){
+		return logMapper.findByTraceId(traceId);
 	}
 }

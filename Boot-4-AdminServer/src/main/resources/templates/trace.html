@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SLOW 관리</title>
+    <title>TRACE 관리</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
@@ -11,7 +11,12 @@
 <body class="bg-light">
 
 <div class="container my-5">
-    <h2 class="mb-4 text-center">SLOW 관리</h2>
+    <h2 class="mb-4 text-center">TRACE 관리</h2>
+
+    <div class="d-flex justify-content-end mb-3 gap-2">
+	    <button class="btn-common btn-api-mock">선택한 API 대응답 전환</button>
+	    <button class="btn-common btn-api-real">선택한 API 실서버 전환</button>
+	</div>
 
     <table class="table table-hover align-middle">
         <thead>
@@ -44,7 +49,7 @@
 	            </td>
 	            <!-- 추적 ID -->
 	            <td class="text-start">
-	    			<a th:href="'/admin/trace/' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	    			<a target="_blank" th:text="${log.traceId}"></a>
 				</td>
 	            <!-- 쿼리/URI -->
 	            <td>

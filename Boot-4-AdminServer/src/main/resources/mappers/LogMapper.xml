@@ -15,8 +15,8 @@
         <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>
 
-    <select id="findByTraceId" resultType="LogDTO">
-        SELECT * FROM logging_event WHERE trace_id = #{id}
+    <select id="findByTraceId" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_event WHERE trace_id = #{traceId}
     </select>
 
 </mapper>

@@ -13,5 +13,5 @@ public interface LogMapper {
 	
 	List<LogDTO> findErrorByPage();
 	
-	List<LogDTO> findByTraceId();
+	List<LogDTO> findByTraceId(String traceId);
 }

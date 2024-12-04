@@ -27,7 +27,7 @@ spring:
       port: 6379  
       password:   
   rabbitmq:
-      host: 127.0.0.1
+      host: localhost
       port: 5672
       username: guest
       password: guest
@@ -64,4 +64,8 @@ management:
   metrics:
     enable:
       hikaricp: true
-  
+      
+values:
+  queue: example-queue
+  exchange: example-exchange
+  routingKey: example-routing-key

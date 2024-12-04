@@ -1,5 +1,7 @@
 package com.example.neobns.batch;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -7,13 +9,16 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,8 +54,7 @@ public class LogToDbBatch {
 	public Step logToDBStep() {
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(100, transactionManager)
 				.reader(logReader())
-				.processor(logProcessor())
-				.writer(logWriter())
+				.writer(compositeWriter())
 				.taskExecutor(logToDBTaskExecutor())
 				.build();
 	}
@@ -69,13 +73,13 @@ public class LogToDbBatch {
 	@Bean
 	public FlatFileItemReader<LogDTO> logReader() {
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
-		String path = "logs/application.log";
+		String path = "../logs/application.log";
 		reader.setResource(new FileSystemResource(path));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>();
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(";");
-		tokenizer.setNames("timestmp", "logger_name", "level_string", "thread_name", "arg0", "arg1", "arg2", "arg3");
+		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId", "ipAddress", "device", "executeTime");
 		lineMapper.setLineTokenizer(tokenizer);
 
 		BeanWrapperFieldSetMapper<LogDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
@@ -87,32 +91,44 @@ public class LogToDbBatch {
 	}
 
 	@Bean
-	public ItemProcessor<LogDTO, LogDTO> logProcessor() {
-		return new ItemProcessor<LogDTO, LogDTO>() {
-			@Override
-			public LogDTO process(LogDTO logDTO) throws Exception {
-				// formatted_message 필드를 생성합니다.
-				String formattedMessage = String
-						.format("%s; %s; %s; %s;",
-								logDTO.getArg0() != null ? logDTO.getArg0() : "",
-								logDTO.getArg1() != null ? logDTO.getArg1() : "",
-								logDTO.getArg2() != null ? logDTO.getArg2() : "",
-								logDTO.getArg3() != null ? logDTO.getArg3() : "")
-						.trim();
-				logDTO.setFormatted_message(formattedMessage);
+	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
+		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_time) "
+				+ "VALUES (UNIX_TIMESTAMP(:timestmp), :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, "
+				+ "CASE WHEN :executeTime = '' OR :executeTime IS NULL THEN NULL ELSE CAST(:executeTime AS UNSIGNED) END)";
 
-				return logDTO;
-			}
-		};
+		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
+	}
+	
+	@Bean
+	public JdbcBatchItemWriter<LogDTO> loggingSlowWriter() {
+	    String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_time, query, uri) "
+	    		+ "VALUES (UNIX_TIMESTAMP(:timestmp), :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+	    		+ "CASE WHEN :executeTime = '' OR :executeTime IS NULL THEN NULL ELSE CAST(:executeTime AS UNSIGNED) END, "
+	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
 
+	    return new JdbcBatchItemWriterBuilder<LogDTO>()
+	            .dataSource(datasource)
+	            .sql(sql)
+	            .beanMapped()
+	            .build();
+	}
+	
+	@Bean
+	public CompositeItemWriter<LogDTO> compositeWriter() {
+	    CompositeItemWriter<LogDTO> writer = new CompositeItemWriter<>();
+	    writer.setDelegates(List.of(loggingEventWriter(), conditionalSlowWriter()));
+	    return writer;
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<LogDTO> logWriter() {
-		String sql = "INSERT INTO logging_event (timestmp, formatted_message, logger_name, level_string, thread_name, arg0, arg1, arg2, arg3) "
-				+ "VALUES (UNIX_TIMESTAMP(:timestmp), :formatted_message, :logger_name, :level_string, :thread_name, :arg0, :arg1, :arg2, :arg3)";
-
-		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
+	public ItemWriter<LogDTO> conditionalSlowWriter() {
+	    return items -> {
+	        for (LogDTO log : items) {
+	            if ("slow".equalsIgnoreCase(log.getLoggerName())) {
+	                loggingSlowWriter().write(new Chunk<>(List.of(log)));
+	            }
+	        }
+	    };
 	}
 
 }

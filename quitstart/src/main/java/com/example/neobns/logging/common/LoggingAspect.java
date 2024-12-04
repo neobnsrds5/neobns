@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 
 	/**
      * Controller 계층의 메서드 로깅
@@ -43,21 +43,34 @@ public class LoggingAspect {
      */
     private Object logExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
         long start = System.currentTimeMillis();
-        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String className = layer.equals("Mapper") ? "Mapper" : joinPoint.getTarget().getClass().toString();
         String methodName = joinPoint.getSignature().getName();
-        String fullMethodName = String.format("%s_%s", className, methodName);
+        
+        MDC.put("className", className);
+        MDC.put("methodName", methodName);
 
         // 메서드 실행 전 로깅
-        logger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, "start");
+        traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), "start");
+        
+        MDC.remove("className");
+        MDC.remove("methodName");
 
         Object result;
         try {
             result = joinPoint.proceed(); // 실제 메서드 실행
         } finally {
             long elapsedTime = System.currentTimeMillis() - start;
+            
+            MDC.put("className", className);
+            MDC.put("methodName", methodName);
+            MDC.put("executeTime", Long.toString(elapsedTime));
 
-            // 메서드 실행 후 로깅
-            logger.info("{}; {}; {}; {}", MDC.get("requestId"), layer, fullMethodName, elapsedTime);
+            // 메서드 실행 후 trace 로깅
+            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
+            
+            MDC.remove("className");
+            MDC.remove("methodName");
+            MDC.remove("executeTime");
         }
 
         return result;

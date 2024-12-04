@@ -9,6 +9,11 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/your_database_name
+    username: your_username
+    password: your_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
   main:
     web-application-type: reactive
   application:
@@ -46,7 +51,6 @@ spring:
             - Path=/quitstart/**
             - Method=GET, POST
           filters:
-            - name: GlobalFilter
             - RewritePath=/quitstart/(?<path>.*), /$\{path}
             
         - id: quitstart
@@ -55,7 +59,6 @@ spring:
             - Path=/quitstart/actuator/**
             - Method=GET
           filters:
-            - name: GlobalFilter
             - RewritePath=/quitstart/(?<path>.*), /$\{path}
             
         - id: transfer
@@ -64,7 +67,6 @@ spring:
             - Path=/transfer/**
             - Method=GET, POST
           filters:
-            - name: GlobalFilter
             - RewritePath=/transfer/(?<path>.*), /$\{path}
             
         - id: transfer
@@ -73,9 +75,7 @@ spring:
             - Path=/transfer/actuator/**
             - Method=GET
           filters:
-            - name: GlobalFilter
-            - RewritePath=/transfer/(?<path>.*), /$\{path}
-            
+            - RewritePath=/transfer/(?<path>.*), /$\{path}            
             
 management:
   httpexchanges:

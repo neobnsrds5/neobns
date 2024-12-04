@@ -1,4 +1,4 @@
-package com.example.neobns.logging.common;
+package com.neo.gatewayserver.logging;
 
 import ch.qos.logback.classic.db.DBAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -28,7 +28,7 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setString(4, event.getLevel().toString());
 			stmt.setString(5, event.getThreadName());
 			stmt.setShort(6, computeReferenceMask(event));
-
+			
 			// Argument 처리 (최대 4개, 부족하면 null로 채움)
 			Object[] args = event.getArgumentArray();
 			for (int i = 0; i < 4; i++) {
@@ -93,7 +93,7 @@ public class CustomDBAppender extends DBAppender {
 		}
 	}
 	
-private void saveErrorLog(ILoggingEvent event, Connection connection) {
+	private void saveErrorLog(ILoggingEvent event, Connection connection) {
         
         String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query_log, uri, error_name) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -103,23 +103,36 @@ private void saveErrorLog(ILoggingEvent event, Connection connection) {
             errorStmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
 
             String userId = MDC.get("userId");
-            String traceId = MDC.get("requestId");
-            String userIp = MDC.get("clientIp");
-            String userAgent = MDC.get("userAgent");
-            String className = MDC.get("callerClass");
-            String methodName = MDC.get("callerMethod");
-            String queryLog = MDC.get("queryLog");
-            String uri = MDC.get("requestUri");
-            String errorName = MDC.get("errorName");
-
             errorStmt.setString(2, userId != null ? userId : "UNKNOWN_USER");
+            
+            String traceId = MDC.get("requestId");
             errorStmt.setString(3, traceId);
+            
+            String userIp = MDC.get("clientIp");
             errorStmt.setString(4, userIp);
+            
+            String userAgent = MDC.get("userAgent");
             errorStmt.setString(5, userAgent);
-            errorStmt.setString(6, className);
-            errorStmt.setString(7, methodName);
+            
+            // Caller 데이터 매핑
+            StackTraceElement callerData = event.getCallerData() != null && event.getCallerData().length > 0
+                    ? event.getCallerData()[0]
+                    : null;
+            errorStmt.setString(6, callerData != null ? callerData.getClassName() : null);
+            errorStmt.setString(7, callerData != null ? callerData.getMethodName() : null);
+            
+            System.out.println("callerData.getClassName() : " + callerData.getClassName());
+            
+            System.out.println("event.getThrowableProxy().getClassName() : " + event.getThrowableProxy().getClassName());
+            
+            String queryLog = MDC.get("queryLog");
+            System.out.println("queryLog : " + queryLog);
             errorStmt.setString(8, queryLog);
+            
+            String uri = MDC.get("requestUri");
             errorStmt.setString(9, uri);
+            
+            String errorName = MDC.get("errorName");
             errorStmt.setString(10, errorName);
 
             // DB에 삽입 실행
@@ -134,7 +147,7 @@ private void saveErrorLog(ILoggingEvent event, Connection connection) {
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = connection.prepareStatement(slowLogSQL)) {
-
+			
 			stmt.setLong(1, event.getTimeStamp());
 
 			// Caller 데이터와 MDC 값 우선순위 처리

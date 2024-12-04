@@ -6,9 +6,9 @@
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
-
+	
 	<!-- CustomDBAppender: 데이터베이스에 로그 저장 -->
-    <appender name="CUSTOM_DB" class="com.example.neobns.logging.common.CustomDBAppender">
+    <appender name="CUSTOM_DB" class="com.neo.gatewayserver.logging.CustomDBAppender">
         <!-- 필터 설정 -->
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator>

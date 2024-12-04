@@ -30,8 +30,8 @@ public class QuickController {
 	private final QuickService quickService;
 
 	@GetMapping("/")
-	public RedirectView main() {
-		return new RedirectView("/index.html");
+	public String main() {
+		return "메인 페이지입니다";
 	}
 
 	@GetMapping("/dummy")

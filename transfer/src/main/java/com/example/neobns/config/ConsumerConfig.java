@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConsumerConfig {
 	
-	private RabbitProp prop;
+	private final RabbitProp prop;
 
     @Bean
     public Queue queue(){

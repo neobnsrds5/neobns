@@ -92,7 +92,7 @@ public class LogToDbBatch {
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
 		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result) "
-				+ "VALUES (UNIX_TIMESTAMP(:timestmp), :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, "
+				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, "
 				+ "CASE WHEN :executeResult = '' OR :executeResult IS NULL THEN NULL ELSE CAST(:executeResult AS UNSIGNED) END)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
@@ -101,7 +101,7 @@ public class LogToDbBatch {
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingSlowWriter() {
 	    String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
-	    		+ "VALUES (UNIX_TIMESTAMP(:timestmp), :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+	    		+ "VALUES (:timestmp, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
 	    		+ "CASE WHEN :executeResult = '' OR :executeResult IS NULL THEN NULL ELSE CAST(:executeResult AS UNSIGNED) END, "
 	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
 
@@ -115,7 +115,7 @@ public class LogToDbBatch {
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingErrorWriter() {
 		String sql = "INSERT INTO logging_error (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
-	    		+ "VALUES (UNIX_TIMESTAMP(:timestmp), :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+	    		+ "VALUES (:timestmp, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
 	    		+ "CASE WHEN :executeTime = '' OR :executeTime IS NULL THEN NULL ELSE CAST(:executeTime AS UNSIGNED) END, "
 	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
 

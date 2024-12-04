@@ -65,7 +65,7 @@ public class CustomDBAppender extends DBAppender {
             String userAgent = MDC.get("userAgent");
             String userIp = MDC.get("clientIp");
         	
-            fallbackStmt.setLong(1, event.getTimeStamp());
+            fallbackStmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
             fallbackStmt.setString(2,event.getFormattedMessage());
             fallbackStmt.setString(3, event.getLoggerName());
             fallbackStmt.setString(4, event.getLevel().toString());
@@ -86,7 +86,7 @@ public class CustomDBAppender extends DBAppender {
      */
     private boolean saveLoggingEvent(ILoggingEvent event, PreparedStatement stmt) {
         try {
-            stmt.setLong(1, event.getTimeStamp());
+            stmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
             stmt.setString(2, event.getFormattedMessage());
             stmt.setString(3, event.getLoggerName());
             stmt.setString(4, event.getLevel().toString());
@@ -187,7 +187,7 @@ public class CustomDBAppender extends DBAppender {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(slowLogSQL)) {
-            stmt.setLong(1, event.getTimeStamp());
+            stmt.setTimestamp(1, new java.sql.Timestamp(event.getTimeStamp()));
 
             StackTraceElement callerData = (event.getCallerData() != null && event.getCallerData().length > 0)
                     ? event.getCallerData()[0]

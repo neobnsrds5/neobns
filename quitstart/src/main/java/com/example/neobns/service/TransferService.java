@@ -14,7 +14,7 @@ public class TransferService {
 	private final RestTemplate restTemplate;
 	
 //	@Value("${gateway.url}")
-	@Value("http://localhost:8000")
+	@Value("http://localhost:8090") // transfer로 바로 요청하도록 수정
 	private String transferServiceUrl;
 		
 	public TransferService(RestTemplate restTemplate) {

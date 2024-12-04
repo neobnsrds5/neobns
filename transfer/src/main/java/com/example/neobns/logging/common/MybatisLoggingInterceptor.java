@@ -35,9 +35,8 @@ public class MybatisLoggingInterceptor implements Interceptor {
 		long start = System.currentTimeMillis();
 
 		// sql error 저장
-		String errorSQL = handler.getBoundSql().getSql();
+		String errorSQL = handler.getBoundSql().getSql().replaceAll("\\s+", " ");
 		MDC.put("queryLog", errorSQL.trim());
-		traceLogger.info(errorSQL);
 		
 		Object result = null;
 		try {

@@ -37,7 +37,8 @@ public class JPAQueryLoggingAspect {
 
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
-
+		
+		MDC.put("className", "SQL");
 		long start = System.currentTimeMillis();
 		Object result = joinPoint.proceed();
 		long elapsedTime = System.currentTimeMillis() - start;
@@ -45,7 +46,7 @@ public class JPAQueryLoggingAspect {
 //		String shortSql = sql.substring(sql.lastIndexOf(".") + 1);
 		
 		MDC.put("executeResult", Long.toString(elapsedTime));
-		MDC.put("className", "SQL");
+		
 		traceLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {

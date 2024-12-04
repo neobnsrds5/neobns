@@ -65,6 +65,10 @@ public class JPAQueryLoggingAspect {
 //				SLOW_QUERIES.add(slowQuery);
 //				System.out.println("SLOW_QUERIES : " + SLOW_QUERIES.toString());
 //			}
+			
+			MDC.remove("executeResult");
+			MDC.remove("className");
+			MDC.remove("methodName");
 		}
 
 		return result;

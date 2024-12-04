@@ -18,7 +18,7 @@ public class TransferController {
 	
 	private final TransferService transferService;
 
-	@PostMapping("/ex")
+	@PostMapping("/transfer/ex")
 	public ResponseEntity<String> transfer(@RequestBody TransferDTO request){
 		log.info("이체 서비스에서 이체 기능 호출 ");
 		if(request.getMoney()>0) {

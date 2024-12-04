@@ -75,7 +75,15 @@ spring:
             - Path=/transfer/actuator/**
             - Method=GET
           filters:
-            - RewritePath=/transfer/(?<path>.*), /$\{path}            
+            - RewritePath=/transfer/(?<path>.*), /$\{path} 
+
+        - id: admin
+          uri: lb://adminserver
+          predicates:
+            - Path=/admin/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/admin/(?<path>.*), /$\{path}
             
 management:
   httpexchanges:

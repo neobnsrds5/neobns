@@ -43,7 +43,7 @@ public class LoggingAspect {
      */
     private Object logExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
         long start = System.currentTimeMillis();
-        String className = layer.equals("Mapper") ? "Mapper" : joinPoint.getTarget().getClass().toString();
+        String className = layer.equals("Mapper") ? joinPoint.getTarget().getClass().getInterfaces()[0].getName() : joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
         
         MDC.put("className", className);

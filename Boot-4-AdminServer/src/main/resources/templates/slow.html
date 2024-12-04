@@ -24,13 +24,14 @@
 	            <th>
 	            	<input type="checkbox" id="select-all" class="form-check-input">
 				</th>
+				<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
 	            <th>종류</th> <!-- SQL 또는 PAGE -->
-	            <th>TRACE ID</th> <!-- 추적 아이디 -->
-	            <th>QUERY/URI</th> <!-- 느린 쿼리 또는 uri 출력 -->
-	            <th>EXECUTE TIME</th> <!-- 실행 시간 출력 -->
-	            <th>USER ID</th> <!-- 사용자 아이디 -->
-	            <th>CLIENT IP</th> <!-- 사용자 IP -->
-	            <th>DEVICE</th> <!-- 사용자 디바이스 -->
+	            <th>추적ID</th> <!-- 추적 아이디 -->
+	            <th>쿼리/URI</th> <!-- 느린 쿼리 또는 uri 출력 -->
+	            <th>소요시간</th> <!-- 실행 시간 출력 -->
+	            <th>사용자ID</th> <!-- 사용자 아이디 -->
+	            <th>사용자IP</th> <!-- 사용자 IP -->
+	            <th>접속장치</th> <!-- 사용자 디바이스 -->
 	        </tr>
         </thead>
         <tbody>
@@ -39,42 +40,30 @@
 	            <td>
 	                <input type="checkbox" class="form-check-input row-checkbox" th:attr="trace-id=${log.traceId}">
 	            </td>
+	            <!-- 타임스탬프 -->
+				<td th:text="${#dates.format(#dates.create(#numbers.parseLong(log.timestmp)), 'yyyy-MM-dd HH:mm:ss')}"></td>
 	            <!-- 종류 -->
-	            <td th:text="${log.callerClass}"></td>
-	            <!-- TRACE ID 주소 -->
+	            <td>
+	            	<span th:if="${log.callerClass == 'SQL'}" th:text="${log.callerClass}"></span>
+					<span th:unless="${log.callerClass == 'SQL'}" th:text="URI"></span>
+	            </td>
+	            <!-- 추적 ID -->
 	            <td class="text-start">
-	    			<a th:href="" target="_blank" th:text="${log.traceId}"></a>
+	    			<a target="_blank" th:text="${log.traceId}"></a>
 				</td>
-	            <!-- QUERY/URI -->
+	            <!-- 쿼리/URI -->
 	            <td>
-				   <button class="btn-common btn-healthcheck btn-sm" th:attr="data-id=${api.id}">서버 확인</button>
+					<span th:if="${log.query != null}" th:text="${log.query}"></span>
+					<span th:unless="${log.query != null}" th:text="${log.uri}"></span>
 				</td>
-	            <!-- EXECUTE TIME -->
-	            <td>
-	            	<span class="badge-result badge-result-on" 
-				          th:if="${api.lastCheckedStatus != null and api.lastCheckedStatus == 0}" 
-				          th:text="${#temporals.format(api.lastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | ON'"></span>
-				    <span class="badge-result badge-result-off" 
-				          th:if="${api.lastCheckedStatus != null and api.lastCheckedStatus != 0}" 
-				          th:text="${#temporals.format(api.lastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
-				    <span th:if="${api.lastCheckedStatus == null}">-</span>
-				</td>
-	            <!-- USER ID -->
-	            <td>
-				    <button class="btn-common btn-toggle-mode btn-sm"
-				    th:attr="data-id=${api.id}">대응답/실서버 전환</button>
-				</td>
-	            <!-- CLIENT IP -->
-	            <td>
-				    <span class="badge-status badge-status-real" th:if="${api.responseStatus}" th:text="'실서버'"></span>
-				    <span class="badge-status badge-status-mock" th:if="!${api.responseStatus}" th:text="'대응답'"></span>
-				</td>
-	            <!-- DEVICE -->
-	            <td>
-				    <button class="btn-execute" th:attr="data-id=${api.id}">
-				        <span class="triangle"></span>
-				    </button>
-				</td>
+	            <!-- 소요시간 -->
+	            <td th:text="${log.executeResult}"></td>
+	            <!-- 사용자 ID -->
+	            <td th:text="${log.userId}"></td>
+	            <!-- 사용자 IP -->
+	            <td th:text="${log.ipAddress}"></td>
+	            <!-- 접속장치 -->
+	            <td th:text="${log.device}"></td>
 	        </tr>
         </tbody>
     </table>

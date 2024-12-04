@@ -218,8 +218,8 @@ public class CustomDBAppender extends DBAppender {
 
             stmt.setString(6, userId != null ? userId : "UNKNOWN");
             stmt.setString(7, requestId != null ? requestId : "UNKNOWN");
-            stmt.setString(8, userAgent != null ? userAgent : "UNKNOWN");
-            stmt.setString(9, userIp != null ? userIp : "UNKNOWN");
+            stmt.setString(8, userIp != null ? userIp : "UNKNOWN");
+            stmt.setString(9, userAgent != null ? userAgent : "UNKNOWN");
 
             if (executeTime != null && !executeTime.isEmpty()) {
                 stmt.setLong(10, Long.parseLong(executeTime));

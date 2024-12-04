@@ -5,14 +5,14 @@
         SELECT * FROM logging_slow
         WHERE 1=1
         <!-- Add dynamic filters here -->
-        LIMIT #{limit} OFFSET #{offset}
+        <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>
 
     <select id="findErrorByPage" resultType="LogDTO">
         SELECT * FROM logging_error
         WHERE 1=1
         <!-- Add dynamic filters here -->
-        LIMIT #{limit} OFFSET #{offset}
+        <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>
 
     <select id="findByTraceId" resultType="LogDTO">

@@ -13,17 +13,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LogService {
 	
-	private final LogMapper mapper;
+	private final LogMapper logMapper;
 	
 	public List<LogDTO> findSlowByPage(){
-		return mapper.findSlowByPage();
+		return logMapper.findSlowByPage();
 	}
 	
 	public List<LogDTO> findErrorByPage(){
-		return mapper.findErrorByPage();
+		return logMapper.findErrorByPage();
 	}
 	
 	public List<LogDTO> findByTraceId(){
-		return mapper.findByTraceId();
+		return logMapper.findByTraceId();
 	}
 }

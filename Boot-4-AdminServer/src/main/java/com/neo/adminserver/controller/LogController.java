@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LogController {
 	
-	private final LogService service;
+	private final LogService logService;
 
 	@GetMapping("/slow")
 	public String findSlowByPage(Model model) {
-		List<LogDTO> logList = service.findSlowByPage();
+		List<LogDTO> logList = logService.findSlowByPage();
 		model.addAttribute("logList", logList);
 		return "slow";
 	}

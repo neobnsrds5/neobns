@@ -4,6 +4,7 @@
     <select id="findSlowByPage" resultType="LogDTO">
         SELECT * FROM logging_slow
         WHERE 1=1
+        ORDER BY timestmp
         <!-- Add dynamic filters here -->
         <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>
@@ -11,12 +12,15 @@
     <select id="findErrorByPage" resultType="LogDTO">
         SELECT * FROM logging_error
         WHERE 1=1
+        ORDER BY timestmp
         <!-- Add dynamic filters here -->
         <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>
 
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
-        SELECT * FROM logging_event WHERE trace_id = #{traceId}
+        SELECT * FROM logging_event
+        WHERE trace_id = #{traceId} AND logger_name = 'TRACE'
+        ORDER BY timestmp
     </select>
 
 </mapper>

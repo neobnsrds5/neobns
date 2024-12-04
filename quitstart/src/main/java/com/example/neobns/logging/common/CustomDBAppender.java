@@ -152,7 +152,7 @@ public class CustomDBAppender extends DBAppender {
      * logging_error 테이블에 에러 정보 삽입
      */
     private void saveErrorLog(ILoggingEvent event, Connection connection) {
-        String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query_log, uri, error_name) "
+        String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, error_name) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement errorStmt = connection.prepareStatement(errorLogSQL)) {
@@ -166,7 +166,7 @@ public class CustomDBAppender extends DBAppender {
             String methodName = MDC.get("methodName");
             String queryLog = MDC.get("queryLog");
             String uri = MDC.get("requestUri");
-            String errorName = MDC.get("errorName");
+            String errorName = MDC.get("executeResult");
             errorStmt.setString(2, userId != null ? userId : "UNKNOWN_USER");
             errorStmt.setString(3, traceId);
             errorStmt.setString(4, userIp);

@@ -114,6 +114,20 @@ public class LogToDbBatch {
 	}
 	
 	@Bean
+	public JdbcBatchItemWriter<LogDTO> loggingErrorWriter() {
+		String sql = "INSERT INTO logging_error (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_time, query, uri) "
+	    		+ "VALUES (UNIX_TIMESTAMP(:timestmp), :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+	    		+ "CASE WHEN :executeTime = '' OR :executeTime IS NULL THEN NULL ELSE CAST(:executeTime AS UNSIGNED) END, "
+	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
+
+	    return new JdbcBatchItemWriterBuilder<LogDTO>()
+	            .dataSource(datasource)
+	            .sql(sql)
+	            .beanMapped()
+	            .build();
+	}
+	
+	@Bean
 	public CompositeItemWriter<LogDTO> compositeWriter() {
 	    CompositeItemWriter<LogDTO> writer = new CompositeItemWriter<>();
 	    writer.setDelegates(List.of(loggingEventWriter(), conditionalSlowWriter()));

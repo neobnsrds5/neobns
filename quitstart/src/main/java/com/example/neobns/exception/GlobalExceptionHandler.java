@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 
     
     private void setMDC(Exception e, HttpStatus status, HttpServletRequest request) {
-        MDC.put("errorName", e.getClass().getSimpleName() + " : " + status.value());
+        MDC.put("executeResult", e.getClass().getSimpleName() + " : " + status.value());
         MDC.put("httpStatus", String.valueOf(status.value()));
         MDC.put("requestUri", request.getRequestURI());
         MDC.put("httpMethod", request.getMethod());
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
     }
 
     private void clearMDC() {
-        MDC.remove("errorName");
+        MDC.remove("executeResult");
         MDC.remove("httpStatus");
         MDC.remove("requestUri");
         MDC.remove("httpMethod");

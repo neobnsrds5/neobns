@@ -110,7 +110,7 @@ private void saveErrorLog(ILoggingEvent event, Connection connection) {
             String methodName = MDC.get("methodName");
             String queryLog = MDC.get("queryLog");
             String uri = MDC.get("requestUri");
-            String errorName = MDC.get("errorName");
+            String errorName = MDC.get("executeResult");
 
             errorStmt.setString(2, userId != null ? userId : "UNKNOWN_USER");
             errorStmt.setString(3, traceId);

@@ -1,0 +1,6 @@
+made string : @startuml
+http://localhost:8000/quitstart/getAccountJPA?id=1 -> com.example.neobns.controller.QuickController : GET
+com.example.neobns.controller.QuickController -> com.example.neobns.controller.QuickController : getAccountJPA
+com.example.neobns.controller.QuickController -> http://localhost:8000/quitstart/getAccountJPA?id=1 : getAccountJPA
+http://localhost:8000/quitstart/getAccountJPA?id=1 -> http://localhost:8000/quitstart/getAccountJPA?id=1 : GET
+@enduml

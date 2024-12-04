@@ -41,11 +41,11 @@
 	                <input type="checkbox" class="form-check-input row-checkbox" th:attr="trace-id=${log.traceId}">
 	            </td>
 	            <!-- 타임스탬프 -->
-				<td th:text="${#dates.format(#dates.create(#numbers.parseLong(log.timestmp)), 'yyyy-MM-dd HH:mm:ss')}"></td>
+				<td th:text="${log.timestmp}"></td>
 	            <!-- 종류 -->
 	            <td>
 	            	<span th:if="${log.callerClass == 'SQL'}" th:text="${log.callerClass}"></span>
-					<span th:unless="${log.callerClass == 'SQL'}" th:text="URI"></span>
+					<span th:unless="${log.callerClass == 'SQL'}" th:text="${log.callerMethod}"></span>
 	            </td>
 	            <!-- 추적 ID -->
 	            <td class="text-start">

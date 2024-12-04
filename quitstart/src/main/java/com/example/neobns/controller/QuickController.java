@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
@@ -29,8 +30,8 @@ public class QuickController {
 	private final QuickService quickService;
 
 	@GetMapping("/")
-	public String main() {
-		return "메인 어플리케이션 홈페이지";
+	public RedirectView main() {
+		return new RedirectView("/index.html");
 	}
 
 	@GetMapping("/dummy")

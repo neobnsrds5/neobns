@@ -1,0 +1,17 @@
+@startuml
+actor 고객
+participant 게이트웨이
+participant "대고객서비스 컨트롤러" as Controller
+participant "대고객서비스" as Service
+database DB
+
+' 고객이 요청을 보냄
+고객 -> 게이트웨이 : 요청
+게이트웨이 -> Controller : 요청 전달
+Controller -> Service : 비즈니스 로직 실행
+Service -> DB : 데이터 조회
+DB --> Service : 조회 결과 반환
+Service --> Controller : 처리된 데이터 반환
+Controller --> 게이트웨이 : 최종 응답
+게이트웨이 --> 고객 : 결과 응답
+@enduml

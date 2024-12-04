@@ -13,14 +13,14 @@ import jakarta.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger errorlog = LoggerFactory.getLogger("ERROR");
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         setMDC(e, HttpStatus.BAD_REQUEST, request);
 
-        log.error("IllegalArgumentException occurred - Class: {}, Message: {}, Status: {}, Request URI: {}",
-                e.getClass().getName(), e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), e);
+        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
 
         clearMDC();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
 
-        log.error("RuntimeException occurred - Class: {}, Message: {}, Status: {}, Request URI: {}",
-                e.getClass().getName(), e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI(), e);
+        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
 
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
@@ -40,9 +40,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
-
-        log.error("Exception occurred - Class: {}, Message: {}, Status: {}, Request URI: {}",
-                e.getClass().getName(), e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI(), e);
+        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
     }
@@ -56,8 +55,8 @@ public class GlobalExceptionHandler {
         
      // 실제 에러 발생 위치 추출
         StackTraceElement callerLocation = getActualErrorLocation(e);
-        MDC.put("callerClass", callerLocation.getClassName());
-        MDC.put("callerMethod", callerLocation.getMethodName());
+        MDC.put("className", callerLocation.getClassName());
+        MDC.put("methodName", callerLocation.getMethodName());
     }
 
     private void clearMDC() {
@@ -65,8 +64,8 @@ public class GlobalExceptionHandler {
         MDC.remove("httpStatus");
         MDC.remove("requestUri");
         MDC.remove("httpMethod");
-        MDC.remove("callerClass");
-        MDC.remove("callerMethod");
+        MDC.remove("className");
+        MDC.remove("methodName");
     }
     
     private StackTraceElement getActualErrorLocation(Throwable e) {

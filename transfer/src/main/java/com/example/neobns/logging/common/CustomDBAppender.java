@@ -106,8 +106,8 @@ private void saveErrorLog(ILoggingEvent event, Connection connection) {
             String traceId = MDC.get("requestId");
             String userIp = MDC.get("clientIp");
             String userAgent = MDC.get("userAgent");
-            String className = MDC.get("callerClass");
-            String methodName = MDC.get("callerMethod");
+            String className = MDC.get("className");
+            String methodName = MDC.get("methodName");
             String queryLog = MDC.get("queryLog");
             String uri = MDC.get("requestUri");
             String errorName = MDC.get("errorName");
@@ -119,6 +119,9 @@ private void saveErrorLog(ILoggingEvent event, Connection connection) {
             errorStmt.setString(6, className);
             errorStmt.setString(7, methodName);
             errorStmt.setString(8, queryLog);
+            if(queryLog != null) {
+            	MDC.remove("queryLog");
+            }
             errorStmt.setString(9, uri);
             errorStmt.setString(10, errorName);
 

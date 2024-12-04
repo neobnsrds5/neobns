@@ -25,6 +25,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
+	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
 	public static final long SLOW_QUERY_THRESHOLD_MS = 0; // slow query 기준, 나중에 환경 변수로...
 
 	@Override
@@ -43,7 +44,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			// 실제 쿼리 실행
 			result = invocation.proceed();
 		} catch (Exception e){
-			traceLogger.error(errorSQL);
+			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", errorSQL);
 		} finally {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
@@ -65,7 +66,6 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			MDC.remove("executeTime");
 			MDC.remove("className");
 			MDC.remove("methodName");
-			MDC.remove("queryLog");
 		}
 		return result;
 	}

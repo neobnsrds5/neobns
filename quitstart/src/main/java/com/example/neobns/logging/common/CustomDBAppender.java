@@ -162,8 +162,8 @@ public class CustomDBAppender extends DBAppender {
             String traceId = MDC.get("requestId");
             String userIp = MDC.get("clientIp");
             String userAgent = MDC.get("userAgent");
-            String className = MDC.get("callerClass");
-            String methodName = MDC.get("callerMethod");
+            String className = MDC.get("className");
+            String methodName = MDC.get("methodName");
             String queryLog = MDC.get("queryLog");
             String uri = MDC.get("requestUri");
             String errorName = MDC.get("errorName");
@@ -207,7 +207,6 @@ public class CustomDBAppender extends DBAppender {
             String callerMethod = MDC.get("methodName") != null
 					? MDC.get("methodName")
 					: (callerData != null ? callerData.getMethodName() : null);
-            
 			stmt.setString(2, callerClass);
 			stmt.setString(3, callerMethod);
 			

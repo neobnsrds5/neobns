@@ -52,7 +52,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			// 쿼리 정보 가져오기
 			String sql = handler.getBoundSql().getSql().replaceAll("\\s+", " ").trim();
 			
-			MDC.put("executeTime", Long.toString(elapsedTime));
+			MDC.put("executeResult", Long.toString(elapsedTime));
 			MDC.put("className", "SQL");
 			MDC.put("methodName", sql);
 
@@ -63,7 +63,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
 			}
 			
-			MDC.remove("executeTime");
+			MDC.remove("executeResult");
 			MDC.remove("className");
 			MDC.remove("methodName");
 		}

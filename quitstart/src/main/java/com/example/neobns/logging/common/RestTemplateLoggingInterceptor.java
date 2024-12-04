@@ -61,7 +61,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 			
 			MDC.put("className", uri);
 			MDC.put("methodName", method);
-			MDC.put("executeTime", Long.toString(elapsedTime));
+			MDC.put("executeResult", Long.toString(elapsedTime));
 
 			// After REST Call
 			traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
@@ -77,7 +77,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 		} finally {
 			MDC.remove("className");
             MDC.remove("methodName");
-            MDC.remove("executeTime");
+            MDC.remove("executeResult");
 		}
 
 	}

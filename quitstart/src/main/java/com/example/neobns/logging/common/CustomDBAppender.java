@@ -2,8 +2,6 @@ package com.example.neobns.logging.common;
 
 import ch.qos.logback.classic.db.DBAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.classic.spi.ThrowableProxy;
 
 import org.slf4j.MDC;
 
@@ -17,7 +15,7 @@ public class CustomDBAppender extends DBAppender {
     protected String getInsertSQL() {
         return "INSERT INTO logging_event (timestmp, formatted_message, logger_name, level_string, thread_name, "
                 + "reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line, "
-                + "user_id, trace_id, device, ip_address, execute_time) "
+                + "user_id, trace_id, device, ip_address, execute_result) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     }
 
@@ -125,18 +123,13 @@ public class CustomDBAppender extends DBAppender {
             String requestId = MDC.get("requestId");
             String userAgent = MDC.get("userAgent");
             String userIp = MDC.get("clientIp");
-            String executeTime = MDC.get("executeTime");
+            String executeResult = MDC.get("executeResult");
 
             stmt.setString(15, userId != null ? userId : "UNKNOWN");
             stmt.setString(16, requestId != null ? requestId : "UNKNOWN");
             stmt.setString(17, userAgent != null ? userAgent : "UNKNOWN");
             stmt.setString(18, userIp != null ? userIp : "UNKNOWN");
-
-            if (executeTime != null && !executeTime.isEmpty()) {
-                stmt.setLong(19, Long.parseLong(executeTime));
-            } else {
-                stmt.setNull(19, java.sql.Types.BIGINT);
-            }
+            stmt.setString(19, executeResult);
 
             // logging_event 테이블에 삽입
             stmt.executeUpdate();
@@ -152,7 +145,7 @@ public class CustomDBAppender extends DBAppender {
      * logging_error 테이블에 에러 정보 삽입
      */
     private void saveErrorLog(ILoggingEvent event, Connection connection) {
-        String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, error_name) "
+        String errorLogSQL = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement errorStmt = connection.prepareStatement(errorLogSQL)) {
@@ -191,7 +184,7 @@ public class CustomDBAppender extends DBAppender {
      * logging_slow 테이블에 SLOW 로그 삽입
      */
     private void saveSlowLog(ILoggingEvent event, Connection connection) {
-        String slowLogSQL = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, query, uri, user_id, trace_id, ip_address, device, execute_time) "
+        String slowLogSQL = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, query, uri, user_id, trace_id, ip_address, device, execute_result) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(slowLogSQL)) {
@@ -222,7 +215,7 @@ public class CustomDBAppender extends DBAppender {
             String requestId = MDC.get("requestId");
             String userAgent = MDC.get("userAgent");
             String userIp = MDC.get("clientIp");
-            String executeTime = MDC.get("executeTime");
+            String executeTime = MDC.get("executeResult");
 
             stmt.setString(6, userId != null ? userId : "UNKNOWN");
             stmt.setString(7, requestId != null ? requestId : "UNKNOWN");

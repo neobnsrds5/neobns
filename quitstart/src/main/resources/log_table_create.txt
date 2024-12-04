@@ -19,7 +19,7 @@ CREATE TABLE `logging_event` (
   `trace_id` varchar(255) DEFAULT NULL,			-- trace ID
   `ip_address` varchar(255) DEFAULT NULL,		-- IP address
   `device` varchar(255) DEFAULT NULL,			-- device
-  `execute_time` bigint DEFAULT NULL, 			-- 실행 시간
+  `execute_result` varchar(255) DEFAULT NULL, 		-- 실행 시간 / 에러 번호
   PRIMARY KEY (`event_id`)
 );
 
@@ -34,7 +34,7 @@ create table logging_slow (
 	`trace_id` varchar(255) DEFAULT NULL,
 	`ip_address` varchar(255) DEFAULT NULL,
 	`device` varchar(255) DEFAULT NULL,
-	`execute_time` bigint DEFAULT null,
+	`execute_result` bigint DEFAULT null,
 	PRIMARY KEY (`event_id`)
 );
 
@@ -47,9 +47,9 @@ CREATE TABLE logging_error (
     device VARCHAR(255) DEFAULT NULL,
     caller_class VARCHAR(255) DEFAULT NULL,
     caller_method VARCHAR(255) DEFAULT NULL,
-    query_log VARCHAR(255) DEFAULT NULL,
+    query VARCHAR(255) DEFAULT NULL,
     uri VARCHAR(255) DEFAULT NULL,
-    error_name VARCHAR(255) DEFAULT NULL
+    execute_result VARCHAR(255) DEFAULT NULL
 );
 
 -- 아래 두 테이블이 없으면 logging_event에도 데이터가 insert 되지 않음...

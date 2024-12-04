@@ -43,7 +43,9 @@ public class JPAQueryLoggingAspect {
 		long elapsedTime = System.currentTimeMillis() - start;
 //		String sql = joinPoint.getSignature().toString();
 //		String shortSql = sql.substring(sql.lastIndexOf(".") + 1);
-
+		
+		MDC.put("executeResult", Long.toString(elapsedTime));
+		MDC.put("className", "SQL");
 		traceLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
@@ -53,8 +55,7 @@ public class JPAQueryLoggingAspect {
 //			slowQuery.put("executeTime", elapsedTime);
 //			slowQuery.put("timestamp", new Date());
 			
-			MDC.put("executeResult", Long.toString(elapsedTime));
-			MDC.put("className", "SQL");
+			
 			
 			slowLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 

@@ -1,6 +1,6 @@
 CREATE TABLE `logging_event` (
   `event_id` bigint NOT NULL AUTO_INCREMENT,
-  `timestmp` TIMESTAMP NOT NULL,					-- 로그 발생 시간
+  `timestmp` TIMESTAMP(3) NOT NULL,					-- 로그 발생 시간
   `formatted_message` text DEFAULT NULL,		-- 로그 메시지
   `logger_name` varchar(255) NOT NULL,			-- 로거 이름
   `level_string` varchar(10) NOT NULL,			-- 로그 레벨 (INFO, DEBUG 등)
@@ -24,7 +24,7 @@ CREATE TABLE `logging_event` (
 
 create table logging_slow (
 	`event_id` bigint NOT NULL AUTO_INCREMENT,
-	`timestmp` TIMESTAMP NOT NULL,
+	`timestmp` TIMESTAMP(3) NOT NULL,
 	`caller_class` varchar(255) DEFAULT NULL,
 	`caller_method` varchar(255) DEFAULT NULL,
 	`query` varchar(255) DEFAULT NULL, 			-- query문 저장될 컬럼
@@ -39,7 +39,7 @@ create table logging_slow (
 
 CREATE TABLE logging_error (
     error_id SERIAL PRIMARY KEY,
-    timestmp TIMESTAMP NOT NULL,
+    timestmp TIMESTAMP(3) NOT NULL,
     user_id VARCHAR(255) DEFAULT NULL,
     trace_id VARCHAR(255) DEFAULT NULL,
     ip_address VARCHAR(255) DEFAULT NULL,

@@ -22,7 +22,7 @@ public class LogController {
 	public String findSlowByPage(Model model) {
 		List<LogDTO> logList = logService.findSlowByPage();
 		model.addAttribute("logList", logList);
-		return "slow";
+		return "slow-table";
 	}
 	
 	@GetMapping("/trace/{traceId}")

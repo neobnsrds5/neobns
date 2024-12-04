@@ -63,14 +63,14 @@ public class LoggingAspect {
             
             MDC.put("className", className);
             MDC.put("methodName", methodName);
-            MDC.put("executeTime", Long.toString(elapsedTime));
+            MDC.put("executeResult", Long.toString(elapsedTime));
 
             // 메서드 실행 후 trace 로깅
-            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeTime"));
+            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
             
             MDC.remove("className");
             MDC.remove("methodName");
-            MDC.remove("executeTime");
+            MDC.remove("executeResult");
         }
 
         return result;

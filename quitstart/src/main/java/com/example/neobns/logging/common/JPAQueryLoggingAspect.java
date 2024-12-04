@@ -55,7 +55,7 @@ public class JPAQueryLoggingAspect {
 
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
-		traceLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 //			Map<String, Object> slowQuery = new HashMap<>();
@@ -64,7 +64,7 @@ public class JPAQueryLoggingAspect {
 //			slowQuery.put("executeTime", elapsedTime);
 //			slowQuery.put("timestamp", new Date());
 
-			slowLogger.info("jpa {}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+			slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 //			synchronized (SLOW_QUERIES) {
 //				if (SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {

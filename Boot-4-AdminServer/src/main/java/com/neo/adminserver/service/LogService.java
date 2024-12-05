@@ -1,17 +1,8 @@
 package com.neo.adminserver.service;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
 
-import org.apache.ibatis.annotations.Case;
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
@@ -38,84 +29,155 @@ public class LogService {
 	}
 
 	public String buildPlantUML(String traceID, List<LogDTO> logList) throws CloneNotSupportedException {
-		
-		ArrayList<LogDTO> newList = new ArrayList<LogDTO>();        
-		for (LogDTO log : logList){
+		ArrayList<LogDTO> newList = new ArrayList<>();
+		for (LogDTO log : logList) {
 			newList.add(log.clone());
-		}      
+		}
 
-
-		for (int i = 0; i <= newList.size() - 1; i++) {
-
+		ArrayList<LogDTO> slowOrErrorList = new ArrayList<>();
+		for (int i = 0; i < newList.size(); i++) {
 			if (newList.get(i).getCallerClass().contains("http://")) {
 				String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
 				newList.get(i).setCallerClass("user");
 				newList.get(i).setCallerMethod(newMethod);
 			} else if (newList.get(i).getCallerClass().contains("com.example.neobns")) {
-
 				int lastDot = newList.get(i).getCallerClass().lastIndexOf(".");
 				String editedClass = newList.get(i).getCallerClass().substring(lastDot + 1);
-
 				newList.get(i).setCallerClass(editedClass);
 			}
+
+			if (newList.get(i).getLoggerName().equals("ERROR") || newList.get(i).getLoggerName().equals("SLOW")) {
+				LogDTO exitedLog = newList.remove(i);
+				slowOrErrorList.add(exitedLog);
+				i--;
+			}
 		}
 
-		System.out.println("converted log list : " + newList.toString());
+		for (LogDTO dto : newList) {
+			System.out.println("<newList>");
+			System.out.println(dto);
+		}
+
+		for (LogDTO dto : slowOrErrorList) {
+			System.out.println("<slowOrErrorList>");
+			System.out.println(dto);
+		}
 
 		StringBuilder builder = new StringBuilder();
-		int sqlCount = 0;
+		LogDTO previousLog = null;
+		boolean sqlEncountered = false;
 
-		for (int i = 0; i <= newList.size() - 1; i++) {
+		for (int i = 0; i < newList.size(); i++) {
+
+			LogDTO currentLog = newList.get(i);
 			String addedString = null;
-
-			if (i <= newList.size() - 2) {
-
-				if (newList.get(i).getCallerClass().equals("SQL") && sqlCount == 1) {
-
-					continue;
-
-				} else if (newList.get(i).getCallerClass().equals("SQL") && sqlCount != 1) {
-
-					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
-							+ " : <font color=red> " + newList.get(i).getCallerMethod() + " , "
-							+ newList.get(i).getExecuteResult() + "ms";
-
-					sqlCount++;
-
-				} else if (i <= (newList.size() / 2) - 1) {
-
-					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
-							+ newList.get(i).getCallerMethod();
-
+			if (i == 0 || i == newList.size() - 1) {
+				if (i == 0) {
+					LogDTO nextLog = newList.get(i + 1);
+					addedString = currentLog.getCallerClass() + " -> " + nextLog.getCallerClass() + " : "
+							+ currentLog.getCallerMethod();
 				} else {
-
-					if (newList.get(i - 1).getExecuteResult() == null) {
-						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : " + newList.get(i).getExecuteResult() + "ms";
-					} else {
-						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : " + newList.get(i).getExecuteResult() + " - "
-								+ newList.get(i - 1).getExecuteResult() + "ms";
-					}
-
+					addedString = currentLog.getCallerClass() + " -> " + newList.get(0).getCallerClass() + " : "
+							+ currentLog.getCallerMethod();
 				}
 
-			} else if (i == newList.size() - 2) {
+			} else {
 
-				addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-						+ newList.get(i).getExecuteResult() + " - " + newList.get(i - 1).getExecuteResult() + "ms";
-			} else if (i == newList.size() - 1) {
-				continue;
+				if (currentLog.getCallerClass().equals("SQL")) {
+					sqlEncountered = true;
+					String executeResult = currentLog.getExecuteResult();
+					if (executeResult == null) {
+						addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass()
+								+ " : <font color=red>" + currentLog.getCallerMethod() + " - No Result</font>";
+					} else if (executeResult.contains("Exception")) {
+						addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass()
+								+ " : <font color=red>" + currentLog.getCallerMethod() + " - " + executeResult
+								+ "</font>";
+					} else {
+						addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
+								+ currentLog.getCallerMethod() + " , " + executeResult + "ms";
+					}
+				}
+
+				else if (existsInErrorList(currentLog, slowOrErrorList)) {
+					addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass()
+							+ " : <font color=red>" + currentLog.getExecuteResult() + "</font>";
+				}
+
+				else if (previousLog != null && previousLog.getCallerClass().equals("SQL")) {
+					String currentResult = currentLog.getExecuteResult();
+					String previousResult = previousLog.getExecuteResult();
+
+					if (isNumeric(previousResult) && isNumeric(currentResult)) {
+						long duration = Long.parseLong(currentResult) - Long.parseLong(previousResult);
+						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
+								+ currentLog.getCallerMethod() + " - " + duration + "ms";
+					} else {
+						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
+								+ currentLog.getCallerMethod();
+					}
+				}
+
+				else if (sqlEncountered && previousLog != null) {
+					String currentResult = currentLog.getExecuteResult();
+					String previousResult = previousLog.getExecuteResult();
+
+					if (isNumeric(previousResult) && isNumeric(currentResult)) {
+						long duration = Long.parseLong(currentResult) - Long.parseLong(previousResult);
+						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
+								+ previousLog.getCallerMethod() + " - " + duration + "ms";
+					} else {
+						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
+								+ previousLog.getCallerMethod();
+					}
+				}
+
+				else if (!sqlEncountered && previousLog != null) {
+					LogDTO nextLog = newList.get(i + 1);
+					addedString = currentLog.getCallerClass() + " -> " + nextLog.getCallerClass() + " : "
+							+ currentLog.getCallerMethod();
+				}
+
+				if (addedString != null) {
+					builder.append(addedString).append(System.lineSeparator());
+				}
+
 			}
 
-			builder.append(addedString).append(System.lineSeparator());
-
+			previousLog = currentLog;
 		}
 
-		String url = builder.toString();
+		System.out.println("Generated PlantUML String:");
+		System.out.println(builder.toString());
 
-		System.out.println("made string : " + url);
+		return builder.toString();
 
-		return url;
 	}
+
+	private boolean isNumeric(String executeResult) {
+
+		if (executeResult == null) {
+			return false;
+		}
+
+		try {
+			Long.parseLong(executeResult);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+
+	}
+
+	private boolean existsInErrorList(LogDTO currentLog, List<LogDTO> slowOrErrorList) {
+		for (LogDTO errorLog : slowOrErrorList) {
+			if (errorLog.getCallerClass().equals(currentLog.getCallerClass())
+					&& errorLog.getCallerMethod().equals(currentLog.getCallerMethod())
+					&& errorLog.getExecuteResult().equals(currentLog.getExecuteResult())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

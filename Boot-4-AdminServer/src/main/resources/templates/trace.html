@@ -15,6 +15,7 @@
     <h2 class="mb-4 text-center">TRACE 관리</h2>
 
     <div class="d-flex justify-content-end mb-3 gap-2">
+		<button class="btn-common btn-api-plant">PLANTUML 보기</button>
 	    <button class="btn-common btn-api-mock">선택한 API 대응답 전환</button>
 	    <button class="btn-common btn-api-real">선택한 API 실서버 전환</button>
 	</div>
@@ -62,7 +63,39 @@
 	        </tr>
         </tbody>
     </table>
-	
+	<br><br>
+	<div style="display: none;justify-items: center;justify-content: center;" id="plantuml-container">
+		
+		<uml th:text="${imgSource}">
+		
+		 </uml>
+
+		<script src="//code.jquery.com/jquery.min.js"></script>
+		<script src="//cdn.rawgit.com/jmnote/plantuml-encoder/d133f316/dist/plantuml-encoder.min.js"></script>
+		<script>
+		$("uml").each(function() {
+		  var src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode( $(this).text() );
+		  $(this).replaceWith($('<img style="display:flex; justify-content:center; width: 100%;">').attr('src', src));
+		});
+		</script>
+		<script>
+
+		document.querySelector(".btn-api-plant").addEventListener("click", function () {
+		    // 토글할 요소 선택
+		    const plantumlContainer = document.getElementById("plantuml-container");
+		    
+		    // display 속성 토글
+		    if (plantumlContainer.style.display == "none") {
+		        plantumlContainer.style.display = "flex"; // 보이도록 설정
+		    } else {
+		        plantumlContainer.style.display = "none"; // 숨기도록 설정
+		    }
+		});
+
+		</script>
+		
+		
+	</div>
 
 	
 </div>

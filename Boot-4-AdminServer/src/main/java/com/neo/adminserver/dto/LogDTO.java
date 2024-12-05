@@ -10,9 +10,14 @@ import lombok.Setter;
 @Setter
 public class LogDTO {
 
+	private long eventId;
 	private String timestmp;
+	private String formattedMessage;
 	private String loggerName;
 	private String levelString;
+	private String threadName;
+	private int referenceFlag;
+	private String callerFilename;
 	private String callerClass;
 	private String callerMethod;
 	private String query;

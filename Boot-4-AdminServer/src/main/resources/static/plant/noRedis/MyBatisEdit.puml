@@ -1,0 +1,10 @@
+@startuml
+user -> QuickController : GET
+QuickController -> QuickService : getItem
+QuickService -> QuickMapper : getItemById
+QuickMapper -> SQL : findById
+SQL -> QuickMapper : SELECT * FROM item WHERE id = ?
+QuickMapper -> QuickService : findById
+QuickService -> QuickController : getItemById
+QuickController -> user : getItem
+@enduml

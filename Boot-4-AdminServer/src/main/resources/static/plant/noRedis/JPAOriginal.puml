@@ -1,0 +1,9 @@
+@startuml
+http://localhost:8000/quitstart/getAccountJPA?id=1 -> com.example.neobns.controller.QuickController : GET
+com.example.neobns.controller.QuickController -> com.example.neobns.service.QuickService : getAccountJPA
+com.example.neobns.service.QuickService -> SQL : getAccountByIdJPA
+SQL -> com.example.neobns.service.QuickService : select id,accountNumber,money,name from Account where id=?
+com.example.neobns.service.QuickService -> com.example.neobns.controller.QuickController : getAccountByIdJPA
+com.example.neobns.controller.QuickController -> http://localhost:8000/quitstart/getAccountJPA?id=1 : getAccountJPA
+http://localhost:8000/quitstart/getAccountJPA?id=1 -> http://localhost:8000/quitstart/getAccountJPA?id=1 : GET
+@enduml

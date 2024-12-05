@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class LogController {
-	
+
 	private final LogService logService;
 
 	@GetMapping("/slow")
@@ -24,11 +24,13 @@ public class LogController {
 		model.addAttribute("logList", logList);
 		return "slow";
 	}
-	
+
 	@GetMapping("/trace/{traceId}")
 	public String findByTraceId(@PathVariable String traceId, Model model) {
 		List<LogDTO> logList = logService.findByTraceId(traceId);
 		model.addAttribute("logList", logList);
+		String plantSource = logService.buildPlantUML(traceId, logList);
+		model.addAttribute("imgSource", plantSource);
 		return "trace";
 	}
 }

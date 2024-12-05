@@ -84,7 +84,15 @@ spring:
             - Method=GET, POST
           filters:
             - RewritePath=/admin/(?<path>.*), /$\{path}
-            
+
+        # 게이트웨이를 통해서 adminserver의 resource에 접근하기 위해 추가
+        - id: admin_resources_route
+          uri: lb://adminserver
+          predicates:
+            - Path=/admin/assets/**
+          filters:
+            - RewritePath=/admin/(?<path>.*), /$\{path}
+
 management:
   httpexchanges:
     recording:

@@ -33,45 +33,40 @@
 		<table class="table table-striped table-centered">
 			<thead>
 				<tr>
-					<th scope="col"><input type="checkbox" id="select-all"
-						class="form-check-input"></th>
-					<th scope="col">타임스탬프</th>
-					<!-- 로그가 저장된 시간 -->
-					<th scope="col">종류</th>
-					<!-- SQL 또는 PAGE -->
-					<th scope="col">추적ID</th>
-					<!-- 추적 아이디 -->
-					<th scope="col">쿼리/URI</th>
-					<!-- 느린 쿼리 또는 uri 출력 -->
-					<th scope="col">소요시간</th>
-					<!-- 실행 시간 출력 -->
-					<th scope="col">사용자ID</th>
-					<!-- 사용자 아이디 -->
-					<th scope="col">사용자IP</th>
-					<!-- 사용자 IP -->
-					<th scope="col">접속장치</th>
-					<!-- 사용자 디바이스 -->
+					<th scope="col"><input type="checkbox" id="select-all" class="form-check-input"></th>
+					<th scope="col">타임스탬프</th> <!-- 로그가 저장된 시간 -->
+					<th scope="col">종류</th> <!-- SQL 또는 PAGE -->
+					<th scope="col">추적ID</th> <!-- 추적 아이디 -->
+					<th scope="col">쿼리/URI</th> <!-- 느린 쿼리 또는 uri 출력 -->
+					<th scope="col">소요시간</th> <!-- 실행 시간 출력 -->
+					<th scope="col">사용자ID</th> <!-- 사용자 아이디 -->
+					<th scope="col">사용자IP</th> <!-- 사용자 IP -->
+					<th scope="col">접속장치</th> <!-- 사용자 디바이스 -->
 				</tr>
 			</thead>
 			<tbody>
 				<tr th:each="log : ${logList}">
 					<!-- 선택 체크박스 -->
-					<td><input type="checkbox"
-						class="form-check-input row-checkbox"
-						th:attr="trace-id=${log.traceId}"></td>
+					<td>
+						<input type="checkbox" class="form-check-input row-checkbox" th:attr="trace-id=${log.traceId}">
+					</td>
 					<!-- 타임스탬프 -->
 					<td th:text="${log.timestmp}"></td>
 					<!-- 종류 -->
-					<td><span th:if="${log.callerClass == 'SQL'}"
-						th:text="${log.callerClass}"></span> <span
-						th:unless="${log.callerClass == 'SQL'}"
-						th:text="${log.callerMethod}"></span></td>
+					<td>
+						<span th:if="${log.callerClass == 'SQL'}" th:text="${log.callerClass}"></span>
+						<span th:unless="${log.callerClass == 'SQL'}" th:text="${log.callerMethod}"></span>
+					</td>
 					<!-- 추적 ID -->
-					<td class="text-start"><a
-						th:href="'/admin/trace/' + ${log.traceId}" target="_blank"
-						th:text="${log.traceId}"></a></td>
+					<td class="text-start">
+						<span th:if="${log.traceId != null}">
+	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	                    </span>
+	                    <span th:unless="${log.traceId != null}">N/A</span>
+					</td>
 					<!-- 쿼리/URI -->
-					<td><span th:if="${log.query != null}" th:text="${log.query}"></span>
+					<td>
+						<span th:if="${log.query != null}" th:text="${log.query}"></span>
 						<span th:unless="${log.query != null}" th:text="${log.uri}"></span>
 					</td>
 					<!-- 소요시간 -->

@@ -25,6 +25,13 @@ public class LogController {
 		return "slow";
 	}
 	
+	@GetMapping("/errors")
+	public String findErrorByPage(Model model) {
+		List<LogDTO> logList = logService.findErrorByPage();	    
+		model.addAttribute("logList", logList);
+		return "error";
+	}
+	
 	@GetMapping("/trace/{traceId}")
 	public String findByTraceId(@PathVariable String traceId, Model model) {
 		List<LogDTO> logList = logService.findByTraceId(traceId);

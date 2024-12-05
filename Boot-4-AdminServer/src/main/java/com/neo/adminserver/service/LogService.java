@@ -70,10 +70,9 @@ public class LogService {
 				
 				if (newList.get(i).getCallerClass().equals("SQL")) {
 
-					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
 							+ " : <font color=red> " + newList.get(i).getCallerMethod() + " , "
-							+ newList.get(i).getExecuteResult() + "ms" + "\n"
-							;
+							+ newList.get(i).getExecuteResult() + "ms";
 
 				} else if (i <= (newList.size() / 2) - 1) {
 

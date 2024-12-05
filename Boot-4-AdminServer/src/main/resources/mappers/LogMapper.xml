@@ -19,7 +19,7 @@
 
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
         SELECT * FROM logging_event
-        WHERE trace_id = #{traceId} AND logger_name = 'TRACE'
+        WHERE trace_id = #{traceId}
         ORDER BY timestmp
     </select>
 

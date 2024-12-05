@@ -28,10 +28,4 @@ public class LogDTO {
 	private String device;
 	private String executeResult;
 
-	// 복사 생성자
-	public LogDTO(LogDTO other) {
-		this.callerClass = other.callerClass;
-		this.callerMethod = other.callerMethod;
-		this.executeResult = other.executeResult;
-	}
 }

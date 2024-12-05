@@ -36,6 +36,8 @@ public class LogController {
 	public String findByTraceId(@RequestParam String traceId, Model model) {
 		List<LogDTO> logList = logService.findByTraceId(traceId);
 		model.addAttribute("logList", logList);
+		String plantSource = logService.buildPlantUML(traceId, logList);
+		model.addAttribute("imgSource", plantSource);
 		return "trace_table";
 	}
 }

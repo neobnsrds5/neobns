@@ -8,7 +8,7 @@ import lombok.Setter;
 @Alias("LogDTO")
 @Getter
 @Setter
-public class LogDTO {
+public class LogDTO implements Cloneable{
 
 	private String eventId;
 	private String timestmp;
@@ -27,5 +27,12 @@ public class LogDTO {
 	private String ipAddress;
 	private String device;
 	private String executeResult;
+	
+	@Override
+	public LogDTO clone() throws CloneNotSupportedException {
+		return (LogDTO) super.clone();
+	}
+	
+	
 
 }

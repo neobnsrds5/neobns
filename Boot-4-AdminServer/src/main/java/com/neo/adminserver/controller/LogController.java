@@ -33,7 +33,7 @@ public class LogController {
 	}
 	
 	@GetMapping("/trace")
-	public String findByTraceId(@RequestParam String traceId, Model model) {
+	public String findByTraceId(@RequestParam String traceId, Model model) throws CloneNotSupportedException {
 		List<LogDTO> logList = logService.findByTraceId(traceId);
 		model.addAttribute("logList", logList);
 		String plantSource = logService.buildPlantUML(traceId, logList);

@@ -37,68 +37,74 @@ public class LogService {
 		return logMapper.findByTraceId(traceId);
 	}
 
-	public String buildPlantUML(String traceID, List<LogDTO> logList) {
+	public String buildPlantUML(String traceID, List<LogDTO> logList) throws CloneNotSupportedException {
+		
+		ArrayList<LogDTO> newList = new ArrayList<LogDTO>();        
+		for (LogDTO log : logList){
+			newList.add(log.clone());
+		}      
 
-		for (int i = 0; i <= logList.size() - 1; i++) {
 
-			if (logList.get(i).getCallerClass().contains("http://")) {
-				String newMethod = logList.get(i).getCallerClass() + " : " + logList.get(i).getCallerMethod();
-				logList.get(i).setCallerClass("user");
-				logList.get(i).setCallerMethod(newMethod);
-			} else if (logList.get(i).getCallerClass().contains("com.example.neobns")) {
+		for (int i = 0; i <= newList.size() - 1; i++) {
 
-				int lastDot = logList.get(i).getCallerClass().lastIndexOf(".");
-				String editedClass = logList.get(i).getCallerClass().substring(lastDot + 1);
+			if (newList.get(i).getCallerClass().contains("http://")) {
+				String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+				newList.get(i).setCallerClass("user");
+				newList.get(i).setCallerMethod(newMethod);
+			} else if (newList.get(i).getCallerClass().contains("com.example.neobns")) {
 
-				logList.get(i).setCallerClass(editedClass);
+				int lastDot = newList.get(i).getCallerClass().lastIndexOf(".");
+				String editedClass = newList.get(i).getCallerClass().substring(lastDot + 1);
+
+				newList.get(i).setCallerClass(editedClass);
 			}
 		}
 
-		System.out.println("converted log list : " + logList.toString());
+		System.out.println("converted log list : " + newList.toString());
 
 		StringBuilder builder = new StringBuilder();
 		int sqlCount = 0;
 
-		for (int i = 0; i <= logList.size() - 1; i++) {
+		for (int i = 0; i <= newList.size() - 1; i++) {
 			String addedString = null;
 
-			if (i <= logList.size() - 2) {
+			if (i <= newList.size() - 2) {
 
-				if (logList.get(i).getCallerClass().equals("SQL") && sqlCount == 1) {
+				if (newList.get(i).getCallerClass().equals("SQL") && sqlCount == 1) {
 
 					continue;
 
-				} else if (logList.get(i).getCallerClass().equals("SQL") && sqlCount != 1) {
+				} else if (newList.get(i).getCallerClass().equals("SQL") && sqlCount != 1) {
 
-					addedString = logList.get(i).getCallerClass() + " -> " + logList.get(i + 1).getCallerClass()
-							+ " : <font color=red> " + logList.get(i).getCallerMethod() + " , "
-							+ logList.get(i).getExecuteResult() + "ms";
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
+							+ " : <font color=red> " + newList.get(i).getCallerMethod() + " , "
+							+ newList.get(i).getExecuteResult() + "ms";
 
 					sqlCount++;
 
-				} else if (i <= (logList.size() / 2) - 1) {
+				} else if (i <= (newList.size() / 2) - 1) {
 
-					addedString = logList.get(i).getCallerClass() + " -> " + logList.get(i + 1).getCallerClass() + " : "
-							+ logList.get(i).getCallerMethod();
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
+							+ newList.get(i).getCallerMethod();
 
 				} else {
 
-					if (logList.get(i - 1).getExecuteResult() == null) {
-						addedString = logList.get(i - 1).getCallerClass() + " -> " + logList.get(i).getCallerClass()
-								+ " : " + logList.get(i).getExecuteResult() + "ms";
+					if (newList.get(i - 1).getExecuteResult() == null) {
+						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+								+ " : " + newList.get(i).getExecuteResult() + "ms";
 					} else {
-						addedString = logList.get(i - 1).getCallerClass() + " -> " + logList.get(i).getCallerClass()
-								+ " : " + logList.get(i).getExecuteResult() + " - "
-								+ logList.get(i - 1).getExecuteResult() + "ms";
+						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+								+ " : " + newList.get(i).getExecuteResult() + " - "
+								+ newList.get(i - 1).getExecuteResult() + "ms";
 					}
 
 				}
 
-			} else if (i == logList.size() - 2) {
+			} else if (i == newList.size() - 2) {
 
-				addedString = logList.get(i - 1).getCallerClass() + " -> " + logList.get(i).getCallerClass() + " : "
-						+ logList.get(i).getExecuteResult() + " - " + logList.get(i - 1).getExecuteResult() + "ms";
-			} else if (i == logList.size() - 1) {
+				addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+						+ newList.get(i).getExecuteResult() + " - " + newList.get(i - 1).getExecuteResult() + "ms";
+			} else if (i == newList.size() - 1) {
 				continue;
 			}
 

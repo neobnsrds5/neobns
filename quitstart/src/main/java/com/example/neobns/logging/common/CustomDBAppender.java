@@ -138,6 +138,22 @@ public class CustomDBAppender extends DBAppender {
 
             // logging_event 테이블에 삽입
             stmt.executeUpdate();
+            
+            try(Producer<String, String> producer = new KafkaProducer<>(getProp())){
+            	StringBuilder sb = new StringBuilder();
+            	sb.append("timestap: ").append(event.getTimeStamp());
+            	sb.append(", formatted_message: ").append(event.getFormattedMessage());
+            	sb.append(", logger_name: ").append(event.getLoggerName());
+            	sb.append(", level_string: ").append(event.getLevel().toString());
+            	sb.append(", thread_name: ").append(event.getThreadName());
+            	sb.append(", caller_file_name: ").append(callerFileName);
+            	sb.append(", caller_class: ").append(callerClass).append(", caller_method: ").append(", caller_line_number: ").append(callerLineNumber);
+            	sb.append(", user_id: ").append(userId).append(", user_agent: ").append(userAgent).append(", user_ip: ").append(userIp);
+            	sb.append(", execute_result: ").append(executeResult);
+            	
+            	producer.send(new ProducerRecord<String, String>("logs", sb.toString()));
+            	
+            }
             return true;
 
         } catch (SQLException e) {
@@ -248,7 +264,15 @@ public class CustomDBAppender extends DBAppender {
             try(Producer<String, String> producer = new KafkaProducer<>(getProp())){
             	StringBuilder sb = new StringBuilder();
             	sb.append("timestamp: ").append(event.getTimeStamp()).append(", caller_class: ").append(callerClass).append(", caller_method: ").append(callerMethod)
-            	.append(", query: ").append(" ").append(", userId: ").append(userId).append(", requestId: ").append(requestId)
+            	.append(", query: ");
+            	
+            	if (callerClass.equals("SQL")) {
+            		sb.append(callerMethod).append(", uri: NULL");
+            	}else {
+            		sb.append("NULL").append(", uri: ").append(callerClass);
+            	}
+            	
+            	sb.append(", userId: ").append(userId).append(", requestId: ").append(requestId)
             	.append(", userAgent: ").append(userAgent).append(", userIp: ").append(userIp).append(", executeResult: ").append(executeTime);
             	
             	producer.send(new ProducerRecord<String, String>("logs_slow", sb.toString()));

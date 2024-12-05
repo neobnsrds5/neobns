@@ -39,44 +39,48 @@ public class LogService {
 
 	
 	public String buildPlantUML(String traceID, List<LogDTO> logList) {
+		
+		ArrayList<LogDTO> newList = (ArrayList<LogDTO>) ((ArrayList<LogDTO>) logList).clone();
 
-		for (int i = 0; i <= logList.size() - 1; i++) {
+		for (int i = 0; i <= newList.size() - 1; i++) {
 
-			if (logList.get(i).getCallerClass().contains("http://localhost:8000/")) {
-				logList.get(i).setCallerClass("user");
-			} else if (logList.get(i).getCallerClass().contains("com.example.neobns")) {
+			if (newList.get(i).getCallerClass().contains("http://")) {
+				String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+				newList.get(i).setCallerClass("user");
+				newList.get(i).setCallerMethod(newMethod);
+			} else if (newList.get(i).getCallerClass().contains("com.example.neobns")) {
 
-				int lastDot = logList.get(i).getCallerClass().lastIndexOf(".");
-				String editedClass = logList.get(i).getCallerClass().substring(lastDot + 1);
+				int lastDot = newList.get(i).getCallerClass().lastIndexOf(".");
+				String editedClass = newList.get(i).getCallerClass().substring(lastDot + 1);
 
-				logList.get(i).setCallerClass(editedClass);
+				newList.get(i).setCallerClass(editedClass);
 			}
 		}
 
-		System.out.println("converted log list : " + logList.toString());
+		System.out.println("converted log list : " + newList.toString());
 
 		StringBuilder builder = new StringBuilder();
 
-		for (int i = 0; i <= logList.size() - 1; i++) {
+		for (int i = 0; i <= newList.size() - 1; i++) {
 			String addedString;
 
-			if (i <= logList.size() - 2) {
+			if (i <= newList.size() - 2) {
 
-				if (logList.get(i).getCallerClass().equals("SQL")) {
+				if (newList.get(i).getCallerClass().equals("SQL")) {
 
-					addedString = logList.get(i).getCallerClass() + " -> " + logList.get(i + 1).getCallerClass()
-							+ " : <font color=red> " + logList.get(i).getCallerMethod();
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
+							+ " : <font color=red> " + newList.get(i).getCallerMethod();
 
 				} else {
 
-					addedString = logList.get(i).getCallerClass() + " -> " + logList.get(i + 1).getCallerClass() + " : "
-							+ logList.get(i).getCallerMethod();
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
+							+ newList.get(i).getCallerMethod();
 
 				}
 
 			} else {
-				addedString = logList.get(i).getCallerClass() + " -> " + logList.get(0).getCallerClass() + " : "
-						+ logList.get(i).getCallerMethod();
+				addedString = newList.get(i).getCallerClass() + " -> " + newList.get(0).getCallerClass() + " : "
+						+ newList.get(i).getCallerMethod();
 			}
 
 			builder.append(addedString).append(System.lineSeparator());

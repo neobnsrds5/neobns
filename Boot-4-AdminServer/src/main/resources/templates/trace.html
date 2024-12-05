@@ -75,7 +75,7 @@
 		<script>
 		$("uml").each(function() {
 		  var src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode( $(this).text() );
-		  $(this).replaceWith($('<img style="display:flex; justify-content:center; width: 100%;">').attr('src', src));
+		  $(this).replaceWith($('<img style="display:flex; justify-content:center;">').attr('src', src));
 		});
 		</script>
 		<script>

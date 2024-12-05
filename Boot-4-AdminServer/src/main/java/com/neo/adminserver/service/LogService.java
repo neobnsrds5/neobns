@@ -37,10 +37,12 @@ public class LogService {
 		return logMapper.findByTraceId(traceId);
 	}
 
-	
 	public String buildPlantUML(String traceID, List<LogDTO> logList) {
-		
-		ArrayList<LogDTO> newList = (ArrayList<LogDTO>) ((ArrayList<LogDTO>) logList).clone();
+
+		ArrayList<LogDTO> newList = new ArrayList<>();
+	    for (LogDTO log : logList) {
+	        newList.add(new LogDTO(log)); // 복사 생성자 사용
+	    }
 
 		for (int i = 0; i <= newList.size() - 1; i++) {
 
@@ -63,25 +65,35 @@ public class LogService {
 
 		for (int i = 0; i <= newList.size() - 1; i++) {
 			String addedString;
-
-			if (i <= newList.size() - 2) {
-
+			
+			if (i<=newList.size() - 2) {
+				
 				if (newList.get(i).getCallerClass().equals("SQL")) {
 
-					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
-							+ " : <font color=red> " + newList.get(i).getCallerMethod();
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+							+ " : <font color=red> " + newList.get(i).getCallerMethod() + " , "
+							+ newList.get(i).getExecuteResult() + "ms" + "\n"
+							;
 
-				} else {
+				} else if (i <= (newList.size() / 2) - 1) {
 
 					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
 							+ newList.get(i).getCallerMethod();
 
-				}
+				} else {
 
-			} else {
-				addedString = newList.get(i).getCallerClass() + " -> " + newList.get(0).getCallerClass() + " : "
-						+ newList.get(i).getCallerMethod();
+					addedString = newList.get(i-1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+							+ (Integer.parseInt(newList.get(i).getExecuteResult()) - Integer.parseInt(newList.get(i-1).getExecuteResult())) + "ms";
+
+				}
+				
+			}else {
+				
+				addedString = newList.get(i-1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+						+ (Integer.parseInt(newList.get(i).getExecuteResult()) - Integer.parseInt(newList.get(i-1).getExecuteResult())) + "ms";
 			}
+
+			
 
 			builder.append(addedString).append(System.lineSeparator());
 

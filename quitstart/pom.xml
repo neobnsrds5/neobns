@@ -205,6 +205,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
+        
+        <dependency>
+		    <groupId>org.apache.kafka</groupId>
+		    <artifactId>kafka-clients</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -228,5 +233,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
+
+

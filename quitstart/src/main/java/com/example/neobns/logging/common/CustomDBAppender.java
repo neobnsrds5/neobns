@@ -3,11 +3,15 @@ package com.example.neobns.logging.common;
 import ch.qos.logback.classic.db.DBAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.MDC;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class CustomDBAppender extends DBAppender {
 
@@ -173,6 +177,16 @@ public class CustomDBAppender extends DBAppender {
             }
             errorStmt.setString(9, uri);
             errorStmt.setString(10, errorName);
+            
+            try(Producer<String, String> producer = new KafkaProducer<>(getProp())){
+            	StringBuilder sb = new StringBuilder();
+            	sb.append("userId: ").append(userId)
+            	.append(", traceId: ").append(traceId).append(", userIp: ").append(userIp).append(", userAgent: ").append(userAgent)
+            	.append(", className: ").append(className).append(", methodName: ").append(methodName).append(", queryLog: ").append(queryLog)
+            	.append(", uri: ").append(uri).append(", errorName: ").append(errorName);
+            	
+            	producer.send(new ProducerRecord<>("logs_error", sb.toString()));
+            }
 
             errorStmt.executeUpdate();
 
@@ -230,6 +244,16 @@ public class CustomDBAppender extends DBAppender {
             }
 
             stmt.executeUpdate();
+            
+            try(Producer<String, String> producer = new KafkaProducer<>(getProp())){
+            	StringBuilder sb = new StringBuilder();
+            	sb.append("timestamp: ").append(event.getTimeStamp()).append(", caller_class: ").append(callerClass).append(", caller_method: ").append(callerMethod)
+            	.append(", query: ").append(" ").append(", userId: ").append(userId).append(", requestId: ").append(requestId)
+            	.append(", userAgent: ").append(userAgent).append(", userIp: ").append(userIp).append(", executeResult: ").append(executeTime);
+            	
+            	producer.send(new ProducerRecord<String, String>("logs_slow", sb.toString()));
+            }
+            
         } catch (SQLException e) {
             addError("Failed to append slow log entry to database", e);
         }
@@ -245,5 +269,15 @@ public class CustomDBAppender extends DBAppender {
             mask |= 2;
         }
         return mask;
+    }
+    
+    private Properties getProp() {
+    	Properties prop = new Properties();
+    	
+    	prop.setProperty("bootstrap.servers", "localhost:9092");
+    	prop.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    	prop.setProperty("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    	
+    	return prop;
     }
 }

@@ -33,7 +33,7 @@ create table logging_slow (
 	`trace_id` varchar(255) DEFAULT NULL,
 	`ip_address` varchar(255) DEFAULT NULL,
 	`device` varchar(255) DEFAULT NULL,
-	`execute_result` bigint DEFAULT null,
+	`execute_result` varchar(255) DEFAULT null,
 	PRIMARY KEY (`event_id`)
 );
 

@@ -26,5 +26,5 @@ public class LogDTO {
 	private String userId;
 	private String ipAddress;
 	private String device;
-	private String executeResult;
+	private long executeResult;
 }

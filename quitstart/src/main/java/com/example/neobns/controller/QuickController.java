@@ -2,6 +2,7 @@ package com.example.neobns.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
 import com.example.neobns.entity.Account;
+import com.example.neobns.repository.LoggingEventRepository;
 import com.example.neobns.service.QuickService;
 
 import io.micrometer.core.annotation.Timed;
@@ -27,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class QuickController {
 
+	@Autowired
+    private LoggingEventRepository loggingEventRepository;
+	
 	private final QuickService quickService;
 
 	@GetMapping("/")
@@ -135,5 +140,33 @@ public class QuickController {
 
 		return ResponseEntity.ok("OK");
 	}
+	
+	@GetMapping("/custom-metrics")
+	public String getCustomMetrics() {
+        StringBuilder metrics = new StringBuilder();
 
+        // HELP 및 TYPE 정의
+        metrics.append("# HELP logging_event_info Custom logging event information\n");
+        metrics.append("# TYPE logging_event_info gauge\n");
+
+        // 데이터 가져오기
+        List<Object[]> events = loggingEventRepository.findAllLoggingEvents();
+
+        // 각 데이터 행을 Prometheus 형식으로 변환
+        for (Object[] event : events) {
+            java.sql.Timestamp timestmp = (java.sql.Timestamp) event[0];
+            String loggerName = (String) event[1];
+            String executeResult = (String) event[2];
+
+            // Prometheus 메트릭 추가
+            metrics.append(String.format(
+                "logging_event_info{timestmp=\"%s\", logger_name=\"%s\", execute_result=\"%s\"} 1\n",
+                timestmp.toString(), loggerName, executeResult
+            ));
+        }
+
+        return metrics.toString();
+    }
+	
+	
 }

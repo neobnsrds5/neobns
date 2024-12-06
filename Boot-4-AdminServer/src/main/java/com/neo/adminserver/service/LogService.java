@@ -91,9 +91,19 @@ public class LogService {
 //							+ newList.get(i).getExecuteResult();
 //
 //				} else {
+				/*
+				 * addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i +
+				 * 1).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+				 */
+//				}
+					
+					
+				if (!newList.get(i).getCallerClass().equals(newList.get(i+1).getCallerClass())) {
 					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
 							+ newList.get(i).getCallerMethod();
-//				}
+				}else {
+					continue;
+				}
 
 			} else if (i == newlistSize / 2) {
 

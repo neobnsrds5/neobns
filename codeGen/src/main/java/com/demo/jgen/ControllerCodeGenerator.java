@@ -28,10 +28,9 @@ public class ControllerCodeGenerator implements BaseCodeGenerator {
                     }
 
                     @GetMapping("/page")
-                    public List<%sDto> findByPage(@RequestParam("id") Map<String, Object> filters,
-                                                  @RequestParam("page") int page,
+                    public List<%sDto> findByPage(@RequestParam("page") int page,
                                                   @RequestParam("size") int size) {
-                        return service.findByPage(filters, page, size);
+                        return service.findByPage(page, size);
                     }
 
                     @GetMapping("/{id}")

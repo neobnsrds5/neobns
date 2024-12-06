@@ -24,6 +24,19 @@ public class OpenApiCodeGenerator {
 			}
 
             OpenAPI openAPI = new OpenAPIV3Parser().read(new File(yamlFilePath).getAbsolutePath());
+
+            String packageName = PACKAGEPRIFIX + ((PACKAGEPRIFIX.endsWith("."))? "":".") + "config";
+            String packageDir = outputDir + packageName.replace(".", "/") + "/";
+            new File(packageDir).mkdirs();
+            BaseCodeGenerator dbConfigGenerator = new DbConfigGenerator();
+            dbConfigGenerator.generateCode(packageName , "resourceName", packageDir, new Schema() );
+
+            String schedulePackageName = PACKAGEPRIFIX + ((PACKAGEPRIFIX.endsWith("."))? "":".") + "schedule";
+            String schedulePackageDir = outputDir + schedulePackageName.replace(".", "/") + "/";
+            new File(schedulePackageDir).mkdirs();
+            BaseCodeGenerator scheduleGenerator = new ScheduleGenerator();
+            scheduleGenerator.generateCode(schedulePackageName , "", schedulePackageDir, new Schema() );
+
             generateCode(openAPI, outputDir);
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,19 +58,33 @@ public class OpenApiCodeGenerator {
             BaseCodeGenerator mapperXmlGenerator = new MapperXmlCodeGenerator();
             BaseCodeGenerator serviceGenerator = new ServiceCodeGenerator();
             BaseCodeGenerator controllerGenerator = new ControllerCodeGenerator();
-            BaseCodeGenerator controllerTestGenerator = new ControllerTestCodeGenerator();
+//            BaseCodeGenerator controllerTestGenerator = new ControllerMockTestCodeGenerator();
+            BaseCodeGenerator controllerBootTestGenerator = new ControllerBootTestCodeGenerator();
+            BaseCodeGenerator serviceBootTestCodeGenerator = new ServiceBootTestCodeGenerator();
             BaseCodeGenerator serviceTestGenerator = new ServiceTestCodeGenerator();
+            BaseCodeGenerator serviceMySQLCodeGenerator = new ServiceMySQLTestCodeGenerator();
             BaseCodeGenerator jmeterTestPlanGenerator = new JMeterTestPlanCodeGenerator();
+            BaseCodeGenerator testDataSQLGenerator = new TestDataSQLGenerator();
             BaseCodeGenerator asciiDocGenerator = new AsciiDocCodeGenerator();
+
+            BaseCodeGenerator dbToDbGenerator = new DbToDbGenerator();
+            BaseCodeGenerator fileToDbGenerator = new FileToDbGenerator();
+
+            dbToDbGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
+            fileToDbGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
 
             dtoGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             mapperGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             mapperXmlGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             serviceGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             controllerGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
-            controllerTestGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
+//            controllerTestGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
+            controllerBootTestGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
+            serviceBootTestCodeGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             serviceTestGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
+            serviceMySQLCodeGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             jmeterTestPlanGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
+            testDataSQLGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             asciiDocGenerator.generateCode(packageName, resourceName, packageDir, schemas.get(schemaName));
             
 //            AsciiDocCodeGenerator asciiDocGenerator = new AsciiDocCodeGenerator();
@@ -72,26 +99,54 @@ public class OpenApiCodeGenerator {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public static String mapSchemaTypeToJavaType(String schemaType) {
+
+    public static String mapSchemaTypeToJavaType(String schemaType, String schemaFormat) {
         if (schemaType == null) {
             return "Object";
         }
 
         switch (schemaType) {
             case "string":
-                return "String";
+                if ("date".equals(schemaFormat)) {
+                    return "java.time.LocalDate";
+                } else if ("date-time".equals(schemaFormat)) {
+                    return "java.time.LocalDateTime";
+                } else if ("uuid".equals(schemaFormat)) {
+                    return "java.util.UUID";
+                } else {
+                    return "String";
+                }
+
             case "integer":
-                return "Integer";
+                if ("int32".equals(schemaFormat)) {
+                    return "Integer";
+                } else if ("int64".equals(schemaFormat)) {
+                    return "Long";
+                } else {
+                    return "Integer"; // Default to Integer for unspecified formats
+                }
+
             case "number":
-                return "Double";
+                if ("float".equals(schemaFormat)) {
+                    return "Float";
+                } else if ("double".equals(schemaFormat)) {
+                    return "Double";
+                } else {
+                    return "Double"; // Default to Double for unspecified formats
+                }
+
             case "boolean":
                 return "Boolean";
+
             case "array":
-                return "List";
+                return "List"; // Could be extended to include generics if items are provided
+
             case "object":
-                return "Map";
+                return "Map"; // Could be extended for specific object definitions
+
             default:
-                return "Object";
+                return "Object"; // Fallback for unknown types
         }
     }
+
 }

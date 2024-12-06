@@ -14,9 +14,12 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
         StringBuilder dynamicFilters = new StringBuilder();
 
         schema.getProperties().forEach((name, property) -> {
-            insertFields.append(name).append(", ");
-            insertValues.append("#{").append(name).append("}, ");
-            updateFields.append(name).append(" = #{").append(name).append("}, ");
+            if(!name.equals("id")) {
+                insertFields.append(name).append(", ");
+                insertValues.append("#{").append(name).append("}, ");
+            }
+            if(!name.equals("id"))
+                updateFields.append(name).append(" = #{").append(name).append("}, ");
             
             dynamicFilters.append("<if test=\"").append(name).append(" != null\">")
             .append(" AND ").append(name).append(" = #{").append(name).append("}")
@@ -37,13 +40,9 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
                     </select>
 
                     <select id="findByPage" resultType="%s.%sDto">
-                        SELECT * FROM %s
+                        SELECT * 
+                        FROM %s
                         
-                        <!-- Add dynamic filters here -->
-                        <where>
-                        	1=1
-                        	%s
-                        </where>
                         LIMIT #{limit} OFFSET #{offset}
                     </select>
 
@@ -51,7 +50,7 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
                         SELECT * FROM %s WHERE id = #{id}
                     </select>
 
-                    <insert id="insert">
+                    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
                         INSERT INTO %s (%s)
                         VALUES (%s)
                     </insert>
@@ -70,11 +69,11 @@ public class MapperXmlCodeGenerator implements BaseCodeGenerator {
                 """.formatted(
                 packageName, resourceName,
                 packageName, resourceName, tableName,
-                packageName, resourceName, tableName, dynamicFilters,
                 packageName, resourceName, tableName,
-                tableName, insertFields, insertValues,
-                tableName, updateFields,
-                tableName
+                packageName, resourceName, tableName,
+                tableName, insertFields, insertValues,  //insert
+                tableName, updateFields,    //update
+                tableName               //delete
         );
 
         writeToFile(packageDir + resourceName + "Mapper.xml", mapperXml);

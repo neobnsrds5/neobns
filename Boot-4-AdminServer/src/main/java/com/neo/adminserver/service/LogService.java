@@ -68,6 +68,7 @@ public class LogService {
 		}
 
 		StringBuilder builder = new StringBuilder();
+		builder.append("autonumber").append(System.lineSeparator());
 
 		// newList
 

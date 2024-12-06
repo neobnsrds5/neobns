@@ -64,91 +64,44 @@ public class LogService {
 		}
 
 		StringBuilder builder = new StringBuilder();
-		LogDTO previousLog = null;
-		boolean sqlEncountered = false;
 
-		for (int i = 0; i < newList.size(); i++) {
+		// newList
 
-			LogDTO currentLog = newList.get(i);
+		int sqlCount = 0;
+		int newlistSize = newList.size();
+		System.out.println("newlistSize" + newlistSize);
+		System.out.println("newlistSize/2" + newlistSize / 2);
+
+		for (int i = 0; i <= newList.size() - 1; i++) {
 			String addedString = null;
-			if (i == 0 || i == newList.size() - 1) {
-				if (i == 0) {
-					LogDTO nextLog = newList.get(i + 1);
-					addedString = currentLog.getCallerClass() + " -> " + nextLog.getCallerClass() + " : "
-							+ currentLog.getCallerMethod();
-				} else {
-					addedString = currentLog.getCallerClass() + " -> " + newList.get(0).getCallerClass() + " : "
-							+ currentLog.getCallerMethod();
-				}
 
-			} else {
+			if (i < newlistSize / 2) {
 
-				if (currentLog.getCallerClass().equals("SQL")) {
-					sqlEncountered = true;
-					String executeResult = currentLog.getExecuteResult();
-					if (executeResult == null) {
-						addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass()
-								+ " : <font color=red>" + currentLog.getCallerMethod() + " - No Result</font>";
-					} else if (executeResult.contains("Exception")) {
-						addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass()
-								+ " : <font color=red>" + currentLog.getCallerMethod() + " - " + executeResult
-								+ "</font>";
-					} else {
-						addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
-								+ currentLog.getCallerMethod() + " , " + executeResult + "ms";
-					}
-				}
+				addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
+						+ newList.get(i).getCallerMethod();
 
-				else if (existsInErrorList(currentLog, slowOrErrorList)) {
-					addedString = currentLog.getCallerClass() + " -> " + currentLog.getCallerClass()
-							+ " : <font color=red>" + currentLog.getExecuteResult() + "</font>";
-				}
+			} else if (i == newlistSize / 2) {
 
-				else if (previousLog != null && previousLog.getCallerClass().equals("SQL")) {
-					String currentResult = currentLog.getExecuteResult();
-					String previousResult = previousLog.getExecuteResult();
+				addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+						+ newList.get(i).getExecuteResult() + "ms";
 
-					if (isNumeric(previousResult) && isNumeric(currentResult)) {
-						long duration = Long.parseLong(currentResult) - Long.parseLong(previousResult);
-						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
-								+ currentLog.getCallerMethod() + " - " + duration + "ms";
-					} else {
-						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
-								+ currentLog.getCallerMethod();
-					}
-				}
+			} else if (i > newlistSize / 2) {
 
-				else if (sqlEncountered && previousLog != null) {
-					String currentResult = currentLog.getExecuteResult();
-					String previousResult = previousLog.getExecuteResult();
+				long intervalTime = Long.parseLong(newList.get(i).getExecuteResult())
+						- Long.parseLong(newList.get(i - 1).getExecuteResult());
 
-					if (isNumeric(previousResult) && isNumeric(currentResult)) {
-						long duration = Long.parseLong(currentResult) - Long.parseLong(previousResult);
-						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
-								+ previousLog.getCallerMethod() + " - " + duration + "ms";
-					} else {
-						addedString = previousLog.getCallerClass() + " -> " + currentLog.getCallerClass() + " : "
-								+ previousLog.getCallerMethod();
-					}
-				}
+//				String intervalTime = newList.get(i).getExecuteResult()  + "-" + newList.get(i-1).getExecuteResult();
 
-				else if (!sqlEncountered && previousLog != null) {
-					LogDTO nextLog = newList.get(i + 1);
-					addedString = currentLog.getCallerClass() + " -> " + nextLog.getCallerClass() + " : "
-							+ currentLog.getCallerMethod();
-				}
-
-				if (addedString != null) {
-					builder.append(addedString).append(System.lineSeparator());
-				}
+				addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+						+ intervalTime + "ms";
 
 			}
 
-			previousLog = currentLog;
+			builder.append(addedString).append(System.lineSeparator());
+
 		}
 
-		System.out.println("Generated PlantUML String:");
-		System.out.println(builder.toString());
+		// errorslowList
 
 		return builder.toString();
 

@@ -1,0 +1,259 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+paths:
+  /transfer:
+    post:
+      tags:
+      - transfer-controller
+      operationId: transfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /item:
+    get:
+      tags:
+      - quick-controller
+      operationId: getItem
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ItemDto"
+    post:
+      tags:
+      - quick-controller
+      operationId: registerItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+  /addAccount:
+    post:
+      tags:
+      - quick-controller
+      operationId: addAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /member:
+    get:
+      tags:
+      - quick-controller
+      operationId: getMember
+      parameters:
+      - name: empNo
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /findAll:
+    get:
+      tags:
+      - quick-controller
+      operationId: getAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ItemDto"
+  /dummy:
+    get:
+      tags:
+      - quick-controller
+      operationId: dummy
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /dummy2:
+    get:
+      tags:
+      - quick-controller
+      operationId: dummy2
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /company/{id}:
+    get:
+      tags:
+      - quick-controller
+      operationId: getCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /batch/filetodb/{value}:
+    get:
+      tags:
+      - batch-controller
+      operationId: fileToDbTest
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /batch/dbtodb/{value}:
+    get:
+      tags:
+      - batch-controller
+      operationId: dbtodbTest
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /batch/dbtoapi/{value}:
+    get:
+      tags:
+      - batch-controller
+      operationId: firstApi
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /:
+    get:
+      tags:
+      - quick-controller
+      operationId: main
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    Transfer:
+      type: object
+      properties:
+        fromAccount:
+          type: string
+        toAccount:
+          type: string
+        money:
+          type: integer
+          format: int64
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    Response:
+      type: object
+      properties:
+        message:
+          type: string
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        accountNumber:
+          type: string
+        name:
+          type: string
+        money:
+          type: integer
+          format: int64

@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: Customer Management API
+  version: 1.0.0
+paths:
+  /customers:
+    get:
+      summary: Get a list of customers
+      parameters:
+        - name: filters
+          in: query
+          required: false
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+          default: 1
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+          default: 10
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      summary: Create a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: Customer created successfully
+  /customers/{customerId}:
+    get:
+      summary: Get customer details by ID
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      summary: Update customer by ID
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: Customer updated successfully
+    delete:
+      summary: Delete customer by ID
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Customer deleted successfully
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        customerId:
+          type: integer
+          example: 1
+        firstName:
+          type: string
+          example: "Jane"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          example: "jane.doe@example.com"
+        phoneNumber:
+          type: string
+          example: "+1234567890"
+        address:
+          type: string
+          example: "123 Main St, Anytown, USA"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-02T15:00:00Z"

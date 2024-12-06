@@ -3,11 +3,13 @@ package com.neo.adminserver.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.actuate.logging.LoggersEndpoint.GroupLoggerLevelsDescriptor;
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
 import com.neo.adminserver.mapper.LogMapper;
 
+import ch.qos.logback.core.joran.conditional.ElseAction;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,6 +55,8 @@ public class LogService {
 			}
 		}
 
+		slowOrErrorList.remove(slowOrErrorList.size() - 1);
+
 		for (LogDTO dto : newList) {
 			System.out.println("<newList>");
 			System.out.println(dto);
@@ -73,27 +77,54 @@ public class LogService {
 		System.out.println("newlistSize/2" + newlistSize / 2);
 
 		for (int i = 0; i <= newList.size() - 1; i++) {
+
+			LogDTO currentLog = newList.get(i);
+
 			String addedString = null;
 
 			if (i < newlistSize / 2) {
 
-				addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
-						+ newList.get(i).getCallerMethod();
+//				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
+//
+//					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
+//							+ " : <font color=red>" + newList.get(i).getCallerMethod() + " , "
+//							+ newList.get(i).getExecuteResult();
+//
+//				} else {
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
+							+ newList.get(i).getCallerMethod();
+//				}
 
 			} else if (i == newlistSize / 2) {
 
-				addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-						+ newList.get(i).getExecuteResult() + "ms";
+				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
+					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
+					addedString = errorLog.getCallerClass() + " -> " + errorLog.getCallerClass()
+							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult()
+							+ "ms";
+				} else {
+					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+							+ newList.get(i).getCallerMethod() + " - " + newList.get(i).getExecuteResult() + "ms";
+				}
 
 			} else if (i > newlistSize / 2) {
 
 				long intervalTime = Long.parseLong(newList.get(i).getExecuteResult())
 						- Long.parseLong(newList.get(i - 1).getExecuteResult());
 
-//				String intervalTime = newList.get(i).getExecuteResult()  + "-" + newList.get(i-1).getExecuteResult();
+				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 
-				addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-						+ intervalTime + "ms";
+					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
+
+					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+							+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms";
+
+				} else {
+
+					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
+							+ intervalTime + "ms";
+
+				}
 
 			}
 
@@ -102,6 +133,28 @@ public class LogService {
 		}
 
 		// errorslowList
+
+//		for (int i = 0; i <= slowOrErrorList.size() - 2; i++) {
+//
+//			String addedString2 = null;
+//			LogDTO log = slowOrErrorList.get(i);
+//			String loggerName = log.getLoggerName();
+//
+//			if (loggerName.equals("SLOW")) {
+//
+//				addedString2 = log.getCallerClass() + " -> " + log.getCallerClass() + " : <font color=red> "
+//						+ slowOrErrorList.get(i).getCallerMethod() + " - " + slowOrErrorList.get(i).getExecuteResult()
+//						+ "ms";
+//
+//			} else if (loggerName.equals("ERROR")) {
+//
+//				addedString2 = log.getCallerClass() + " -> " + log.getCallerClass() + " : <font color=red>"
+//						+ log.getExecuteResult();
+//			}
+//
+//			builder.append(addedString2).append(System.lineSeparator());
+//
+//		}
 
 		return builder.toString();
 
@@ -122,15 +175,14 @@ public class LogService {
 
 	}
 
-	private boolean existsInErrorList(LogDTO currentLog, List<LogDTO> slowOrErrorList) {
+	private LogDTO existsInErrorList(LogDTO currentLog, List<LogDTO> slowOrErrorList) {
 		for (LogDTO errorLog : slowOrErrorList) {
 			if (errorLog.getCallerClass().equals(currentLog.getCallerClass())
-					&& errorLog.getCallerMethod().equals(currentLog.getCallerMethod())
-					&& errorLog.getExecuteResult().equals(currentLog.getExecuteResult())) {
-				return true;
+					&& errorLog.getCallerMethod().equals(currentLog.getCallerMethod())) {
+				return errorLog;
 			}
 		}
-		return false;
+		return null;
 	}
 
 }

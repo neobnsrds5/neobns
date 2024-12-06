@@ -76,6 +76,7 @@
 		            	<input type="checkbox" id="select-all" class="form-check-input">
 					</th>
 					<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
+					<th>종류</th> <!-- trace, slow, error -->
 		            <th>추적ID</th> <!-- 추적 아이디 -->
 		            <th>호출</th> <!-- caller_class 정보 -->
 		            <th>호출상세</th> <!-- caller_method 정보 -->
@@ -93,6 +94,8 @@
 		            </td>
 		            <!-- 타임스탬프 -->
 					<td th:text="${log.timestmp}"></td>
+					<!-- trace, slow, error -->
+					<td th:text="${log.loggerName}"></td>
 		            <!-- 추적 ID -->
 		            <td class="text-start">
 						<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>

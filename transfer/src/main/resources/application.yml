@@ -1,3 +1,6 @@
+server:
+  port: 8090
+
 spring:
   application:
     name: transfer
@@ -5,11 +8,6 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db1
-    username: root
-    password: 
   cache:
     redis:
       ttl: 10000000  

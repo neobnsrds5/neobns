@@ -13,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class TargetDataSourceConfig {
+public class TargetDbConfig {
 	
 	private final DBProperties dbProperties;
 	
-	@Bean
+	@Bean(name = "targetDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-target")
 	public DataSource targetDataSource() {
 		return DataSourceBuilder.create().url(dbProperties.getTargetUrl()).build();

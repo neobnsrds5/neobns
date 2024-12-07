@@ -1,3 +1,11 @@
+server:
+  port: 7777
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
   kafka:
     bootstrap-servers: localhost:9092
@@ -25,21 +33,6 @@ spring:
     jdbc:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-mysql.sql
-  datasource-meta:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db1
-    username: root
-    password: 1234
-  datasource-data:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db2
-    username: root
-    password: 1234
-  datasource-target:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db3
-    username: root
-    password: 1234
   jpa:
     properties:
       hibernate:
@@ -105,9 +98,4 @@ management:
   metrics:
     enable:
       hikaricp: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
+  

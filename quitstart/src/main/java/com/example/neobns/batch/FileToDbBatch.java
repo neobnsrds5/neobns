@@ -82,10 +82,15 @@ public class FileToDbBatch {
 
 	@Bean
 	public TaskExecutor fileToDBTaskExecutor() {
+		
+		int corePoolSize = 4; // 4~8
+		int maxPoolSize = 8; // 8~16
+		int queueSize = 50; //50~100
+		
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(4);
-		executor.setMaxPoolSize(8);
-		executor.setQueueCapacity(50);
+		executor.setCorePoolSize(corePoolSize);
+		executor.setMaxPoolSize(maxPoolSize);
+		executor.setQueueCapacity(queueSize);
 		executor.setThreadNamePrefix("fileToDBTask");
 		executor.initialize();
 		return executor;

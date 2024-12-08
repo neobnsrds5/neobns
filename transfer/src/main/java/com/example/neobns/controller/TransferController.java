@@ -23,8 +23,10 @@ public class TransferController {
 		log.info("이체 서비스에서 이체 기능 호출 ");
 		if(request.getMoney()>0) {
 			transferService.insertTransferDetail(request);
+			System.out.println("transferService.insertTransferDetail(request)");
 			return ResponseEntity.ok("Transfer succesful: " + request.getMoney() + " to " + request.getToAccount());
 		}else {
+			System.out.println("Invalid transfer amount");
 			return ResponseEntity.badRequest().body("Invalid transfer amount");
 		}
 		

@@ -14,7 +14,7 @@ public class TransferService {
 	private final RestTemplate restTemplate;
 	
 //	@Value("${gateway.url}")
-	@Value("http://localhost:8090") // transfer로 바로 요청하도록 수정
+	@Value("http://localhost:8080") // transfer로 바로 요청하도록 수정
 	private String transferServiceUrl;
 		
 	public TransferService(RestTemplate restTemplate) {
@@ -30,6 +30,8 @@ public class TransferService {
 		.toAccount(toAccount)
 		.money(money)
 		.build();
+		
+		System.out.println("진행 : transferServiceUrl + /transfer/ex");
 		
 		try {
 			ResponseEntity<String> response = restTemplate.postForEntity(url, dto, String.class);

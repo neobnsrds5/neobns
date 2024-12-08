@@ -37,20 +37,74 @@ public class LogService {
 		}
 
 		ArrayList<LogDTO> slowOrErrorList = new ArrayList<>();
+
+		String user = "";
+		List<String> userList = new ArrayList<>();
+		String currentUser = "";
+		String gatewayUrl = "http://localhost:8000/";
+		String removedUser="";
+
 		for (int i = 0; i < newList.size(); i++) {
-			if (newList.get(i).getCallerClass().contains("http://")) {
+			
+			System.out.println("userlist : " + userList.toString());
+			
+			if (i == 0) {
+				String[] parts = newList.get(i).getCallerClass().split("/");
+				currentUser = parts[3];
+				userList.add(currentUser);
+				user = newList.get(i).getCallerClass();
 				String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
 				newList.get(i).setCallerClass("user");
 				newList.get(i).setCallerMethod(newMethod);
-			} else if (newList.get(i).getCallerClass().contains("com.example.neobns")) {
+			} else if (newList.get(i).getCallerClass().contains("http://")) {
+
+				
+				if (i<=newList.size()/2) {
+					String[] parts = newList.get(i).getCallerClass().split("/");
+					currentUser = parts[3];
+					userList.add(currentUser);
+				}
+
+				if (newList.get(i).getCallerClass().equals(user)) {
+					System.out.println("current User : " + currentUser);
+					newList.get(i).setCallerClass("user");
+					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+					newList.get(i).setCallerMethod(newMethod);
+				} else {
+
+					System.out.println("current User : " + currentUser);
+					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+					newList.get(i).setCallerClass("rest_" + currentUser);	
+					newList.get(i).setCallerMethod(newMethod);
+				}
+				
+				if (!userList.isEmpty() && i > newList.size() / 2) {
+				    removedUser = userList.removeLast();
+				    if (!userList.isEmpty()) {
+				        currentUser = userList.getLast();
+				    } else {
+				        currentUser = "";
+				    }
+				}
+
+
+			} else if (newList.get(i).getCallerClass().contains("Controller")
+					|| newList.get(i).getCallerClass().contains("Service")
+					|| newList.get(i).getCallerClass().contains("Mapper")) {
 				int lastDot = newList.get(i).getCallerClass().lastIndexOf(".");
-				String editedClass = newList.get(i).getCallerClass().substring(lastDot + 1);
+				String editedClass = currentUser + "_" + newList.get(i).getCallerClass().substring(lastDot + 1);
+				newList.get(i).setCallerClass(editedClass);
+				
+
+			} else if (newList.get(i).getCallerClass().contains("SQL")) {
+				String editedClass = currentUser + "_" + "DB";
 				newList.get(i).setCallerClass(editedClass);
 			}
 
 			if (newList.get(i).getLoggerName().equals("ERROR") || newList.get(i).getLoggerName().equals("SLOW")) {
 				LogDTO exitedLog = newList.remove(i);
 				slowOrErrorList.add(exitedLog);
+				userList.add(removedUser);
 				i--;
 			}
 		}
@@ -85,24 +139,10 @@ public class LogService {
 
 			if (i < newlistSize / 2) {
 
-//				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
-//
-//					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass()
-//							+ " : <font color=red>" + newList.get(i).getCallerMethod() + " , "
-//							+ newList.get(i).getExecuteResult();
-//
-//				} else {
-				/*
-				 * addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i +
-				 * 1).getCallerClass() + " : " + newList.get(i).getCallerMethod();
-				 */
-//				}
-					
-					
-				if (!newList.get(i).getCallerClass().equals(newList.get(i+1).getCallerClass())) {
+				if (!newList.get(i).getCallerClass().equals(newList.get(i + 1).getCallerClass())) {
 					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
 							+ newList.get(i).getCallerMethod();
-				}else {
+				} else {
 					continue;
 				}
 
@@ -126,9 +166,19 @@ public class LogService {
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
+					
+					if (errorLog.getLoggerName().equals("ERROR")) {
+						
+						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms";
+						
+					}else if(errorLog.getLoggerName().equals("SLOW")) {
+						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+						+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult()
+						+ "ms";
+					}
 
-					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-							+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms";
+					
 
 				} else {
 
@@ -143,29 +193,7 @@ public class LogService {
 
 		}
 
-		// errorslowList
-
-//		for (int i = 0; i <= slowOrErrorList.size() - 2; i++) {
-//
-//			String addedString2 = null;
-//			LogDTO log = slowOrErrorList.get(i);
-//			String loggerName = log.getLoggerName();
-//
-//			if (loggerName.equals("SLOW")) {
-//
-//				addedString2 = log.getCallerClass() + " -> " + log.getCallerClass() + " : <font color=red> "
-//						+ slowOrErrorList.get(i).getCallerMethod() + " - " + slowOrErrorList.get(i).getExecuteResult()
-//						+ "ms";
-//
-//			} else if (loggerName.equals("ERROR")) {
-//
-//				addedString2 = log.getCallerClass() + " -> " + log.getCallerClass() + " : <font color=red>"
-//						+ log.getExecuteResult();
-//			}
-//
-//			builder.append(addedString2).append(System.lineSeparator());
-//
-//		}
+		System.out.println("최종결과 :  \n" + builder.toString());
 
 		return builder.toString();
 

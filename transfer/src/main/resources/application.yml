@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db1
     username: root
-    password: 
+    password: 1234
   cache:
     redis:
       ttl: 10000000  

@@ -27,24 +27,22 @@ import com.example.neobns.dto.AccountDTO;
 
 @Configuration
 public class DbToApiBatch {
-	
+
 	private final DataSource datasource;
-	
+
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	
+
 	private final RestTemplate restTemplate;
-	
-	public DbToApiBatch(@Qualifier("dataDBSource") DataSource datasource,
-			PlatformTransactionManager transactionManager,
-			JobRepository jobRepository,
-			RestTemplate restTemplate) {
+
+	public DbToApiBatch(@Qualifier("dataDBSource") DataSource datasource, PlatformTransactionManager transactionManager,
+			JobRepository jobRepository, RestTemplate restTemplate) {
 		this.datasource = datasource;
 		this.transactionManager = transactionManager;
 		this.jobRepository = jobRepository;
 		this.restTemplate = restTemplate;
 	}
-	
+
 	@Bean
 	public TaskExecutor toApiTaskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -55,27 +53,21 @@ public class DbToApiBatch {
 		executor.initialize();
 		return executor;
 	}
-	
+
 	@Bean
-	public Job toApiJob() throws Exception{
-		return new JobBuilder("dbToApiJob", jobRepository)
-				.start(toApiStep())
-				.build();
+	public Job toApiJob() throws Exception {
+		return new JobBuilder("dbToApiJob", jobRepository).start(toApiStep()).build();
 	}
-	
+
 	@Bean
-	public Step toApiStep() throws Exception{
+	public Step toApiStep() throws Exception {
 		return new StepBuilder("dbToApiStep", jobRepository)
-				.<Map<String, Object>, AccountDTO>chunk(10, transactionManager)
-				.reader(toApiReader())
-				.processor(toApiProcessor())
-				.writer(toApiWriter())
-				.taskExecutor(toApiTaskExecutor())
-				.build();
+				.<Map<String, Object>, AccountDTO>chunk(10, transactionManager).reader(toApiReader())
+				.processor(toApiProcessor()).writer(toApiWriter()).taskExecutor(toApiTaskExecutor()).build();
 	}
-	
+
 	@Bean
-	public JdbcPagingItemReader<Map<String, Object>> toApiReader() throws Exception{
+	public JdbcPagingItemReader<Map<String, Object>> toApiReader() throws Exception {
 		JdbcPagingItemReader<Map<String, Object>> reader = new JdbcPagingItemReader<Map<String, Object>>();
 		reader.setDataSource(datasource);
 		reader.setName("pagingReader");
@@ -91,9 +83,9 @@ public class DbToApiBatch {
 		reader.setPageSize(10);
 		return reader;
 	}
-	
+
 	@Bean
-	public PagingQueryProvider toApiQueryProvider() throws Exception{
+	public PagingQueryProvider toApiQueryProvider() throws Exception {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(datasource);
 		factory.setSelectClause("SELECT *");
@@ -101,31 +93,37 @@ public class DbToApiBatch {
 		factory.setSortKey("id");
 		return factory.getObject();
 	}
-	
+
 	@Bean
-	public ItemProcessor<Map<String, Object>, AccountDTO> toApiProcessor(){
+	public ItemProcessor<Map<String, Object>, AccountDTO> toApiProcessor() {
 		return new ItemProcessor<Map<String, Object>, AccountDTO>() {
-			
+
 			@Override
 			public AccountDTO process(Map<String, Object> item) throws Exception {
+
+				// dummy processor logic 추가
+				for (int i = 0; i < item.size(); i++) {
+					System.out.println("dummy processor is processing " + item.get(i));
+				}
+
 				AccountDTO result = new AccountDTO();
-				result.setId((long)item.get("id"));
-				result.setAccountNumber((String)item.get("accountNumber"));
-				result.setMoney((long)item.get("money"));
-				result.setName((String)item.get("name"));
+				result.setId((long) item.get("id"));
+				result.setAccountNumber((String) item.get("accountNumber"));
+				result.setMoney((long) item.get("money"));
+				result.setName((String) item.get("name"));
 				return result;
 			}
 		};
 	}
-	
+
 	@Bean
-	public ItemWriter<AccountDTO> toApiWriter(){
+	public ItemWriter<AccountDTO> toApiWriter() {
 		return chunk -> chunk.getItems().parallelStream().forEach(this::sendToApi);
 	}
-	
+
 	private void sendToApi(AccountDTO data) {
 		String result = restTemplate.postForObject("http://localhost:8084/test", data, String.class);
 		System.out.println(result);
 	}
-	
+
 }

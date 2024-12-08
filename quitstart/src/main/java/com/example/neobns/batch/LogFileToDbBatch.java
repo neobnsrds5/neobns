@@ -10,6 +10,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -53,9 +54,25 @@ public class LogFileToDbBatch {
 	public Step logToDBStep() {
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(100, transactionManager)
 				.reader(logReader())
+				.processor(dummyProcessor())
 				.writer(compositeWriter())
 				.taskExecutor(logToDBTaskExecutor())
 				.build();
+	}
+
+	@Bean
+	public ItemProcessor<LogDTO, LogDTO> dummyProcessor() {
+		return new ItemProcessor<LogDTO, LogDTO>() {
+			
+			@Override
+			public LogDTO process(LogDTO item) throws Exception {
+				// dummy processor logic 추가
+				for (int i = 0; i < 5; i++) {
+					System.out.println("dummy processor is processing " + item.toString());
+				}
+				return item;
+			}
+		};
 	}
 
 	@Bean

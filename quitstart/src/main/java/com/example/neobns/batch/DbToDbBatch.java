@@ -10,12 +10,14 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.function.context.config.ContextFunctionCatalogInitializer.DummyProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -25,26 +27,25 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class DbToDbBatch {
-	
+
 	private final DataSource realSource;
 	private final DataSource targetSource;
-	
+
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	
+
 	public DbToDbBatch(@Qualifier("dataDBSource") DataSource realSource,
-			@Qualifier("targetDataSource") DataSource targetSource,
-			JobRepository jobRepository,
+			@Qualifier("targetDataSource") DataSource targetSource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {
 		this.realSource = realSource;
 		this.targetSource = targetSource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
 	}
-	
+
 	@Bean
-	public JdbcPagingItemReader<Map<String, Object>> reader() throws Exception{
-		JdbcPagingItemReader<Map<String, Object>> reader = new JdbcPagingItemReader<Map<String,Object>>();
+	public JdbcPagingItemReader<Map<String, Object>> reader() throws Exception {
+		JdbcPagingItemReader<Map<String, Object>> reader = new JdbcPagingItemReader<Map<String, Object>>();
 		reader.setDataSource(realSource);
 		reader.setName("pagingReader");
 		reader.setQueryProvider(queryProvider());
@@ -58,9 +59,9 @@ public class DbToDbBatch {
 		reader.setPageSize(10);
 		return reader;
 	}
-	
+
 	@Bean
-	public PagingQueryProvider queryProvider() throws Exception{
+	public PagingQueryProvider queryProvider() throws Exception {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
 		factory.setSelectClause("SELECT *");
@@ -68,11 +69,10 @@ public class DbToDbBatch {
 		factory.setSortKey("id");
 		return factory.getObject();
 	}
-	
+
 	@Bean
-	public JdbcBatchItemWriter<Map<String, Object>> writer(){
-		return new JdbcBatchItemWriterBuilder<Map<String, Object>>()
-				.dataSource(targetSource)
+	public JdbcBatchItemWriter<Map<String, Object>> writer() {
+		return new JdbcBatchItemWriterBuilder<Map<String, Object>>().dataSource(targetSource)
 				.sql("INSERT INTO account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
 				.itemSqlParameterSourceProvider(item -> {
 					MapSqlParameterSource params = new MapSqlParameterSource();
@@ -82,25 +82,37 @@ public class DbToDbBatch {
 					return params;
 				}).build();
 	}
-	
+
 	@Bean
-	public Step step() throws Exception{
+	public Step step() throws Exception {
 		return new StepBuilder("dbCopyStep", jobRepository)
-				.<Map<String, Object>, Map<String, Object>>chunk(100, transactionManager)
-				.reader(reader())
-				.writer(writer())
-				.taskExecutor(taskExecutor())
-				.build();
+				.<Map<String, Object>, Map<String, Object>>chunk(100, transactionManager).reader(reader())
+				.processor(dummyProcessor()).writer(writer()).taskExecutor(taskExecutor()).build();
 	}
-	
+
 	@Bean
-	public Job job() throws Exception{
+	public ItemProcessor<Map<String, Object>, Map<String, Object>> dummyProcessor() {
+		return new ItemProcessor<Map<String, Object>, Map<String, Object>>() {
+
+			@Override
+			public Map<String, Object> process(Map<String, Object> item) throws Exception {
+				
+				// dummy processor logic 추가
+				for (int i = 0; i < item.size(); i++) {
+					System.out.println("dummy processor is processing " + item.get(i));
+				}
+				return item;
+			}
+		};
+	}
+
+	@Bean
+	public Job job() throws Exception {
 		return new JobBuilder("dbCopyJob", jobRepository)
 //				.start(partitoinStep())
-				.start(step())
-				.build();
+				.start(step()).build();
 	}
-	
+
 	@Bean
 	public TaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -111,5 +123,5 @@ public class DbToDbBatch {
 		executor.initialize();
 		return executor;
 	}
-	
+
 }

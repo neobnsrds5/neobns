@@ -1,5 +1,7 @@
 package com.example.neobns.batch;
 
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -7,6 +9,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -50,12 +53,29 @@ public class FileToDbBatch {
 		return new StepBuilder("fileToDBStep", jobRepository)
 				.<AccountDTO, AccountDTO>chunk(100, transactionManager)
 				.reader(fileReader())
+				.processor(dummyProcessor())
 				.writer(fileToDbWriter())
 				.taskExecutor(fileToDBTaskExecutor())
 				.build();
 				
 	}
 	
+	
+	@Bean
+	public ItemProcessor<AccountDTO, AccountDTO> dummyProcessor() {
+		return new ItemProcessor<AccountDTO, AccountDTO>() {
+			
+			@Override
+			public AccountDTO process(AccountDTO item) throws Exception {
+				// dummy processor logic 추가
+				for (int i = 0; i < 5; i++) {
+					System.out.println("dummy processor is processing " + item.toString());
+				}
+				return item;
+			}
+		};
+	}
+
 	@Bean
 	public TaskExecutor fileToDBTaskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

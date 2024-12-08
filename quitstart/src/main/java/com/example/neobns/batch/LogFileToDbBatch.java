@@ -57,21 +57,21 @@ public class LogFileToDbBatch {
 		
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader())
-				.processor(dummyProcessor())
+				.processor(dummyProcessor3())
 				.writer(compositeWriter())
 				.taskExecutor(logToDBTaskExecutor())
 				.build();
 	}
 
 	@Bean
-	public ItemProcessor<LogDTO, LogDTO> dummyProcessor() {
+	public ItemProcessor<LogDTO, LogDTO> dummyProcessor3() {
 		return new ItemProcessor<LogDTO, LogDTO>() {
 			
 			@Override
 			public LogDTO process(LogDTO item) throws Exception {
 				// dummy processor logic 추가
 				for (int i = 0; i < 5; i++) {
-					System.out.println("dummy processor is processing " + item.toString());
+					System.out.println("dummy processor is processing3 " + item.toString());
 				}
 				return item;
 			}

@@ -105,7 +105,7 @@ public class DbToApiBatch {
 
 				// dummy processor logic 추가
 				for (int i = 0; i < item.size(); i++) {
-					System.out.println("dummy processor is processing " + item.get(i));
+					System.out.println("dummy processor is processing " + item.toString());
 				}
 
 				AccountDTO result = new AccountDTO();
@@ -125,7 +125,7 @@ public class DbToApiBatch {
 
 	private void sendToApi(AccountDTO data) {
 		String result = restTemplate.postForObject("http://localhost:8084/test", data, String.class);
-		System.out.println(result);
+		System.out.println("API 응답 : " + result);
 	}
 
 }

@@ -19,6 +19,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -56,7 +57,7 @@ public class FileToDbBatch {
 		return new StepBuilder("fileToDBStep", jobRepository)
 				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager)
 				.reader(fileReader())
-				.processor(dummyProcessor())
+				.processor(dummyProcessor2())
 				.writer(fileToDbWriter())
 				.taskExecutor(fileToDBTaskExecutor())
 				.build();
@@ -65,14 +66,14 @@ public class FileToDbBatch {
 	
 	
 	@Bean
-	public ItemProcessor<AccountDTO, AccountDTO> dummyProcessor() {
+	public ItemProcessor<AccountDTO, AccountDTO> dummyProcessor2() {
 		return new ItemProcessor<AccountDTO, AccountDTO>() {
 			
 			@Override
 			public AccountDTO process(AccountDTO item) throws Exception {
 				// dummy processor logic 추가
 				for (int i = 0; i < 5; i++) {
-					System.out.println("dummy processor is processing " + item.toString());
+					System.out.println("dummy processor is processing2 " + item.toString());
 				}
 				return item;
 			}
@@ -93,8 +94,9 @@ public class FileToDbBatch {
 	@Bean
 	public FlatFileItemReader<AccountDTO> fileReader(){
 		FlatFileItemReader<AccountDTO> reader = new FlatFileItemReader<>();
-		String path = "C:/csv/test.csv";
-		reader.setResource(new FileSystemResource(path));
+		String path = "csv/test.csv";
+//		reader.setResource(new FileSystemResource(path));
+		reader.setResource(new ClassPathResource(path));
 		reader.setLinesToSkip(1);
 		
 		DefaultLineMapper<AccountDTO> lineMapper = new DefaultLineMapper<>();

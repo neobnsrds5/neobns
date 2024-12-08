@@ -91,11 +91,11 @@ public class DbToDbBatch {
 		return new StepBuilder("dbCopyStep", jobRepository)
 				.<Map<String, Object>, Map<String, Object>>chunk(chunkSize, transactionManager)
 				.reader(reader())
-				.processor(dummyProcessor()).writer(writer()).taskExecutor(taskExecutor()).build();
+				.processor(dummyProcessor1()).writer(writer()).taskExecutor(taskExecutor()).build();
 	}
 
 	@Bean
-	public ItemProcessor<Map<String, Object>, Map<String, Object>> dummyProcessor() {
+	public ItemProcessor<Map<String, Object>, Map<String, Object>> dummyProcessor1() {
 		return new ItemProcessor<Map<String, Object>, Map<String, Object>>() {
 
 			@Override
@@ -103,7 +103,7 @@ public class DbToDbBatch {
 				
 				// dummy processor logic 추가
 				for (int i = 0; i < item.size(); i++) {
-					System.out.println("dummy processor is processing " + item.get(i));
+					System.out.println("dummy processor is processing1 " + item.toString());
 				}
 				return item;
 			}

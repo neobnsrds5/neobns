@@ -61,8 +61,10 @@ public class DbToApiBatch {
 
 	@Bean
 	public Step toApiStep() throws Exception {
+		int chunkSize = 10; // 10, 50, 100
 		return new StepBuilder("dbToApiStep", jobRepository)
-				.<Map<String, Object>, AccountDTO>chunk(10, transactionManager).reader(toApiReader())
+				.<Map<String, Object>, AccountDTO>chunk(chunkSize, transactionManager)
+				.reader(toApiReader())
 				.processor(toApiProcessor()).writer(toApiWriter()).taskExecutor(toApiTaskExecutor()).build();
 	}
 

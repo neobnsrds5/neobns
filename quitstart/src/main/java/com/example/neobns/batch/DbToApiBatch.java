@@ -26,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import com.example.neobns.dto.AccountDTO;
 
 @Configuration
-public class dbToApiBatch {
+public class DbToApiBatch {
 	
 	private final DataSource datasource;
 	
@@ -35,7 +35,7 @@ public class dbToApiBatch {
 	
 	private final RestTemplate restTemplate;
 	
-	public dbToApiBatch(@Qualifier("dataDBSource") DataSource datasource,
+	public DbToApiBatch(@Qualifier("dataDBSource") DataSource datasource,
 			PlatformTransactionManager transactionManager,
 			JobRepository jobRepository,
 			RestTemplate restTemplate) {

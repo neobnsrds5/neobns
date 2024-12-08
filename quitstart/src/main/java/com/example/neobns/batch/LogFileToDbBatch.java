@@ -29,14 +29,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.example.neobns.dto.LogDTO;
 
 @Configuration
-public class LogToDbBatch {
+public class LogFileToDbBatch {
 
 	private final DataSource datasource;
 
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 
-	public LogToDbBatch(@Qualifier("dataDBSource") DataSource datasource, JobRepository jobRepository,
+	public LogFileToDbBatch(@Qualifier("dataDBSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {
 		super();
 		this.datasource = datasource;

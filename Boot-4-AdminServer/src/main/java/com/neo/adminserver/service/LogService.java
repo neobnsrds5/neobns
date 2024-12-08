@@ -39,7 +39,7 @@ public class LogService {
 		ArrayList<LogDTO> slowOrErrorList = new ArrayList<>();
 
 		String user = "";
-		List<String> userList = new ArrayList<>();
+		List<String> userList = new ArrayList<String>();
 		String currentUser = "";
 		String gatewayUrl = "http://localhost:8000/";
 		String removedUser="";
@@ -79,9 +79,9 @@ public class LogService {
 				}
 				
 				if (!userList.isEmpty() && i > newList.size() / 2) {
-				    removedUser = userList.removeLast();
+				    removedUser = userList.remove(userList.size()-1);
 				    if (!userList.isEmpty()) {
-				        currentUser = userList.getLast();
+				        currentUser = userList.get(userList.size()-1);
 				    } else {
 				        currentUser = "";
 				    }

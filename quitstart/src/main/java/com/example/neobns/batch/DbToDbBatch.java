@@ -24,7 +24,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class dbToDbBatch {
+public class DbToDbBatch {
 	
 	private final DataSource realSource;
 	private final DataSource targetSource;
@@ -32,7 +32,7 @@ public class dbToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	
-	public dbToDbBatch(@Qualifier("dataDBSource") DataSource realSource,
+	public DbToDbBatch(@Qualifier("dataDBSource") DataSource realSource,
 			@Qualifier("targetDataSource") DataSource targetSource,
 			JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {

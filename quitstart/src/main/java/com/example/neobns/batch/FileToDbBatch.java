@@ -1,5 +1,7 @@
 package com.example.neobns.batch;
 
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -7,6 +9,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -16,6 +19,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -47,15 +51,35 @@ public class FileToDbBatch {
 	
 	@Bean
 	public Step fileToDBStep() {
+		
+		int chunkSize = 10; // 10, 50, 100
+		
 		return new StepBuilder("fileToDBStep", jobRepository)
-				.<AccountDTO, AccountDTO>chunk(100, transactionManager)
+				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager)
 				.reader(fileReader())
+				.processor(dummyProcessor2())
 				.writer(fileToDbWriter())
 				.taskExecutor(fileToDBTaskExecutor())
 				.build();
 				
 	}
 	
+	
+	@Bean
+	public ItemProcessor<AccountDTO, AccountDTO> dummyProcessor2() {
+		return new ItemProcessor<AccountDTO, AccountDTO>() {
+			
+			@Override
+			public AccountDTO process(AccountDTO item) throws Exception {
+				// dummy processor logic 추가
+				for (int i = 0; i < 5; i++) {
+					System.out.println("dummy processor is processing2 " + item.toString());
+				}
+				return item;
+			}
+		};
+	}
+
 	@Bean
 	public TaskExecutor fileToDBTaskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -70,8 +94,9 @@ public class FileToDbBatch {
 	@Bean
 	public FlatFileItemReader<AccountDTO> fileReader(){
 		FlatFileItemReader<AccountDTO> reader = new FlatFileItemReader<>();
-		String path = "C:/csv/test.csv";
-		reader.setResource(new FileSystemResource(path));
+		String path = "csv/test.csv";
+//		reader.setResource(new FileSystemResource(path));
+		reader.setResource(new ClassPathResource(path));
 		reader.setLinesToSkip(1);
 		
 		DefaultLineMapper<AccountDTO> lineMapper = new DefaultLineMapper<>();

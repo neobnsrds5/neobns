@@ -102,7 +102,9 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 
 	private void logRequestDetails(ServerHttpRequest request) {
 		
-		String uri = request.getURI().toString();
+//		String uri = request.getURI().toString();
+		String uri = request.getPath().pathWithinApplication().value();
+		System.out.println("checkuri : " + uri);
 		String method = request.getMethod().toString();
 		
 		MDC.put("className", uri);
@@ -119,7 +121,9 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 		String statusCode = exchange.getResponse().getStatusCode().toString();
 		String requestId = exchange.getResponse().getHeaders().getFirst("X-Request-ID");
 		String userId = exchange.getResponse().getHeaders().getFirst("X-User-ID");
-		String uri = exchange.getRequest().getURI().toString();
+//		String uri = exchange.getRequest().getURI().toString();
+		String uri = exchange.getRequest().getPath().pathWithinApplication().value();
+		System.out.println("checkuri : " + uri);
 		String method = exchange.getRequest().getMethod().toString();
 
 		// ClientIp

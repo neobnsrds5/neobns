@@ -117,10 +117,15 @@ public class LogService {
 			System.out.println("<slowOrErrorList>");
 			System.out.println(dto);
 		}
+		
+		
+
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("autonumber").append(System.lineSeparator());
 		builder.append("actor user").append(System.lineSeparator());
+		builder.append("skinparam sequenceArrowThickness 2").append(System.lineSeparator());
+		builder.append("skinparam roundcorner 20").append(System.lineSeparator());
 
 		// newList
 

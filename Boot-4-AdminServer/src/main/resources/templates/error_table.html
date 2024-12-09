@@ -72,7 +72,7 @@
 	                <!-- 추적 ID -->
 	                <td class="text-start trace-id">
 	                    <span th:if="${log.traceId != null}">
-	                        <a th:href="'/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
 	                    </span>
 	                    <span th:unless="${log.traceId != null}">N/A</span>
 	                </td>

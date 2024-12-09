@@ -12,7 +12,6 @@ public class ServiceCodeGenerator implements BaseCodeGenerator {
 
                 import org.springframework.stereotype.Service;
                 import org.springframework.beans.factory.annotation.Autowired;
-                import org.springframework.transaction.annotation.Transactional;
                 import java.util.List;
                 import java.util.Map;
 
@@ -26,9 +25,9 @@ public class ServiceCodeGenerator implements BaseCodeGenerator {
                         return mapper.findAll();
                     }
 
-                    public List<%sDto> findByPage(Map<String, Object> filters, int page, int size) {
+                    public List<%sDto> findByPage(int page, int size) {
                         int offset = (page - 1) * size;
-                        return mapper.findByPage(filters, offset, size);
+                        return mapper.findByPage(offset, size);
                     }
 
                     public %sDto findById(Long id) {

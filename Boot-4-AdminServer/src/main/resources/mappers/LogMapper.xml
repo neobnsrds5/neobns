@@ -4,7 +4,7 @@
     <select id="findSlowByPage" resultType="LogDTO">
         SELECT * FROM logging_slow
         WHERE 1=1
-        ORDER BY timestmp
+        ORDER BY timestmp desc
         <!-- Add dynamic filters here -->
         <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>
@@ -12,7 +12,7 @@
     <select id="findErrorByPage" resultType="LogDTO">
         SELECT * FROM logging_error
         WHERE 1=1
-        ORDER BY timestmp
+        ORDER BY timestmp desc
         <!-- Add dynamic filters here -->
         <!-- LIMIT #{limit} OFFSET #{offset} -->
     </select>

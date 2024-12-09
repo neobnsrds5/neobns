@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: kafkaConsumerProject
+  kafka:
+    bootstrap-servers:
+    - localhost:9092
+    consumer:
+      group-id: example-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+    admin:
+      auto-create: true
+server:
+  port: 8788

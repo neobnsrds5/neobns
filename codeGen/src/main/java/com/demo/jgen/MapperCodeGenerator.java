@@ -11,6 +11,7 @@ public class MapperCodeGenerator implements BaseCodeGenerator {
                 package %s;
 
                 import org.apache.ibatis.annotations.Mapper;
+                import org.apache.ibatis.annotations.Param;
                 import java.util.List;
                 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class MapperCodeGenerator implements BaseCodeGenerator {
 
                     List<%sDto> findAll();
 
-                    List<%sDto> findByPage(Map<String, Object> filters, int offset, int limit);
+                    List<%sDto> findByPage(@Param("offset") int offset, @Param("limit") int limit);
 
                     %sDto findById(Long id);
 

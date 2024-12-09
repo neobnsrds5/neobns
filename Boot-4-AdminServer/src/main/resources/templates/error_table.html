@@ -51,7 +51,7 @@
 	                <th>사용자ID</th> <!-- 사용자 아이디 -->
 	            </tr>
 	        </thead>
-	        <tbody>
+	        <tbody id="logTableBody">
 	            <tr th:each="log : ${logList}">
 	                <!-- 선택 체크박스 -->
 	                <td>
@@ -63,7 +63,7 @@
 	                    <span th:unless="${log.timestmp != null}">N/A</span>
 	                </td>
 	                <!-- 추적 ID -->
-	                <td class="text-start">
+	                <td class="text-start trace-id">
 	                    <span th:if="${log.traceId != null}">
 	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
 	                    </span>
@@ -109,37 +109,9 @@
 
 	<!-- App Javascript (Require in all Page) -->
 	<script src="assets/js/app.js"></script>
-	<!-- 검색 필터링 기능 -->
-	<script>
-	    function filterLogs() {
-	        const searchValue = document.getElementById('traceIdSearch').value.toLowerCase(); // 입력값
-	        const rows = document.querySelectorAll('#logTableBody tr'); // 모든 테이블 행
 
-	        rows.forEach(row => {
-	            const traceIdCell = row.querySelector('.trace-id span a'); // 추적 ID 셀
-	            if (traceIdCell) {
-	                const traceId = traceIdCell.textContent.toLowerCase(); // 추적 ID 텍스트
-
-	                // 추적 ID가 검색값으로 시작하거나 검색값이 비어 있으면 표시
-	                if (traceId.startsWith(searchValue) || searchValue === '') {
-	                    row.style.display = ''; // 행 표시
-	                } else {
-	                    row.style.display = 'none'; // 행 숨기기
-	                }
-	            }
-	        });
-	    }
-
-	    // 검색 버튼 클릭 이벤트
-	    document.getElementById('searchButton').addEventListener('click', filterLogs);
-
-	    // Enter 키 입력 시 검색 실행
-	    document.getElementById('traceIdSearch').addEventListener('keypress', function (event) {
-	        if (event.key === 'Enter') {
-	            filterLogs();
-	        }
-	    });
-	</script>
+	<!-- 검색 기능 Javascript -->
+	<script src="assets/js/search.js"></script>
 </body>
 
 </html>

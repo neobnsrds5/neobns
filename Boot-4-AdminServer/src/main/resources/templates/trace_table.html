@@ -31,10 +31,21 @@
 		<h2 class="mb-4 text-center">TRACE 관리</h2>
 
 		<div class="d-flex justify-content-end mb-3 gap-2">
-			<button type="button" class="btn btn-primary btn-api-plant">PlantUML 보기</button>
+			<!--<button type="button" class="btn btn-primary btn-api-plant">PlantUML 보기</button>-->
+<!--			document.querySelector(".btn-api-plant").addEventListener("click", function () {
+						    // 토글할 요소 선택
+						    const plantumlContainer = document.getElementById("plantuml-container");
+						    
+						    // display 속성 토글
+						    if (plantumlContainer.style.display == "none") {
+						        plantumlContainer.style.display = "flex"; // 보이도록 설정
+						    } else {
+						        plantumlContainer.style.display = "none"; // 숨기도록 설정
+						    }
+						});-->
 		</div>
 		
-		<div style="display: none;justify-items: center;justify-content: center;" id="plantuml-container">
+		<div style="justify-items: center;justify-content: center;" id="plantuml-container">
 			
 			<uml th:text="${imgSource}">
 			
@@ -45,22 +56,12 @@
 			<script>
 			$("uml").each(function() {
 			  var src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode( $(this).text() );
-			  $(this).replaceWith($('<img style="display:flex; justify-content:center;">').attr('src', src));
+			  $(this).replaceWith($('<img style="display:flex; justify-content:center; width: 100%;">').attr('src', src));
 			});
 			</script>
 			<script>
-	
-			document.querySelector(".btn-api-plant").addEventListener("click", function () {
-			    // 토글할 요소 선택
-			    const plantumlContainer = document.getElementById("plantuml-container");
-			    
-			    // display 속성 토글
-			    if (plantumlContainer.style.display == "none") {
-			        plantumlContainer.style.display = "flex"; // 보이도록 설정
-			    } else {
-			        plantumlContainer.style.display = "none"; // 숨기도록 설정
-			    }
-			});
+		
+			const plantumlContainer = document.getElementById("plantuml-container");
 	
 			</script>
 			

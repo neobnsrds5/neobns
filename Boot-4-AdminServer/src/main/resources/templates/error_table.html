@@ -26,7 +26,7 @@
 </head>
 <body>
 
-	<div class="container my-5">
+	<div class="container my-5" style="max-width: 90%; margin: 0 auto; padding: 20px;">
 	    <h2 class="mb-4 text-center">오류 어플리케이션 관리</h2>
 	    
 	    <!-- 검색창 및 검색 버튼 추가 -->
@@ -65,7 +65,7 @@
 	                <!-- 추적 ID -->
 	                <td class="text-start trace-id">
 	                    <span th:if="${log.traceId != null}">
-	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	                        <a th:href="'/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
 	                    </span>
 	                    <span th:unless="${log.traceId != null}">N/A</span>
 	                </td>

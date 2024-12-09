@@ -3,7 +3,7 @@
 <head>
      <!-- Title Meta -->
      <meta charset="utf-8" />
-     <title>ERROR 관리</title>
+     <title>오류 어플리케이션 관리</title>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="description" content="A fully responsive premium admin dashboard template, Real Estate Management Admin Template" />
      <meta name="author" content="Techzaa" />
@@ -24,11 +24,16 @@
      <!-- Theme Config js (Require in all Page) -->
      <script src="assets/js/config.min.js"></script>
 </head>
-
 <body>
 
-	<div class="container my-5">
-	    <h2 class="mb-4 text-center">ERROR 관리</h2>
+	<div class="container my-5" style="max-width: 90%; margin: 0 auto; padding: 20px;">
+	    <h2 class="mb-4 text-center">오류 어플리케이션 관리</h2>
+	    
+	    <!-- 검색창 및 검색 버튼 추가 -->
+	    <div class="mb-3 input-group">
+	        <input type="text" id="traceIdSearch" class="form-control" placeholder="추적 ID 앞 4자리 입력" />
+	        <button id="searchButton" class="btn btn-primary">검색</button>
+	    </div>
 	
 	    <table class="table table-striped table-centered">
 	        <thead>
@@ -44,11 +49,9 @@
 	                <th>URI</th> <!-- uri 출력 -->
 	                <th>쿼리</th> <!-- 에러가 발생한 쿼리문 -->
 	                <th>사용자ID</th> <!-- 사용자 아이디 -->
-	                <th>사용자IP</th> <!-- 사용자 IP -->
-	                <th>접속장치</th> <!-- 사용자 디바이스 -->
 	            </tr>
 	        </thead>
-	        <tbody>
+	        <tbody id="logTableBody">
 	            <tr th:each="log : ${logList}">
 	                <!-- 선택 체크박스 -->
 	                <td>
@@ -60,9 +63,9 @@
 	                    <span th:unless="${log.timestmp != null}">N/A</span>
 	                </td>
 	                <!-- 추적 ID -->
-	                <td class="text-start">
+	                <td class="text-start trace-id">
 	                    <span th:if="${log.traceId != null}">
-	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	                        <a th:href="'/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
 	                    </span>
 	                    <span th:unless="${log.traceId != null}">N/A</span>
 	                </td>
@@ -96,16 +99,6 @@
 	                    <span th:if="${log.userId != null}" th:text="${log.userId}"></span>
 	                    <span th:unless="${log.userId != null}">N/A</span>
 	                </td>
-	                <!-- 사용자 IP -->
-	                <td>
-	                    <span th:if="${log.ipAddress != null}" th:text="${log.ipAddress}"></span>
-	                    <span th:unless="${log.ipAddress != null}">N/A</span>
-	                </td>
-	                <!-- 접속장치 -->
-	                <td>
-	                    <span th:if="${log.device != null}" th:text="${log.device}"></span>
-	                    <span th:unless="${log.device != null}">N/A</span>
-	                </td>
 	            </tr>
 	        </tbody>
 	    </table>
@@ -116,5 +109,9 @@
 
 	<!-- App Javascript (Require in all Page) -->
 	<script src="assets/js/app.js"></script>
+
+	<!-- 검색 기능 Javascript -->
+	<script src="assets/js/search.js"></script>
 </body>
+
 </html>

@@ -42,12 +42,12 @@ public class LogService {
 		List<String> userList = new ArrayList<String>();
 		String currentUser = "";
 		String gatewayUrl = "http://localhost:8000/";
-		String removedUser="";
+		String removedUser = "";
 
 		for (int i = 0; i < newList.size(); i++) {
-			
+
 			System.out.println("userlist : " + userList.toString());
-			
+
 			if (i == 0) {
 				String[] parts = newList.get(i).getCallerClass().split("/");
 				currentUser = parts[3];
@@ -58,8 +58,7 @@ public class LogService {
 				newList.get(i).setCallerMethod(newMethod);
 			} else if (newList.get(i).getCallerClass().contains("http://")) {
 
-				
-				if (i<=newList.size()/2) {
+				if (i <= newList.size() / 2) {
 					String[] parts = newList.get(i).getCallerClass().split("/");
 					currentUser = parts[3];
 					userList.add(currentUser);
@@ -74,19 +73,18 @@ public class LogService {
 
 					System.out.println("current User : " + currentUser);
 					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
-					newList.get(i).setCallerClass("rest_" + currentUser);	
+					newList.get(i).setCallerClass("rest_" + currentUser);
 					newList.get(i).setCallerMethod(newMethod);
 				}
-				
-				if (!userList.isEmpty() && i > newList.size() / 2) {
-				    removedUser = userList.remove(userList.size()-1);
-				    if (!userList.isEmpty()) {
-				        currentUser = userList.get(userList.size()-1);
-				    } else {
-				        currentUser = "";
-				    }
-				}
 
+				if (!userList.isEmpty() && i > newList.size() / 2) {
+					removedUser = userList.remove(userList.size() - 1);
+					if (!userList.isEmpty()) {
+						currentUser = userList.get(userList.size() - 1);
+					} else {
+						currentUser = "";
+					}
+				}
 
 			} else if (newList.get(i).getCallerClass().contains("Controller")
 					|| newList.get(i).getCallerClass().contains("Service")
@@ -94,7 +92,6 @@ public class LogService {
 				int lastDot = newList.get(i).getCallerClass().lastIndexOf(".");
 				String editedClass = currentUser + "_" + newList.get(i).getCallerClass().substring(lastDot + 1);
 				newList.get(i).setCallerClass(editedClass);
-				
 
 			} else if (newList.get(i).getCallerClass().contains("SQL")) {
 				String editedClass = currentUser + "_" + "DB";
@@ -123,6 +120,7 @@ public class LogService {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("autonumber").append(System.lineSeparator());
+		builder.append("actor user").append(System.lineSeparator());
 
 		// newList
 
@@ -166,24 +164,23 @@ public class LogService {
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
-					
-					if (errorLog.getLoggerName().equals("ERROR")) {
-						
-						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms";
-						
-					}else if(errorLog.getLoggerName().equals("SLOW")) {
-						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-						+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult()
-						+ "ms";
-					}
 
-					
+					if (errorLog.getLoggerName().equals("ERROR")) {
+
+						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms"
+								+ "(Total : " + newList.get(i).getExecuteResult() + "ms)";
+
+					} else if (errorLog.getLoggerName().equals("SLOW")) {
+						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
+								+ " : <font color=red> " + errorLog.getCallerMethod() + " - "
+								+ errorLog.getExecuteResult() + "ms";
+					}
 
 				} else {
 
 					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-							+ intervalTime + "ms";
+							+ intervalTime + "ms" + "(Total : " + newList.get(i).getExecuteResult() + "ms)";
 
 				}
 

@@ -24,7 +24,6 @@ public class MetaDbConfig {
 	@Bean(name = "metaDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-meta")
 	public DataSource metaDataSource() {
-		
 		return DataSourceBuilder.create().url(properties.getMetaUrl()).build();
 	}
 	

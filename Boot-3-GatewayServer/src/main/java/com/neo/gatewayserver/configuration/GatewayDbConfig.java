@@ -1,4 +1,4 @@
-package com.neo.adminserver.configuration;
+package com.neo.gatewayserver.configuration;
 
 import javax.sql.DataSource;
 
@@ -12,13 +12,13 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class AdminDbConfig {
+public class GatewayDbConfig {
 	
 	private final Environment environment;
 
-	@Bean(name = "adminDataSource")
+	@Bean(name = "gatewayDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
-	public DataSource adminDataSource() {
+	public DataSource gatewayDataSource() {
 	    return DataSourceBuilder
 	            .create()
 	            .url(environment.getProperty("spring.datasource-data.url"))

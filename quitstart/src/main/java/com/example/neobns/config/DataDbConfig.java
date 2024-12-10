@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -34,11 +35,11 @@ import lombok.RequiredArgsConstructor;
 public class DataDbConfig {
 	
 	private final DBProperties dbProperties;
-	private final JPALoggingInspector inspector; 
+	private final JPALoggingInspector inspector;
 	
 	@Bean(name = "dataDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
-	public DataSource dataDataSource() {
+	public DataSource dataDataSource() {    	
 		return DataSourceBuilder.create()
 				.url(dbProperties.getDataUrl())
 				.build();

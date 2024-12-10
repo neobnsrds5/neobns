@@ -4,10 +4,13 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.neobns.batch.SpiderTransaction;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,6 +52,8 @@ public class BatchController {
 			jobLauncher.run(jobRegistry.getJob("fileToDBJob"), jobParameters);
 			return "OK";
 		} catch (Exception e) {
+			System.out.println("오류발생");
+			e.printStackTrace();
 			return "FAIL";
 		}
 	}
@@ -67,5 +72,40 @@ public class BatchController {
 			return "FAIL";
 		}
 	}
+	
+	
+	@GetMapping("/batch/parentbatch/{value}")
+	public String parentBatchTest(@PathVariable("value") String value) {
+		
+		String uniqVal = value + System.currentTimeMillis();
+		
+		JobParameters jobParameters = new JobParametersBuilder().addString("parentBatch", uniqVal).toJobParameters();
+		
+		try {
+			jobLauncher.run(jobRegistry.getJob("parentBatchJob"), jobParameters);
+			return "OK";
+		} catch (Exception e) {
+			return "FAIL";
+		}
+	}
+	
+
+
+	@GetMapping("/batch/transactionExample/{value}")
+	public String transactionTest(@PathVariable("value") String value) {
+
+		String uniqVal = value + System.currentTimeMillis();
+
+		JobParameters jobParameters = new JobParametersBuilder().addString("TransactionTest", uniqVal).toJobParameters();
+
+		try {
+			jobLauncher.run(jobRegistry.getJob("TransactionJob"), jobParameters);
+			return "OK";
+		} catch (Exception e) {
+			return "FAIL";
+		}
+	}
+
+	
 
 }

@@ -67,5 +67,23 @@ public class BatchController {
 			return "FAIL";
 		}
 	}
+	
+	
+	@GetMapping("/batch/parentbatch/{value}")
+	public String parentBatchTest(@PathVariable("value") String value) {
+		
+		String uniqVal = value + System.currentTimeMillis();
+		
+		JobParameters jobParameters = new JobParametersBuilder().addString("parentBatch", uniqVal).toJobParameters();
+		
+		try {
+			jobLauncher.run(jobRegistry.getJob("parentBatchJob"), jobParameters);
+			return "OK";
+		} catch (Exception e) {
+			return "FAIL";
+		}
+	}
+	
+	
 
 }

@@ -1,5 +1,6 @@
 package com.neo.adminserver.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,48 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class LogService {
 
 	private final LogMapper logMapper;
-	
-	private Map<String, Function<String, List<LogDTO>>> errorSearchMap;
-    private Map<String, Function<String, List<LogDTO>>> slowSearchMap;
-    private Map<String, Map<String, Function<String, List<LogDTO>>>> tableSearchMap;
-	
-    @PostConstruct
-    private void initializeMaps() {
-        errorSearchMap = Map.of(
-    		"traceId", value -> logMapper.findErrorLogsByTraceId(value),
-		    "userId", value -> logMapper.findErrorLogsByUserId(value),
-		    "ipAddress", value -> logMapper.findErrorLogsByIpAddress(value),
-		    "uri", value -> logMapper.findErrorLogsByURI(value),
-		    "query", value -> logMapper.findErrorLogsByQuery(value)
-        );
-
-        slowSearchMap = Map.of(
-            "traceId", value -> logMapper.findSlowLogsByTraceId(value),
-            "userId", value -> logMapper.findSlowLogsByUserId(value),
-            "ipAddress", value -> logMapper.findSlowLogsByIpAddress(value),
-            "uri", value -> logMapper.findSlowLogsByURI(value),
-            "query", value -> logMapper.findSlowLogsByQuery(value)
-        );
-
-        tableSearchMap = Map.of(
-            "logging_error", errorSearchMap,
-            "logging_slow", slowSearchMap
-        );
-    }
-    
-    public List<LogDTO> searchLogs(String criteria, String value, String table) {
-        Map<String, Function<String, List<LogDTO>>> searchMap = tableSearchMap.get(table);
-        if (searchMap == null) {
-            throw new IllegalArgumentException("Invalid table name: " + table);
-        }
-
-        Function<String, List<LogDTO>> searchFunction = searchMap.get(criteria);
-        if (searchFunction == null) {
-            throw new IllegalArgumentException("Invalid search criteria: " + criteria);
-        }
-
-        return searchFunction.apply(value);
-    }
 
 	public List<LogDTO> findSlowByPage(int page, int size) {
         int offset = (page - 1) * size;
@@ -81,6 +40,52 @@ public class LogService {
 
     public int countErrorLogs() {
         return logMapper.countErrorLogs();
+    }
+    
+    public List<LogDTO> findSlowLogs(
+            int page,
+            int size,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        int offset = (page - 1) * size;
+        return logMapper.findSlowLogs(startTime, endTime, traceId, userId, ipAddress, query, size, offset);
+    }
+
+    public int countSlowSearchLogs(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        return logMapper.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+    }
+    
+    public List<LogDTO> findErrorLogs(
+            int page,
+            int size,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        int offset = (page - 1) * size;
+        return logMapper.findErrorLogs(startTime, endTime, traceId, userId, ipAddress, query, size, offset);
+    }
+
+    public int countErrorSearchLogs(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
     }
 
 	public String buildPlantUML(String traceID, List<LogDTO> logList) throws CloneNotSupportedException {

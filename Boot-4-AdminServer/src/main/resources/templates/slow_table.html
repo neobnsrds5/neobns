@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+<script>
+    // 검색 결과 없을 때 알림 표시 및 폼 초기화
+    function handleNoResults(hasResults) {
+        if (!hasResults) {
+            alert("검색 결과가 없습니다.");
+            document.getElementById("searchForm").reset(); // 폼 초기화
+        }
+    }
+</script>
      <!-- Title Meta -->
      <meta charset="utf-8" />
      <title>지연 어플리케이션 관리</title>
@@ -33,20 +42,23 @@
 	<div class="container my-5" style="max-width: 90%; margin: 0 auto; padding: 20px;">
 		<h2 class="mb-4 text-center"><a href="/admin/slow">지연 어플리케이션 관리</a></h2>
 		
-		<!-- 검색 조건 및 검색창 -->
-	    <div class="mb-3 input-group">
-	        <select id="searchCriteria" class="form-select">
-	            <option value="traceId">추적 ID</option>
-	            <option value="userId">사용자 ID</option>
-	            <option value="ipAddress">IP 주소</option>
-				<option value="uri">URI</option>
-	            <option value="query">쿼리</option>
-	        </select>
-	        <input type="text" id="searchInput" class="form-control" placeholder="검색할 내용을 입력하세요" />
-	        <button id="searchButton" class="btn btn-primary">검색</button>
-	    </div>
-
-		<table class="table table-striped table-centered">
+		
+		<form id="searchForm" action="/admin/slow" method="get">
+			<input type="datetime-local" name="startTime" placeholder="시작 시간" />
+	   		<input type="datetime-local" name="endTime" placeholder="종료 시간" />
+		    <input type="text" name="traceId" placeholder="추적 ID" />
+		    <input type="text" name="userId" placeholder="사용자 ID" />
+		    <input type="text" name="ipAddress" placeholder="IP 주소" />
+		    <input type="text" name="query" placeholder="쿼리" />
+		    <button type="submit">검색</button>
+		</form>
+		
+		<!-- 검색 결과 없을 때 메시지 -->
+	    <div th:if="${!hasResults}">
+	        <p>검색 결과가 없습니다.</p>
+    	</div>
+		
+		<table th:if="${hasResults}" class="table table-striped table-centered">
 			<thead>
 				<tr>
 					<!-- <th scope="col"><input type="checkbox" id="select-all" class="form-check-input"></th> -->
@@ -104,21 +116,23 @@
 				</tr>
 			</tbody>
 		</table>
-		<div>
-	        <!-- 이전 페이지 -->
-	        <a th:href="@{/admin/slow(page=${currentPage - 1}, size=10)}" th:if="${currentPage > 1}">이전</a>
-	
-	        <!-- 페이지 번호 -->
-	        <span th:each="page : ${#numbers.sequence(1, totalPages)}">
-	            <a th:href="@{/admin/slow(page=${page}, size=10)}"
-	               th:classappend="${page == currentPage} ? 'active' : ''">
-	                <span th:text="${page}"></span>
-	            </a>
-	        </span>
-	
-	        <!-- 다음 페이지 -->
-	        <a th:href="@{/admin/slow(page=${currentPage + 1}, size=10)}" th:if="${currentPage < totalPages}">다음</a>
-    	</div>
+		<div th:if="${hasResults}" class="pagination">
+		    <!-- 이전 페이지 -->
+		    <a th:href="@{/admin/slow(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}" 
+		       th:if="${currentPage > 1}">이전</a>
+		
+		    <!-- 페이지 번호 -->
+		    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
+		        <a th:href="@{/admin/slow(page=${page}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}"
+		           th:classappend="${page == currentPage} ? 'active' : ''">
+		            <span th:text="${page}"></span>
+		        </a>
+		    </span>
+		
+		    <!-- 다음 페이지 -->
+		    <a th:href="@{/admin/slow(page=${currentPage + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}" 
+		       th:if="${currentPage < totalPages}">다음</a>
+		</div>
 	</div>
 
 	<!-- Vendor Javascript (Require in all Page) -->

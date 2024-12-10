@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KafkaProducerProjectApplication {
+public class Boot5SpringBatchApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(KafkaProducerProjectApplication.class, args);
+		SpringApplication.run(Boot5SpringBatchApplication.class, args);
 	}
 
 }

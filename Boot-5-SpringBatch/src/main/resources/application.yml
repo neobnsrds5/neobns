@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: Boot-5-SpringBatch
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+      schema: classpath:org/springframework/batch/core/schema-mysql.sql
+  datasource-meta:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/db1
+      username: root
+      password: 1234
+  datasource-data:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db2
+    username: root
+    password: 1234
+  datasource-target:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db3
+    username: root
+    password: 1234

@@ -18,10 +18,10 @@ spring:
     web-application-type: reactive
   application:
     name: GatewayServer
-  boot:
-    admin:
-      client:
-        url: http://localhost:9000
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:9000
   cloud:
     gateway:
       forwarded:
@@ -93,21 +93,21 @@ spring:
           filters:
             - RewritePath=/admin/(?<path>.*), /$\{path}
 
-management:
-  httpexchanges:
-    recording:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-    jmx:
-      exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always
-  info:
-    env:
-      enabled: true
+#management:
+#  httpexchanges:
+#    recording:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#    jmx:
+#      exposure:
+#        include: "*"
+#  endpoint:
+#    health:
+#      show-details: always
+#  info:
+#    env:
+#      enabled: true
 

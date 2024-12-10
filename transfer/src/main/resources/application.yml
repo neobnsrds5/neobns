@@ -30,6 +30,7 @@ spring:
       username: guest
       password: guest
 
+# 주석처리 한 부분은 config server의 prperties에 존재
 #eureka:
 #  client:
 #    register-with-eureka: true

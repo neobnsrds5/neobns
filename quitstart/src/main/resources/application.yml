@@ -20,6 +20,7 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
+# 주석처리 한 부분은 config server의 prperties에 존재
 #  boot:
 #    admin:
 #      client:
@@ -52,6 +53,7 @@ spring:
       port: 6379
       password: 
 
+# 주석처리 한 부분은 config server의 prperties에 존재
 #eureka:
 #  client:
 #    register-with-eureka: true

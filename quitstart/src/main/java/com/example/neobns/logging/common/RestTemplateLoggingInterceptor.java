@@ -2,9 +2,8 @@ package com.example.neobns.logging.common;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -14,9 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestTemplateLoggingInterceptor implements ClientHttpRequestInterceptor {
 
-	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
-	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
-	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
+	private static final Logger traceLogger = Logger.getLogger("TRACE");
+	private static final Logger slowLogger = Logger.getLogger("SLOW");
+	private static final Logger errorLogger = Logger.getLogger("ERROR");
 	public static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로...
 
 	private static final String REQUEST_ID_HEADER = "X-Request-ID";
@@ -29,8 +28,8 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
 			throws IOException {
 
-		String requestId = MDC.get(MDC_REQUEST_ID_KEY);
-		String userId = MDC.get(MDC_USER_ID_KEY);
+		String requestId = (String) MDC.get(MDC_REQUEST_ID_KEY);
+		String userId = (String) MDC.get(MDC_USER_ID_KEY);
 		String uri = request.getURI().toString();
 		String method = request.getMethod().toString();
 
@@ -48,7 +47,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 		MDC.put("className", uri);
 		MDC.put("methodName", method);
 		
-		traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, "start", userId);
+		traceLogger.info("[" + requestId + "] [" + uri + " : " + method + "]");
 		
 		MDC.remove("className");
         MDC.remove("methodName");
@@ -63,15 +62,15 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 			MDC.put("executeResult", Long.toString(elapsedTime));
 
 			// After REST Call
-			traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
+			traceLogger.info("[" + requestId + "] [" + uri + " : " + method + "] [" + elapsedTime + "ms]");
 			
 			if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-				slowLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
+				slowLogger.info("[" + requestId + "] [" + uri + " : " + method + "] [" + elapsedTime + "ms]");
 			}
             
 			return response;
 		} catch (Exception ex) {
-			errorLogger.error("{}; {}; {}; {}; {}", requestId, uri, method, "failed: " + ex.getMessage(), userId);
+			errorLogger.error("[" + requestId + "] [" + uri + " : " + method + "] [failed :" + ex.getMessage() + "]");
 			throw ex;
 		} finally {
 			MDC.remove("className");

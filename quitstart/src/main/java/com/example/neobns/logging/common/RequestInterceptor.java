@@ -2,7 +2,7 @@ package com.example.neobns.logging.common;
 
 import java.util.UUID;
 
-import org.slf4j.MDC;
+import org.apache.log4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

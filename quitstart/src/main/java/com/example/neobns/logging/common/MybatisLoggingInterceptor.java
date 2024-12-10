@@ -6,9 +6,8 @@ import java.util.Properties;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +20,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MybatisLoggingInterceptor implements Interceptor {
 
-	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
-	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
-	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
+	private static final Logger traceLogger = Logger.getLogger("TRACE");
+	private static final Logger slowLogger = Logger.getLogger("SLOW");
+	private static final Logger errorLogger = Logger.getLogger("ERROR");
 	public static final long SLOW_QUERY_THRESHOLD_MS = 0; // slow query 기준, 나중에 환경 변수로...
 
 	@Override
@@ -41,7 +40,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			// 실제 쿼리 실행
 			result = invocation.proceed();
 		} catch (Exception e){
-			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", errorSQL);
+			errorLogger.error("[" + MDC.get("requestId") + "] [SQL : " + errorSQL + "]");
 		} finally {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
@@ -54,10 +53,10 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			MDC.put("methodName", sql);
 
 			// SQL 실행 후 trace 로깅
-			traceLogger.info("{}; {}; {}; {};", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			traceLogger.info("[" + MDC.get("requestId") + "] [SQL : " + sql + "] [" + elapsedTime + "ms]");
 			// 설정 시간보다 느리면 slow 로깅
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-				slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", sql, elapsedTime);
+				slowLogger.info("[" + MDC.get("requestId") + "] [SQL : " + sql + "] [" + elapsedTime + "ms]");
 			}
 
 			MDC.remove("executeResult");

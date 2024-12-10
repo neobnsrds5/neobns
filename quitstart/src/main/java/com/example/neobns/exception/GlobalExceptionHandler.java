@@ -1,8 +1,7 @@
 package com.example.neobns.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,14 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger errorlog = LoggerFactory.getLogger("ERROR");
+    private static final Logger errorLogger = Logger.getLogger("ERROR");
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         setMDC(e, HttpStatus.BAD_REQUEST, request);
-
-        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
-        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+        
+        errorLogger.error("[" + MDC.get("requestId") + "] [" + e.getClass().getSimpleName() + " : " + HttpStatus.INTERNAL_SERVER_ERROR.value() + "] [" + request.getRequestURI() + " : " + request.getMethod() + "]" );
 
         clearMDC();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
@@ -30,8 +28,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
 
-        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
-        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+        errorLogger.error("[" + MDC.get("requestId") + "] [" + e.getClass().getSimpleName() + " : " + HttpStatus.INTERNAL_SERVER_ERROR.value() + "] [" + request.getRequestURI() + " : " + request.getMethod() + "]" );
 
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
@@ -40,8 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
-        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
-        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+        errorLogger.error("[" + MDC.get("requestId") + "] [" + e.getClass().getSimpleName() + " : " + HttpStatus.INTERNAL_SERVER_ERROR.value() + "] [" + request.getRequestURI() + " : " + request.getMethod() + "]" );
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
     }

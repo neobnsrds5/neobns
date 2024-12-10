@@ -1,18 +1,17 @@
 package com.example.neobns.logging.common;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 public class LoggingAspect {
 	
-	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
+	private static final Logger traceLogger = Logger.getLogger("TRACE");
 
 	/**
      * Controller 계층의 메서드 로깅
@@ -50,7 +49,7 @@ public class LoggingAspect {
         MDC.put("methodName", methodName);
 
         // 메서드 실행 전 로깅
-        traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), "start");
+        traceLogger.info("[" + MDC.get("requestId") + "] [" + MDC.get("className") + " : " + MDC.get("methodName") + "]");
         
         MDC.remove("className");
         MDC.remove("methodName");
@@ -66,7 +65,7 @@ public class LoggingAspect {
             MDC.put("executeResult", Long.toString(elapsedTime));
 
             // 메서드 실행 후 trace 로깅
-            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
+            traceLogger.info("[" + MDC.get("requestId") + "] [" + MDC.get("className") + " : " + MDC.get("methodName") + "] [" + MDC.get("executeResult") + "ms]");
             
             MDC.remove("className");
             MDC.remove("methodName");

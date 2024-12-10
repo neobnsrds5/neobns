@@ -1,19 +1,10 @@
 package com.example.neobns.logging.common;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JPAQueryLoggingAspect {
 
-	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
-	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
-	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
-//	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
-//	private static int SLOW_QUERIES_SIZE = 10;
-	public static long SLOW_QUERY_THRESHOLD_MS = 0;
-
-//	public static List<Map<String, Object>> getSlowQueries() {
-//		synchronized (SLOW_QUERIES) {
-//			return new ArrayList<>(SLOW_QUERIES);
-//		}
-//	}
+	private static final Logger traceLogger = Logger.getLogger("TRACE");
+	private static final Logger slowLogger = Logger.getLogger("SLOW");
+	private static final Logger errorLogger = Logger.getLogger("ERROR");
+	public static final long SLOW_QUERY_THRESHOLD_MS = 0;
 
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -46,41 +29,22 @@ public class JPAQueryLoggingAspect {
 		try {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
-			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", MDC.get("methodName"));
+			errorLogger.error("[" + MDC.get("requestId") + "] [SQL : " + MDC.get("methodName") + "]");
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;
-//		String sql = joinPoint.getSignature().toString();
-//		String shortSql = sql.substring(sql.lastIndexOf(".") + 1);
 
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
-		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+		traceLogger.info("[" + MDC.get("requestId") + "] [SQL : " + MDC.get("methodName") + "] [" + elapsedTime + "ms]");
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-//			Map<String, Object> slowQuery = new HashMap<>();
-//			slowQuery.put("requestID", MDC.get("requestId"));
-//			slowQuery.put("methodName", MDC.get("sql"));
-//			slowQuery.put("executeTime", elapsedTime);
-//			slowQuery.put("timestamp", new Date());
-
-			slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
-
-//			synchronized (SLOW_QUERIES) {
-//				if (SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
-//					SLOW_QUERIES.poll();
-//				}
-//				SLOW_QUERIES.add(slowQuery);
-//				System.out.println("SLOW_QUERIES : " + SLOW_QUERIES.toString());
-//			}
+			slowLogger.info("[" + MDC.get("requestId") + "] [SQL : " + MDC.get("methodName") + "] [" + elapsedTime + "ms]");
 
 			MDC.remove("executeResult");
 			MDC.remove("className");
 			MDC.remove("methodName");
 		}
-
 		return result;
-
 	}
-
 }

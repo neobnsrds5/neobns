@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!-- 콘솔에 로그 출력 -->
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Custom Log] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] %c{36} - %m%n" />
+        </layout>
+    </appender>
+
+    <!-- CustomDBAppender: 데이터베이스에 로그 저장 -->
+    <appender name="CUSTOM_DB" class="com.example.neobns.logging.common.CustomDBAppender">
+        <!-- 데이터베이스 연결 설정 -->
+        <param name="driver" value="com.mysql.cj.jdbc.Driver" />
+        <param name="url" value="jdbc:mysql://localhost:3306/db2" />
+        <param name="user" value="root" />
+        <param name="password" value="1234" />
+    </appender>
+
+    <!-- 파일로 로그 저장 -->
+    <appender name="FILE" class="com.example.neobns.logging.common.CustomFileAppender">
+        <param name="File" value="../logs/application.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %c; %p; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n" />
+        </layout>
+    </appender>
+
+    <!-- 루트 로거 -->
+    <root>
+        <priority value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CUSTOM_DB" />
+        <appender-ref ref="FILE" />
+    </root>
+</log4j:configuration>

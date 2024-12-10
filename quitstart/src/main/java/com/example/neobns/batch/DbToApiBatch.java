@@ -32,15 +32,15 @@ public class DbToApiBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final RestTemplate restTemplate;
+	private final CustomBatchJobListener listener;
 	
-	public DbToApiBatch(@Qualifier("dataDataSource") DataSource datasource,
-			PlatformTransactionManager transactionManager,
-			JobRepository jobRepository,
-			RestTemplate restTemplate) {
+	public DbToApiBatch(@Qualifier("dataDataSource") DataSource datasource, PlatformTransactionManager transactionManager,
+			JobRepository jobRepository, RestTemplate restTemplate, CustomBatchJobListener listener) {
 		this.datasource = datasource;
 		this.transactionManager = transactionManager;
 		this.jobRepository = jobRepository;
 		this.restTemplate = restTemplate;
+		this.listener = listener;
 	}
 	
 	@Bean
@@ -61,7 +61,7 @@ public class DbToApiBatch {
 
 	@Bean
 	public Job toApiJob() throws Exception {
-		return new JobBuilder("dbToApiJob", jobRepository).start(toApiStep()).build();
+		return new JobBuilder("dbToApiJob", jobRepository).start(toApiStep()).listener(listener).build();
 	}
 
 	@Bean

@@ -36,18 +36,20 @@ public class LogFileToDbBatch {
 
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
+	private final CustomBatchJobListener listener;
 
-	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager) {
+	public LogFileToDbBatch(@Qualifier("dataDataSource")  DataSource datasource, JobRepository jobRepository,
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
+		this.listener = listener;
 	}
 
 	@Bean
 	public Job logToDBJob() {
-		return new JobBuilder("logToDBJob", jobRepository).start(logToDBStep()).build();
+		return new JobBuilder("logToDBJob", jobRepository).start(logToDBStep()).listener(listener).build();
 	}
 
 	@Bean
@@ -56,11 +58,8 @@ public class LogFileToDbBatch {
 		int chunkSize = 10; // 10, 50, 100
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
-				.reader(logReader())
-				.processor(dummyProcessor3())
-				.writer(compositeWriter())
-				.taskExecutor(logToDBTaskExecutor())
-				.build();
+				.reader(logReader()).processor(dummyProcessor3()).writer(compositeWriter())
+				.taskExecutor(logToDBTaskExecutor()).build();
 	}
 
 	@Bean
@@ -83,7 +82,7 @@ public class LogFileToDbBatch {
 
 		int corePoolSize = 4; // 4~8
 		int maxPoolSize = 8; // 8~16
-		int queueSize = 50; //50~100
+		int queueSize = 50; // 50~100
 
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
@@ -103,7 +102,8 @@ public class LogFileToDbBatch {
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>();
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(";");
-		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId", "ipAddress", "device", "executeResult", "query", "uri");
+		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId",
+				"ipAddress", "device", "executeResult", "query", "uri");
 		lineMapper.setLineTokenizer(tokenizer);
 
 		BeanWrapperFieldSetMapper<LogDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
@@ -121,66 +121,58 @@ public class LogFileToDbBatch {
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 	}
-	
+
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingSlowWriter() {
-	    String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
-	    		+ "VALUES (:timestmp, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
-	    		+ ":executeResult, "
-	    		+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
+		String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
+				+ "VALUES (:timestmp, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+				+ ":executeResult, "
+				+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
 
-	    return new JdbcBatchItemWriterBuilder<LogDTO>()
-	            .dataSource(datasource)
-	            .sql(sql)
-	            .beanMapped()
-	            .build();
+		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 	}
-	
+
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingErrorWriter() {
 		String sql = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
-		           + "VALUES (:timestmp, :userId, :traceId, :ipAddress, :device, :callerClass, :callerMethod, "
-		           + ":query, :uri, :executeResult)";
+				+ "VALUES (:timestmp, :userId, :traceId, :ipAddress, :device, :callerClass, :callerMethod, "
+				+ ":query, :uri, :executeResult)";
 
-	    return new JdbcBatchItemWriterBuilder<LogDTO>()
-	            .dataSource(datasource)
-	            .sql(sql)
-	            .beanMapped()
-	            .build();
+		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 	}
-	
+
 	@Bean
 	public CompositeItemWriter<LogDTO> compositeWriter() {
-	    CompositeItemWriter<LogDTO> writer = new CompositeItemWriter<>();
-	    writer.setDelegates(List.of(conditionalErrorWriter(), loggingEventWriter(), conditionalSlowWriter()));
-	    return writer;
+		CompositeItemWriter<LogDTO> writer = new CompositeItemWriter<>();
+		writer.setDelegates(List.of(conditionalErrorWriter(), loggingEventWriter(), conditionalSlowWriter()));
+		return writer;
 	}
 
 	@Bean
 	public ItemWriter<LogDTO> conditionalSlowWriter() {
-	    return items -> {
-	        for (LogDTO log : items) {
-	            if ("slow".equalsIgnoreCase(log.getLoggerName())) {
-	                loggingSlowWriter().write(new Chunk<>(List.of(log)));
-	            }
-	        }
-	    };
+		return items -> {
+			for (LogDTO log : items) {
+				if ("slow".equalsIgnoreCase(log.getLoggerName())) {
+					loggingSlowWriter().write(new Chunk<>(List.of(log)));
+				}
+			}
+		};
 	}
-	
+
 	@Bean
 	public ItemWriter<LogDTO> conditionalErrorWriter() {
-	    return items -> {
-	        for (LogDTO log : items) {
-	            if ("error".equalsIgnoreCase(log.getLoggerName())) {
-	            	try {
-	                    loggingErrorWriter().write(new Chunk<>(List.of(log)));
-	                } catch (Exception e) {
-	                    System.err.println("Error in loggingErrorWriter: " + e.getMessage());
-	                    e.printStackTrace();
-	                }
-	            }
-	        }
-	    };
+		return items -> {
+			for (LogDTO log : items) {
+				if ("error".equalsIgnoreCase(log.getLoggerName())) {
+					try {
+						loggingErrorWriter().write(new Chunk<>(List.of(log)));
+					} catch (Exception e) {
+						System.err.println("Error in loggingErrorWriter: " + e.getMessage());
+						e.printStackTrace();
+					}
+				}
+			}
+		};
 	}
 
 }

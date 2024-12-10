@@ -34,19 +34,21 @@ public class FileToDbBatch {
 	
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
+	private final CustomBatchJobListener listener;
 	
 	public FileToDbBatch(@Qualifier("targetDataSource") DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
+		this.listener = listener;
 	}
 	
 	@Bean
 	public Job fileToDBJob() {
 		return new JobBuilder("fileToDBJob", jobRepository)
-				.start(fileToDBStep()).build();
+				.start(fileToDBStep()).listener(listener).build();
 	}
 	
 	@Bean

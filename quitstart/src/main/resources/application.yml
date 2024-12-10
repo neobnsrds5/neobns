@@ -34,6 +34,27 @@ spring:
     jdbc:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-mysql.sql
+#  datasource-meta:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/db1
+#    username: root
+#    password: 1234
+#  datasource-data:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/db2
+#    username: root
+#    password: 1234
+#  datasource-target:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/db3
+#    username: root
+#    password: 1234
+  datasource-spiderdb:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@3.35.132.32:1521/xe
+    username: system
+    password: neobns
+      
   jpa:
     properties:
       hibernate:

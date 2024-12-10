@@ -17,23 +17,25 @@ public class SubBatch2 {
 	private static final Logger logger = LoggerFactory.getLogger(SubBatch2.class);
 	private JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
+	private final CustomBatchJobListener listener;
 
-	public SubBatch2(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
+	public SubBatch2(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,
+			CustomBatchJobListener listener) {
 		this.jobRepository = jobRepository;
 		this.platformTransactionManager = platformTransactionManager;
+		this.listener = listener;
 	}
 
 	@Bean
 	public Job subBatch2Job() {
-		return new JobBuilder("subBatch2", jobRepository).start(subBatch2Step()).build();
+		return new JobBuilder("subBatch2", jobRepository).start(subBatch2Step()).listener(listener).build();
 
 	}
 
 	@Bean
 	public Step subBatch2Step() {
 
-		return (Step) new StepBuilder("subBatch2Step", jobRepository)
-				.tasklet((stepContribution, chunkContext) -> {
+		return (Step) new StepBuilder("subBatch2Step", jobRepository).tasklet((stepContribution, chunkContext) -> {
 			logger.info("Sub Batch2 실행 중");
 			Thread.sleep(1000);
 			logger.info("Sub Batch2 실행 완료");

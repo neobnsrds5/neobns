@@ -30,17 +30,18 @@ public class DbToDbBatch {
 
 	private final DataSource realSource;
 	private final DataSource targetSource;
-
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
+	private final CustomBatchJobListener listener;
 
 	public DbToDbBatch(@Qualifier("dataDBSource") DataSource realSource,
 			@Qualifier("targetDataSource") DataSource targetSource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		this.realSource = realSource;
 		this.targetSource = targetSource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
+		this.listener = listener;
 	}
 
 	@Bean
@@ -114,7 +115,7 @@ public class DbToDbBatch {
 	public Job job() throws Exception {
 		return new JobBuilder("dbCopyJob", jobRepository)
 //				.start(partitoinStep())
-				.start(step()).build();
+				.start(step()).listener(listener).build();
 	}
 
 	@Bean

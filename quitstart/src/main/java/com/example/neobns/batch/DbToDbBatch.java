@@ -33,9 +33,10 @@ public class DbToDbBatch {
 
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-
-	public DbToDbBatch(@Qualifier("dataDBSource") DataSource realSource,
-			@Qualifier("targetDataSource") DataSource targetSource, JobRepository jobRepository,
+	
+	public DbToDbBatch(@Qualifier("dataDataSource") DataSource realSource,
+			@Qualifier("targetDataSource") DataSource targetSource,
+			JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {
 		this.realSource = realSource;
 		this.targetSource = targetSource;
@@ -85,9 +86,9 @@ public class DbToDbBatch {
 
 	@Bean
 	public Step step() throws Exception {
-		
+
 		int chunkSize = 10; // 10, 50, 100
-		
+
 		return new StepBuilder("dbCopyStep", jobRepository)
 				.<Map<String, Object>, Map<String, Object>>chunk(chunkSize, transactionManager)
 				.reader(reader())
@@ -100,7 +101,7 @@ public class DbToDbBatch {
 
 			@Override
 			public Map<String, Object> process(Map<String, Object> item) throws Exception {
-				
+
 				// dummy processor logic 추가
 				for (int i = 0; i < item.size(); i++) {
 					System.out.println("dummy processor is processing1 " + item.toString());
@@ -119,11 +120,11 @@ public class DbToDbBatch {
 
 	@Bean
 	public TaskExecutor taskExecutor() {
-		
+
 		int corePoolSize = 4; // 4~8
 		int maxPoolSize = 8; // 8~16
 		int queueSize = 50; //50~100
-		
+
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);

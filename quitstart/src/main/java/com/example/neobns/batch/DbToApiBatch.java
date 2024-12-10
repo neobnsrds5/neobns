@@ -29,20 +29,20 @@ import com.example.neobns.dto.AccountDTO;
 public class DbToApiBatch {
 
 	private final DataSource datasource;
-
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-
 	private final RestTemplate restTemplate;
-
-	public DbToApiBatch(@Qualifier("dataDBSource") DataSource datasource, PlatformTransactionManager transactionManager,
-			JobRepository jobRepository, RestTemplate restTemplate) {
+	
+	public DbToApiBatch(@Qualifier("dataDataSource") DataSource datasource,
+			PlatformTransactionManager transactionManager,
+			JobRepository jobRepository,
+			RestTemplate restTemplate) {
 		this.datasource = datasource;
 		this.transactionManager = transactionManager;
 		this.jobRepository = jobRepository;
 		this.restTemplate = restTemplate;
 	}
-
+	
 	@Bean
 	public TaskExecutor toApiTaskExecutor() {
 

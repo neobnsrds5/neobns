@@ -29,7 +29,7 @@ public class QuickService {
 	private final TransferRepository transferRepository;
 	private final CacheManager cacheManager;
 
-	@CachePut(value = "item:id", key = "#itemDto.id")
+//	@CachePut(value = "item:id", key = "#itemDto.id")
 	public boolean registerItem(ItemDto itemDto) {
 		log.info("Service....");
 		System.out.println("clearing and updating the cache");
@@ -37,14 +37,14 @@ public class QuickService {
 		return true;
 	}
 
-	@Cacheable(value = "item:id", key = "#id")
+//	@Cacheable(value = "item:id", key = "#id")
 	public ItemDto getItemById(String id) {
 		System.out.println("getItemById : " + id + " 실행됨~");
 		ItemDto itemDto = mapper.findById(id);
 		return itemDto;
 	}
 	
-	@Cacheable(value = "item:id")
+//	@Cacheable(value = "item:id")
 	public List<ItemDto> getAll() {
 		List<ItemDto> results = mapper.findAll();
 		return results;
@@ -71,14 +71,13 @@ public class QuickService {
 //		return accountDTO;
 //	}
 	
-	@Scheduled(fixedRate = 100_000)
-	@CacheEvict(value = "account:id", allEntries = true)
+//	@Schedule
 	public void clearAllAccountCache() {
 		System.out.println("All account cash evicted. fixedRate = 10000");
 		
 	}
 	
-	@CachePut(value = "account:id", key = "#account.id")
+//	@CachePut(value = "account:id", key = "#account.id")
 	public Account addUpdateAccountJPA(Account account) {
 		Account returnAccount = accountRepository.save(account);
 		System.out.println("return account : " + returnAccount);
@@ -86,7 +85,7 @@ public class QuickService {
 		
 	}
 
-	@Cacheable(value = "account:id", key = "#id")
+//	@Cacheable(value = "account:id", key = "#id")
 	public Account getAccountByIdJPA(long id) {
 		return accountRepository.findById(id).get();
 	}

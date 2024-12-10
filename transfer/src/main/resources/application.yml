@@ -8,11 +8,6 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db1
-    username: root
-    password: 1234
   cache:
     redis:
       ttl: 10000000  
@@ -39,45 +34,46 @@ spring:
       client:
         url: http://localhost:9000/adminPage
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eureka:1234@localhost:8761/eureka
+# 주석처리 한 부분은 config server의 prperties에 존재
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eureka:1234@localhost:8761/eureka
 
-management:
-  httpexchanges:
-    recording:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+#mybatis:
+#  mapper-locations: classpath:mappers/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+
+#management:
+#  httpexchanges:
+#    recording:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+##        include: "*"
 #        include: health, info, metrics, prometheus, busrefresh
-      base-path: /actuator
-  endpoint:
-    metrics:
-      enabled: true
-    health:
-      show-details: always
-    prometheus:
-      enabled: true  
-    env:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    enable:
-      hikaricp: true
-      
+#      base-path: /actuator
+#  endpoint:
+#    metrics:
+#      enabled: true
+#    health:
+#      show-details: always
+#    prometheus:
+#      enabled: true
+#    env:
+#      enabled: true
+#  info:
+#    env:
+#      enabled: true
+#  metrics:
+#    enable:
+#      hikaricp: true
+#
 values:
   queue: example-queue
   exchange: example-exchange
   routingKey: example-routing-key
-
-mybatis:
-  mapper-locations: classpath:mappers/*.xml
-  configuration:
-    map-underscore-to-camel-case: true

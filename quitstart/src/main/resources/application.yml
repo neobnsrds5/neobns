@@ -1,3 +1,11 @@
+server:
+  port: 7777
+#  servlet:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
 spring:
   kafka:
     bootstrap-servers: localhost:9092
@@ -12,12 +20,13 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
-  boot:
-    admin:
-      client:
-        url: http://localhost:9000/adminPage
-#        username: admin
-#        password: admin
+# 주석처리 한 부분은 config server의 prperties에 존재
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:9000/adminPage
+##        username: admin
+##        password: admin
 
   batch:
     job:
@@ -25,21 +34,6 @@ spring:
     jdbc:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-mysql.sql
-  datasource-meta:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db1
-    username: root
-    password: 1234
-  datasource-data:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db2
-    username: root
-    password: 1234
-  datasource-target:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db3
-    username: root
-    password: 1234
   jpa:
     properties:
       hibernate:
@@ -59,55 +53,42 @@ spring:
       port: 6379
       password: 
 
-    
-mybatis:
-  mapper-locations: classpath:mappers/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
+# 주석처리 한 부분은 config server의 prperties에 존재
+#mybatis:
+#  mapper-locations: classpath:mappers/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
 
 #eureka:
 #  client:
 #    register-with-eureka: true
 #    fetch-registry: true
 #    service-url:
-#      defaultZone: http://localhost:8761/eureka
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eureka:1234@localhost:8761/eureka
+#      defaultZone: http://eureka:1234@localhost:8761/eureka
       
-management:
-  httpexchanges:
-    recording:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-      base-path: /actuator
-  endpoint:
-    metrics:
-      enabled: true
-    health:
-      show-details: always
-    prometheus:
-      enabled: true  
-    env:
-      enabled: true
-    busrefresh:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    enable:
-      hikaricp: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
+#management:
+#  httpexchanges:
+#    recording:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#      base-path: /actuator
+#  endpoint:
+#    metrics:
+#      enabled: true
+#    health:
+#      show-details: always
+#    prometheus:
+#      enabled: true
+#    env:
+#      enabled: true
+#    busrefresh:
+#      enabled: true
+#  info:
+#    env:
+#      enabled: true
+#  metrics:
+#    enable:
+#      hikaricp: true

@@ -37,7 +37,7 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 
-	public LogFileToDbBatch(@Qualifier("dataDBSource") DataSource datasource, JobRepository jobRepository,
+	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {
 		super();
 		this.datasource = datasource;
@@ -52,9 +52,9 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public Step logToDBStep() {
-		
+
 		int chunkSize = 10; // 10, 50, 100
-		
+
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader())
 				.processor(dummyProcessor3())
@@ -66,7 +66,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public ItemProcessor<LogDTO, LogDTO> dummyProcessor3() {
 		return new ItemProcessor<LogDTO, LogDTO>() {
-			
+
 			@Override
 			public LogDTO process(LogDTO item) throws Exception {
 				// dummy processor logic 추가
@@ -80,11 +80,11 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public TaskExecutor logToDBTaskExecutor() {
-		
+
 		int corePoolSize = 4; // 4~8
 		int maxPoolSize = 8; // 8~16
 		int queueSize = 50; //50~100
-		
+
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);

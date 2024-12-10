@@ -1,83 +1,76 @@
-// search.js
-
 document.addEventListener('DOMContentLoaded', function () {
 
-    // 검색 기능 구현
-    function filterLogs() {
+    // 서버에 검색 요청
+    function fetchLogsFromServer() {
+        const searchCriteria = document.getElementById('searchCriteria').value; // 검색 기준
+        const searchValue = document.getElementById('searchInput').value.trim(); // 검색 값
 
-        // 검색 기준과 검색창 값 가져오기
-        const searchCriteria = document.getElementById('searchCriteria').value; // 선택된 기준
-        const searchValue = document.getElementById('searchInput').value.toLowerCase().trim(); // 입력값
-
-        // 테이블의 모든 행 가져오기
-        const rows = document.querySelectorAll('#logTableBody tr');
-
-        let foundMatch = false; // 검색 결과 여부 확인 플래그
-
-        rows.forEach(row => {
-            let cellToCheck = null;
-
-            // 선택된 검색 기준에 따라 검색할 셀 선택
-            if (searchCriteria === 'traceId') {
-                cellToCheck = row.querySelector('.text-start.trace-id a');
-            } else if (searchCriteria === 'userId') {
-                cellToCheck = row.querySelector('.text-start.user-id');
-            } else if (searchCriteria === 'ipAddress') {
-                cellToCheck = row.querySelector('.text-start.ip-address');
-            } else if (searchCriteria === 'query') {
-                cellToCheck = row.querySelector('.text-start.query');
-            }
-
-            // 빈 검색값 처리
-            if (searchValue === '') {
-                row.style.display = ''; // 빈값 검색 시 모든 행 표시
-                foundMatch = true;
-                return; // 다음 반복으로 이동
-            }
-
-            // 셀의 값을 검색 조건과 비교
-            if (cellToCheck) {
-                const cellValue = cellToCheck.textContent.trim().toLowerCase();
-
-                // 포함 여부로 필터링
-                if (cellValue.includes(searchValue)) {
-                    row.style.display = ''; // 조건에 맞으면 행 표시
-                    foundMatch = true;
-                } else {
-                    row.style.display = 'none'; // 조건에 맞지 않으면 행 숨기기
-                }
-            }
-        });
-
-        // 검색 결과가 없을 경우 알림
-        if (!foundMatch) {
-            alert("검색 결과가 없습니다.");
+        if (searchValue === '') {
+            alert("검색 값을 입력하세요.");
+            return;
         }
+	// 현재 페이지의 URL 경로를 확인하여 API 경로를 설정
+	    const currentPath = window.location.pathname;
+	    let apiEndpoint;
+	    if (currentPath.includes("errors")) {
+	        apiEndpoint = "/admin/api/logs/error/search";
+	    } else if (currentPath.includes("slow")) {
+	        apiEndpoint = "/admin/api/logs/slow/search";
+	    }
+
+        // 수정된 fetch 요청 URL
+        fetch(`${apiEndpoint}?criteria=${searchCriteria}&value=${searchValue}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateTable(data); // 검색 결과로 테이블 업데이트
+            })
+            .catch(error => {
+                console.error('검색 요청 중 오류 발생:', error);
+                alert("검색 중 오류가 발생했습니다.");
+            });
     }
 
-    // 검색 버튼 클릭 이벤트 연결
-    const searchButton = document.getElementById('searchButton');
-    if (searchButton) {
-        searchButton.addEventListener('click', filterLogs);
-        console.log("검색 버튼 이벤트 연결 완료");
-    } else {
-        console.error("검색 버튼(searchButton) 요소를 찾을 수 없습니다.");
-    }
+    // 테이블 업데이트 함수
+    function updateTable(logs) {
+        const tableBody = document.getElementById('logTableBody');
+        tableBody.innerHTML = ''; // 기존 데이터 초기화
 
-    // 검색창에서 Enter 키 입력 이벤트 연결
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
-                filterLogs();
-            }
+        logs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${log.timestmp || 'N/A'}</td>
+                <td class="text-start trace-id">
+                    ${log.traceId ? `<a href="/admin/trace?traceId=${log.traceId}" target="_blank">${log.traceId}</a>` : 'N/A'}
+                </td>
+                <td class="text-start ip-address">${log.ipAddress || 'N/A'}</td>
+                <td>${log.executeResult || 'N/A'}</td>
+                <td>${log.callerClass || 'N/A'}</td>
+                <td>${log.callerMethod || 'N/A'}</td>
+                <td>${log.uri || 'N/A'}</td>
+                <td class="text-start query">${log.query || 'N/A'}</td>
+                <td class="text-start user-id">${log.userId || 'N/A'}</td>
+            `;
+            tableBody.appendChild(row);
         });
-        console.log("검색창 Enter 키 이벤트 연결 완료");
-    } else {
-        console.error("검색 입력창(searchInput) 요소를 찾을 수 없습니다.");
     }
-	
-	document.querySelectorAll('.text-start.trace-id a').forEach(link => {
+
+    // 검색 버튼 이벤트
+    document.getElementById('searchButton').addEventListener('click', fetchLogsFromServer);
+
+    // Enter 키 입력 시 검색
+    document.getElementById('searchInput').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            fetchLogsFromServer();
+        }
+    });
+});
+
+document.querySelectorAll('.text-start.trace-id a').forEach(link => {
 		    link.addEventListener('click', function (event) {
 		        event.preventDefault(); // 기본 링크 이동 동작 방지
 
@@ -97,4 +90,3 @@ document.addEventListener('DOMContentLoaded', function () {
 		        console.log(`팝업 창 열림: ${url}`);
 		    });
 		});
-});

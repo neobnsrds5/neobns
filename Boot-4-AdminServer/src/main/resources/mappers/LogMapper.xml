@@ -22,5 +22,49 @@
         WHERE trace_id = #{traceId}
         ORDER BY timestmp
     </select>
+    
+    <!-- logging_error 테이블 -->
+    <select id="findErrorLogsByTraceId" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_error WHERE trace_id LIKE CONCAT('%', #{traceId}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findErrorLogsByUserId" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_error WHERE user_id LIKE CONCAT('%', #{userId}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findErrorLogsByIpAddress" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_error WHERE ip_address LIKE CONCAT('%', #{ipAddress}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findErrorLogsByURI" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_error WHERE query LIKE CONCAT('%', #{uri}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findErrorLogsByQuery" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_error WHERE query LIKE CONCAT('%', #{query}, '%')
+        ORDER BY timestmp
+    </select>
+
+    <!-- logging_slow 테이블 -->
+    <select id="findSlowLogsByTraceId" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_slow WHERE trace_id LIKE CONCAT('%', #{traceId}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findSlowLogsByUserId" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_slow WHERE user_id LIKE CONCAT('%', #{userId}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findSlowLogsByIpAddress" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_slow WHERE ip_address LIKE CONCAT('%', #{ipAddress}, '%')
+        ORDER BY timestmp
+    </select>
+    <select id="findSlowLogsByQuery" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_slow WHERE query LIKE CONCAT('%', #{query}, '%')
+        ORDER BY timestmp
+    </select>
+        <select id="findSlowLogsByURI" parameterType="String" resultType="LogDTO">
+        SELECT * FROM logging_slow WHERE query LIKE CONCAT('%', #{uri}, '%')
+        ORDER BY timestmp
+    </select>
 
 </mapper>

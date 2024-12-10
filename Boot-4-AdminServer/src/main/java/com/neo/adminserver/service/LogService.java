@@ -2,14 +2,15 @@ package com.neo.adminserver.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
-import org.springframework.boot.actuate.logging.LoggersEndpoint.GroupLoggerLevelsDescriptor;
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
 import com.neo.adminserver.mapper.LogMapper;
 
-import ch.qos.logback.core.joran.conditional.ElseAction;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,6 +18,48 @@ import lombok.RequiredArgsConstructor;
 public class LogService {
 
 	private final LogMapper logMapper;
+	
+	private Map<String, Function<String, List<LogDTO>>> errorSearchMap;
+    private Map<String, Function<String, List<LogDTO>>> slowSearchMap;
+    private Map<String, Map<String, Function<String, List<LogDTO>>>> tableSearchMap;
+	
+    @PostConstruct
+    private void initializeMaps() {
+        errorSearchMap = Map.of(
+    		"traceId", value -> logMapper.findErrorLogsByTraceId(value),
+		    "userId", value -> logMapper.findErrorLogsByUserId(value),
+		    "ipAddress", value -> logMapper.findErrorLogsByIpAddress(value),
+		    "uri", value -> logMapper.findErrorLogsByURI(value),
+		    "query", value -> logMapper.findErrorLogsByQuery(value)
+        );
+
+        slowSearchMap = Map.of(
+            "traceId", value -> logMapper.findSlowLogsByTraceId(value),
+            "userId", value -> logMapper.findSlowLogsByUserId(value),
+            "ipAddress", value -> logMapper.findSlowLogsByIpAddress(value),
+            "uri", value -> logMapper.findSlowLogsByURI(value),
+            "query", value -> logMapper.findSlowLogsByQuery(value)
+        );
+
+        tableSearchMap = Map.of(
+            "logging_error", errorSearchMap,
+            "logging_slow", slowSearchMap
+        );
+    }
+    
+    public List<LogDTO> searchLogs(String criteria, String value, String table) {
+        Map<String, Function<String, List<LogDTO>>> searchMap = tableSearchMap.get(table);
+        if (searchMap == null) {
+            throw new IllegalArgumentException("Invalid table name: " + table);
+        }
+
+        Function<String, List<LogDTO>> searchFunction = searchMap.get(criteria);
+        if (searchFunction == null) {
+            throw new IllegalArgumentException("Invalid search criteria: " + criteria);
+        }
+
+        return searchFunction.apply(value);
+    }
 
 	public List<LogDTO> findSlowByPage() {
 		return logMapper.findSlowByPage();

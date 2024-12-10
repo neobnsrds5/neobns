@@ -93,6 +93,13 @@ spring:
           filters:
             - RewritePath=/admin/(?<path>.*), /$\{path}
 
+        - id: admin_log_search
+          uri: lb://adminserver
+          predicates:
+            - Path=/admin/api/logs/**
+          filters:
+            - RewritePath=/admin/(?<path>.*), /$\{path}
+
 management:
   httpexchanges:
     recording:

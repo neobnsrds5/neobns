@@ -84,9 +84,6 @@ public class QuickController {
 	@GetMapping("/findAll")
 	public List<ItemDto> getAll() {
 		List<ItemDto> results = quickService.getAll();
-		for (ItemDto item : results) {
-			System.out.println(item.getId() + " " + item.getName());
-		}
 		return results;
 	}
 
@@ -96,22 +93,6 @@ public class QuickController {
 
 		return ResponseEntity.ok("OK");
 	}
-//
-//	@GetMapping("/getAccount")
-//	public AccountDTO getAccount(@RequestParam("id") long id) {
-//		AccountDTO accountDTO = quickService.getAccountById(id);
-//		log.info("name: {}", accountDTO.getName());
-//		return accountDTO;
-//	}
-//
-//	@PutMapping("/updateAccount")
-//	public ResponseEntity<String> updateAccount(@RequestBody AccountDTO dto) {
-//
-//		System.out.println("account dto : " + dto.toString());
-//		quickService.updateAccount(dto);
-//
-//		return ResponseEntity.ok("OK");
-//	}
 
 	@PostMapping("/addAccountJPA")
 	public ResponseEntity<String> addAccountJPA(@RequestBody Account account) {
@@ -130,7 +111,6 @@ public class QuickController {
 	@PutMapping("/updateAccountJPA")
 	public ResponseEntity<String> updateAccountJPA(@RequestBody Account account) {
 
-		System.out.println("account : " + account.toString());
 		quickService.addUpdateAccountJPA(account);
 
 		return ResponseEntity.ok("OK");

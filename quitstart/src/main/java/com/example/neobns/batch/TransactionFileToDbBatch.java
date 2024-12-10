@@ -14,6 +14,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
 
 import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.service.BatchService;
@@ -50,14 +52,15 @@ public class TransactionFileToDbBatch {
 	@Bean
 	public Step TransactionStep() {
 
-		int chunkSize = 10; // 10, 50, 100
+		int chunkSize = 10;
 
 		return new StepBuilder("TransactionStep", jobRepository)
-				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager).reader(TransactionReader())
-				.processor(TransactionProcessor()).writer(items -> {
-					batchService.writeAccounts(items, TransactionWriter());
-				})
-				.taskExecutor(TransactionExecutor()).build();
+				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager)
+				.reader(TransactionReader())
+				.processor(TransactionProcessor())
+				.writer(TransactionWriter())
+				.taskExecutor(TransactionExecutor())
+				.build();
 
 	}
 
@@ -114,7 +117,14 @@ public class TransactionFileToDbBatch {
 	}
 
 	@Bean
+	@SpiderTransaction(propagation = Propagation.REQUIRED, timeout = 1)
 	public JdbcBatchItemWriter<AccountDTO> TransactionWriter() {
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		return new JdbcBatchItemWriterBuilder<AccountDTO>().dataSource(datasource)
 				.sql("INSERT INTO account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")

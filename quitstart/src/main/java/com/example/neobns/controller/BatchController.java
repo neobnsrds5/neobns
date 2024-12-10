@@ -52,7 +52,6 @@ public class BatchController {
 			jobLauncher.run(jobRegistry.getJob("fileToDBJob"), jobParameters);
 			return "OK";
 		} catch (Exception e) {
-			System.out.println("오류발생");
 			e.printStackTrace();
 			return "FAIL";
 		}

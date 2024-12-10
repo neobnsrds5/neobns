@@ -46,8 +46,6 @@ public class LogService {
 
 		for (int i = 0; i < newList.size(); i++) {
 
-			System.out.println("userlist : " + userList.toString());
-
 			if (i == 0) {
 				String[] parts = newList.get(i).getCallerClass().split("/");
 				currentUser = parts[3];
@@ -65,13 +63,11 @@ public class LogService {
 				}
 
 				if (newList.get(i).getCallerClass().equals(user)) {
-					System.out.println("current User : " + currentUser);
 					newList.get(i).setCallerClass("user");
 					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
 					newList.get(i).setCallerMethod(newMethod);
 				} else {
 
-					System.out.println("current User : " + currentUser);
 					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
 					newList.get(i).setCallerClass("rest_" + currentUser);
 					newList.get(i).setCallerMethod(newMethod);
@@ -108,18 +104,6 @@ public class LogService {
 
 		slowOrErrorList.remove(slowOrErrorList.size() - 1);
 
-		for (LogDTO dto : newList) {
-			System.out.println("<newList>");
-			System.out.println(dto);
-		}
-
-		for (LogDTO dto : slowOrErrorList) {
-			System.out.println("<slowOrErrorList>");
-			System.out.println(dto);
-		}
-		
-		
-
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("autonumber").append(System.lineSeparator());
@@ -131,8 +115,6 @@ public class LogService {
 
 		int sqlCount = 0;
 		int newlistSize = newList.size();
-		System.out.println("newlistSize" + newlistSize);
-		System.out.println("newlistSize/2" + newlistSize / 2);
 
 		for (int i = 0; i <= newList.size() - 1; i++) {
 
@@ -194,8 +176,6 @@ public class LogService {
 			builder.append(addedString).append(System.lineSeparator());
 
 		}
-
-		System.out.println("최종결과 :  \n" + builder.toString());
 
 		return builder.toString();
 

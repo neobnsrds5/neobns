@@ -10,11 +10,14 @@ import com.neo.adminserver.dto.LogDTO;
 @Mapper
 public interface LogMapper {
 	
-	List<LogDTO> findSlowByPage();
+	List<LogDTO> findSlowByPage(@Param("limit") int limit, @Param("offset") int offset);
 	
-	List<LogDTO> findErrorByPage();
+	List<LogDTO> findErrorByPage(@Param("limit") int limit, @Param("offset") int offset);
 	
 	List<LogDTO> findByTraceId(String traceId);
+	
+	int countSlowLogs();
+    int countErrorLogs();
 	
 	// logging_error 테이블
     List<LogDTO> findErrorLogsByTraceId(@Param("traceId") String traceId);

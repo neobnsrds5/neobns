@@ -19,16 +19,30 @@ public class LogController {
 	private final LogService logService;
 
 	@GetMapping("/slow")
-	public String findSlowByPage(Model model) {
-		List<LogDTO> logList = logService.findSlowByPage();
+	public String findSlowByPage(
+			@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+		List<LogDTO> logList = logService.findSlowByPage(page, size);
+		int totalLogs = logService.countSlowLogs();
+        int totalPages = (int) Math.ceil((double) totalLogs / size);
 		model.addAttribute("logList", logList);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		return "slow_table";
 	}
 	
 	@GetMapping("/errors")
-	public String findErrorByPage(Model model) {
-		List<LogDTO> logList = logService.findErrorByPage();	    
+	public String findErrorByPage(
+			@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+		List<LogDTO> logList = logService.findErrorByPage(page, size);
+		int totalLogs = logService.countErrorLogs();
+        int totalPages = (int) Math.ceil((double) totalLogs / size);
 		model.addAttribute("logList", logList);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		return "error_table";
 	}
 	

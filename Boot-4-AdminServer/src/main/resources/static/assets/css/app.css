@@ -25,7 +25,6 @@ html[data-bs-theme=dark],
   --bs-light-rgb: 47, 57, 67;
   --bs-dark-rgb: 241, 241, 241;
 }
-
 /* Main Menu Light */
 html[data-menu-color=light] {
   --bs-main-nav-bg: #eeeef3;

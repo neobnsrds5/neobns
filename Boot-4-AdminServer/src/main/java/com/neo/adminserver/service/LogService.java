@@ -61,17 +61,27 @@ public class LogService {
         return searchFunction.apply(value);
     }
 
-	public List<LogDTO> findSlowByPage() {
-		return logMapper.findSlowByPage();
+	public List<LogDTO> findSlowByPage(int page, int size) {
+        int offset = (page - 1) * size;
+        return logMapper.findSlowByPage(size, offset);
 	}
 
-	public List<LogDTO> findErrorByPage() {
-		return logMapper.findErrorByPage();
+	public List<LogDTO> findErrorByPage(int page, int size) {
+        int offset = (page - 1) * size;
+        return logMapper.findErrorByPage(size, offset);
 	}
 
 	public List<LogDTO> findByTraceId(String traceId) {
 		return logMapper.findByTraceId(traceId);
 	}
+	
+	public int countSlowLogs() {
+        return logMapper.countSlowLogs();
+    }
+
+    public int countErrorLogs() {
+        return logMapper.countErrorLogs();
+    }
 
 	public String buildPlantUML(String traceID, List<LogDTO> logList) throws CloneNotSupportedException {
 		ArrayList<LogDTO> newList = new ArrayList<>();

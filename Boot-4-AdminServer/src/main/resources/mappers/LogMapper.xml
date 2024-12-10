@@ -4,23 +4,29 @@
     <select id="findSlowByPage" resultType="LogDTO">
         SELECT * FROM logging_slow
         WHERE 1=1
-        ORDER BY timestmp desc
-        <!-- Add dynamic filters here -->
-        <!-- LIMIT #{limit} OFFSET #{offset} -->
+        ORDER BY timestmp DESC
+    	LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="findErrorByPage" resultType="LogDTO">
         SELECT * FROM logging_error
         WHERE 1=1
-        ORDER BY timestmp desc
-        <!-- Add dynamic filters here -->
-        <!-- LIMIT #{limit} OFFSET #{offset} -->
+        ORDER BY timestmp DESC
+    	LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
         SELECT * FROM logging_event
         WHERE trace_id = #{traceId}
         ORDER BY timestmp
+    </select>
+    
+    <select id="countSlowLogs" resultType="int">
+        SELECT COUNT(*) FROM logging_slow
+    </select>
+
+    <select id="countErrorLogs" resultType="int">
+        SELECT COUNT(*) FROM logging_error
     </select>
     
     <!-- logging_error 테이블 -->

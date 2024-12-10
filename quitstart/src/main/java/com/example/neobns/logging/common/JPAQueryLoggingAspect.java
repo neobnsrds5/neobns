@@ -50,29 +50,15 @@ public class JPAQueryLoggingAspect {
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;
-//		String sql = joinPoint.getSignature().toString();
-//		String shortSql = sql.substring(sql.lastIndexOf(".") + 1);
 
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
 		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-//			Map<String, Object> slowQuery = new HashMap<>();
-//			slowQuery.put("requestID", MDC.get("requestId"));
-//			slowQuery.put("methodName", MDC.get("sql"));
-//			slowQuery.put("executeTime", elapsedTime);
-//			slowQuery.put("timestamp", new Date());
 
 			slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
-//			synchronized (SLOW_QUERIES) {
-//				if (SLOW_QUERIES.size() >= SLOW_QUERIES_SIZE) {
-//					SLOW_QUERIES.poll();
-//				}
-//				SLOW_QUERIES.add(slowQuery);
-//				System.out.println("SLOW_QUERIES : " + SLOW_QUERIES.toString());
-//			}
 
 			MDC.remove("executeResult");
 			MDC.remove("className");

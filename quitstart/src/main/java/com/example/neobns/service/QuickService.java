@@ -31,15 +31,12 @@ public class QuickService {
 
 //	@CachePut(value = "item:id", key = "#itemDto.id")
 	public boolean registerItem(ItemDto itemDto) {
-		log.info("Service....");
-		System.out.println("clearing and updating the cache");
 		mapper.addItem(itemDto);
 		return true;
 	}
 
 //	@Cacheable(value = "item:id", key = "#id")
 	public ItemDto getItemById(String id) {
-		System.out.println("getItemById : " + id + " 실행됨~");
 		ItemDto itemDto = mapper.findById(id);
 		return itemDto;
 	}
@@ -55,21 +52,6 @@ public class QuickService {
 		// TODO Auto-generated method stub
 		mapper.addAccount(dto);
 	}
-//
-//	@CachePut(value = "account:id", key = "#dto.id")
-//	public AccountDTO updateAccount(AccountDTO dto) {
-//		// TODO Auto-generated method stub
-//		System.out.println("update account service : " + dto);
-//		mapper.updateAccount(dto);
-//		return dto;
-//	}
-//
-//	@Cacheable(value = "account:id", key = "#id")
-//	public AccountDTO getAccountById(long id) {
-//		System.out.println("getAccountById : " + id + " 실행됨~");
-//		AccountDTO accountDTO = mapper.findAccountById(id);
-//		return accountDTO;
-//	}
 	
 //	@Schedule
 	public void clearAllAccountCache() {
@@ -80,7 +62,6 @@ public class QuickService {
 //	@CachePut(value = "account:id", key = "#account.id")
 	public Account addUpdateAccountJPA(Account account) {
 		Account returnAccount = accountRepository.save(account);
-		System.out.println("return account : " + returnAccount);
 		return returnAccount;
 		
 	}

@@ -22,4 +22,8 @@ public class DBProperties {
 	public String getTargetUrl() {
 		return environement.getProperty("spring.datasource-target.url");
 	}
+	
+	public String getSpiderUrl() {
+		return environement.getProperty("spring.datasource-spiderdb.url");
+	}
 }

@@ -31,8 +31,6 @@ public class TransferService {
 		.money(money)
 		.build();
 		
-		System.out.println("진행 : transferServiceUrl + /transfer/ex");
-		
 		try {
 			ResponseEntity<String> response = restTemplate.postForEntity(url, dto, String.class);
 			return response.getBody();

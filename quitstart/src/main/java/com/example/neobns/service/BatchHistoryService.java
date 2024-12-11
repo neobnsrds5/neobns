@@ -24,7 +24,6 @@ public class BatchHistoryService {
 
 	private final JdbcTemplate spiderTemplate;
 	private final JobRegistry jobRegistry;
-	
 
 	public BatchHistoryService(JdbcTemplate spiderTemplate, JobRegistry jobRegistry) {
 		super();
@@ -34,11 +33,9 @@ public class BatchHistoryService {
 
 	public void saveBatchHistory(JobExecution jobExecution) {
 
-		System.out.println("jobExecution.toString() : " + jobExecution.toString());
 		int maxLen = 3000;
 
 		String batchAppId = MDC.get("batchAppId");
-		System.out.println("bat" + batchAppId);
 		String instanceId = MDC.get("instanceId");
 		String batchDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 //		int batchExecuteSeq = 12;
@@ -69,7 +66,5 @@ public class BatchHistoryService {
 				lastUpdateUserId, errorCode, errorReason, recordCount, executeCount, successCount, failCount);
 
 	}
-
-	
 
 }

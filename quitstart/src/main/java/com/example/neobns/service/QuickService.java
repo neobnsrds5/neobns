@@ -59,10 +59,10 @@ public class QuickService {
 		mapper.addAccount(dto);
 	}
 	
-	@Scheduled(fixedRate = 100_000)
+	@Scheduled(fixedRate = 900_000)
 	@CacheEvict(value = "account:id", allEntries = true)
 	public void clearAllAccountCache() {
-		System.out.println("All account cash evicted. fixedRate = 10000");
+//		System.out.println("All account cash evicted. fixedRate = 10000");
 		
 	}
 	

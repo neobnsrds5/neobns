@@ -42,7 +42,9 @@ public class BatchHistoryService {
 		String instanceId = MDC.get("instanceId");
 		String batchDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 //		int batchExecuteSeq = 12;
-		String logDtime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		String logDtime = jobExecution.getStartTime() != null
+				? jobExecution.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+				: "2024-01-01";
 		String batchEndDtime = jobExecution.getEndTime() != null
 				? jobExecution.getEndTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
 				: logDtime;

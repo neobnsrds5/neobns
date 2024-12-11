@@ -33,6 +33,10 @@ public class ParentBatch {
 	@Bean
 	public Job parentBatchJob() {
 
+		/*
+		 * return new JobBuilder("parentBatchJob",
+		 * jobRepository).start(step1()).next(step2()).listener(listener).build();
+		 */
 		return new JobBuilder("parentBatchJob", jobRepository).start(step1()).next(step2()).listener(listener).build();
 
 	}

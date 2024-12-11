@@ -20,14 +20,18 @@ public class CustomBatchJobListener{
 	
 	@BeforeJob
 	public void beforeJob(JobExecution jobExecution) {
-		String jobName = jobExecution.getJobInstance().getJobName();
-		MDC.put("batchAppId", "com.example.neobns.batch." + jobName);
-        MDC.put("instanceId", jobExecution.getId().toString());
-    }
+		
+	}
 
 	@AfterJob
 	public void afterJob(JobExecution jobExecution) {
+		System.out.println("job is executed : " + jobExecution.getJobInstance().getJobName() + jobExecution.toString());
+		String jobName = jobExecution.getJobInstance().getJobName();
+		MDC.put("batchAppId", "com.example.neobns.batch." + jobName);
+        MDC.put("instanceId", jobExecution.getId().toString());
 		service.saveBatchHistory(jobExecution);
+		MDC.remove("batchAppId");
+		MDC.remove("instanceId");
 	}
 
 }

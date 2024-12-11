@@ -1,7 +1,9 @@
 package com.neo.adminserver.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,17 +21,65 @@ public class LogController {
 	private final LogService logService;
 
 	@GetMapping("/slow")
-	public String findSlowByPage(Model model) {
-		List<LogDTO> logList = logService.findSlowByPage();
-		model.addAttribute("logList", logList);
-		return "slow_table";
-	}
+    public String findSlowLogs(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+            @RequestParam(required = false) String traceId,
+            @RequestParam(required = false) String userId,
+            @RequestParam(required = false) String ipAddress,
+            @RequestParam(required = false) String query,
+            Model model) {
+        List<LogDTO> logList = logService.findSlowLogs(page, size, startTime, endTime, traceId, userId, ipAddress, query);
+        int totalLogs = logService.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+        int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
+        
+        // 검색 결과 상태 추가
+        boolean hasResults = !logList.isEmpty();
+
+        model.addAttribute("logList", logList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("startTime", startTime);
+        model.addAttribute("endTime", endTime);
+        model.addAttribute("traceId", traceId);
+        model.addAttribute("userId", userId);
+        model.addAttribute("ipAddress", ipAddress);
+        model.addAttribute("query", query);
+        model.addAttribute("hasResults", hasResults);
+        return "slow_table";
+    }
 	
 	@GetMapping("/errors")
-	public String findErrorByPage(Model model) {
-		List<LogDTO> logList = logService.findErrorByPage();	    
-		model.addAttribute("logList", logList);
-		return "error_table";
+	public String findErrorByPage(
+			@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+            @RequestParam(required = false) String traceId,
+            @RequestParam(required = false) String userId,
+            @RequestParam(required = false) String ipAddress,
+            @RequestParam(required = false) String query,
+            Model model) {
+        List<LogDTO> logList = logService.findErrorLogs(page, size, startTime, endTime, traceId, userId, ipAddress, query);
+        int totalLogs = logService.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+        int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
+        
+        // 검색 결과 상태 추가
+        boolean hasResults = !logList.isEmpty();
+
+        model.addAttribute("logList", logList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("startTime", startTime);
+        model.addAttribute("endTime", endTime);
+        model.addAttribute("traceId", traceId);
+        model.addAttribute("userId", userId);
+        model.addAttribute("ipAddress", ipAddress);
+        model.addAttribute("query", query);
+        model.addAttribute("hasResults", hasResults);
+        return "error_table";
 	}
 	
 	@GetMapping("/trace")
@@ -39,5 +89,27 @@ public class LogController {
 		String plantSource = logService.buildPlantUML(traceId, logList);
 		model.addAttribute("imgSource", plantSource);
 		return "trace_table";
+	}
+	
+	@GetMapping("/table")
+	public String findByTable(
+			@RequestParam(defaultValue = "1") int page,
+	        @RequestParam(defaultValue = "10") int size,
+	        @RequestParam(required = false) String callerMethod,
+	        Model model) throws CloneNotSupportedException {
+		List<LogDTO> logList = logService.findByTable(page, size, callerMethod);
+		int totalLogs = logService.countSQLTable(callerMethod);
+	    int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
+		
+		// 검색 결과 상태 추가
+        boolean hasResults = !logList.isEmpty();
+        
+        model.addAttribute("hasResults", hasResults);
+		model.addAttribute("logList", logList);
+		model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("callerMethod", callerMethod);
+		
+		return "influence_table";
 	}
 }

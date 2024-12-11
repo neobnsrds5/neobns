@@ -1,15 +1,17 @@
 package com.neo.adminserver.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
-import org.springframework.boot.actuate.logging.LoggersEndpoint.GroupLoggerLevelsDescriptor;
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
 import com.neo.adminserver.mapper.LogMapper;
 
-import ch.qos.logback.core.joran.conditional.ElseAction;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -18,17 +20,83 @@ public class LogService {
 
 	private final LogMapper logMapper;
 
-	public List<LogDTO> findSlowByPage() {
-		return logMapper.findSlowByPage();
+	public List<LogDTO> findSlowByPage(int page, int size) {
+        int offset = (page - 1) * size;
+        return logMapper.findSlowByPage(size, offset);
 	}
 
-	public List<LogDTO> findErrorByPage() {
-		return logMapper.findErrorByPage();
+	public List<LogDTO> findErrorByPage(int page, int size) {
+        int offset = (page - 1) * size;
+        return logMapper.findErrorByPage(size, offset);
 	}
 
 	public List<LogDTO> findByTraceId(String traceId) {
 		return logMapper.findByTraceId(traceId);
 	}
+	
+	public int countSlowLogs() {
+        return logMapper.countSlowLogs();
+    }
+
+    public int countErrorLogs() {
+        return logMapper.countErrorLogs();
+    }
+    
+    public List<LogDTO> findSlowLogs(
+            int page,
+            int size,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        int offset = (page - 1) * size;
+        return logMapper.findSlowLogs(startTime, endTime, traceId, userId, ipAddress, query, size, offset);
+    }
+
+    public int countSlowSearchLogs(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        return logMapper.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+    }
+    
+    public List<LogDTO> findErrorLogs(
+            int page,
+            int size,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        int offset = (page - 1) * size;
+        return logMapper.findErrorLogs(startTime, endTime, traceId, userId, ipAddress, query, size, offset);
+    }
+
+    public int countErrorSearchLogs(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            String traceId,
+            String userId,
+            String ipAddress,
+            String query) {
+        return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+    }
+    
+	public List<LogDTO> findByTable(int page, int size, String callerMethod) {
+		int offset = (page - 1) * size;
+	    return logMapper.findByTable(size, offset, callerMethod);
+	}
+	
+    public int countSQLTable(String callerMethod) {
+        return logMapper.countSQLTable(callerMethod);
+    }
+	
 
 	public String buildPlantUML(String traceID, List<LogDTO> logList) throws CloneNotSupportedException {
 		ArrayList<LogDTO> newList = new ArrayList<>();
@@ -136,8 +204,10 @@ public class LogService {
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
 					addedString = errorLog.getCallerClass() + " -> " + errorLog.getCallerClass()
-							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult()
-							+ "ms";
+							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult();
+					if (errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
+						addedString = addedString + "ms";
+					} 
 				} else {
 					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
 							+ newList.get(i).getCallerMethod() + " - " + newList.get(i).getExecuteResult() + "ms";
@@ -155,19 +225,17 @@ public class LogService {
 					if (errorLog.getLoggerName().equals("ERROR")) {
 
 						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms"
-								+ "(Total : " + newList.get(i).getExecuteResult() + "ms)";
+								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + newList.get(i).getExecuteResult() + "ms";
 
 					} else if (errorLog.getLoggerName().equals("SLOW")) {
 						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red> " + errorLog.getCallerMethod() + " - "
-								+ errorLog.getExecuteResult() + "ms";
+								+ " : <font color=red> " + errorLog.getExecuteResult() + "ms";
 					}
 
 				} else {
 
 					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-							+ intervalTime + "ms" + "(Total : " + newList.get(i).getExecuteResult() + "ms)";
+							  + newList.get(i).getExecuteResult() + "ms";
 
 				}
 

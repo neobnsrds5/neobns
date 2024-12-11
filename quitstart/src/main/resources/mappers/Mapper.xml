@@ -9,6 +9,13 @@
             WHERE id = #{id}
         ]]>
     </select>
+    <select id="findByIdWithSqlInjection" resultType="com.example.neobns.dto.ItemDto" parameterType="string">
+        <![CDATA[
+            SELECT *
+            FROM item
+            WHERE id = ${id}
+        ]]>
+    </select>
     <select id="findAll" resultType="com.example.neobns.dto.ItemDto">
         <![CDATA[
             SELECT *

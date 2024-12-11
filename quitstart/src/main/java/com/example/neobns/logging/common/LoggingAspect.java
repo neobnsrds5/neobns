@@ -55,9 +55,8 @@ public class LoggingAspect {
         MDC.remove("className");
         MDC.remove("methodName");
 
-        Object result;
         try {
-            result = joinPoint.proceed(); // 실제 메서드 실행
+            return joinPoint.proceed(); // 실제 메서드 실행
         } finally {
             long elapsedTime = System.currentTimeMillis() - start;
             
@@ -72,8 +71,6 @@ public class LoggingAspect {
             MDC.remove("methodName");
             MDC.remove("executeResult");
         }
-
-        return result;
     }
 
 }

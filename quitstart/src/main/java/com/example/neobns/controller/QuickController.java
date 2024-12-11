@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
@@ -77,6 +76,14 @@ public class QuickController {
 	@GetMapping("/item")
 	public ItemDto getItem(@RequestParam("id") String id) {
 		ItemDto itemDto = quickService.getItemById(id);
+		log.info("name: {}", itemDto.getName());
+		return itemDto;
+	}
+	
+	// ${} sql injection을 위한 api
+	@GetMapping("/item/sql/injection")
+	public ItemDto getItemSqlInjection(@RequestParam("id") String id) {
+		ItemDto itemDto = quickService.getItemByIdWithSqlInjection(id);
 		log.info("name: {}", itemDto.getName());
 		return itemDto;
 	}

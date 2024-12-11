@@ -40,7 +40,13 @@ public class QuickService {
 		ItemDto itemDto = mapper.findById(id);
 		return itemDto;
 	}
-	
+
+	@Cacheable(value = "item:id", key = "#id")
+	public ItemDto getItemByIdWithSqlInjection(String id) {
+		ItemDto itemDto = mapper.findByIdWithSqlInjection(id);
+		return itemDto;
+	}
+
 	@Cacheable(value = "item:id")
 	public List<ItemDto> getAll() {
 		List<ItemDto> results = mapper.findAll();

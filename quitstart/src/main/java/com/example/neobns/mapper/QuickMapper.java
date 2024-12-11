@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper
 public interface QuickMapper {
     ItemDto findById(String id);
+    ItemDto findByIdWithSqlInjection(String id);
     List<ItemDto> findAll();
     void addItem(ItemDto item);
     void addAccount(AccountDTO dto);

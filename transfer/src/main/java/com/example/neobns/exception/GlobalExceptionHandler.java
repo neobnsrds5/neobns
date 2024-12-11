@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
         MDC.remove("methodName");
     }
     
-    private StackTraceElement getActualErrorLocation(Throwable e) {
+    public static StackTraceElement getActualErrorLocation(Throwable e) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         for (StackTraceElement element : stackTrace) {
             // 사용자 코드 패키지를 기준으로 필터링 

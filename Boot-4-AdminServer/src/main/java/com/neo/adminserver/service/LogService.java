@@ -87,6 +87,16 @@ public class LogService {
             String query) {
         return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
     }
+    
+	public List<LogDTO> findByTable(int page, int size, String callerMethod) {
+		int offset = (page - 1) * size;
+	    return logMapper.findByTable(size, offset, callerMethod);
+	}
+	
+    public int countSQLTable(String callerMethod) {
+        return logMapper.countSQLTable(callerMethod);
+    }
+	
 
 	public String buildPlantUML(String traceID, List<LogDTO> logList) throws CloneNotSupportedException {
 		ArrayList<LogDTO> newList = new ArrayList<>();
@@ -212,8 +222,10 @@ public class LogService {
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
 					addedString = errorLog.getCallerClass() + " -> " + errorLog.getCallerClass()
-							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult()
-							+ "ms";
+							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult();
+					if (errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
+						addedString = addedString + "ms";
+					} 
 				} else {
 					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
 							+ newList.get(i).getCallerMethod() + " - " + newList.get(i).getExecuteResult() + "ms";
@@ -231,19 +243,17 @@ public class LogService {
 					if (errorLog.getLoggerName().equals("ERROR")) {
 
 						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + intervalTime + "ms"
-								+ "(Total : " + newList.get(i).getExecuteResult() + "ms)";
+								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + newList.get(i).getExecuteResult() + "ms";
 
 					} else if (errorLog.getLoggerName().equals("SLOW")) {
 						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red> " + errorLog.getCallerMethod() + " - "
-								+ errorLog.getExecuteResult() + "ms";
+								+ " : <font color=red> " + errorLog.getExecuteResult() + "ms";
 					}
 
 				} else {
 
 					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-							+ intervalTime + "ms" + "(Total : " + newList.get(i).getExecuteResult() + "ms)";
+							  + newList.get(i).getExecuteResult() + "ms";
 
 				}
 

@@ -130,5 +130,25 @@
             AND query LIKE CONCAT('%', #{query}, '%')
         </if>
     </select>
+    
+    <!-- table 검색 -->
+    <select id="findByTable" resultType="LogDTO">
+    	SELECT * FROM logging_event
+        WHERE caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)[[:space:]]'
+        <if test="callerMethod != null and callerMethod != ''">
+        AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
+    	</if>
+        ORDER BY timestmp
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="countSQLTable" resultType="int">
+	    SELECT COUNT(*)
+	    FROM logging_event
+	    WHERE caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)[[:space:]]'
+	    <if test="callerMethod != null and callerMethod != ''">
+        AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
+   		</if>
+	</select>
 
 </mapper>

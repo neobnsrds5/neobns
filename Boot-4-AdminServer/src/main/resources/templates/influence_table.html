@@ -3,7 +3,7 @@
 <head>
      <!-- Title Meta -->
      <meta charset="utf-8" />
-     <title>영향도 및 추적 관리</title>
+     <title>특정 테이블 영향도 분석</title>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="description" content="A fully responsive premium admin dashboard template, Real Estate Management Admin Template" />
      <meta name="author" content="Techzaa" />
@@ -11,6 +11,9 @@
 
      <!-- App favicon -->
      <link rel="shortcut icon" href="assets/images/favicon.ico">
+     
+     <!-- Pagination css -->
+     <link href="assets/css/pagination.css" rel="stylesheet" type="text/css" />
 
      <!-- Vendor css (Require in all Page) -->
      <link href="assets/css/vendor.min.css" rel="stylesheet" type="text/css" />
@@ -28,49 +31,19 @@
 <body>
 
 	<div class="container my-5" style="max-width: 90%; margin: 0 auto; padding: 20px;">
-		<h2 class="mb-4 text-center">영향도 및 추적 관리</h2>
-
-		<div class="d-flex justify-content-end mb-3 gap-2">
-			<!--<button type="button" class="btn btn-primary btn-api-plant">PlantUML 보기</button>-->
-<!--			document.querySelector(".btn-api-plant").addEventListener("click", function () {
-						    // 토글할 요소 선택
-						    const plantumlContainer = document.getElementById("plantuml-container");
-						    
-						    // display 속성 토글
-						    if (plantumlContainer.style.display == "none") {
-						        plantumlContainer.style.display = "flex"; // 보이도록 설정
-						    } else {
-						        plantumlContainer.style.display = "none"; // 숨기도록 설정
-						    }
-						});-->
-		</div>
+		<h2 class="mb-4 text-center" ><a href="/admin/table">테이블 영향도 분석 관리</a></h2>
 		
-		<div style="justify-items: center;justify-content: center;" id="plantuml-container">
-			
-			<uml th:text="${imgSource}">
-			
-			 </uml>
-	
-			<script src="//code.jquery.com/jquery.min.js"></script>
-			<script src="//cdn.rawgit.com/jmnote/plantuml-encoder/d133f316/dist/plantuml-encoder.min.js"></script>
-			<script>
-			$("uml").each(function() {
-			  var src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode( $(this).text() );
-			  $(this).replaceWith($('<img style="display:flex; justify-content:center; width: 100%;">').attr('src', src));
-			});
-			</script>
-			<script>
-		
-			const plantumlContainer = document.getElementById("plantuml-container");
-	
-			</script>
-			
-			
-		</div>
+		<form id="searchForm" action="/admin/table" method="get">
+		    <input type="text" name="callerMethod" placeholder="테이블 명" />
+		    <button type="submit">검색</button>
+		</form>
 		
 		<br/>
+		<div th:if="${!hasResults}">
+  		  <p>검색 결과가 없습니다.</p>
+		</div>
 		
-		<table class="table table-striped table-centered">
+		<table th:if="${hasResults}" class="table table-striped table-centered">
 			<thead>
 				<tr>
 					<!-- <th scope="col"><input type="checkbox" id="select-all" class="form-check-input"></th> -->
@@ -79,7 +52,7 @@
 		            <th>추적ID</th> <!-- 추적 아이디 -->
 		            <th>호출</th> <!-- caller_class 정보 -->
 		            <th>호출상세</th> <!-- caller_method 정보 -->
-		            <th>수행결과</th> <!-- 실행 시간 출력 -->
+		            <th>사용자ID</th> <!-- 사용자 아이디 -->
 				</tr>
 			</thead>
 			<tbody>
@@ -103,12 +76,38 @@
 					<!-- 호출 -->
 		            <td th:text="${log.callerClass}"></td>
 		            <!-- 호출상세 -->
-		            <td th:text="${log.callerMethod}"></td>
-		            <!-- 수행결과 -->
-		            <td th:text="${log.executeResult}"></td>
+		            
+		            <td class="text-start trace-id">
+		            	<span th:if="${log.traceId != null}">
+	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.callerMethod}"></a>
+	                    </span>
+	                    <span th:unless="${log.callerMethod != null}">N/A</span>
+                    </td>
+		            <!-- 사용자 ID -->
+	                <td class="text-start user-id">
+					    <span th:if="${log.userId != null}" th:text="${log.userId}"></span>
+					    <span th:unless="${log.userId != null}">N/A</span>
+					</td>
 		        </tr>
 			</tbody>
 		</table>
+		<div th:if="${hasResults}" class="pagination">
+		    <!-- 이전 페이지 -->
+		    <a th:href="@{/admin/table(page=${currentPage - 1}, size=10, callerMethod=${callerMethod})}" 
+		       th:if="${currentPage > 1}">이전</a>
+		
+		    <!-- 페이지 번호 -->
+		    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
+		        <a th:href="@{/admin/table(page=${page}, size=10, callerMethod=${callerMethod})}" 
+		           th:classappend="${page == currentPage} ? 'active' : ''">
+		            <span th:text="${page}"></span>
+		        </a>
+		    </span>
+		
+		    <!-- 다음 페이지 -->
+		    <a th:href="@{/admin/table(page=${currentPage + 1}, callerMethod=${callerMethod})}"  
+		       th:if="${currentPage < totalPages}">다음</a>
+		</div>
 		
 	</div>
 
@@ -117,5 +116,8 @@
 
 	<!-- App Javascript (Require in all Page) -->
 	<script src="assets/js/app.js"></script>
+	
+	<!-- 팝업 기능 Javascript -->
+	<script src="assets/js/popup.js"></script>
 </body>
 </html>

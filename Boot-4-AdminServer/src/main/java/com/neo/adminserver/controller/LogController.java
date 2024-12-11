@@ -90,4 +90,26 @@ public class LogController {
 		model.addAttribute("imgSource", plantSource);
 		return "trace_table";
 	}
+	
+	@GetMapping("/table")
+	public String findByTable(
+			@RequestParam(defaultValue = "1") int page,
+	        @RequestParam(defaultValue = "10") int size,
+	        @RequestParam(required = false) String callerMethod,
+	        Model model) throws CloneNotSupportedException {
+		List<LogDTO> logList = logService.findByTable(page, size, callerMethod);
+		int totalLogs = logService.countSQLTable(callerMethod);
+	    int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
+		
+		// 검색 결과 상태 추가
+        boolean hasResults = !logList.isEmpty();
+        
+        model.addAttribute("hasResults", hasResults);
+		model.addAttribute("logList", logList);
+		model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("callerMethod", callerMethod);
+		
+		return "influence_table";
+	}
 }

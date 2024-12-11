@@ -60,4 +60,8 @@ public interface LogMapper {
             @Param("query") String query
         );
 
+	List<LogDTO> findByTable(@Param("limit") int limit, @Param("offset") int offset, @Param("callerMethod") String callerMethod);
+	
+	int countSQLTable(@Param("callerMethod") String callerMethod);
+
 }

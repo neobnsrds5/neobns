@@ -9,11 +9,6 @@ server:
 spring:  
   kafka:
     bootstrap-servers: localhost:9092
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
   application:
     name: quitstart
   profiles:

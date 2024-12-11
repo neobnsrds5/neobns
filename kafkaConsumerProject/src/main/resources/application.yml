@@ -3,7 +3,8 @@ spring:
     name: kafkaConsumerProject
   kafka:
     bootstrap-servers:
-    - kafka:9092
+      - kafka:9093
+#      - localhost:9092
     consumer:
       group-id: example-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

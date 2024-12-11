@@ -13,7 +13,7 @@ spring:
       ttl: 10000000  
   data:
     redis:
-      host: localhost 
+      host: 3.35.132.32
       # 레디스 돌릴 서버 호스트로 수정할 것
       # sudo vim /etc/redis/redis.conf
       # # 1) 모든 IP에서 접속 허용
@@ -23,7 +23,7 @@ spring:
       # 3) 포트 설정 (기본값 6379)
       # port 6379
       port: 6379  
-      password:   
+      password: neobns1!
   rabbitmq:
       host: localhost
       port: 5672

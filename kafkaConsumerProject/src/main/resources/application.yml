@@ -12,4 +12,4 @@ spring:
     admin:
       auto-create: true
 server:
-  port: 8788
+  port: 18788

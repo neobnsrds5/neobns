@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: RabbitConsumer
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    
+values:
+  queue: example-queue
+  exchange: example-exchange
+  routingKey: example-routing-key
+
+server:
+  port: 18988

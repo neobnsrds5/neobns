@@ -17,10 +17,10 @@ spring:
     active: dev
   config:
     import: optional:configserver:http://config:1234@localhost:9393
-  boot:
-    admin:
-      client:
-        url: http://localhost:9000
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:9000
   cloud:
     gateway:
       forwarded:

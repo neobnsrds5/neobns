@@ -41,7 +41,6 @@ public class QuickService {
 		return itemDto;
 	}
 
-	@Cacheable(value = "item:id", key = "#id")
 	public ItemDto getItemByIdWithSqlInjection(String id) {
 		ItemDto itemDto = mapper.findByIdWithSqlInjection(id);
 		return itemDto;

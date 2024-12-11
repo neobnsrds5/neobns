@@ -83,22 +83,23 @@ spring:
           filters:
             - RewritePath=/admin/(?<path>.*), /$\{path}
 
-        # 게이트웨이를 통해서 adminserver의 resource에 접근하기 위해 추가
-        - id: admin_resources_route
-          uri: lb://adminserver
-          predicates:
-            - Path=/admin/assets/**
-          filters:
-            - RewritePath=/admin/(?<path>.*), /$\{path}
-            
-        # HTML 페이지 요청을 처리하기 위한 추가 설정
-        - id: admin_pages_route
-          uri: lb://adminserver
-          predicates:
-            - Path=/admin/slow
-            - Path=/admin/errors
-          filters:
-            - RewritePath=/admin/(?<path>.*), /$\{path}
+# 불필요한 로그 저장으로 인해 주석처리
+#        # 게이트웨이를 통해서 adminserver의 resource에 접근하기 위해 추가
+#        - id: admin_resources_route
+#          uri: lb://adminserver
+#          predicates:
+#            - Path=/admin/assets/**
+#          filters:
+#            - RewritePath=/admin/(?<path>.*), /$\{path}
+#            
+#        # HTML 페이지 요청을 처리하기 위한 추가 설정
+#        - id: admin_pages_route
+#          uri: lb://adminserver
+#          predicates:
+#            - Path=/admin/slow
+#            - Path=/admin/errors
+#          filters:
+#            - RewritePath=/admin/(?<path>.*), /$\{path}
 
 management:
   httpexchanges:

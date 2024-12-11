@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neo.adminserver.dto.LogDTO;
@@ -20,7 +21,7 @@ public class LogController {
 
 	private final LogService logService;
 
-	@GetMapping("/slow")
+	@GetMapping("/admin/slow")
     public String findSlowLogs(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -51,7 +52,7 @@ public class LogController {
         return "slow_table";
     }
 	
-	@GetMapping("/errors")
+	@GetMapping("/admin/errors")
 	public String findErrorByPage(
 			@RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -82,7 +83,7 @@ public class LogController {
         return "error_table";
 	}
 	
-	@GetMapping("/trace")
+	@GetMapping("/admin/trace")
 	public String findByTraceId(@RequestParam String traceId, Model model) throws CloneNotSupportedException {
 		List<LogDTO> logList = logService.findByTraceId(traceId);
 		model.addAttribute("logList", logList);
@@ -91,7 +92,7 @@ public class LogController {
 		return "trace_table";
 	}
 	
-	@GetMapping("/table")
+	@GetMapping("/admin/table")
 	public String findByTable(
 			@RequestParam(defaultValue = "1") int page,
 	        @RequestParam(defaultValue = "10") int size,

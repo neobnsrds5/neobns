@@ -54,7 +54,7 @@ public class FileToDbBatch {
 	@Bean
 	public Step fileToDBStep() {
 		
-		int chunkSize = 10; // 10, 50, 100
+		int chunkSize = 500; // 10, 50, 100
 		
 		return new StepBuilder("fileToDBStep", jobRepository)
 				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager)

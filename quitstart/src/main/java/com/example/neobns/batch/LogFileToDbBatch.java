@@ -38,7 +38,7 @@ public class LogFileToDbBatch {
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
 
-	public LogFileToDbBatch(@Qualifier("dataDataSource")  DataSource datasource, JobRepository jobRepository,
+	public LogFileToDbBatch(@Qualifier("targetDataSource")  DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		super();
 		this.datasource = datasource;
@@ -55,7 +55,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public Step logToDBStep() {
 
-		int chunkSize = 10; // 10, 50, 100
+		int chunkSize = 500; // 10, 50, 100
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader()).processor(dummyProcessor3()).writer(compositeWriter())

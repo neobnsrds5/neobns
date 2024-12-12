@@ -88,7 +88,7 @@ public class DbToDbBatch {
 	@Bean
 	public Step step() throws Exception {
 
-		int chunkSize = 10; // 10, 50, 100
+		int chunkSize = 500; // 10, 50, 100
 
 		return new StepBuilder("dbCopyStep", jobRepository)
 				.<Map<String, Object>, Map<String, Object>>chunk(chunkSize, transactionManager)

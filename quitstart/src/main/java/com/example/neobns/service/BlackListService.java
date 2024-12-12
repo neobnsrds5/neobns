@@ -43,4 +43,12 @@ public class BlackListService {
 		return request.getRemoteAddr();
 	}
 
+	public List<String> getBlackList() {
+
+		String sql = "SELECT BLACK_LIST_IP FROM FWK_BLACKLIST";
+		List<String> blackList = spiderTemplate.queryForList(sql, String.class);
+		return blackList;
+
+	}
+
 }

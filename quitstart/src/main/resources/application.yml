@@ -28,7 +28,7 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: always
-      schema: classpath:org/springframework/batch/core/schema-mysql.sql
+      schema: classpath:org/springframework/batch/core/schema-mariadb.sql
 #  datasource-meta:
 #    driver-class-name: org.mariadb.jdbc.Driver
 #    url: jdbc:mariadb://neobns.com:13306/db1

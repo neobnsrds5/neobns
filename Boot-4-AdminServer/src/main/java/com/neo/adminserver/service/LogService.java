@@ -123,7 +123,7 @@ public class LogService {
 				// URI 간단하게 정리
 				String simpleUrl = "";
 				for(int j=3; j<parts.length; j++) {
-					simpleUrl += (parts[j] + "/");
+					simpleUrl += ("/" + parts[j]);
 				}
 				
 				String newMethod = simpleUrl.toString() + " : " + newList.get(i).getCallerMethod();

@@ -30,20 +30,20 @@ spring:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-mysql.sql
 #  datasource-meta:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/db1
-#    username: root
-#    password: 1234
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://neobns.com:13306/db1
+#    username: POC_USER
+#    password: neobns1!
 #  datasource-data:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/db2
-#    username: root
-#    password: 1234
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://neobns.com:13306/db2
+#    username: POC_USER
+#    password: neobns1!
 #  datasource-target:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/db3
-#    username: root
-#    password: 1234
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://neobns.com:13306/db3
+#    username: POC_USER
+#    password: neobns1!
   datasource-spiderdb:
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@3.35.132.32:1521/xe

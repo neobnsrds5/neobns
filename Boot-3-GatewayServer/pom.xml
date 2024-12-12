@@ -97,6 +97,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
 
+		<dependency>
+		    <groupId>org.mariadb.jdbc</groupId>
+		    <artifactId>mariadb-java-client</artifactId>
+		</dependency>
+		
 		<!-- logback -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

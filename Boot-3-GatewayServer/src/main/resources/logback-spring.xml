@@ -20,10 +20,10 @@
 
         <!-- 데이터베이스 연결 설정 -->
         <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-            <driverClass>com.mysql.cj.jdbc.Driver</driverClass>
-            <url>jdbc:mysql://localhost:3306/db2</url>
-            <user>root</user>
-            <password>1234</password>
+            <driverClass>org.mariadb.jdbc.Driver</driverClass>
+            <url>jdbc:mariadb://neobns.com:13306/db2</url>
+            <user>POC_USER</user>
+            <password>neobns1!</password>
         </connectionSource>
     </appender>
 
@@ -51,5 +51,6 @@
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="CUSTOM_DB" />
 		<appender-ref ref="FILE" />
+
 	</root>
 </configuration>

@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class SpiderDbDataSourceConfig {
+public class SpiderDbConfig {
 
 	private final DBProperties dbProperties;
 

@@ -123,7 +123,7 @@ public class FileToDbBatch {
 	public JdbcBatchItemWriter<AccountDTO> fileToDbWriter(){
 		return new JdbcBatchItemWriterBuilder<AccountDTO>()
 				.dataSource(datasource)
-				.sql("INSERT INTO account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
+				.sql("INSERT INTO Account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
 				.beanMapped()
 				.build();
 	}

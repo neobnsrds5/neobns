@@ -95,7 +95,7 @@ public class DbToApiBatch {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(datasource);
 		factory.setSelectClause("SELECT *");
-		factory.setFromClause("FROM account");
+		factory.setFromClause("FROM Account");
 		factory.setSortKey("id");
 		return factory.getObject();
 	}

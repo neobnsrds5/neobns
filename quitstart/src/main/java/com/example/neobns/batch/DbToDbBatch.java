@@ -67,7 +67,7 @@ public class DbToDbBatch {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
 		factory.setSelectClause("SELECT *");
-		factory.setFromClause("FROM account");
+		factory.setFromClause("FROM Account");
 		factory.setSortKey("id");
 		return factory.getObject();
 	}
@@ -75,7 +75,7 @@ public class DbToDbBatch {
 	@Bean
 	public JdbcBatchItemWriter<Map<String, Object>> writer() {
 		return new JdbcBatchItemWriterBuilder<Map<String, Object>>().dataSource(targetSource)
-				.sql("INSERT INTO account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
+				.sql("INSERT INTO Account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
 				.itemSqlParameterSourceProvider(item -> {
 					MapSqlParameterSource params = new MapSqlParameterSource();
 					params.addValue("accountNumber", item.get("accountNumber"));

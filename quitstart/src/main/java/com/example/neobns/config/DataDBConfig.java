@@ -56,7 +56,7 @@ public class DataDbConfig {
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.show_sql", "true");
-		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		properties.put("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
 		properties.put("hibernate.session_factory.statement_inspector", inspector);
 		em.setJpaPropertyMap(properties);
 		

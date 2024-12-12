@@ -119,24 +119,37 @@ public class LogService {
 				currentUser = parts[3];
 				userList.add(currentUser);
 				user = newList.get(i).getCallerClass();
-				String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+				
+				// URI 간단하게 정리
+				String simpleUrl = "";
+				for(int j=3; j<parts.length; j++) {
+					simpleUrl += (parts[j] + "/");
+				}
+				
+				String newMethod = simpleUrl.toString() + " : " + newList.get(i).getCallerMethod();
 				newList.get(i).setCallerClass("user");
 				newList.get(i).setCallerMethod(newMethod);
 			} else if (newList.get(i).getCallerClass().contains("http://")) {
+				
+				String[] parts = newList.get(i).getCallerClass().split("/");
+				
+				// URI 간단하게 정리
+				String simpleUrl = "";
+				for(int j=3; j<parts.length; j++) {
+					simpleUrl += parts[j];
+				}
 
 				if (i <= newList.size() / 2) {
-					String[] parts = newList.get(i).getCallerClass().split("/");
 					currentUser = parts[3];
 					userList.add(currentUser);
 				}
 
 				if (newList.get(i).getCallerClass().equals(user)) {
+					String newMethod = simpleUrl + " : " + newList.get(i).getCallerMethod();
 					newList.get(i).setCallerClass("user");
-					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
 					newList.get(i).setCallerMethod(newMethod);
 				} else {
-
-					String newMethod = newList.get(i).getCallerClass() + " : " + newList.get(i).getCallerMethod();
+					String newMethod = simpleUrl + " : " + newList.get(i).getCallerMethod();
 					newList.get(i).setCallerClass("rest_" + currentUser);
 					newList.get(i).setCallerMethod(newMethod);
 				}
@@ -203,8 +216,10 @@ public class LogService {
 
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
+					
 					addedString = errorLog.getCallerClass() + " -> " + errorLog.getCallerClass()
 							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult();
+					
 					if (errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
 						addedString = addedString + "ms";
 					} 
@@ -215,9 +230,6 @@ public class LogService {
 
 			} else if (i > newlistSize / 2) {
 
-				long intervalTime = Long.parseLong(newList.get(i).getExecuteResult())
-						- Long.parseLong(newList.get(i - 1).getExecuteResult());
-
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
@@ -225,11 +237,15 @@ public class LogService {
 					if (errorLog.getLoggerName().equals("ERROR")) {
 
 						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red>" + errorLog.getExecuteResult() + " - " + newList.get(i).getExecuteResult() + "ms";
+								+ " : <font color=red>" + errorLog.getExecuteResult();
+								
+						if(newList.get(i).getExecuteResult() != null) {
+							addedString += " - " + newList.get(i).getExecuteResult() + "ms";
+						}
 
 					} else if (errorLog.getLoggerName().equals("SLOW")) {
 						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red> " + errorLog.getExecuteResult() + "ms";
+								+ " : <font color=blue> " + errorLog.getExecuteResult() + "ms";
 					}
 
 				} else {

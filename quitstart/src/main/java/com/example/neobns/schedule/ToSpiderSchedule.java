@@ -1,6 +1,8 @@
 package com.example.neobns.schedule;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.springframework.batch.core.JobParameters;
@@ -18,15 +20,17 @@ public class ToSpiderSchedule {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 
-	@Scheduled(cron = "0 0 0 * * * ", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 */1 * * * * ", zone = "Asia/Seoul")
 	public void runSpiderSchedule() throws Exception {
 
 		System.out.println("runSpiderSchedule 실행 ");
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
-		String date = dateFormat.format(new Date());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
+		String date = LocalDateTime.now().format(formatter);
 
-		JobParameters jobParameters = new JobParametersBuilder().addString("date", date).toJobParameters();
+		JobParameters jobParameters = new JobParametersBuilder().addString("date", date)
+				.addLong("timestamp", System.currentTimeMillis())
+				.toJobParameters();
 
 		jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJob"), jobParameters);
 

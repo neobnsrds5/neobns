@@ -1,5 +1,7 @@
 package com.example.neobns.batch;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.neobns.dto.FwkErrorHisDto;
 import com.example.neobns.dto.LogDTO;
-import com.example.neobns.service.CacheService;
 
 @Configuration
 public class DbToSpiderErrorDbBatch {
@@ -36,17 +37,16 @@ public class DbToSpiderErrorDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
-	private final CacheService cacheService;
-
+	private String lastTimeStmp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+	
 	public DbToSpiderErrorDbBatch(@Qualifier("dataDataSource") DataSource realSource,
 			@Qualifier("spiderDataSource") DataSource spiderDataSource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager, CustomBatchJobListener listener, CacheService cacheService) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		this.realSource = realSource;
 		this.spiderDataSource = spiderDataSource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
 		this.listener = listener;
-		this.cacheService = cacheService;
 	}
 
 	@Bean
@@ -62,8 +62,6 @@ public class DbToSpiderErrorDbBatch {
 		reader.setPageSize(10);
 
 		Map<String, Object> paramVal = new HashMap<>();
-		String lastTimeStmp = cacheService.getLastReadTime();
-		System.out.println("가져온 lastTimeStmp : " + lastTimeStmp);
 		paramVal.put("lastTimeStmp", lastTimeStmp);
 		reader.setParameterValues(paramVal);
 
@@ -92,14 +90,11 @@ public class DbToSpiderErrorDbBatch {
 	public ItemProcessor<LogDTO, FwkErrorHisDto> spiderProcessor() {
 		return new ItemProcessor<LogDTO, FwkErrorHisDto>() {
 
-			private String lastTimeStmp;
-
 			@Override
 			public FwkErrorHisDto process(LogDTO item) throws Exception {
 				System.out.println("lastTimeStmp process : ");
 				lastTimeStmp = item.getTimestmp();
 				System.out.println("lastTimeStmp : " + lastTimeStmp);
-				cacheService.setLastReadTime(lastTimeStmp);
 				System.out.println("spiderProcessor 종료");
 				return item.convertToHisDto();
 			}

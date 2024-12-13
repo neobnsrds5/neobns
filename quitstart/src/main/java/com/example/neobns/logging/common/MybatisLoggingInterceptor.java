@@ -86,7 +86,7 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			// SQL 실행 후 trace 로깅
 			traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", rawSql, elapsedTime);
 			// 설정 시간보다 느리면 slow 로깅
-			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
+			if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 				slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", rawSql, elapsedTime);
 			}
 

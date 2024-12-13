@@ -1,0 +1,42 @@
+{"properties": [
+  {
+    "name": "spring.datasource-meta.driver-class-name",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-meta.driver-class-name'"
+  },
+  {
+    "name": "spring.datasource-meta.url",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-meta.url'"
+  },
+  {
+    "name": "spring.datasource-meta.username",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-meta.username'"
+  },
+  {
+    "name": "spring.datasource-meta.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-meta.password'"
+  },
+  {
+    "name": "spring.datasource-data.driver-class-name",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-data.driver-class-name'"
+  },
+  {
+    "name": "spring.datasource-data.username",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-data.username'"
+  },
+  {
+    "name": "spring.datasource-data.url",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-data.url'"
+  },
+  {
+    "name": "spring.datasource-data.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource-data.password'"
+  }
+]}

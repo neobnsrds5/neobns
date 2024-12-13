@@ -40,6 +40,7 @@
 		    <input type="text" name="userId" placeholder="사용자 ID" />
 		    <input type="text" name="ipAddress" placeholder="IP 주소" />
 		    <input type="text" name="query" placeholder="쿼리" />
+		    <input type="text" name="uri" placeholder="URI" />
 		    <button type="submit">검색</button>
 		</form>
 	
@@ -123,19 +124,19 @@
 	    </table>
 	    <div th:if="${hasResults}" class="pagination">
 		    <!-- 이전 페이지 -->
-		    <a th:href="@{/admin/errors(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}" 
+		    <a th:href="@{/admin/errors(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}" 
 		       th:if="${currentPage > 1}">이전</a>
 		
 		    <!-- 페이지 번호 -->
 		    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
-		        <a th:href="@{/admin/errors(page=${page}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}"
+		        <a th:href="@{/admin/errors(page=${page}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}"
 		           th:classappend="${page == currentPage} ? 'active' : ''">
 		            <span th:text="${page}"></span>
 		        </a>
 		    </span>
 		
 		    <!-- 다음 페이지 -->
-		    <a th:href="@{/admin/errors(page=${currentPage + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}" 
+		    <a th:href="@{/admin/errors(page=${currentPage + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}" 
 		       th:if="${currentPage < totalPages}">다음</a>
 		</div>
 	</div>

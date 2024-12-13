@@ -29,15 +29,24 @@ public class LogController {
             @RequestParam(required = false) String traceId,
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String ipAddress,
-            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String uri,
+            @RequestParam(required = false) String executeResult,
             Model model) {
-        List<LogDTO> logList = logService.findSlowLogs(page, size, startTime, endTime, traceId, userId, ipAddress, query);
-        int totalLogs = logService.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
-        int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
-        
-        // 검색 결과 상태 추가
-        boolean hasResults = !logList.isEmpty();
+		// 시간 변환
+		// 실행 시간 조건 처리 (초 단위 → 밀리초 변환)
+	    String convertExecuteResult = null;
+	    if (executeResult != null && !executeResult.isEmpty()) {
+	        convertExecuteResult = String.valueOf(Integer.parseInt(executeResult) * 1000);
+	    }
 
+	    // 검색 실행
+	    List<LogDTO> logList = logService.findSlowLogs(page, size, startTime, endTime, traceId, userId, ipAddress, uri, convertExecuteResult);
+	    int totalLogs = logService.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, uri, convertExecuteResult);
+	    int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
+
+	    // 결과 상태 및 모델 추가
+	    boolean hasResults = !logList.isEmpty();
+	    
         model.addAttribute("logList", logList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -46,7 +55,8 @@ public class LogController {
         model.addAttribute("traceId", traceId);
         model.addAttribute("userId", userId);
         model.addAttribute("ipAddress", ipAddress);
-        model.addAttribute("query", query);
+        model.addAttribute("uri", uri);
+        model.addAttribute("executeResult", executeResult);
         model.addAttribute("hasResults", hasResults);
         return "slow_table";
     }
@@ -61,9 +71,10 @@ public class LogController {
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String ipAddress,
             @RequestParam(required = false) String query,
+            @RequestParam(required = false) String uri,
             Model model) {
-        List<LogDTO> logList = logService.findErrorLogs(page, size, startTime, endTime, traceId, userId, ipAddress, query);
-        int totalLogs = logService.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+        List<LogDTO> logList = logService.findErrorLogs(page, size, startTime, endTime, traceId, userId, ipAddress, query, uri);
+        int totalLogs = logService.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query, uri);
         int totalPages = totalLogs == 0 ? 0 : (int) Math.ceil((double) totalLogs / size);
         
         // 검색 결과 상태 추가
@@ -78,6 +89,7 @@ public class LogController {
         model.addAttribute("userId", userId);
         model.addAttribute("ipAddress", ipAddress);
         model.addAttribute("query", query);
+        model.addAttribute("uri", uri);
         model.addAttribute("hasResults", hasResults);
         return "error_table";
 	}

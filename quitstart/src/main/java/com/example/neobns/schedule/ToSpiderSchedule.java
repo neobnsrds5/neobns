@@ -20,10 +20,8 @@ public class ToSpiderSchedule {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 
-	@Scheduled(cron = "0 */1 * * * * ", zone = "Asia/Seoul")
+	@Scheduled(cron = "*/30 * * * * * ", zone = "Asia/Seoul")
 	public void runSpiderSchedule() throws Exception {
-
-		System.out.println("runSpiderSchedule 실행 ");
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
 		String date = LocalDateTime.now().format(formatter);
@@ -34,7 +32,6 @@ public class ToSpiderSchedule {
 
 		jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJob"), jobParameters);
 
-		System.out.println("runSpiderSchedule() : 실행됨 ");
 	}
 
 }

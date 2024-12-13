@@ -51,9 +51,7 @@ public class DbToSpiderErrorDbBatch {
 
 	@Bean
 	public JdbcPagingItemReader<LogDTO> spiderReader() throws Exception {
-
-		System.out.println("spiderReader 생성중");
-
+		
 		JdbcPagingItemReader<LogDTO> reader = new JdbcPagingItemReader<LogDTO>();
 		reader.setDataSource(realSource);
 		reader.setName("spiderReader");
@@ -65,14 +63,11 @@ public class DbToSpiderErrorDbBatch {
 		paramVal.put("lastTimeStmp", lastTimeStmp);
 		reader.setParameterValues(paramVal);
 
-		System.out.println("spider reader 생성 완료");
 		return reader;
 	}
 
 	@Bean
 	public PagingQueryProvider spiderQueryProvider() throws Exception {
-
-		System.out.println("spiderQueryProvider 실행중");
 
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
@@ -80,8 +75,6 @@ public class DbToSpiderErrorDbBatch {
 		factory.setFromClause("FROM logging_error");
 		factory.setWhereClause("WHERE STR_TO_DATE(timestmp, '%Y-%m-%d %H:%i:%s.%f') > STR_TO_DATE(:lastTimeStmp, '%Y-%m-%d %H:%i:%s.%f')");
 		factory.setSortKey("event_id");
-
-		System.out.println("spiderQueryProvider 종료");
 
 		return factory.getObject();
 	}
@@ -92,10 +85,7 @@ public class DbToSpiderErrorDbBatch {
 
 			@Override
 			public FwkErrorHisDto process(LogDTO item) throws Exception {
-				System.out.println("lastTimeStmp process : ");
 				lastTimeStmp = item.getTimestmp();
-				System.out.println("lastTimeStmp : " + lastTimeStmp);
-				System.out.println("spiderProcessor 종료");
 				return item.convertToHisDto();
 			}
 		};
@@ -103,9 +93,6 @@ public class DbToSpiderErrorDbBatch {
 
 	@Bean
 	public JdbcBatchItemWriter<FwkErrorHisDto> spiderWriter() {
-
-		System.out.println("writer 실행");
-
 		return new JdbcBatchItemWriterBuilder<FwkErrorHisDto>().dataSource(spiderDataSource).sql(
 				"INSERT INTO SYSTEM.FWK_ERROR_HIS(ERROR_CODE, ERROR_SER_NO, CUST_USER_ID, ERROR_MESSAGE, ERROR_OCCUR_DTIME, ERROR_URL, ERROR_TRACE, ERROR_INSTANCE_ID) VALUES(:errorCode, :errorSerNo, :custUserId, :errorMessage, :errorOccurDtime, :errorUrl, :errorTrace, :errorInstanceId)")
 				.beanMapped().build();
@@ -116,8 +103,6 @@ public class DbToSpiderErrorDbBatch {
 
 		int chunkSize = 100; // 10, 50, 100
 
-		System.out.println("spiderStep() 실행");
-
 		return new StepBuilder("spiderStep", jobRepository).<LogDTO, FwkErrorHisDto>chunk(chunkSize, transactionManager)
 				.reader(spiderReader()).processor(spiderProcessor()).writer(spiderWriter())
 				.taskExecutor(spiderExecutor()).build();
@@ -125,9 +110,7 @@ public class DbToSpiderErrorDbBatch {
 
 	@Bean
 	public Job spiderJob() throws Exception {
-//		return new JobBuilder("dbToSpiderErrorJob", jobRepository).start(spiderStep()).listener(listener).build();
-		System.out.println("spiderJob 생성중");
-		return new JobBuilder("dbToSpiderErrorJob", jobRepository).start(spiderStep()).build();
+		return new JobBuilder("dbToSpiderErrorJob", jobRepository).start(spiderStep()).listener(listener).build();
 	}
 
 	@Bean
@@ -137,15 +120,12 @@ public class DbToSpiderErrorDbBatch {
 		int maxPoolSize = 8; // 8~16
 		int queueSize = 50; // 50~100
 
-		System.out.println("spiderExecutor : 실행");
-
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(queueSize);
 		executor.setThreadNamePrefix("dbToSpiderErrorJob");
 		executor.initialize();
-		System.out.println("executor.initialize 됨");
 
 		return executor;
 	}

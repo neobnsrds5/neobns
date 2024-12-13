@@ -67,8 +67,8 @@ public class LogDTO {
 	public String convertUrl() {
 
 		String returnUrl = "";
-		if (uri != null) {
-			returnUrl = returnUrl.replaceFirst("/", "");
+		if (uri != null && uri.charAt(0)=='/') {
+			returnUrl = returnUrl.substring(1);
 		}
 
 		return returnUrl;

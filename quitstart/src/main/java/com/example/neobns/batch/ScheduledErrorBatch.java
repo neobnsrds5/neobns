@@ -30,65 +30,51 @@ import com.example.neobns.dto.FwkErrorHisDto;
 
 @Configuration
 public class ScheduledErrorBatch {
-	
-	private final DataSource spiderDataSource;
-	private final JobRepository jobRepository;
-	private final PlatformTransactionManager transactionManager;
-	private final CustomBatchJobListener listener;
-	
-	
-	public ScheduledErrorBatch(@Qualifier("spiderDataSource") DataSource spiderDataSource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
-		super();
-		this.spiderDataSource = spiderDataSource;
-		this.jobRepository = jobRepository;
-		this.transactionManager = transactionManager;
-		this.listener = listener;
-	}
-	
-	@Bean
-	public JdbcPagingItemReader<FwkErrorHisDto> errorReader() throws Exception {
-		
-//		String lastProcessedTime = getLastProcessedTime();
-//		
-//		Map<String, Object> paramVal = new HashMap<String, Object>();
-//		paramVal.put("lastProcessedTime", lastProcessedTime);
-//		
-//		JdbcPagingItemReader reader = new JdbcPagingItemReaderBuilder<FwkErrorHisDto>()
-//										.dataSource(spiderDataSource)
-//										.name("errorReader")
-//										.determineQueryProvider(createPagingQueryProvider())
-//										.parameterValues(lastProcessedTime).
-//										
-//										
-//		
-//		
-//		reader.setPageSize(10);
-//		return reader;
-		
-		return null;
-	}
 
-	
-	@Bean
-	public String getLastProcessedTime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Bean
-	public PagingQueryProvider createPagingQueryProvider() throws Exception{
-		SqlPagingQueryProviderFactoryBean factoryBean = new SqlPagingQueryProviderFactoryBean();
-		factoryBean.setDataSource(spiderDataSource);
-		factoryBean.setSelectClause("SELECT *");
-		factoryBean.setFromClause("FROM FWK_ERROR_HIS");
-		factoryBean.setWhereClause("WHERE ERROR_OCCUR_DTIME > :lastProcessedTime");
-		factoryBean.setSortKey("ERROR_OCCUR_DTIME");
-
-		return factoryBean.getObject();
-		
-		
-	}
-
+	/*
+	 * private final DataSource spiderDataSource; private final JobRepository
+	 * jobRepository; private final PlatformTransactionManager transactionManager;
+	 * private final CustomBatchJobListener listener;
+	 */
+	/*
+	 * public ScheduledErrorBatch(@Qualifier("spiderDataSource") DataSource
+	 * spiderDataSource, JobRepository jobRepository, PlatformTransactionManager
+	 * transactionManager, CustomBatchJobListener listener) { super();
+	 * this.spiderDataSource = spiderDataSource; this.jobRepository = jobRepository;
+	 * this.transactionManager = transactionManager; this.listener = listener; }
+	 * 
+	 * @Bean public JdbcPagingItemReader<FwkErrorHisDto> errorReader() throws
+	 * Exception {
+	 * 
+	 * String lastProcessedTime = getLastProcessedTime();
+	 * 
+	 * Map<String, Object> paramVal = new HashMap<String, Object>();
+	 * paramVal.put("lastProcessedTime", lastProcessedTime);
+	 * 
+	 * JdbcPagingItemReader reader = new
+	 * JdbcPagingItemReaderBuilder<FwkErrorHisDto>().dataSource(spiderDataSource)
+	 * .name("errorReader").determineQueryProvider(createPagingQueryProvider())
+	 * .parameterValues(lastProcessedTime).
+	 * 
+	 * reader .setPageSize(10); return reader;
+	 * 
+	 * return null; }
+	 * 
+	 * @Bean public String getLastProcessedTime() { // TODO Auto-generated method
+	 * stub return null; }
+	 * 
+	 * @Bean public PagingQueryProvider createPagingQueryProvider() throws Exception
+	 * { SqlPagingQueryProviderFactoryBean factoryBean = new
+	 * SqlPagingQueryProviderFactoryBean();
+	 * factoryBean.setDataSource(spiderDataSource);
+	 * factoryBean.setSelectClause("SELECT *");
+	 * factoryBean.setFromClause("FROM FWK_ERROR_HIS");
+	 * factoryBean.setWhereClause("WHERE ERROR_OCCUR_DTIME > :lastProcessedTime");
+	 * factoryBean.setSortKey("ERROR_OCCUR_DTIME");
+	 * 
+	 * return factoryBean.getObject();
+	 * 
+	 * }
+	 */
 
 }

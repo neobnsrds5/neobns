@@ -8,5 +8,6 @@ import com.example.neobns.dto.ErrorLogDTO;
 
 @Mapper
 public interface ErrorMapper {
-	List<ErrorLogDTO> getRecord(Long duration);
+	List<ErrorLogDTO> getRecord(Long maxId);
+	long getCount();
 }

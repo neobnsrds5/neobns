@@ -130,5 +130,12 @@ public class QuickController {
 	public ErrorLogDTO getError() {
 		return errorService.getError();
 	}
+	
+	// 강제로 에러를 발생시키고 싶을 때 호출한다.
+	@GetMapping("/errorBreak")
+	public String errorBreak() {
+		
+		throw new ArrayIndexOutOfBoundsException("from errorBreak");
+	}
 
 }

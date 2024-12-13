@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ShowErrorController {
 	@GetMapping("/alertError")
 	public String index() {
-		return "index";
+		return "index2";
 	}
 }

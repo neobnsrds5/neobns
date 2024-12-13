@@ -49,8 +49,11 @@
         <if test="ipAddress != null and ipAddress != ''">
             AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')
         </if>
-        <if test="query != null and query != ''">
-            AND query LIKE CONCAT('%', #{query}, '%')
+        <if test="uri != null and uri != ''">
+            AND uri LIKE CONCAT('%', #{uri}, '%')
+        </if>
+        <if test="executeResult != null and executeResult != ''">
+            AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)
         </if>
         ORDER BY timestmp DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -75,8 +78,11 @@
         <if test="ipAddress != null and ipAddress != ''">
             AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')
         </if>
-        <if test="query != null and query != ''">
-            AND query LIKE CONCAT('%', #{query}, '%')
+        <if test="uri != null and uri != ''">
+            AND uri LIKE CONCAT('%', #{uri}, '%')
+        </if>
+        <if test="executeResult != null and executeResult != ''">
+            AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)
         </if>
     </select>
     
@@ -103,6 +109,9 @@
         <if test="query != null and query != ''">
             AND query LIKE CONCAT('%', #{query}, '%')
         </if>
+        <if test="uri != null and uri != ''">
+            AND uri LIKE CONCAT('%', #{uri}, '%')
+        </if>
         ORDER BY timestmp DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
@@ -128,6 +137,9 @@
         </if>
         <if test="query != null and query != ''">
             AND query LIKE CONCAT('%', #{query}, '%')
+        </if>
+        <if test="uri != null and uri != ''">
+          	AND uri LIKE CONCAT('%', #{uri}, '%')
         </if>
     </select>
     

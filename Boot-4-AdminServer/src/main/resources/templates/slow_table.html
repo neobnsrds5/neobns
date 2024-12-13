@@ -49,10 +49,10 @@
 		    <input type="text" name="traceId" placeholder="추적 ID" />
 		    <input type="text" name="userId" placeholder="사용자 ID" />
 		    <input type="text" name="ipAddress" placeholder="IP 주소" />
-		    <input type="text" name="query" placeholder="쿼리" />
+		    <input type="text" name="uri" placeholder="URI" />
+			<input type="text" name="executeResult" placeholder="소요시간" />
 		    <button type="submit">검색</button>
 		</form>
-		
 		<!-- 검색 결과 없을 때 메시지 -->
 	    <div th:if="${!hasResults}">
 	        <p>검색 결과가 없습니다.</p>
@@ -118,19 +118,19 @@
 		</table>
 		<div th:if="${hasResults}" class="pagination">
 		    <!-- 이전 페이지 -->
-		    <a th:href="@{/admin/slow(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}" 
+		    <a th:href="@{/admin/slow(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}" 
 		       th:if="${currentPage > 1}">이전</a>
 		
 		    <!-- 페이지 번호 -->
 		    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
-		        <a th:href="@{/admin/slow(page=${page}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}"
+		        <a th:href="@{/admin/slow(page=${page}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}"
 		           th:classappend="${page == currentPage} ? 'active' : ''">
 		            <span th:text="${page}"></span>
 		        </a>
 		    </span>
 		
 		    <!-- 다음 페이지 -->
-		    <a th:href="@{/admin/slow(page=${currentPage + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query})}" 
+		    <a th:href="@{/admin/slow(page=${currentPage + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}" 
 		       th:if="${currentPage < totalPages}">다음</a>
 		</div>
 	</div>

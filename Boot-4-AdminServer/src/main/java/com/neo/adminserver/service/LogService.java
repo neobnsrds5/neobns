@@ -136,7 +136,7 @@ public class LogService {
 				// URI 간단하게 정리
 				String simpleUrl = "";
 				for(int j=3; j<parts.length; j++) {
-					simpleUrl += parts[j];
+					simpleUrl += ("/" + parts[j]);
 				}
 
 				if (i <= newList.size() / 2) {
@@ -186,11 +186,11 @@ public class LogService {
 		slowOrErrorList.remove(slowOrErrorList.size() - 1);
 
 
-		StringBuilder builder = new StringBuilder();
-		builder.append("autonumber").append(System.lineSeparator());
-		builder.append("actor user").append(System.lineSeparator());
-		builder.append("skinparam sequenceArrowThickness 2").append(System.lineSeparator());
-		builder.append("skinparam roundcorner 20").append(System.lineSeparator());
+		StringBuilder umlStringBuilder = new StringBuilder();
+		umlStringBuilder.append("autonumber").append(System.lineSeparator());
+		umlStringBuilder.append("actor user").append(System.lineSeparator());
+		umlStringBuilder.append("skinparam sequenceArrowThickness 2").append(System.lineSeparator());
+		umlStringBuilder.append("skinparam roundcorner 20").append(System.lineSeparator());
 
 		// newList
 
@@ -201,13 +201,16 @@ public class LogService {
 
 			LogDTO currentLog = newList.get(i);
 
-			String addedString = null;
+			StringBuilder addedString = new StringBuilder();
 
 			if (i < newlistSize / 2) {
 
-				if (!newList.get(i).getCallerClass().equals(newList.get(i + 1).getCallerClass())) {
-					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i + 1).getCallerClass() + " : "
-							+ newList.get(i).getCallerMethod();
+				if (!newList.get(i).getCallerClass().equals(newList.get(i + 1).getCallerClass())) {					
+					addedString.append(newList.get(i).getCallerClass())
+								.append(" -> ")
+								.append(newList.get(i + 1).getCallerClass())
+								.append(" : ")
+								.append(newList.get(i).getCallerMethod());
 				} else {
 					continue;
 				}
@@ -217,15 +220,29 @@ public class LogService {
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
 					
-					addedString = errorLog.getCallerClass() + " -> " + errorLog.getCallerClass()
-							+ " : <font color=red> " + errorLog.getCallerMethod() + " - " + errorLog.getExecuteResult();
-					
+					addedString.append(errorLog.getCallerClass()).append(" -> ").append(errorLog.getCallerClass());
+
+					if (errorLog.getLoggerName().equals("ERROR")) {
+						addedString.append(" : <font color=red> "); // error이면 빨간색
+					} else {
+						addedString.append(" : <font color=blue> "); // slow면 파란색
+					}
+					addedString.append(errorLog.getCallerMethod()).append(" [ ").append(errorLog.getExecuteResult());
+								
 					if (errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
-						addedString = addedString + "ms";
-					} 
+						addedString.append("ms ]");
+					} else {
+						addedString.append(" ]");
+					}
 				} else {
-					addedString = newList.get(i).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-							+ newList.get(i).getCallerMethod() + " - " + newList.get(i).getExecuteResult() + "ms";
+					addedString.append(newList.get(i).getCallerClass())
+								.append(" -> ")
+								.append(newList.get(i).getCallerClass())
+								.append(" : <font color=red> ")
+								.append(newList.get(i).getCallerMethod())
+								.append(" [ ")
+								.append(newList.get(i).getExecuteResult())
+								.append("ms ]");
 				}
 
 			} else if (i > newlistSize / 2) {
@@ -233,35 +250,44 @@ public class LogService {
 				if (existsInErrorList(currentLog, slowOrErrorList) != null) {
 
 					LogDTO errorLog = existsInErrorList(currentLog, slowOrErrorList);
+					
+					addedString.append(newList.get(i - 1).getCallerClass())
+								.append(" -> ")
+								.append(newList.get(i).getCallerClass());
 
 					if (errorLog.getLoggerName().equals("ERROR")) {
 
-						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=red>" + errorLog.getExecuteResult();
+						addedString.append(" : <font color=red> ").append(errorLog.getExecuteResult());
 								
 						if(newList.get(i).getExecuteResult() != null) {
-							addedString += " - " + newList.get(i).getExecuteResult() + "ms";
+							addedString.append(" [ " + newList.get(i).getExecuteResult()).append("ms ]");
 						}
 
 					} else if (errorLog.getLoggerName().equals("SLOW")) {
-						addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass()
-								+ " : <font color=blue> " + errorLog.getExecuteResult() + "ms";
+						addedString.append(" : <font color=blue> ")
+									.append(" [ ")
+									.append(errorLog.getExecuteResult())
+									.append("ms ]");
 					}
 
 				} else {
-
-					addedString = newList.get(i - 1).getCallerClass() + " -> " + newList.get(i).getCallerClass() + " : "
-							  + newList.get(i).getExecuteResult() + "ms";
+					
+					addedString.append(newList.get(i - 1).getCallerClass())
+								.append(" -> ")
+								.append(newList.get(i).getCallerClass())
+								.append(" : [ ")
+								.append(newList.get(i).getExecuteResult())
+								.append("ms ]");
 
 				}
 
 			}
 
-			builder.append(addedString).append(System.lineSeparator());
+			umlStringBuilder.append(addedString).append(System.lineSeparator());
 
 		}
 
-		return builder.toString();
+		return umlStringBuilder.toString();
 
 	}
 

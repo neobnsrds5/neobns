@@ -48,8 +48,8 @@ public class MybatisLoggingInterceptor implements Interceptor {
 		MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
 		Object parameter = invocation.getArgs()[1];
 		
-		BoundSql boundSql = mappedStatement.getBoundSql(parameter);
-		String sql = boundSql.getSql().replaceAll("\\s+", " ").trim(); // 바운딩된 SQL
+//		BoundSql boundSql = mappedStatement.getBoundSql(parameter);
+//		String sql = boundSql.getSql().replaceAll("\\s+", " ").trim(); // 바운딩된 SQL
 		
 		SqlSource sqlSource = mappedStatement.getSqlSource();
         String rawSql = getRootSqlNode(sqlSource).replaceAll("\\s+", " ").trim(); // 바운딩 전 SQL
@@ -76,13 +76,13 @@ public class MybatisLoggingInterceptor implements Interceptor {
 
 			MDC.put("executeResult", Long.toString(elapsedTime));
 			MDC.put("className", "SQL");
-			MDC.put("methodName", sql);
+			MDC.put("methodName", rawSql);
 
 			// SQL 실행 후 trace 로깅
-			traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", sql, elapsedTime);
+			traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", rawSql, elapsedTime);
 			// 설정 시간보다 느리면 slow 로깅
 			if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-				slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", sql, elapsedTime);
+				slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", rawSql, elapsedTime);
 			}
 
 			MDC.remove("executeResult");

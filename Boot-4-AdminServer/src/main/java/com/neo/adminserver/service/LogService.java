@@ -229,24 +229,32 @@ public class LogService {
 					if (errorLog.getLoggerName().equals("ERROR")) {
 						addedString.append(" : <font color=red> "); // error이면 빨간색
 					} else {
-						addedString.append(" : <font color=orangered> "); // slow면 파란색
+						addedString.append(" : <font color=orangered> "); // slow면 주황색
 					}
-					addedString.append(errorLog.getCallerMethod()).append(" [ ").append(errorLog.getExecuteResult());
+					addedString.append(errorLog.getCallerMethod());
+					
+					if(errorLog.getExecuteResult() != null) {
+						addedString.append(" [ ").append(errorLog.getExecuteResult());
+						
+						if (errorLog.getExecuteResult()!=null && errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
+							addedString.append("ms ]");
+						} else {
+							addedString.append(" ]");
+						}
+					}
 								
-					if (errorLog.getExecuteResult()!=null && errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
-						addedString.append("ms ]");
-					} else {
-						addedString.append(" ]");
-					}
 				} else {
 					addedString.append(newList.get(i).getCallerClass())
 								.append(" -> ")
 								.append(newList.get(i).getCallerClass())
 								.append(" : <font color=red> ")
-								.append(newList.get(i).getCallerMethod())
-								.append(" [ ")
-								.append(newList.get(i).getExecuteResult())
-								.append("ms ]");
+								.append(newList.get(i).getCallerMethod());
+					
+					if(newList.get(i).getExecuteResult() != null) {
+						addedString.append(" [ ")
+									.append(newList.get(i).getExecuteResult())
+									.append("ms ]");
+					}
 				}
 
 			} else if (i > newlistSize / 2) {

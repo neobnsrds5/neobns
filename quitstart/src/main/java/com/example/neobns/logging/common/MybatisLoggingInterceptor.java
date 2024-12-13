@@ -74,7 +74,12 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
 
-			MDC.put("executeResult", Long.toString(elapsedTime));
+			if(result == null) {
+				MDC.remove("executeResult");
+			}
+			else {
+				MDC.put("executeResult", Long.toString(elapsedTime));
+			}
 			MDC.put("className", "SQL");
 			MDC.put("methodName", rawSql);
 

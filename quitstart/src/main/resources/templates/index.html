@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Notifications</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container mt-2">
+<div class = "row bg-primary rounded col-xs-6">
+    <div id="notifications"></div>
+</div>
+    <div class = "col-xs-6">
+        <button type="button" class="btn btn-secondary" onclick = "clearNotifications()">Clear</button>
+    </div>
+</div>
+
+<script>
+    function clearNotifications() {
+    console.log('clear....: ');
+    document.getElementById('notifications').innerHTML="";
+}
+    let stompClient = null;
+
+    function connect() {
+    const socket = new SockJS('http://localhost:7777/ws');  // Correct the WebSocket URL
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);  // Log the successful connection
+        stompClient.subscribe('/topic/error', function (message) {
+            showNotification(message);  // Handle incoming messages
+        });
+    }, function (error) {
+        console.error('WebSocket connection error: ' + error);  // Log WebSocket errors
+        setTimeout(connect, 5000);
+    });
+}
+
+
+
+    function showNotification(message) {
+        const errorObj = JSON.parse(message.body);
+        const notifications = document.getElementById('notifications');
+        const notification = document.createElement('p');
+        notification.innerHTML = `
+                <p class="text-bg-light col-xs-6">
+                   ${errorObj.execute_result}
+                </p>
+            `;
+        notifications.appendChild(notification);
+    }
+
+    connect();
+</script>
+</body>
+</html>

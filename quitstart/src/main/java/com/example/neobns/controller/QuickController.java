@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.neobns.dto.AccountDTO;
+import com.example.neobns.dto.ErrorLogDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
 import com.example.neobns.entity.Account;
+import com.example.neobns.service.ErrorService;
 import com.example.neobns.service.QuickService;
 
 import io.micrometer.core.annotation.Timed;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class QuickController {
 
 	private final QuickService quickService;
+	private final ErrorService errorService;
 
 	@GetMapping("/")
 	public String main() {
@@ -121,6 +124,11 @@ public class QuickController {
 		quickService.addUpdateAccountJPA(account);
 
 		return ResponseEntity.ok("OK");
+	}
+	
+	@GetMapping("/testforsocket")
+	public ErrorLogDTO getError() {
+		return errorService.getError();
 	}
 
 }

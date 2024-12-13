@@ -77,8 +77,32 @@
 		</encoder>
 	</appender>
 	
-	<!-- SQL Dynamic 로그를 저장하는 파일 어펜더 -->
+	<!-- SQL ERROR 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_ERROR_SQL" class="ch.qos.logback.core.FileAppender">
+		<!-- 로그를 저장할 파일 경로 -->
+		<file>../logs/error-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+
+		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 저장되도록 설정 -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>
+					mdc.get("requestId") != null &amp;&amp;
+					logger.equals("ERROR") &amp;&amp;
+					((String) mdc.get("className")).equals("SQL")
+				</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<!-- 로그 형식 설정 -->
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+		</encoder>
+	</appender>
+	
+	<!-- SQL Dynamic ERROR 로그를 저장하는 파일 어펜더 -->
+	<appender name="FILE_ERROR_DYNAMIC_SQL" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/error-dynamic-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
@@ -158,6 +182,7 @@
 		<appender-ref ref="FILE" />
 		<appender-ref ref="FILE_PERFROM_SQL" />
 		<appender-ref ref="FILE_ERROR_SQL" />
+		<appender-ref ref="FILE_ERROR_DYNAMIC_SQL" />
 		<appender-ref ref="FILE_ERROR_AOP" />
 		<appender-ref ref="FILE_PERFORM_AOP" />
 	</root>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.neobns.mapper.ErrorMapper">
+    <select id="getRecord" parameterType="long" resultType="com.example.neobns.dto.ErrorLogDTO">
+        <![CDATA[
+            SELECT *
+            FROM logging_error error
+            WHERE event_id > #{maxId}
+        ]]>
+    </select>
+    
+    <select id="getCount">
+        <![CDATA[ 
+            SELECT COUNT(*)
+            FROM logging_error error
+        ]]>
+    </select>
+</mapper>

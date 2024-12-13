@@ -26,7 +26,8 @@ public interface LogMapper {
             @Param("traceId") String traceId,
             @Param("userId") String userId,
             @Param("ipAddress") String ipAddress,
-            @Param("query") String query,
+            @Param("uri") String uri,
+            @Param("executeResult") String executeResult,
             @Param("limit") int limit,
             @Param("offset") int offset
         );
@@ -37,7 +38,8 @@ public interface LogMapper {
             @Param("traceId") String traceId,
             @Param("userId") String userId,
             @Param("ipAddress") String ipAddress,
-            @Param("query") String query
+            @Param("uri") String uri,
+            @Param("executeResult") String executeResult
         );
     
     List<LogDTO> findErrorLogs(
@@ -47,6 +49,7 @@ public interface LogMapper {
             @Param("userId") String userId,
             @Param("ipAddress") String ipAddress,
             @Param("query") String query,
+            @Param("uri") String uri,
             @Param("limit") int limit,
             @Param("offset") int offset
         );
@@ -57,7 +60,8 @@ public interface LogMapper {
             @Param("traceId") String traceId,
             @Param("userId") String userId,
             @Param("ipAddress") String ipAddress,
-            @Param("query") String query
+            @Param("query") String query,
+            @Param("uri") String uri
         );
 
 	List<LogDTO> findByTable(@Param("limit") int limit, @Param("offset") int offset, @Param("callerMethod") String callerMethod);

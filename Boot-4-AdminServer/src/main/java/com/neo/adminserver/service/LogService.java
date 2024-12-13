@@ -50,9 +50,10 @@ public class LogService {
             String traceId,
             String userId,
             String ipAddress,
-            String query) {
+            String uri,
+            String executeResult) {
         int offset = (page - 1) * size;
-        return logMapper.findSlowLogs(startTime, endTime, traceId, userId, ipAddress, query, size, offset);
+        return logMapper.findSlowLogs(startTime, endTime, traceId, userId, ipAddress, uri, executeResult, size, offset);
     }
 
     public int countSlowSearchLogs(
@@ -61,8 +62,9 @@ public class LogService {
             String traceId,
             String userId,
             String ipAddress,
-            String query) {
-        return logMapper.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+            String uri,
+            String executeResult) {
+        return logMapper.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, uri, executeResult);
     }
     
     public List<LogDTO> findErrorLogs(
@@ -73,9 +75,10 @@ public class LogService {
             String traceId,
             String userId,
             String ipAddress,
-            String query) {
+            String query,
+            String uri) {
         int offset = (page - 1) * size;
-        return logMapper.findErrorLogs(startTime, endTime, traceId, userId, ipAddress, query, size, offset);
+        return logMapper.findErrorLogs(startTime, endTime, traceId, userId, ipAddress, query, uri, size, offset);
     }
 
     public int countErrorSearchLogs(
@@ -84,8 +87,9 @@ public class LogService {
             String traceId,
             String userId,
             String ipAddress,
-            String query) {
-        return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query);
+            String query,
+            String uri) {
+        return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query, uri);
     }
     
 	public List<LogDTO> findByTable(int page, int size, String callerMethod) {
@@ -229,7 +233,7 @@ public class LogService {
 					}
 					addedString.append(errorLog.getCallerMethod()).append(" [ ").append(errorLog.getExecuteResult());
 								
-					if (errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
+					if (errorLog.getExecuteResult()!=null && errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
 						addedString.append("ms ]");
 					} else {
 						addedString.append(" ]");

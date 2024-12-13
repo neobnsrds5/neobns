@@ -229,7 +229,7 @@ public class LogService {
 					if (errorLog.getLoggerName().equals("ERROR")) {
 						addedString.append(" : <font color=red> "); // error이면 빨간색
 					} else {
-						addedString.append(" : <font color=blue> "); // slow면 파란색
+						addedString.append(" : <font color=orangered> "); // slow면 파란색
 					}
 					addedString.append(errorLog.getCallerMethod()).append(" [ ").append(errorLog.getExecuteResult());
 								
@@ -268,7 +268,7 @@ public class LogService {
 						}
 
 					} else if (errorLog.getLoggerName().equals("SLOW")) {
-						addedString.append(" : <font color=blue> ")
+						addedString.append(" : <font color=orangered> ")
 									.append(" [ ")
 									.append(errorLog.getExecuteResult())
 									.append("ms ]");

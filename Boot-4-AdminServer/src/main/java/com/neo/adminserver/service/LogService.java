@@ -229,7 +229,7 @@ public class LogService {
 					}
 					addedString.append(errorLog.getCallerMethod()).append(" [ ").append(errorLog.getExecuteResult());
 								
-					if (errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
+					if (errorLog.getExecuteResult()!=null && errorLog.getExecuteResult().matches("-?\\d+")) { // 정수인지 확인하는 정규식
 						addedString.append("ms ]");
 					} else {
 						addedString.append(" ]");

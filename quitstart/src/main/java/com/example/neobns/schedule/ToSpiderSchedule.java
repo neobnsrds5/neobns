@@ -17,17 +17,20 @@ import lombok.RequiredArgsConstructor;
 public class ToSpiderSchedule {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
-	
-	@Scheduled(cron = "0 */1 * * * * ", zone = "Asia/Seoul")
+
+	@Scheduled(cron = "0 0 0 * * * ", zone = "Asia/Seoul")
 	public void runSpiderSchedule() throws Exception {
+
+		System.out.println("runSpiderSchedule 실행 ");
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 		String date = dateFormat.format(new Date());
-		
-		JobParameters jobParameters = new JobParametersBuilder()
-				.addString("date", date)
-				.toJobParameters();
-		
-		jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJobs"), jobParameters);
+
+		JobParameters jobParameters = new JobParametersBuilder().addString("date", date).toJobParameters();
+
+		jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJob"), jobParameters);
+
+		System.out.println("runSpiderSchedule() : 실행됨 ");
 	}
-	
+
 }

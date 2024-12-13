@@ -1,5 +1,8 @@
 package com.example.neobns.batch;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -23,6 +26,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.neobns.dto.FwkErrorHisDto;
 import com.example.neobns.dto.LogDTO;
+import com.example.neobns.service.CacheService;
 
 @Configuration
 public class DbToSpiderErrorDbBatch {
@@ -32,49 +36,83 @@ public class DbToSpiderErrorDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
+	private final CacheService cacheService;
 
 	public DbToSpiderErrorDbBatch(@Qualifier("dataDataSource") DataSource realSource,
 			@Qualifier("spiderDataSource") DataSource spiderDataSource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener, CacheService cacheService) {
 		this.realSource = realSource;
 		this.spiderDataSource = spiderDataSource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
 		this.listener = listener;
+		this.cacheService = cacheService;
 	}
 
 	@Bean
 	public JdbcPagingItemReader<LogDTO> spiderReader() throws Exception {
+
+		System.out.println("spiderReader 생성중");
+
 		JdbcPagingItemReader<LogDTO> reader = new JdbcPagingItemReader<LogDTO>();
 		reader.setDataSource(realSource);
-		reader.setName("spiderPagingReader");
-		reader.setQueryProvider(queryProvider());
+		reader.setName("spiderReader");
+		reader.setQueryProvider(spiderQueryProvider());
 		reader.setRowMapper(new BeanPropertyRowMapper<>(LogDTO.class));
 		reader.setPageSize(10);
+
+		Map<String, Object> paramVal = new HashMap<>();
+		String lastTimeStmp = cacheService.getLastReadTime();
+		System.out.println("가져온 lastTimeStmp : " + lastTimeStmp);
+		paramVal.put("lastTimeStmp", lastTimeStmp);
+		reader.setParameterValues(paramVal);
+
+		System.out.println("spider reader 생성 완료");
 		return reader;
 	}
 
 	@Bean
-	public PagingQueryProvider queryProvider() throws Exception {
+	public PagingQueryProvider spiderQueryProvider() throws Exception {
+
+		System.out.println("spiderQueryProvider 실행중");
+
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
 		factory.setSelectClause("SELECT *");
-		factory.setFromClause("FROM LOGGING_ERROR");
-		factory.setSortKey("EVENT_ID");
+		factory.setFromClause("FROM logging_error");
+		factory.setWhereClause("WHERE STR_TO_DATE(timestmp, '%Y-%m-%d %H:%i:%s.%f') > STR_TO_DATE(:lastTimeStmp, '%Y-%m-%d %H:%i:%s.%f')");
+		factory.setSortKey("event_id");
+
+		System.out.println("spiderQueryProvider 종료");
+
 		return factory.getObject();
-	}
-	
-	@Bean
-	public ItemProcessor<LogDTO, FwkErrorHisDto> spiderProcessor(){
-		return logDTO -> logDTO.convertToHisDto();
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<FwkErrorHisDto> writer() {
-		return new JdbcBatchItemWriterBuilder<FwkErrorHisDto>()
-				.dataSource(spiderDataSource)
-				.sql(
-				"INSERT INTO SYSTEM.FWK_ERROR_HIS(ERROR_CODE, ERROR_SER_NO, CUST_USER_ID, ERROR_MESSAGE, ERROR_OCCUR_DTIME, ERROR_URL, ERROR_TRACE, ERROR_INSTANCE_ID) VALUES(:ERROR_CODE, :ERROR_SER_NO, :CUST_USER_ID, :ERROR_MESSAGE, :ERROR_OCCUR_DTIME, :ERROR_URL, :ERROR_TRACE, :ERROR_INSTANCE_ID);")
+	public ItemProcessor<LogDTO, FwkErrorHisDto> spiderProcessor() {
+		return new ItemProcessor<LogDTO, FwkErrorHisDto>() {
+
+			private String lastTimeStmp;
+
+			@Override
+			public FwkErrorHisDto process(LogDTO item) throws Exception {
+				System.out.println("lastTimeStmp process : ");
+				lastTimeStmp = item.getTimestmp();
+				System.out.println("lastTimeStmp : " + lastTimeStmp);
+				cacheService.setLastReadTime(lastTimeStmp);
+				System.out.println("spiderProcessor 종료");
+				return item.convertToHisDto();
+			}
+		};
+	}
+
+	@Bean
+	public JdbcBatchItemWriter<FwkErrorHisDto> spiderWriter() {
+
+		System.out.println("writer 실행");
+
+		return new JdbcBatchItemWriterBuilder<FwkErrorHisDto>().dataSource(spiderDataSource).sql(
+				"INSERT INTO SYSTEM.FWK_ERROR_HIS(ERROR_CODE, ERROR_SER_NO, CUST_USER_ID, ERROR_MESSAGE, ERROR_OCCUR_DTIME, ERROR_URL, ERROR_TRACE, ERROR_INSTANCE_ID) VALUES(:errorCode, :errorSerNo, :custUserId, :errorMessage, :errorOccurDtime, :errorUrl, :errorTrace, :errorInstanceId)")
 				.beanMapped().build();
 	}
 
@@ -83,15 +121,18 @@ public class DbToSpiderErrorDbBatch {
 
 		int chunkSize = 100; // 10, 50, 100
 
-		return new StepBuilder("dbCopyStep", jobRepository)
-				.<LogDTO, FwkErrorHisDto>chunk(chunkSize, transactionManager)
-				.reader(spiderReader())
-				.processor(spiderProcessor()).writer(writer()).taskExecutor(spiderExecutor()).build();
+		System.out.println("spiderStep() 실행");
+
+		return new StepBuilder("spiderStep", jobRepository).<LogDTO, FwkErrorHisDto>chunk(chunkSize, transactionManager)
+				.reader(spiderReader()).processor(spiderProcessor()).writer(spiderWriter())
+				.taskExecutor(spiderExecutor()).build();
 	}
 
 	@Bean
 	public Job spiderJob() throws Exception {
-		return new JobBuilder("dbToSpiderErrorJob", jobRepository).start(spiderStep()).listener(listener).build();
+//		return new JobBuilder("dbToSpiderErrorJob", jobRepository).start(spiderStep()).listener(listener).build();
+		System.out.println("spiderJob 생성중");
+		return new JobBuilder("dbToSpiderErrorJob", jobRepository).start(spiderStep()).build();
 	}
 
 	@Bean
@@ -101,12 +142,16 @@ public class DbToSpiderErrorDbBatch {
 		int maxPoolSize = 8; // 8~16
 		int queueSize = 50; // 50~100
 
+		System.out.println("spiderExecutor : 실행");
+
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(queueSize);
 		executor.setThreadNamePrefix("dbToSpiderErrorJob");
 		executor.initialize();
+		System.out.println("executor.initialize 됨");
+
 		return executor;
 	}
 

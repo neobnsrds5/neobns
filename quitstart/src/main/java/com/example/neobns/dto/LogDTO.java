@@ -53,7 +53,7 @@ public class LogDTO {
 
 		String formattedTime = convertTimestamp();
 
-		return formattedTime + serverId + traceId;
+		return (formattedTime + serverId + traceId).substring(0,26);
 	}
 
 	public String convertTimestamp() throws Exception {

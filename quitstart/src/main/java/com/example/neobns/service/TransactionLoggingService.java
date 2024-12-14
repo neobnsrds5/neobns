@@ -1,5 +1,7 @@
 package com.example.neobns.service;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,7 +16,7 @@ public class TransactionLoggingService {
 	@Autowired
 	private TransactionLogRepository logRepository;
 
-	@Transactional
+	@Transactional(rollbackFor = RuntimeException.class)
 	public void logAMessageSuccess(String logMessage) {		
 		TransactionLog log = new TransactionLog(logMessage); 
 		logRepository.save(log);
@@ -23,11 +25,11 @@ public class TransactionLoggingService {
 		throw new RuntimeException("강제 롤백 처리");
 		
         //for REQUIRED
-		/*
-		if(new Random().nextBoolean()) {
-			throw new RuntimeException("DummyException: this should cause rollback of both INSERTs (Item and Log)!");
-		}
-		*/
+		
+//		if(new Random().nextBoolean()) {
+//			throw new RuntimeException("DummyException: this should cause rollback of both INSERTs (Item and Log)!");
+//		}
+//		
 	}
 	
 	@Transactional( propagation = Propagation.SUPPORTS , timeout = 1)

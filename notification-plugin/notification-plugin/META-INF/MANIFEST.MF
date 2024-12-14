@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Notification-plugin
+Bundle-SymbolicName: notification-plugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: notification_plugin.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Automatic-Module-Name: notification.plugin
+Import-Package: jakarta.inject;version="[2.0.0,3.0.0)"
+Bundle-ActivationPolicy: lazy

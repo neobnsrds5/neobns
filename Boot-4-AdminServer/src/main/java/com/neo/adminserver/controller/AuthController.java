@@ -44,19 +44,24 @@ public class AuthController {
     
 	@GetMapping("/")
 	public String index(
-			@RequestParam(required = false) String username,
-			@RequestParam(required = false) String password,
 			Model model) {
 		return "index_page";
 	}
 	
+	@RequestMapping(value ="/logout",method = { RequestMethod.GET, RequestMethod.POST })
+	public String logout(
+			Model model,
+			HttpServletRequest request) {
+		
+			request.getSession().invalidate();
+		return "signin";
+	}
 	@GetMapping("/signin")
 	public String login(
 			@RequestParam(required = false) String username,
 			@RequestParam(required = false) String password,
 			Model model,
 			HttpServletRequest request) {
-		
 		String errMsg = (String) request.getSession().getAttribute("errMsg");
 		model.addAttribute("errMsg", errMsg);
 		request.getSession().invalidate();
@@ -111,8 +116,7 @@ public class AuthController {
 			return "signin";
 		} else {
 			loginUser = user.get(0);
-			String pwd = loginUser.getPassword();
-			if (!pwd.equals(loginUser.getPassword())) {
+			if (!password.equals(loginUser.getPassword())) {
 				model.addAttribute("errMsg", "ID와 패스워드를 확인하세요.");
 				session.invalidate();
 				return "signin";

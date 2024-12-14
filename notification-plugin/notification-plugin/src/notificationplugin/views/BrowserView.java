@@ -42,7 +42,7 @@ public class BrowserView extends ViewPart {
 	}
 	
 	private void setUrl() {
-		String url = "http://localhost:7777/alertError";
+		String url = "http://3.37.155.242:7777/alertError";
 		if (url != null && url.trim().length() > 0) {
 			fBrowser.setUrl(url);
 		}

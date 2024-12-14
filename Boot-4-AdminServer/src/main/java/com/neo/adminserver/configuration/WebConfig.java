@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
                 "/error",  // 로그인 페이지
                 "/signin",         // 로그인 URL
                 "/signup",         // 로그인 URL
+                "/logout",         // 로그인 URL
                 "/loginProcess",  // 로그인 페이지
                 "/singup",        // 로그아웃 URL
                 "/**/*.css",        // CSS 파일

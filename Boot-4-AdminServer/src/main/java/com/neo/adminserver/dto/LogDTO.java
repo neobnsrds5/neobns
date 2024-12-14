@@ -1,6 +1,5 @@
 package com.neo.adminserver.dto;
 
-import org.apache.ibatis.ognl.ASTThisVarRef;
 import org.apache.ibatis.type.Alias;
 
 import lombok.Getter;

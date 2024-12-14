@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.example.neobns.service.BlackListService;
+import com.example.neobns.blacklist.BlackListService;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.example.neobns.service;
+package com.example.neobns.blacklist;
 
 import java.util.List;
 

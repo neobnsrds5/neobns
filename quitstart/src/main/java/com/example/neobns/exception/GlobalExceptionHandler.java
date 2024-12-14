@@ -1,5 +1,8 @@
 package com.example.neobns.exception;
 
+
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -7,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+
+import com.example.neobns.dto.ErrorResponseDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -44,6 +50,24 @@ public class GlobalExceptionHandler {
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+    }
+    
+    @ExceptionHandler(CustomerAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(CustomerAlreadyExistsException exception,
+                                                                                 WebRequest webRequest, HttpServletRequest request){
+        ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        setMDC(exception, HttpStatus.BAD_REQUEST, request);
+
+        errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), exception.getClass().getSimpleName(), 
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+
+        clearMDC();
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
     }
 
     

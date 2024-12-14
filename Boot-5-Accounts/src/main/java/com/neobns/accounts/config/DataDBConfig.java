@@ -1,4 +1,4 @@
-package com.example.neobns.config;
+package com.neobns.accounts.config;
 
 import java.util.HashMap;
 
@@ -11,7 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -19,29 +18,28 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.example.neobns.logging.common.JPALoggingInspector;
-import com.example.neobns.logging.common.MybatisLoggingInterceptor;
-import com.example.neobns.properties.DBProperties;
+import com.neobns.accounts.log.JPALoggingInspector;
+import com.neobns.accounts.log.MybatisLoggingInterceptor;
+import com.neobns.accounts.properties.DBProperty;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Configuration
 @EnableJpaRepositories(
-		basePackages = "com.example.neobns.repository"
+		basePackages = "com.neobns.accounts.repository"
 		,entityManagerFactoryRef = "dataEntityManager"
 		, transactionManagerRef = "dataTransactionsManager")
 @RequiredArgsConstructor
-public class DataDbConfig {
-	
-	private final DBProperties dbProperties;
+public class DataDBConfig {
+
+	private final DBProperty dbProperty;
 	private final JPALoggingInspector inspector;
 	
 	@Bean(name = "dataDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
 	public DataSource dataDataSource() {    	
 		return DataSourceBuilder.create()
-				.url(dbProperties.getDataUrl())
+				.url(dbProperty.getDataUrl())
 				.build();
 	}
 	
@@ -50,7 +48,7 @@ public class DataDbConfig {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		
 		em.setDataSource(dataDataSource());
-		em.setPackagesToScan(new String[] {"com.example.neobns.entity"});
+		em.setPackagesToScan(new String[] {"com.neobns.accounts.entity"});
 		em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 		
 		HashMap<String, Object> properties = new HashMap<>();
@@ -91,5 +89,4 @@ public class DataDbConfig {
 	public SqlSessionTemplate sqlSessionTemplate() throws Exception {
 		return new SqlSessionTemplate(sqlSessionFactory());
 	}
-	
 }

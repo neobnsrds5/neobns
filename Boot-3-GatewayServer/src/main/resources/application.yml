@@ -51,6 +51,14 @@ spring:
           filters:
             - RewritePath=/quitstart/(?<path>.*), /$\{path}
             
+        - id: accounts
+          uri: lb://accounts
+          predicates:
+            - Path=/accounts/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/accounts/(?<path>.*), /$\{path} 
+            
         - id: quitstart
           uri: lb://quitstart
           predicates:

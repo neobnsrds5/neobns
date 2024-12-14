@@ -1,8 +1,8 @@
 spring:
   application:
-    name: "gatewayserver"
+    name: "gatewayserver2"
   config:
-    import: "optional:configserver:http://localhost:8071/"
+    import: "optional:configserver:http://config;1234@localhost:9393"
   cloud:
     gateway:
       discovery:
@@ -15,9 +15,17 @@ spring:
   data:
     redis:
       connect-timeout: 2s
-      host: localhost
+      host: 3.35.132.32
       port: 6379
       timeout: 1s
+      password: neobns1!
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
 management:
   endpoints:
@@ -50,6 +58,5 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 2
       failureRateThreshold: 50
       waitDurationInOpenState: 10000
-
 server:
-  port:8072
+  port: 18072

@@ -1,9 +1,9 @@
-package com.example.Boot_2_AdminServer;
+package com.neo.adminserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = AdminServerApplication.class)
 class Boot2AdminServerApplicationTests {
 
 	@Test

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WeatherStoryApp1ApplicationTests {
+class EurekaServerApplicationTests {
 
 	@Test
 	void contextLoads() {

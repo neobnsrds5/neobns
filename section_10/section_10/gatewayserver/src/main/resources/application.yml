@@ -58,6 +58,5 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 2
       failureRateThreshold: 50
       waitDurationInOpenState: 10000
-
 server:
-  port:8072
+  port: 18072

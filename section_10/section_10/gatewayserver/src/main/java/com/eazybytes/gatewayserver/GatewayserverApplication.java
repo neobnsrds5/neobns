@@ -39,7 +39,7 @@ public class GatewayserverApplication {
 								.uri("lb://ACCOUNTS"))
 					.route(p -> p
 							.path("/loans/**")
-							.filters( f -> f.rewritePath("/eazybank/loans/(?<segment>.*)","/${segment}")
+							.filters( f -> f.rewritePath("/loans/(?<segment>.*)","/${segment}")
 									.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 									.retry(retryConfig -> retryConfig.setRetries(3)
 											.setMethods(HttpMethod.GET)
@@ -47,7 +47,7 @@ public class GatewayserverApplication {
 							.uri("lb://LOANS"))
 					.route(p -> p
 							.path("/cards/**")
-							.filters( f -> f.rewritePath("/eazybank/cards/(?<segment>.*)","/${segment}")
+							.filters( f -> f.rewritePath("/cards/(?<segment>.*)","/${segment}")
 									.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 									.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
 											.setKeyResolver(userKeyResolver())))

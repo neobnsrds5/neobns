@@ -56,6 +56,10 @@ public class MybatisLoggingInterceptor implements Interceptor {
 
 		MDC.put("queryLog", rawSql);
 		
+		MDC.put("className", "SQL");
+        MDC.put("methodName", rawSql);
+        traceLogger.info("[{}] [{} : {}]", MDC.get("requestId"), "SQL", rawSql);
+		
 		Object result = null;
 		try {
 			// ${} 패턴 검사
@@ -74,14 +78,9 @@ public class MybatisLoggingInterceptor implements Interceptor {
 			// 종료 시간 측정
 			long elapsedTime = System.currentTimeMillis() - start;
 
-			if(result == null) {
-				MDC.remove("executeResult");
-			}
-			else {
-				MDC.put("executeResult", Long.toString(elapsedTime));
-			}
 			MDC.put("className", "SQL");
 			MDC.put("methodName", rawSql);
+			MDC.put("executeResult", Long.toString(elapsedTime));
 
 			// SQL 실행 후 trace 로깅
 			traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", rawSql, elapsedTime);

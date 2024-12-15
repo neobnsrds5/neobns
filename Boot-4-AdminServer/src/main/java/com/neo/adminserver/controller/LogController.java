@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neo.adminserver.dto.LogDTO;
 import com.neo.adminserver.service.LogService;
+import com.neo.adminserver.service.TraceUmlService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -99,8 +100,7 @@ public class LogController {
 	public String findByTraceId(@RequestParam String traceId, Model model) throws CloneNotSupportedException {
 		List<LogDTO> logList = logService.findByTraceId(traceId);
 		model.addAttribute("logList", logList);
-		String plantSource = logService.buildPlantUML(traceId, logList);
-		model.addAttribute("imgSource", plantSource);
+		model.addAttribute("imgSource", TraceUmlService.buildUmlList(logList));
 		return "trace_table";
 	}
 	

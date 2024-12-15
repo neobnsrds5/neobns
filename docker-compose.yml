@@ -47,6 +47,22 @@ services:
     depends_on:
       - rabbitmq
 
+  sonarqube:
+    image: sonarqube
+    container_name: sonarqube
+    ports:
+      - "9099:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
   # config:
   #   image: neobnsrn5/config:s1
   #   container_name: config

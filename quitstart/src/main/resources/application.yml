@@ -9,6 +9,9 @@ server:
 spring:  
   kafka:
     bootstrap-servers: localhost:9092
+  jdbc:
+    properties:
+      oracle.jdbc.timezoneAsRegion: false
   application:
     name: quitstart
   profiles:

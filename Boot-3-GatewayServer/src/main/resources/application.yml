@@ -90,6 +90,14 @@ spring:
             - Method=GET, POST
           filters:
             - RewritePath=/admin/(?<path>.*), /$\{path}
+            
+#        - id: kafka
+#          uri: lb://kafka
+#          predicates:
+#            - Path=/kafka/**
+#            - Method=GET
+#          filters:
+#            - RewritePath=/kafka/(?<path>.*), /$\{path} 
 
 # 불필요한 로그 저장으로 인해 주석처리
 #        # 게이트웨이를 통해서 adminserver의 resource에 접근하기 위해 추가

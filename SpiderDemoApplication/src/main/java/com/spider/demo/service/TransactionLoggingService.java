@@ -21,7 +21,7 @@ public class TransactionLoggingService {
 		logRepository.save(log);
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, timeout = 1)
+	@Transactional(propagation = Propagation.SUPPORTS, timeout = 1)
 	public void logAMessageFail(String logMessage) {
 		
 		try {

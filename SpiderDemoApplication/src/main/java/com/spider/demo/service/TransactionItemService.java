@@ -1,4 +1,4 @@
-package com.example.neobns.service;
+package com.spider.demo.service;
 
 import java.time.LocalDate;
 
@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.neobns.entity.TransactionItem;
-import com.example.neobns.repository.TransactionItemRepository;
-
-import propagation.SpiderTransaction;
+import com.spider.demo.entity.TransactionItem;
+import com.spider.demo.propagation.SpiderTransaction;
+import com.spider.demo.repository.TransactionItemRepository;
 
 @Service
 public class TransactionItemService {
@@ -21,25 +20,30 @@ public class TransactionItemService {
 	@Autowired
 	private TransactionLoggingService loggingService;
 
-	@Transactional
 	public void persistAnItem() {
 		
 		TransactionItem item = new TransactionItem("Item1", LocalDate.of(2022, 5, 1), 29);
 		itemRepository.save(item);
 		loggingService.logAMessageSuccess( "adding item with name " + item.getName());		
 
-		throw new RuntimeException("강제 롤백 처리");
-
 	}
 
 	@SpiderTransaction(propagation = Propagation.REQUIRED, timeout = 1)
 	public void persistAnItemFail() {
-		TransactionItem item = new TransactionItem("Item2", LocalDate.of(2022, 5, 1), 29);
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		TransactionItem item = new TransactionItem("Item2", LocalDate.of(2022, 5, 1), 30);
 		itemRepository.save(item);
 		loggingService.logAMessageFail( "adding item with name " + item.getName());		
-
-		throw new RuntimeException("강제 롤백 처리");
-
+		
+		
 	}
 
 }

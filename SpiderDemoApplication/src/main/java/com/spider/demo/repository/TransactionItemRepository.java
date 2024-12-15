@@ -1,8 +1,8 @@
-package com.example.neobns.repository;
+package com.spider.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.neobns.entity.TransactionItem;
+import com.spider.demo.entity.TransactionItem;
 
 public interface TransactionItemRepository extends JpaRepository<TransactionItem, Integer> {	
 	

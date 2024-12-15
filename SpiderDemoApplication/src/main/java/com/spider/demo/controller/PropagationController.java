@@ -1,9 +1,9 @@
-package com.example.neobns.controller;
+package com.spider.demo.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.neobns.service.TransactionItemService;
+import com.spider.demo.service.TransactionItemService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ public class PropagationController {
 	private final TransactionItemService itemService;
 
 	// propagation 시 데이터 입력됨
-	@GetMapping("/propagationInsertSucess")
+	@GetMapping("/propagationInsert")
 	public void persistItemSucess() {
 
 		itemService.persistAnItem();
@@ -24,7 +24,7 @@ public class PropagationController {
 	}
 	
 	// propagation 시 타임아웃으로 데이터 입력 안됨
-	@GetMapping("/propagationInsertFail")
+	@GetMapping("/propagationRollback")
 	public void persistItemFail() {
 		
 		itemService.persistAnItemFail();

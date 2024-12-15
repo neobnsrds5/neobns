@@ -1,4 +1,4 @@
-package com.example.neobns.entity;
+package com.spider.demo.entity;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package propagation;
+package com.spider.demo.propagation;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 public @interface SpiderTransaction {
     int timeout() default 1; // 기본값 1초
 
-    Propagation propagation();
+    Propagation propagation() default Propagation.REQUIRED;
 }

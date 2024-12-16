@@ -24,8 +24,8 @@ public class NotificationScheduler {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ErrorMapper errorMapper;
-    
     private static final long DELAY = 10;
+    
     @Scheduled(fixedDelay = DELAY,timeUnit = TimeUnit.SECONDS)
     public void publishErrorEvent() {
         log.info("Publishing events");

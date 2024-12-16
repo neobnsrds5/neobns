@@ -35,24 +35,12 @@ public class JPAQueryLoggingAspect {
 					e.getClass().getSimpleName());
 		}
 
-		MDC.put("className", "SQL");
-		long start1 = System.currentTimeMillis();
-
-		Object result1 = null;
-		try {
-			result1 = joinPoint.proceed();
-		} catch (Exception e) {
-			MDC.put("executeResult", e.getClass().getSimpleName());
-			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"),
-					e.getClass().getSimpleName());
-		}
-
-		long elapsedTime = System.currentTimeMillis() - start1;
+		long elapsedTime = System.currentTimeMillis() - start;
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
 		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
-		if (result1 != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
+		if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 			slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 		}
 
@@ -60,7 +48,7 @@ public class JPAQueryLoggingAspect {
 		MDC.remove("className");
 		MDC.remove("methodName");
 
-		return result1;
+		return result;
 
 	}
 

@@ -20,7 +20,7 @@ public class ToSpiderSchedule {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 
-	@Scheduled(cron = "*/30 * * * * * ", zone = "Asia/Seoul")
+//	@Scheduled(cron = "*/30 * * * * * ", zone = "Asia/Seoul")
 	public void runSpiderSchedule() throws Exception {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");

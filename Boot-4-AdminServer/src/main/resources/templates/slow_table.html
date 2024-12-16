@@ -771,6 +771,7 @@
 			<input type="text" name="executeResult" placeholder="소요시간" />
 		    <button type="submit">검색</button>
 		</form>
+		<div class="table-responsive">
 		<!-- 검색 결과 없을 때 메시지 -->
 	    <div th:if="${!hasResults}">
 	        <p>검색 결과가 없습니다.</p>
@@ -834,6 +835,7 @@
 				</tr>
 			</tbody>
 		</table>
+		</div>
 		<div th:if="${hasResults}" class="pagination">
 		    <!-- 이전 페이지 -->
 		    <a th:href="@{/admin/slow(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}" 

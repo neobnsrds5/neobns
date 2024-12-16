@@ -30,21 +30,6 @@
 	<div class="container my-5" style="max-width: 90%; margin: 0 auto; padding: 20px;">
 		<h2 class="mb-4 text-center">영향도 및 추적 관리</h2>
 
-		<div class="d-flex justify-content-end mb-3 gap-2">
-			<!--<button type="button" class="btn btn-primary btn-api-plant">PlantUML 보기</button>-->
-<!--			document.querySelector(".btn-api-plant").addEventListener("click", function () {
-						    // 토글할 요소 선택
-						    const plantumlContainer = document.getElementById("plantuml-container");
-						    
-						    // display 속성 토글
-						    if (plantumlContainer.style.display == "none") {
-						        plantumlContainer.style.display = "flex"; // 보이도록 설정
-						    } else {
-						        plantumlContainer.style.display = "none"; // 숨기도록 설정
-						    }
-						});-->
-		</div>
-		
 		<div style="justify-items: center;justify-content: center;" id="plantuml-container">
 			
 			<uml th:text="${imgSource}">
@@ -79,7 +64,7 @@
 		            <th>추적ID</th> <!-- 추적 아이디 -->
 		            <th>호출</th> <!-- caller_class 정보 -->
 		            <th>호출상세</th> <!-- caller_method 정보 -->
-		            <th>수행결과</th> <!-- 실행 시간 출력 -->
+		            <th>수행결과(ms)</th> <!-- 실행 시간 출력 -->
 				</tr>
 			</thead>
 			<tbody>

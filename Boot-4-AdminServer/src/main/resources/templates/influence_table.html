@@ -375,14 +375,17 @@
 		                         </a>
 		                         <div class="collapse" id="sidebarAuthentication">
 		                              <ul class="nav sub-navbar-nav">
-		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/slow">지연어플리케이션</a>
+		                              	   <li class="sub-nav-item">
+		                                        <a target="_blank" class="sub-nav-link" href="/admin">전체 어플리케이션</a>
 		                                   </li>
 		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/errors">오류어플리케이션</a>
+		                                        <a class="sub-nav-link" href="/admin/slow">지연 어플리케이션</a>
 		                                   </li>
 		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/table">테이블영향도</a>
+		                                        <a class="sub-nav-link" href="/admin/errors">오류 어플리케이션</a>
+		                                   </li>
+		                                   <li class="sub-nav-item">
+		                                        <a class="sub-nav-link" href="/admin/table">테이블 영향도</a>
 		                                   </li>
 		                              </ul>
 		                         </div>
@@ -749,9 +752,9 @@
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
 		<h2 class="mb-4 text-center" ><a href="/admin/table">테이블 영향도 분석 관리</a></h2>
 		
-		<form id="searchForm" action="/admin/table" method="get">
-		    <input type="text" name="callerMethod" placeholder="테이블 명" />
-		    <button type="submit">검색</button>
+		<form id="searchForm" action="/admin/table" method="get"  class="row">
+		    <input type="text" style="width: 250px" class="form-control me-1 border border-dark" name="callerMethod" placeholder="테이블 명" />
+		    <button type="submit" style="width: 80px" class="btn btn-primary">검색</button>
 		</form>
 		
 		<br/>

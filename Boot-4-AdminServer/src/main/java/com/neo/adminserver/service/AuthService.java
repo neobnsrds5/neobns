@@ -21,6 +21,9 @@ public class AuthService {
 	public void updateUserSession(String username, String lastSession, String dtime) {
 		authMapper.updateUserSession(username, lastSession, dtime);
 	}
+	public void insertUser(FwkUserDTO user) {
+		authMapper.insertUser(user);
+	}
 	
 	public void isLogin(String currentSessionId , String newSessionId) {
 		

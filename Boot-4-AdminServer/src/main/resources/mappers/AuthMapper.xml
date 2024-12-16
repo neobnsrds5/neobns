@@ -15,4 +15,37 @@
             USER_ID = #{username}
     </update>
 
+	<insert id="insertUser" parameterType="com.neo.adminserver.dto.FwkUserDTO">
+	    INSERT INTO FWK_USER (
+	        USER_ID,
+	        USER_NAME,
+	        PASSWORD,
+	        ROLE_ID,
+	        POSITION_NAME,
+	        ADDRESS,
+	        CLASS_NAME,
+	        EMAIL,
+	        LAST_UPDATE_DTIME,
+	        LAST_UPDATE_USER_ID,
+	        ACCESS_IP,
+	        USER_SSN,
+	        PHONE
+	    )
+	    VALUES (
+	        #{userId},
+	        #{username},
+	        #{password},
+	        #{role},
+	        #{positionName},
+	        #{address},
+	        #{className},
+	        #{email},
+	        #{lastUpdateDtime},
+	        #{lastUpdateUserId},
+	        #{accessIp},
+	        #{userSsn},
+	        #{phone}
+	    )
+</insert>
+
 </mapper>

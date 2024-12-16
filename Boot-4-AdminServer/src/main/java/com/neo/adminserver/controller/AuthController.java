@@ -37,9 +37,15 @@ public class AuthController {
             model.addAttribute("user", fwkUserDTO);
             return "signup"; // 폼 화면으로 다시 이동
         }
+        
+        fwkUserDTO.setUserId(fwkUserDTO.getUsername());
+        fwkUserDTO.setUserSsn(fwkUserDTO.getUserSsn().replaceAll("-", ""));
+        
+        authService.insertUser(fwkUserDTO);
+        model.addAttribute("errMsg", "등록한 신규사용자로 로그인하세요.");
         // 성공 처리
         model.addAttribute("successMessage", "User registered successfully!");
-        return "success";
+        return "signin";
     }
     
 	@GetMapping("/")

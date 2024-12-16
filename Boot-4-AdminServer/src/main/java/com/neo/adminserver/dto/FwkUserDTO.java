@@ -63,8 +63,8 @@ public class FwkUserDTO implements Cloneable {	// Spider 사용자 정보 DTO
     @Pattern(regexp = "^[A-Z]{2}[0-9]{3}$", message = "사용자 상태 코드는 AA123 형식이어야 합니다")
     private String userStateCode;
 
-    @NotBlank(message = "클래스명은 필수 항목입니다")
-    @Size(max = 50, message = "클래스명은 최대 50 자리의 문자를 입력해주세요")
+//    @NotBlank(message = "클래스명은 필수 항목입니다")
+//    @Size(max = 50, message = "클래스명은 최대 50 자리의 문자를 입력해주세요")
     private String className;
     
     @NotBlank(message = "업무 권한 코드는 필수 항목입니다")
@@ -115,6 +115,7 @@ public class FwkUserDTO implements Cloneable {	// Spider 사용자 정보 DTO
 
 
 
+    
 
 	@Override
 	public FwkUserDTO clone() throws CloneNotSupportedException {

@@ -384,14 +384,17 @@
 		                         </a>
 		                         <div class="collapse" id="sidebarAuthentication">
 		                              <ul class="nav sub-navbar-nav">
-		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/slow">지연어플리케이션</a>
+		                              	   <li class="sub-nav-item">
+		                                        <a target="_blank" class="sub-nav-link" href="/admin">전체 어플리케이션</a>
 		                                   </li>
 		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/errors">오류어플리케이션</a>
+		                                        <a class="sub-nav-link" href="/admin/slow">지연 어플리케이션</a>
 		                                   </li>
 		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/table">테이블영향도</a>
+		                                        <a class="sub-nav-link" href="/admin/errors">오류 어플리케이션</a>
+		                                   </li>
+		                                   <li class="sub-nav-item">
+		                                        <a class="sub-nav-link" href="/admin/table">테이블 영향도</a>
 		                                   </li>
 		                              </ul>
 		                         </div>
@@ -761,15 +764,15 @@
 		<h2 class="mb-4 text-center"><a href="/admin/slow">지연 어플리케이션 관리</a></h2>
 		
 		
-		<form id="searchForm" action="/admin/slow" method="get">
-			<input type="datetime-local" name="startTime" placeholder="시작 시간" />
-	   		<input type="datetime-local" name="endTime" placeholder="종료 시간" />
-		    <input type="text" name="traceId" placeholder="추적 ID" />
-		    <input type="text" name="userId" placeholder="사용자 ID" />
-		    <input type="text" name="ipAddress" placeholder="IP 주소" />
-		    <input type="text" name="uri" placeholder="URI" />
-			<input type="text" name="executeResult" placeholder="소요시간" />
-		    <button type="submit">검색</button>
+		<form id="searchForm" action="/admin/slow" method="get" class="row align-items-start">
+			<input type="datetime-local" class="col form-control me-1 border border-dark" name="startTime" placeholder="시작 시간" />
+	   		<input type="datetime-local" class="col form-control me-1 border border-dark" name="endTime" placeholder="종료 시간" />
+		    <input type="text" class="col form-control me-1 border border-dark" name="traceId" placeholder="추적 ID" />
+		    <input type="text" class="col form-control me-1 border border-dark" name="userId" placeholder="사용자 ID" />
+		    <input type="text" class="col form-control me-1 border border-dark" name="ipAddress" placeholder="IP 주소" />
+		    <input type="text" class="col form-control me-1 border border-dark" name="uri" placeholder="URI" />
+			<input type="text" class="col form-control me-1 border border-dark" name="executeResult" placeholder="소요시간(s)" />
+		    <button type="submit" style="width: 80px" class="btn btn-primary">검색</button>
 		</form>
 		<div class="table-responsive">
 		<!-- 검색 결과 없을 때 메시지 -->
@@ -785,9 +788,8 @@
 					<th scope="col">추적ID</th> <!-- 추적 아이디 -->
 					<th scope="col">IP주소</th> <!-- IP주소 -->
 					<th scope="col">종류</th> <!-- SQL 또는 PAGE -->
-					<th scope="col">URI</th> <!-- 느린 uri 출력 -->
-					<th scope="col">쿼리</th> <!-- 느린 쿼리 출력 -->
-					<th scope="col">소요시간</th> <!-- 실행 시간 출력 -->
+					<th scope="col">URI/쿼리</th> <!-- 느린 uri 출력 -->
+					<th scope="col">소요시간(ms)</th> <!-- 실행 시간 출력 -->
 					<th scope="col">사용자ID</th> <!-- 사용자 아이디 -->
 				</tr>
 			</thead>
@@ -818,15 +820,10 @@
 						<span th:if="${log.callerClass == 'SQL'}" th:text="${log.callerClass}"></span>
 						<span th:unless="${log.callerClass == 'SQL'}" th:text="${log.callerMethod}"></span>
 					</td>
-	                <!-- URI -->
+	                <!-- URI/쿼리 -->
 	                <td>
 	                    <span th:if="${log.uri != null}" th:text="${log.uri}"></span>
-	                    <span th:unless="${log.uri != null}">N/A</span>
-	                </td>
-	                <!-- 쿼리 -->
-	                <td class="text-start query">
 	                    <span th:if="${log.query != null}" th:text="${log.query}"></span>
-	                    <span th:unless="${log.query != null}">N/A</span>
 	                </td>
 					<!-- 소요시간 -->
 					<td th:text="${log.executeResult}"></td>

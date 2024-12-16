@@ -12,4 +12,5 @@ public interface AuthMapper {
 	
 	List<FwkUserDTO> findById(@Param("username") String username);
 	void updateUserSession(@Param("username") String username, @Param("sessionid") String sessionid, @Param("dtime") String dtime);
+	void insertUser(FwkUserDTO user);
 }

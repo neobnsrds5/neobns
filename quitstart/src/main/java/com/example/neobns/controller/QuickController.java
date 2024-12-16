@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +14,7 @@ import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ErrorLogDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
+import com.example.neobns.dto.TransferDTO;
 import com.example.neobns.entity.Account;
 import com.example.neobns.service.ErrorService;
 import com.example.neobns.service.QuickService;
@@ -30,6 +30,15 @@ public class QuickController {
 
 	private final QuickService quickService;
 	private final ErrorService errorService;
+	
+	// transfer 호출
+	@PostMapping("/transfer")
+	public ResponseEntity<String> callTransfer(@RequestBody TransferDTO dto){
+		log.info("이체 시작하기 위해 메인 서비스에서 호출 from : {}, to : {}, money : {}", dto.getFromAccount(), dto.getToAccount(), dto.getMoney());
+		String result = quickService.initiateTransfer(dto.getFromAccount(), dto.getToAccount(), dto.getMoney());
+		log.info("이체 서비스를 통해 이체 완료");
+		return ResponseEntity.ok(result);
+	}
 
 	@GetMapping("/")
 	public String main() {
@@ -49,18 +58,6 @@ public class QuickController {
 	public String dummy2() {
 		log.info("dummy2");
 		return "quitstart의 dummy2";
-	}
-
-	@GetMapping("/member")
-	public String getMember(@RequestParam("empNo") String empNo, @RequestParam("year") int year) {
-		log.info("empNo : {}, year : {}", empNo, year);
-		return "ok";
-	}
-
-	@GetMapping("/company/{id}")
-	public String getCompany(@PathVariable("id") String id) {
-		log.info("id : {}", id);
-		return "ok";
 	}
 
 	@PostMapping("/item")
@@ -122,7 +119,6 @@ public class QuickController {
 	public ResponseEntity<String> updateAccountJPA(@RequestBody Account account) {
 
 		quickService.addUpdateAccountJPA(account);
-
 		return ResponseEntity.ok("OK");
 	}
 	
@@ -134,7 +130,6 @@ public class QuickController {
 	// 강제로 에러를 발생시키고 싶을 때 호출한다.
 	@GetMapping("/errorBreak")
 	public String errorBreak() {
-		
 		throw new ArrayIndexOutOfBoundsException("from errorBreak");
 	}
 

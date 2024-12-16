@@ -37,8 +37,10 @@ public class SubBatch1 {
 
 		return (Step) new StepBuilder("subBatch1Step", jobRepository).tasklet((stepContribution, chunkContext) -> {
 			logger.info("Sub Batch1 실행 중");
+			logger.debug("Sub Batch1 실행 중");
 			Thread.sleep(1000);
 			logger.info("Sub Batch1 실행 완료");
+			logger.debug("Sub Batch1 실행 완료");
 			return null;
 		}, platformTransactionManager).build();
 

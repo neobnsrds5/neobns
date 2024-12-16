@@ -755,6 +755,7 @@
 		</form>
 		
 		<br/>
+		<div class="table-responsive">
 		<div th:if="${!hasResults}">
   		  <p>검색 결과가 없습니다.</p>
 		</div>
@@ -807,6 +808,7 @@
 		        </tr>
 			</tbody>
 		</table>
+		</div>
 		<div th:if="${hasResults}" class="pagination">
 		    <!-- 이전 페이지 -->
 		    <a th:href="@{/admin/table(page=${currentPage - 1}, size=10, callerMethod=${callerMethod})}" 

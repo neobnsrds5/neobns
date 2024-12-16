@@ -2,7 +2,6 @@ package com.neo.adminserver.dto;
 
 import org.apache.ibatis.type.Alias;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class LogDTO implements Cloneable {
+public class LogDTO {
 
 	private String eventId;
 	private String timestmp;
@@ -30,12 +29,5 @@ public class LogDTO implements Cloneable {
 	private String ipAddress;
 	private String device;
 	private String executeResult;
-
-	@Override
-	public LogDTO clone() throws CloneNotSupportedException {
-		return (LogDTO) super.clone();
-	}
-
-
 
 }

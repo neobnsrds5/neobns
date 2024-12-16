@@ -1,5 +1,6 @@
 package com.neobns.accounts.controller;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,25 +63,8 @@ public class AccountsController {
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201));
     }
-
-    @Operation(
-            summary = "Fetch Account Details REST API",
-            description = "REST API to fetch Customer &  Account details based on a mobile number"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "HTTP Status OK"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "HTTP Status Internal Server Error",
-                    content = @Content(
-                            schema = @Schema(implementation = ErrorResponseDto.class)
-                    )
-            )
-    }
-    )
+    
+    @RateLimiter(name= "fetchAccountDetails", fallbackMethod = "fetchAccountDetailsFallback")
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDto> fetchAccountDetails(@RequestParam
                                                                @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
@@ -88,6 +72,38 @@ public class AccountsController {
         CustomerDto customerDto = iAccountsService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
+
+    public ResponseEntity<String> fetchAccountDetailsFallback(Throwable throwable) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("잠시 후 다시 이용 바랍니다.");
+    }
+
+//    @Operation(
+//            summary = "Fetch Account Details REST API",
+//            description = "REST API to fetch Customer &  Account details based on a mobile number"
+//    )
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "HTTP Status OK"
+//            ),
+//            @ApiResponse(
+//                    responseCode = "500",
+//                    description = "HTTP Status Internal Server Error",
+//                    content = @Content(
+//                            schema = @Schema(implementation = ErrorResponseDto.class)
+//                    )
+//            )
+//    }
+//    )
+//    @GetMapping("/fetch")
+//    public ResponseEntity<CustomerDto> fetchAccountDetails2(@RequestParam
+//                                                               @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
+//                                                               String mobileNumber) {
+//        CustomerDto customerDto = iAccountsService.fetchAccount(mobileNumber);
+//        return ResponseEntity.status(HttpStatus.OK).body(customerDto);
+//    }
 
     @Operation(
             summary = "Update Account Details REST API",

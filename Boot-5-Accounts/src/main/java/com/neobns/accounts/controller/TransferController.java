@@ -22,14 +22,15 @@ public class TransferController {
 	private final ITransferService transferService;
 	
 	@GetMapping("/ex/{accountNumber}")
-	public ResponseEntity<String> makeSqlError(@PathVariable Long accountNumber){
-		System.out.println("에러쿼리컨트롤러 호출");
-		 try {
-	            List<Transfer> transfers = transferService.fetchTransfersByInvalidQuery(accountNumber);
-	            return ResponseEntity.ok("Transfers fetched successfully.");
-	        } catch (Exception e) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                    .body("Error occurred: " + e.getMessage());
-	        }
+	public ResponseEntity<String> makeSqlError(@PathVariable Long accountNumber) {
+	    System.out.println("에러쿼리컨트롤러 호출");
+	    // 예외를 잡지 않고, 서비스에서 발생한 예외를 그대로 던져서 GlobalExceptionHandler로 위임
+	    transferService.fetchTransfersByInvalidQuery(accountNumber);
+	    
+	    // 정상적인 흐름에서는 이 코드가 실행되지 않도록 함
+	    return ResponseEntity.ok("Transfers fetched successfully.");
 	}
+
+
+
 }

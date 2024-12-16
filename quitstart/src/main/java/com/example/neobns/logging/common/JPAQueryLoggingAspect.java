@@ -30,16 +30,17 @@ public class JPAQueryLoggingAspect {
 		try {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
-			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", MDC.get("methodName"));
+			MDC.put("executeResult", e.getClass().getSimpleName());
+			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"), e.getClass().getSimpleName());
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
-		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-			slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+			slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 		}
 
 		MDC.remove("executeResult");

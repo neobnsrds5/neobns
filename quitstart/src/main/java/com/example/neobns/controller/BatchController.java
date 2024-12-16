@@ -82,20 +82,5 @@ public class BatchController {
 			return "FAIL";
 		}
 	}
-	
-	@GetMapping("/batch/spiderDb/{value}")
-	public String spiderBatchTest(@PathVariable("value") String value) {
-		
-		String uniqVal = value + System.currentTimeMillis();
-		
-		JobParameters jobParameters = new JobParametersBuilder().addString("spiderBatch", uniqVal).toJobParameters();
-		
-		try {
-			jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJob"), jobParameters);
-			return "OK";
-		} catch (Exception e) {
-			return "FAIL";
-		}
-	}
 
 }

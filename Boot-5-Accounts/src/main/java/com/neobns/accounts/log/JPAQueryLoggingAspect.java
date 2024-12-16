@@ -25,21 +25,34 @@ public class JPAQueryLoggingAspect {
 
 		MDC.put("className", "SQL");
 		long start = System.currentTimeMillis();
-		
+
 		Object result = null;
 		try {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
 			MDC.put("executeResult", e.getClass().getSimpleName());
-			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"), e.getClass().getSimpleName());
+			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"),
+					e.getClass().getSimpleName());
 		}
 
-		long elapsedTime = System.currentTimeMillis() - start;
+		MDC.put("className", "SQL");
+		long start1 = System.currentTimeMillis();
+
+		Object result1 = null;
+		try {
+			result1 = joinPoint.proceed();
+		} catch (Exception e) {
+			MDC.put("executeResult", e.getClass().getSimpleName());
+			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"),
+					e.getClass().getSimpleName());
+		}
+
+		long elapsedTime = System.currentTimeMillis() - start1;
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
 		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
-		if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
+		if (result1 != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 			slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 		}
 
@@ -47,9 +60,8 @@ public class JPAQueryLoggingAspect {
 		MDC.remove("className");
 		MDC.remove("methodName");
 
-		return result;
+		return result1;
 
 	}
 
 }
-

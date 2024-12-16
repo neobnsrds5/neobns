@@ -118,6 +118,11 @@
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+			<version>3.3.3</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

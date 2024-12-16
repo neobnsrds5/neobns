@@ -20,6 +20,10 @@ spring:
     show-sql: true
 #  config:
 #    import: "optional:configserver:http://localhost:8071/"
+  boot:
+    admin:
+      client:
+        url: http://localhost:19000/admin
 
 management:
   endpoints:

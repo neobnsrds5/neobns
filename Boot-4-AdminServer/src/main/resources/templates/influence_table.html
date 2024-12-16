@@ -376,7 +376,7 @@
 		                         <div class="collapse" id="sidebarAuthentication">
 		                              <ul class="nav sub-navbar-nav">
 		                              	   <li class="sub-nav-item">
-		                                        <a target="_blank" class="sub-nav-link" href="/admin">전체 어플리케이션</a>
+		                                        <a target="_blank" class="sub-nav-link" href="/admin">어플리케이션 대시보드</a>
 		                                   </li>
 		                                   <li class="sub-nav-item">
 		                                        <a class="sub-nav-link" href="/admin/slow">지연 어플리케이션</a>
@@ -768,7 +768,6 @@
 				<tr>
 					<!-- <th scope="col"><input type="checkbox" id="select-all" class="form-check-input"></th> -->
 					<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
-					<th>종류</th> <!-- trace, slow, error -->
 		            <th>추적ID</th> <!-- 추적 아이디 -->
 		            <th>호출</th> <!-- caller_class 정보 -->
 		            <th>호출상세</th> <!-- caller_method 정보 -->
@@ -785,10 +784,7 @@
 					 -->
 		            <!-- 타임스탬프 -->
 					<td th:text="${log.timestmp}"></td>
-					<td class="logger-name">
-					    <span th:if="${log.loggerName != null}" th:text="${log.loggerName}"></span>
-					    <span th:unless="${log.loggerName != null}">N/A</span>
-					</td>
+					<!-- 추적 아이디 -->
 		            <td class="text-start">
 						<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
 	                    <span th:unless="${log.traceId != null}">N/A</span>

@@ -146,18 +146,18 @@
     <!-- table 검색 -->
     <select id="findByTable" resultType="LogDTO">
     	SELECT * FROM logging_event
-        WHERE logger_name = 'TRACE' AND caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)[[:space:]]'
+        WHERE logger_name = 'TRACE' AND caller_class = 'SQL' AND execute_result IS NULL
         <if test="callerMethod != null and callerMethod != ''">
         AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
     	</if>
-        ORDER BY timestmp
+        ORDER BY timestmp DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
     
     <select id="countSQLTable" resultType="int">
 	    SELECT COUNT(*)
 	    FROM logging_event
-	    WHERE caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)[[:space:]]'
+	    WHERE logger_name = 'TRACE' AND caller_class = 'SQL' AND execute_result IS NULL
 	    <if test="callerMethod != null and callerMethod != ''">
         AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
    		</if>

@@ -18,15 +18,7 @@ public class JPAQueryLoggingAspect {
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
 	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
-//	private static final Queue<Map<String, Object>> SLOW_QUERIES = new ConcurrentLinkedQueue<>();
-//	private static int SLOW_QUERIES_SIZE = 10;
 	public static long SLOW_QUERY_THRESHOLD_MS = 0;
-
-//	public static List<Map<String, Object>> getSlowQueries() {
-//		synchronized (SLOW_QUERIES) {
-//			return new ArrayList<>(SLOW_QUERIES);
-//		}
-//	}
 
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -44,6 +36,7 @@ public class JPAQueryLoggingAspect {
 
 		long elapsedTime = System.currentTimeMillis() - start;
 		MDC.put("executeResult", Long.toString(elapsedTime));
+
 
 		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 

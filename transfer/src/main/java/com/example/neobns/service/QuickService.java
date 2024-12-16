@@ -1,7 +1,6 @@
 package com.example.neobns.service;
 
 import com.example.neobns.dto.ItemDto;
-import com.example.neobns.mapper.QuickMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,30 +19,10 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class QuickService {
-
-    private final QuickMapper mapper;
     
     private final Environment environment;
     private Map<String, String> cachedProperties = new HashMap<>();
 
-    @CachePut(value = "item:id", key = "#itemDto.id")
-    public boolean registerItem(ItemDto itemDto){
-        log.info("Service....");
-        return true;
-    }
-    
-    @Cacheable(value = "item:id", key = "#id")
-    public ItemDto getItemById(String id){
-        ItemDto itemDto = mapper.findById(id);
-        return itemDto;
-    }
-    
-    @Cacheable(value = "item:id")
-    public List<ItemDto> getAll() {
-        List<ItemDto> results = mapper.findAll();
-        return results;
-    }
-    
     public Map<String, String> loadCurrentProperties() {
         Map<String, String> currentProperties = new HashMap<>();
 

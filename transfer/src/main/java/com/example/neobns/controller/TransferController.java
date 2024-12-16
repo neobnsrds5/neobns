@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.neobns.dto.TransferDTO;
-import com.example.neobns.service.QuickService;
 import com.example.neobns.service.TransferService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TransferController {
 	
 	private final TransferService transferService;
-	private final QuickService quickService;
 
 	@PostMapping("/transfer/ex")
 	public ResponseEntity<String> transfer(@RequestBody TransferDTO request){
@@ -59,12 +57,12 @@ public class TransferController {
     
     @PostMapping("/check-changes")
     public Map<String, String> checkForChanges() {
-        return quickService.checkForChanges();
+        return transferService.checkForChanges();
     }
     
     @GetMapping("/properties")
     public Map<String, String> getProperties() {
-        return quickService.loadCurrentProperties();
+        return transferService.loadCurrentProperties();
     }
 
 }

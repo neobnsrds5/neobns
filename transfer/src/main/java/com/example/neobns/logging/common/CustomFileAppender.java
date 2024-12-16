@@ -22,7 +22,6 @@ public class CustomFileAppender extends FileAppender<ILoggingEvent> {
 	
 	@Override
 	protected void append(ILoggingEvent eventObject) {
-		// TODO Auto-generated method stub
 		super.append(eventObject);
 		
 		try (Producer<String, String> producer = new KafkaProducer<>(getProps())){
@@ -34,7 +33,6 @@ public class CustomFileAppender extends FileAppender<ILoggingEvent> {
 	
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		super.stop();
 	}
 }

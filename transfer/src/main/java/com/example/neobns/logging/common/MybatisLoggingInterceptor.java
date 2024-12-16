@@ -55,7 +55,6 @@ public class MybatisLoggingInterceptor implements Interceptor {
         String rawSql = getRootSqlNode(sqlSource).replaceAll("\\s+", " ").trim(); // 바운딩 전 SQL
 
 		MDC.put("queryLog", rawSql);
-		
 		MDC.put("className", "SQL");
         MDC.put("methodName", rawSql);
         traceLogger.info("[{}] [{} : {}]", MDC.get("requestId"), "SQL", rawSql);

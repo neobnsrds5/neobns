@@ -25,13 +25,14 @@ public class JPAQueryLoggingAspect {
 
 		MDC.put("className", "SQL");
 		long start = System.currentTimeMillis();
-		
+
 		Object result = null;
 		try {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
 			MDC.put("executeResult", e.getClass().getSimpleName());
-			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"), e.getClass().getSimpleName());
+			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"),
+					e.getClass().getSimpleName());
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;

@@ -46,7 +46,7 @@ public class BatchHistoryService {
 				? jobExecution.getEndTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
 				: logDtime;
 		String resRtCode = jobExecution.getStatus().isUnsuccessful() ? "1" : "0";
-		String lastUpdateUserId = MDC.get("userId") != null ? MDC.get("userId") : "Missed-ID";
+		String lastUpdateUserId = MDC.get("userId");
 		String errorCode = jobExecution.getExitStatus().getExitCode().equals("COMPLETED") ? "정상" : "비정상";
 		String errorReason = jobExecution.getExitStatus().getExitDescription().length() > maxLen
 				? jobExecution.getExitStatus().getExitDescription().substring(0, maxLen)

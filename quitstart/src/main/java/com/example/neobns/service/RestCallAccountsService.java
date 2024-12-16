@@ -47,16 +47,20 @@ public class RestCallAccountsService {
 	}
 	
 	public String initiateESql(Long accountNumber) {
-		
-		String url = accountsUrl + "/transfers/ex/";
-		
-		try {
-			ResponseEntity<String> response = restTemplate.getForEntity(url+accountNumber, String.class);
-			return response.getBody();
-		}catch (HttpClientErrorException | org.springframework.web.server.ResponseStatusException e) {
-            // 오류가 발생하면 오류 메시지 출력
-            return "Error occurred while calling the external API: " + e.getMessage();
-        }
-		
+	    String url = accountsUrl + "/transfers/ex/";
+	    try {
+	        log.info("외부 에러 쿼리 어플리케이션 호출");
+	        ResponseEntity<String> response = restTemplate.getForEntity(url + accountNumber, String.class);
+	        log.info("외부 에러 쿼리 어플리케이션 결과 : {}", response.getStatusCode());
+	        return response.getBody();
+	    } catch (HttpClientErrorException e) {
+	        log.error("HTTP Error: Status Code {}, Response Body: {}", e.getStatusCode(), e.getResponseBodyAsString());
+	        throw e; // 예외를 다시 던져 컨트롤러에서 처리하도록 위임
+	    } catch (Exception e) {
+	        log.error("Unexpected error occurred: {}", e.getMessage(), e);
+	        throw new RuntimeException("Unexpected error occurred: " + e.getMessage(), e);
+	    }
 	}
+
+
 }

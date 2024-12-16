@@ -3,15 +3,12 @@ package com.neo.adminserver.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
 import com.neo.adminserver.mapper.LogMapper;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service

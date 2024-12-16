@@ -14,8 +14,10 @@ private List<String> messagesList = new ArrayList<>();
 	@KafkaListener(topics = "logs", groupId = "example-group")
 	public void listen(ConsumerRecord<String, String> record) {
 		String message = record.value().trim();
+		if (messagesList.size() >= 100) {
+			messagesList.clear();
+		}
 		messagesList.add(message);
-		System.out.println(message);
 	}
 	
 	public List<String> getMessages(){

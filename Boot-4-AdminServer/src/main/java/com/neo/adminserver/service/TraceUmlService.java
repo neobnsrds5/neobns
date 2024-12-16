@@ -185,7 +185,7 @@ public class TraceUmlService {
 			
 			System.out.println(i + " : " + curUml.getSource() + " : "+ curUml.getContent() + " : " + curUml.getColor());
 			
-			if(curUml.getSource().equals("Database") && nextUml.getSource().equals("Database")) {
+			if(curUml.getSource().equals(nextUml.getSource())) {
 				
 				UmlDTO prevUml = umlList.get(i-1);
 				UmlDTO afterUml = umlList.get(i+2);

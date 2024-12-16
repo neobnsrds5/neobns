@@ -1,13 +1,5 @@
 package com.example.neobns.logging.common;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -42,12 +34,7 @@ public class JPAQueryLoggingAspect {
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;
-
-		if (result == null) {
-			MDC.remove("executeResult");
-		} else {
-			MDC.put("executeResult", Long.toString(elapsedTime));
-		}
+		MDC.put("executeResult", Long.toString(elapsedTime));
 
 		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 

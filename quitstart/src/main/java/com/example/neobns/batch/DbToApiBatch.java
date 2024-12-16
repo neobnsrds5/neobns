@@ -108,7 +108,7 @@ public class DbToApiBatch {
 			public AccountDTO process(Map<String, Object> item) throws Exception {
 				
 				String threadName = Thread.currentThread().getName();
-				System.out.println("Processing item: " + item.toString() + " on Thread: " + threadName);
+				System.out.println("\tProcessing item: " + item.toString() + " on Thread: " + threadName);
 				// dummy processor logic 추가
 				for (int i = 0; i < item.size(); i++) {
 					System.out.println("dummy processor is processing " + item.toString());

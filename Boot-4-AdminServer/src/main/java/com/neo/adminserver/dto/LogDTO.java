@@ -2,7 +2,6 @@ package com.neo.adminserver.dto;
 
 import org.apache.ibatis.type.Alias;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Scalar.String;
 
 import lombok.Getter;
 import lombok.Setter;

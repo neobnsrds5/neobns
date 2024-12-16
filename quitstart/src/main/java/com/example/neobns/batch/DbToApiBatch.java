@@ -109,10 +109,11 @@ public class DbToApiBatch {
 				
 				String threadName = Thread.currentThread().getName();
 				System.out.println("\tProcessing item: " + item.toString() + " on Thread: " + threadName);
+				System.out.println("dummy processor is processing " + item.toString());
 				// dummy processor logic 추가
-				for (int i = 0; i < item.size(); i++) {
-					System.out.println("dummy processor is processing " + item.toString());
-				}
+//				for (int i = 0; i < item.size(); i++) {
+//					System.out.println("dummy processor is processing " + item.toString());
+//				}
 
 				AccountDTO result = new AccountDTO();
 				result.setId((long) item.get("id"));

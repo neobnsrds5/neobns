@@ -70,10 +70,11 @@ public class LogFileToDbBatch {
 			public LogDTO process(LogDTO item) throws Exception {
 				String threadName = Thread.currentThread().getName();
 				System.out.println("\tProcessing item: " + item.toString() + " on Thread: " + threadName);
+				System.out.println("dummy processor is processing " + item.toString());
 				// dummy processor logic 추가
-				for (int i = 0; i < 5; i++) {
-					System.out.println("dummy processor is processing3 " + item.toString());
-				}
+//				for (int i = 0; i < 5; i++) {
+//					System.out.println("dummy processor is processing3 " + item.toString());
+//				}
 				return item;
 			}
 		};

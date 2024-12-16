@@ -14,7 +14,6 @@ public class TransferService {
 	private final TransferMapper transferMapper;
 	
 	public void insertTransferDetail(TransferDTO transferDTO) {
-		
 		transferMapper.insertTransferDetails(transferDTO);
 	}
 }

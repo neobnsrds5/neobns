@@ -40,6 +40,7 @@ public class TraceUmlService {
 			}
 		}
 
+		System.out.println("===== traceList =====");
 		for (int i = 0; i < traceList.size(); i++) {
 			LogDTO log = traceList.get(i);
 			LogDTO stateLog = null;
@@ -47,6 +48,8 @@ public class TraceUmlService {
 			String callerClass = log.getCallerClass();
 			String callerMethod = log.getCallerMethod();
 			String executeResult = log.getExecuteResult();
+			
+			System.out.println(callerClass + " : " + callerMethod + " : " + executeResult);
 
 			if (i == 0 && umlList.size() == 1) {
 				uml.setSource("Gateway");
@@ -169,6 +172,12 @@ public class TraceUmlService {
 		}
 
 		umlList.add(new UmlDTO("User", "", "black"));
+		
+		System.out.println("===== umlList =====");
+		for(UmlDTO uml : umlList) {
+			System.out.println(uml.source + " : " + uml.content + " : " + uml.color);
+		}
+		
 		return buildUmlDiagram(umlList);
 	}
 
@@ -185,7 +194,7 @@ public class TraceUmlService {
 			
 			System.out.println(i + " : " + curUml.getSource() + " : "+ curUml.getContent() + " : " + curUml.getColor());
 			
-			if(curUml.getSource().equals("Database") && nextUml.getSource().equals("Database")) {
+			if(curUml.getSource().equals(nextUml.getSource())) {
 				
 				UmlDTO prevUml = umlList.get(i-1);
 				UmlDTO afterUml = umlList.get(i+2);

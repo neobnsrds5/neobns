@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TransferServiceImpl implements ITransferService {
 
 	private final TransferRepository transferRepository;
+	
 	private final Logger logger = LoggerFactory.getLogger(TransferServiceImpl.class);
 
 	public List<Transfer> fetchTransfersByInvalidQuery(Long accountNumber) {

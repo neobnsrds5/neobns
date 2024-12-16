@@ -1,5 +1,6 @@
 package com.example.neobns.controller;
 
+import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ItemDto;
 import com.example.neobns.dto.ResponseDto;
 import com.example.neobns.dto.TransferDTO;
@@ -86,6 +87,11 @@ public class QuickController {
     @GetMapping("/properties")
     public Map<String, String> getProperties() {
         return quickService.loadCurrentProperties();
+    }
+    
+    @PostMapping("/test")
+    public String apiBatchTest(@RequestBody AccountDTO dto) {
+    	return "[SUCCESS]" + dto.toString();
     }
 
     

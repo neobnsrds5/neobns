@@ -128,7 +128,7 @@ public class DbToApiBatch {
 	}
 
 	private void sendToApi(AccountDTO data) {
-		String result = restTemplate.postForObject("http://localhost:8084/test", data, String.class);
+		String result = restTemplate.postForObject("http://localhost:8090/test", data, String.class);
 		System.out.println("API 응답 : " + result);
 	}
 

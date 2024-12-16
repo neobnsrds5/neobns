@@ -18,7 +18,6 @@ public class JPAQueryLoggingAspect {
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
 	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
-
 	public static long SLOW_QUERY_THRESHOLD_MS = 0;
 
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
@@ -31,16 +30,20 @@ public class JPAQueryLoggingAspect {
 		try {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
-			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", MDC.get("methodName"));
+			MDC.put("executeResult", e.getClass().getSimpleName());
+			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"), e.getClass().getSimpleName());
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;
+		MDC.put("executeResult", Long.toString(elapsedTime));
+
 
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
 		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
+
 
 			slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
@@ -54,3 +57,4 @@ public class JPAQueryLoggingAspect {
 	}
 
 }
+

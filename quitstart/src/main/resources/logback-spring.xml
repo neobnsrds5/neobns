@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
+
+    <logger name="org.apache.kafka" level="WARN"/>
+    
 	<!-- 콘솔에 로그 출력 -->
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>

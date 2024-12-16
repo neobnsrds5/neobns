@@ -1,13 +1,5 @@
 package com.example.neobns.logging.common;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -46,21 +38,17 @@ public class JPAQueryLoggingAspect {
 		try {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
-			errorLogger.error("{}; {}; {}; ", MDC.get("requestId"), "SQL", MDC.get("methodName"));
+			MDC.put("executeResult", e.getClass().getSimpleName());
+			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"), e.getClass().getSimpleName());
 		}
 
 		long elapsedTime = System.currentTimeMillis() - start;
+		MDC.put("executeResult", Long.toString(elapsedTime));
 
-		if (result == null) {
-			MDC.remove("executeResult");
-		} else {
-			MDC.put("executeResult", Long.toString(elapsedTime));
-		}
-
-		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
-			slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
+			slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 		}
 
 		MDC.remove("executeResult");

@@ -37,7 +37,6 @@ public class JPAQueryLoggingAspect {
 		long elapsedTime = System.currentTimeMillis() - start;
 		MDC.put("executeResult", Long.toString(elapsedTime));
 
-
 		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", MDC.get("methodName"), elapsedTime);
 
 		if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {

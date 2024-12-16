@@ -1,6 +1,5 @@
 package com.example.neobns.controller;
 
-import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.TransferDTO;
 import com.example.neobns.service.QuickService;
 import lombok.RequiredArgsConstructor;
@@ -46,11 +45,6 @@ public class QuickController {
     @GetMapping("/properties")
     public Map<String, String> getProperties() {
         return quickService.loadCurrentProperties();
-    }
-    
-    @PostMapping("/test")
-    public String apiBatchTest(@RequestBody AccountDTO dto) {
-    	return "[SUCCESS]" + dto.toString();
     }
 
     

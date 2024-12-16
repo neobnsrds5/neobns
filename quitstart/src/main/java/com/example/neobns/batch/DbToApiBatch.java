@@ -108,7 +108,7 @@ public class DbToApiBatch {
 			public AccountDTO process(Map<String, Object> item) throws Exception {
 				
 				String threadName = Thread.currentThread().getName();
-				System.out.println("Processing item: " + item.toString() + " on Thread: " + threadName);
+				System.out.println("\tProcessing item: " + item.toString() + " on Thread: " + threadName);
 				// dummy processor logic 추가
 				for (int i = 0; i < item.size(); i++) {
 					System.out.println("dummy processor is processing " + item.toString());
@@ -130,7 +130,7 @@ public class DbToApiBatch {
 	}
 
 	private void sendToApi(AccountDTO data) {
-		String result = restTemplate.postForObject("http://localhost:8090/test", data, String.class);
+		String result = restTemplate.postForObject("http://localhost:8084/test", data, String.class);
 		System.out.println("API 응답 : " + result);
 	}
 

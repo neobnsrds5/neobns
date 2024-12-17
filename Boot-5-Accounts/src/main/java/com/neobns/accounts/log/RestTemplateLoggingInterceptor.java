@@ -17,7 +17,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
 	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
-	public static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로...
+	public static final long SLOW_PAGE_THRESHOLD_MS = 1000; // slow page 기준, 나중에 환경 변수로...
 
 	private static final String REQUEST_ID_HEADER = "X-Request-ID";
 	private static final String USER_ID_HEADER = "X-User-ID";

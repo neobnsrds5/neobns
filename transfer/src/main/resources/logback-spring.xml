@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
+
+    <logger name="org.apache.kafka" level="WARN"/>
+    
 	<!-- 콘솔에 로그 출력 -->
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -14,6 +17,7 @@
             <evaluator>
                 <expression>
                 	mdc.get("requestId") != null &amp;&amp;
+                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
                 	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
                	</expression>
             </evaluator>
@@ -40,6 +44,7 @@
 			<evaluator>
 				<expression>
                 	mdc.get("requestId") != null &amp;&amp;
+                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
                 	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
                	</expression>
 			</evaluator>
@@ -137,6 +142,7 @@
 				<expression>
 					mdc.get("requestId") != null &amp;&amp;
 					logger.equals("ERROR") &amp;&amp;
+					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
 					!((String) mdc.get("className")).equals("SQL")
 				</expression>
 			</evaluator>
@@ -162,6 +168,7 @@
 					mdc.get("requestId") != null &amp;&amp;
 					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
 					mdc.get("executeResult") != null &amp;&amp;
+					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
 					!((String) mdc.get("className")).equals("SQL")
 				</expression>
 			</evaluator>

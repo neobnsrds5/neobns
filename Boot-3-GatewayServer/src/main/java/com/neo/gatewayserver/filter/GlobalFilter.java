@@ -28,7 +28,7 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 	
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
-	private static final long SLOW_PAGE_THRESHOLD_MS = 10; // slow page 기준, 나중에 환경 변수로 빼기..!
+	private static final long SLOW_PAGE_THRESHOLD_MS = 1000; // slow page 기준, 나중에 환경 변수로 빼기..!
 
 	public GlobalFilter() {
 		super(Config.class);

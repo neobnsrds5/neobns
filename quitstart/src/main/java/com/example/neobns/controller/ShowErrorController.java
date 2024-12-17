@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.neobns.dto.FwkErrorHisDto;
@@ -26,5 +27,11 @@ public class ShowErrorController {
 	@ResponseBody
 	public List<FwkErrorHisDto> getErrors(){
 		return mapper.getRecords(0L);
+	}
+	
+	@GetMapping("/testQuery/{val}")
+	@ResponseBody
+	public List<FwkErrorHisDto> getSum(@PathVariable("val") long val){
+		return mapper.getRecords(val);
 	}
 }

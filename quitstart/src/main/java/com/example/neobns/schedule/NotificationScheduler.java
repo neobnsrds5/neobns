@@ -23,6 +23,7 @@ public class NotificationScheduler {
     private static final Logger log = LoggerFactory.getLogger(NotificationScheduler.class);
     
     private static long maxId = 0;
+    private static boolean isFirst = true;
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 //    private final ErrorMapper errorMapper;
@@ -33,14 +34,19 @@ public class NotificationScheduler {
     public void publishErrorEvent() {
         log.info("Publishing events");
 //        List<ErrorLogDTO> results = errorMapper.getRecord(maxId);
-        if (maxId == 0) {
+        if (isFirst && maxId == 0) {
         	maxId += oracleMapper.getCount();
+        	isFirst = false;
         }
         List<FwkErrorHisDto> results = oracleMapper.getRecords(maxId);
         
-        maxId += 20;
+        maxId += results.size();
+//        
+//        System.out.println(results.get(0).getErrorCode() + " + " + results.get(0).getErrorMessage());
+//        System.out.println(results.size());
         
         results.forEach(dto -> {
+//        	System.out.println(dto.getErrorCode());
         	simpMessagingTemplate.convertAndSend("/topic/error", dto);});
     }
 }

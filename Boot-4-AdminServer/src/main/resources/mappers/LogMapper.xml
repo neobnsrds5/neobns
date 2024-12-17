@@ -146,7 +146,7 @@
     <!-- table 검색 -->
     <select id="findByTable" resultType="LogDTO">
     	SELECT * FROM logging_event
-        WHERE logger_name = 'TRACE' AND caller_class = 'SQL' AND execute_result IS NULL
+        WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class LIKE 'com%'
         <if test="callerMethod != null and callerMethod != ''">
         AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
     	</if>
@@ -157,7 +157,7 @@
     <select id="countSQLTable" resultType="int">
 	    SELECT COUNT(*)
 	    FROM logging_event
-	    WHERE logger_name = 'TRACE' AND caller_class = 'SQL' AND execute_result IS NULL
+	    WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class LIKE 'com%'
 	    <if test="callerMethod != null and callerMethod != ''">
         AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
    		</if>

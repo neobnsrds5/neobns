@@ -20,7 +20,7 @@
             FROM (
                 SELECT t.*, ROWNUM as rnum
                 FROM SYSTEM.FWK_ERROR_HIS t
-                WHERE ROWNUM <= #{startLine} + 20;
+                WHERE ROWNUM <= #{startLine} + 20
             )
             WHERE rnum > #{startLine}
         ]]>

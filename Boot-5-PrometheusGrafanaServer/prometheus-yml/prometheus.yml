@@ -26,22 +26,38 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ["localhost:9090"]
+      - targets: ["3.37.155.242:9090"]
 
 
   - job_name: "gateway"
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ["localhost:8000"]
+      - targets: ["3.37.155.242:8000"]
 
 
   - job_name: "quick_start"
     metrics_path: "/quitstart/actuator/prometheus"
     static_configs:
-      - targets: ["localhost:8000"]
+      - targets: ["3.37.155.242:8000"]
 
   - job_name: "transfer"
     metrics_path: "/transfer/actuator/prometheus"
     static_configs:
-      - targets: ["localhost:8000"]
+      - targets: ["3.37.155.242:8000"]
+
   
+  - job_name: "accounts"
+    metrics_path: "/accounts/actuator/prometheus"
+    static_configs:
+      - targets: ["3.37.155.242:18072"]
+
+
+  - job_name: "cards"
+    metrics_path: "/cards/actuator/prometheus"
+    static_configs:
+      - targets: ["3.37.155.242:18072"]
+
+  - job_name: "loans"
+    metrics_path: "/loans/actuator/prometheus"
+    static_configs:
+      - targets: ["3.37.155.242:18072"]    

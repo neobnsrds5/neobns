@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 public class KafkaService {
 private List<String> messagesList = new ArrayList<>();
 	
-	@KafkaListener(topics = "logs", groupId = "example-group")
-	public void listen(ConsumerRecord<String, String> record) {
-		String message = record.value().trim();
-		if (messagesList.size() >= 100) {
-			messagesList.clear();
-		}
-		messagesList.add(message);
-	}
+//	@KafkaListener(topics = "logs", groupId = "example-group")
+//	public void listen(ConsumerRecord<String, String> record) {
+//		String message = record.value().trim();
+//		if (messagesList.size() >= 100) {
+//			messagesList.clear();
+//		}
+//		messagesList.add(message);
+//	}
 	
 	public List<String> getMessages(){
 		return messagesList;

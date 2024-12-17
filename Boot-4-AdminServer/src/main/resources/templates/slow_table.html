@@ -834,21 +834,25 @@
 		</table>
 		</div>
 		<div th:if="${hasResults}" class="pagination">
-		    <!-- 이전 페이지 -->
-		    <a th:href="@{/admin/slow(page=${currentPage - 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}" 
-		       th:if="${currentPage > 1}">이전</a>
+		    <!-- 이전 페이지 그룹 -->
+    		<a th:if="${currentPage > 10}" 
+		       th:href="@{/admin/slow(page=${currentPage - 10}, size=${size}, startTime=${startTime}, endTime=${endTime}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}">
+		       이전
+		    </a>
 		
-		    <!-- 페이지 번호 -->
-		    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
-		        <a th:href="@{/admin/slow(page=${page}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}"
-		           th:classappend="${page == currentPage} ? 'active' : ''">
-		            <span th:text="${page}"></span>
+		    <!-- 페이지 번호 표시 -->
+		    <span th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
+		        <a th:href="@{/admin/slow(page=${pageNum}, size=${size}, startTime=${startTime}, endTime=${endTime}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}"
+		           th:classappend="${pageNum == currentPage} ? 'active' : ''">
+		            <span th:text="${pageNum}"></span>
 		        </a>
 		    </span>
 		
-		    <!-- 다음 페이지 -->
-		    <a th:href="@{/admin/slow(page=${currentPage + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}" 
-		       th:if="${currentPage < totalPages}">다음</a>
+		    <!-- 다음 페이지 그룹 -->
+		    <a th:if="${currentPage + 10 <= totalPages}" 
+		       th:href="@{/admin/slow(page=${currentPage + 10}, size=${size}, startTime=${startTime}, endTime=${endTime}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}">
+		       다음
+		    </a>
 		</div>
 	</div>
 	

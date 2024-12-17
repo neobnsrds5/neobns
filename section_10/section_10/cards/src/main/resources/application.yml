@@ -26,24 +26,40 @@ spring:
         url: http://localhost:19000/admin
 
 management:
+  httpexchanges:
+    recording:
+      enabled: true
   endpoints:
     web:
       exposure:
         include: "*"
+      base-path: /actuator  
   health:
     readiness-state:
       enabled: true
     liveness-state:
       enabled: true
   endpoint:
+    metrics:
+      enabled: true
     shutdown:
       enabled: true
     health:
+      show-details: always
       probes:
         enabled: true
+    prometheus:
+      enabled: true  
+    env:
+      enabled: true
+    busrefresh:
+      enabled: true      
   info:
     env:
       enabled: true
+  metrics:
+    enable:
+      hikaricp: true    
 
 endpoints:
   shutdown:

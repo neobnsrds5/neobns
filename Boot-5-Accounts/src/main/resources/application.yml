@@ -18,6 +18,33 @@ spring:
     admin:
       client:
         url: http://localhost:19000/admin  
+        
+management:
+  httpexchanges:
+    recording:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /actuator
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      show-details: always
+    prometheus:
+      enabled: true  
+    env:
+      enabled: true
+    busrefresh:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    enable:
+      hikaricp: true
     
     
 eureka:

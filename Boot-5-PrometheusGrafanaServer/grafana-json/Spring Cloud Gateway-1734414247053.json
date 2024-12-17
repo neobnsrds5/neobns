@@ -184,10 +184,10 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\"}) / sum(http_client_requests_seconds_count{job=\"gateway\"})",
+          "expr": "sum by (job)(http_client_requests_seconds_sum) / sum by (job)(http_client_requests_seconds_count)",
           "hide": false,
           "instant": false,
-          "legendFormat": "gateway",
+          "legendFormat": "평균 HTTP 요청 처리 시간({{job}})",
           "range": true,
           "refId": "B"
         },
@@ -197,36 +197,10 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\"}) / sum(http_client_requests_seconds_sum{job=\"quick_start\"})",
+          "expr": "sum by (job)(http_client_requests_seconds_sum{method=\"GET\"}) /\r\nsum by (job)(http_client_requests_seconds_count{method=\"GET\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "quick start",
-          "range": true,
-          "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\"}) / sum(http_client_requests_seconds_count{job=\"transfer\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "transfer",
-          "range": true,
-          "refId": "D"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{method=\"GET\"}) /\r\nsum(http_client_requests_seconds_count{method=\"GET\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "GET 전체",
+          "legendFormat": "GET 전체({{job}})",
           "range": true,
           "refId": "E"
         },
@@ -236,10 +210,10 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{method=\"POST\"}) /\r\nsum(http_client_requests_seconds_count{method=\"POST\"})",
+          "expr": "sum by (job)(http_client_requests_seconds_sum{method=\"POST\"}) /\r\nsum by (job)(http_client_requests_seconds_count{method=\"POST\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "POST 전체",
+          "legendFormat": "POST 전체({{job}})",
           "range": true,
           "refId": "F"
         }
@@ -329,41 +303,15 @@
       "pluginVersion": "11.3.1",
       "targets": [
         {
-          "editorMode": "code",
-          "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"gateway\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"gateway\"}[10s]) > bool 0.005",
-          "legendFormat": "gateway",
-          "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"quick_start\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"quick_start\"}[10s]) > bool 0.005",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
+          "expr": "sum by (job) (avg_over_time(http_client_requests_seconds_sum[1s])) \r\n/ \r\nsum by (job) (avg_over_time(http_client_requests_seconds_count[1s]))\r\n> bool 0.005",
+          "legendFormat": "1초 초과 요청 여부({{job}})",
           "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"transfer\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"transfer\"}[10s]) > bool 0.005",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "POST 1초 초과",
-          "range": true,
-          "refId": "C"
+          "refId": "A"
         }
       ],
       "title": "느린 쿼리 단위시간 당 발생 여부",
@@ -464,15 +412,15 @@
       "pluginVersion": "11.3.1",
       "targets": [
         {
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\"2..\"})",
-          "legendFormat": "gateway 정상",
-          "range": true,
-          "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
-          }
+          },
+          "editorMode": "code",
+          "expr": "sum by (job)(http_client_requests_seconds_sum{status=~\"2..\"}) / \r\nsum by (job)(http_client_requests_seconds_count{status=~\"2..\"})",
+          "legendFormat": "gateway 정상({{job}})",
+          "range": true,
+          "refId": "A"
         },
         {
           "datasource": {
@@ -480,64 +428,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"2..\"})",
+          "expr": "sum by (job)(http_client_requests_seconds_sum{status=~\".*ERROR|4..|5..\"}) / \r\nsum by (job)(http_client_requests_seconds_count{status=~\".*ERROR|4..|5..\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "quick start 정상",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\".*ERROR|4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\".*ERROR|4..|5..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "gateway 에러",
+          "legendFormat": "gateway 에러({{job}})",
           "range": true,
           "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"4..|5..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "quick start 에러",
-          "range": true,
-          "refId": "D"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"2..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "transfer 정상",
-          "range": true,
-          "refId": "E"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"4..|5..\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "transfer 에러",
-          "range": true,
-          "refId": "F"
         }
       ],
       "title": "평균 에러 발생 시간",
@@ -553,7 +449,7 @@
       },
       "id": 50,
       "panels": [],
-      "title": "Total Throughput",
+      "title": "총 처리량",
       "type": "row"
     },
     {
@@ -582,7 +478,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -626,19 +523,19 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "builder",
-          "expr": "sum(spring_cloud_gateway_requests_seconds_count{job=~\"gateway\"})",
+          "editorMode": "code",
+          "expr": "sum by (job)(spring_cloud_gateway_requests_seconds_count)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "",
+          "legendFormat": "게이트웨이 통한 총 요청 수{{job}}",
           "metric": "gateway_requests_seconds_count",
           "range": true,
           "refId": "A",
           "step": 1200
         }
       ],
-      "title": "Total Requests Served",
+      "title": "게이트웨이 총 요청 수",
       "type": "stat"
     },
     {
@@ -667,7 +564,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -712,18 +610,18 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", job=~\"gateway\"})",
+          "expr": "sum by (job)(spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", job=~\"gateway\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "",
+          "legendFormat": "게이트웨이 총 성공 리퀘스트 수{{label_name}}",
           "metric": "gateway_requests_seconds_count",
           "range": true,
           "refId": "A",
           "step": 1200
         }
       ],
-      "title": "Total Successful Requests Served",
+      "title": "게이트웨이 총 성공 수",
       "type": "stat"
     },
     {
@@ -752,7 +650,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -797,18 +696,18 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", job=~\"gateway\"})",
+          "expr": "sum by (job)(spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "",
+          "legendFormat": "게이트웨이 실패 수{{job}}",
           "metric": "gateway_requests_seconds_count",
           "range": true,
           "refId": "A",
           "step": 1200
         }
       ],
-      "title": "Total Unsuccessful Requests Served",
+      "title": "게이트웨이 실패 수",
       "type": "stat"
     },
     {
@@ -821,7 +720,7 @@
       },
       "id": 51,
       "panels": [],
-      "title": "Request Processing Time",
+      "title": "리퀘스트 수행 시간",
       "type": "row"
     },
     {
@@ -872,7 +771,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -912,11 +812,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "spring_cloud_gateway_requests_seconds_sum{routeId=~\"quitstart\", job=~\"gateway\"}/spring_cloud_gateway_requests_seconds_count{routeId=~\"quitstart\", job=~\"gateway\"}",
+          "expr": "sum by (job, routeId) (rate(spring_cloud_gateway_requests_seconds_sum[1m]))\r\n/\r\nsum by (job, routeId) (rate(spring_cloud_gateway_requests_seconds_count[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ status }}",
+          "legendFormat": "평균 요청 처리 시간({{job}} : {{routeId}})",
           "metric": "gateway_api_time_seconds_sum",
           "range": true,
           "refId": "A",
@@ -927,11 +827,9 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
-          "expr": "spring_cloud_gateway_requests_seconds_sum{routeId=~\"transfer\", job=~\"gateway\"}/spring_cloud_gateway_requests_seconds_count{routeId=~\"transfer\", job=~\"gateway\"}",
+          "expr": "",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
           "range": true,
           "refId": "B"
         }
@@ -949,7 +847,7 @@
       },
       "id": 52,
       "panels": [],
-      "title": "Successful API Calls",
+      "title": "API 요청",
       "type": "row"
     },
     {
@@ -1001,7 +899,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1041,46 +940,20 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", routeId=~\"quitstart\", job=~\"gateway\"}",
+          "expr": "sum by (job, routeId) (rate(spring_cloud_gateway_requests_seconds_count[1m]))",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ job }} / {{ routeUri }}",
+          "legendFormat": "분당 HTTP 요청 수({{ job }} - {{ routeId }})",
           "metric": "gateway_requests_seconds_count",
           "range": true,
           "refId": "A",
           "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", routeId=~\"transfer\", job=~\"gateway\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
         }
       ],
-      "title": "$routeId Success API Gateway Calls",
+      "title": "전체 API 게이트웨이 요청",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 46
-      },
-      "id": 53,
-      "panels": [],
-      "title": "Unsuccessful API Calls",
-      "type": "row"
     },
     {
       "datasource": {
@@ -1131,7 +1004,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1144,9 +1018,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
-        "x": 0,
-        "y": 47
+        "w": 7,
+        "x": 6,
+        "y": 39
       },
       "id": 3,
       "options": {
@@ -1171,31 +1045,120 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", routeId=~\"quitstart\", job=~\"gateway\"}",
+          "expr": "sum by (job, routeId) (\r\n    spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\"}\r\n)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ job }} / {{ routeUri }}",
+          "legendFormat": "성공 요청 수 ({{ job }} - {{ routeId}})",
           "metric": "gateway_requests_seconds_count",
           "range": true,
           "refId": "A",
           "step": 240
+        }
+      ],
+      "title": "성공 API 요청",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 13,
+        "y": 39
+      },
+      "id": 87,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", routeId=~\"transfer\", job=~\"gateway\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
+          "expr": "sum by (job, routeId) (\r\n    spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\"}\r\n)",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "실패 요청 수 ({{ job }} - {{ routeId}})",
+          "metric": "gateway_requests_seconds_count",
           "range": true,
-          "refId": "B"
+          "refId": "A",
+          "step": 240
         }
       ],
-      "title": "$routeId Unsuccessful GW Calls",
+      "title": "실패 API 요청",
       "type": "timeseries"
     },
     {
@@ -1204,11 +1167,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 46
       },
       "id": 54,
       "panels": [],
-      "title": "API / HTTP Status",
+      "title": "API / HTTP 상태",
       "type": "row"
     },
     {
@@ -1260,7 +1223,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1275,7 +1239,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 55
+        "y": 47
       },
       "id": 35,
       "options": {
@@ -1300,520 +1264,18 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(spring_cloud_gateway_requests_seconds_count{routeId=~\"quitstart\", job=~\"gateway\"}) by (job, status)",
+          "expr": "sum by (job, routeId, status) (spring_cloud_gateway_requests_seconds_count)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ job }} / {{ status }}",
+          "legendFormat": "요청 처리 횟수({{ job }} / {{routeId}} / {{ status }})",
           "metric": "gateway_requests_seconds_count",
           "range": true,
           "refId": "A",
           "step": 240
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(spring_cloud_gateway_requests_seconds_count{routeId=~\"transfer\", job=~\"gateway\"}) by (job, status)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
         }
       ],
       "title": "$routeId",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 62
-      },
-      "id": 64,
-      "panels": [],
-      "title": "JVM",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 0,
-        "y": 63
-      },
-      "id": 62,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "process_cpu_usage{job=~\"gateway\"}",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "gateway",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "process_cpu_usage{job=~\"quick_start\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "quick start",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "process_cpu_usage{job=~\"transfer\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "transfer",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "title": "CPU Usage",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 6,
-        "y": 63
-      },
-      "id": 69,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(jvm_memory_used_bytes{job=~\"gateway\"}) by (job, instance)",
-          "format": "time_series",
-          "hide": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{ instance }}",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(jvm_memory_used_bytes{job=~\"quitstart\"}) by (job, instance)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(jvm_memory_used_bytes{job=~\"transfer\"}) by (job, instance)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "title": "Memory Used",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 12,
-        "y": 63
-      },
-      "id": 77,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "jvm_threads_live_threads{job=~\"gateway\"}",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 1,
-          "legendFormat": "{{ instance }}",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "jvm_threads_live_threads{job=~\"quitstart\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "jvm_threads_live_threads{job=~\"transfer\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "C"
-        }
-      ],
-      "title": "Live Threads",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "line+area"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent"
-              },
-              {
-                "color": "red",
-                "value": 0.3
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 18,
-        "y": 63
-      },
-      "id": 79,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "jvm_gc_memory_promoted_bytes_total/jvm_gc_memory_allocated_bytes_total",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 1,
-          "legendFormat": "{{ instance }}",
-          "refId": "A"
-        }
-      ],
-      "title": "Memory Saturation",
       "type": "timeseries"
     }
   ],
@@ -1859,13 +1321,13 @@
     ]
   },
   "time": {
-    "from": "now/d",
-    "to": "now"
+    "from": "2024-12-16T20:31:39.616Z",
+    "to": "2024-12-17T09:02:55.603Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Spring Cloud Gateway",
   "uid": "de52f6s96xkhsd",
-  "version": 80,
+  "version": 21,
   "weekStart": ""
 }

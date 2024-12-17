@@ -22,9 +22,10 @@ import java.util.concurrent.TimeUnit;
 public class NotificationScheduler {
     private static final Logger log = LoggerFactory.getLogger(NotificationScheduler.class);
     
-    private static long maxId = 0;
-    private static boolean isFirst = true;
-
+//    private static long maxId = 0;
+//    private static boolean isFirst = true;
+    private static long time = 0L;
+    
     private final SimpMessagingTemplate simpMessagingTemplate;
 //    private final ErrorMapper errorMapper;
     private final OracleMapper oracleMapper;
@@ -34,19 +35,19 @@ public class NotificationScheduler {
     public void publishErrorEvent() {
         log.info("Publishing events");
 //        List<ErrorLogDTO> results = errorMapper.getRecord(maxId);
-        if (isFirst && maxId == 0) {
-        	maxId += oracleMapper.getCount();
-        	isFirst = false;
-        }
-        List<FwkErrorHisDto> results = oracleMapper.getRecords(maxId);
+//        if (isFirst && maxId == 0) {
+//        	maxId = oracleMapper.getCount();
+//        	isFirst = false;
+//        }
         
-        maxId += results.size();
+        List<FwkErrorHisDto> results = oracleMapper.getRecords(time);
 //        
 //        System.out.println(results.get(0).getErrorCode() + " + " + results.get(0).getErrorMessage());
 //        System.out.println(results.size());
         
         results.forEach(dto -> {
 //        	System.out.println(dto.getErrorCode());
+        	time = Math.max(time, Long.parseLong(dto.getErrorOccurDtime()));
         	simpMessagingTemplate.convertAndSend("/topic/error", dto);});
     }
 }

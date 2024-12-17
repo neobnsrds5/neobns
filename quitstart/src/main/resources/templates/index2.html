@@ -86,17 +86,14 @@
             header.innerHTML = `
                 <tr>
                     <th></th>
-                    <th>Event ID</th>
-                    <th>Timestamp</th>
-                    <th>Execute Result</th>
-                    <th>User ID</th>
-                    <th>Trace ID</th>
-                    <th>IP Address</th>
-                    <th>Device</th>
-                    <th>Caller Class</th>
-                    <th>Caller Method</th>
-                    <th>Query</th>
-                    <th>URI</th>
+                    <th>Code</th>
+                    <th>Ser No</th>
+                    <th>Cust User Id</th>
+                    <th>Error Message</th>
+                    <th>Occure Time</th>
+                    <th>Error Url</th>
+                    <th>Trace</th>
+                    <th>Instance Id</th>
                 </tr>
             `;
             table.appendChild(header);
@@ -112,17 +109,14 @@
 
         row.innerHTML = `
             <td><img src="error-icon.png" alt="Error" style="width:24px;height:24px;"></td>
-            <td>${errorObj.event_id}</td>
-            <td>${errorObj.timestmp}</td>
-            <td>${errorObj.execute_result}</td>
-            <td>${errorObj.user_id}</td>
-            <td>${errorObj.trace_id}</td>
-            <td>${errorObj.ip_address}</td>
-            <td>${errorObj.device}</td>
-            <td>${errorObj.caller_class}</td>
-            <td>${errorObj.caller_method}</td>
-            <td>${errorObj.query}</td>
-            <td>${errorObj.uri}</td>
+            <td>${errorObj.errorCode}</td>
+            <td>${errorObj.errorSerNo}</td>
+            <td>${errorObj.custUserId}</td>
+            <td>${errorObj.errorMessage}</td>
+            <td>${errorObj.errorOccurDtime}</td>
+            <td>${errorObj.errorUrl}</td>
+            <td>${errorObj.errorTrace}</td>
+            <td>${errorObj.errorInstanceId}</td>
         `;
 
         tbody.appendChild(row);

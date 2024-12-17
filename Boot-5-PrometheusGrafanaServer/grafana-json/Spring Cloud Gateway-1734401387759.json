@@ -1,4 +1,41 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.3.1"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -19,7 +56,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": null,
   "links": [],
   "panels": [
     {
@@ -38,7 +75,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -101,7 +138,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "gateway"
+                  "POST 전체"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -144,7 +181,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\"}) / sum(http_client_requests_seconds_count{job=\"gateway\"})",
@@ -157,7 +194,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\"}) / sum(http_client_requests_seconds_sum{job=\"quick_start\"})",
@@ -170,7 +207,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\"}) / sum(http_client_requests_seconds_count{job=\"transfer\"})",
@@ -183,7 +220,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{method=\"GET\"}) /\r\nsum(http_client_requests_seconds_count{method=\"GET\"})",
@@ -196,7 +233,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{method=\"POST\"}) /\r\nsum(http_client_requests_seconds_count{method=\"POST\"})",
@@ -213,7 +250,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -296,12 +333,16 @@
           "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"gateway\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"gateway\"}[10s]) > bool 0.005",
           "legendFormat": "gateway",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"quick_start\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"quick_start\"}[10s]) > bool 0.005",
@@ -314,7 +355,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg_over_time(http_client_requests_seconds_sum{job=\"transfer\"}[10s]) /\r\navg_over_time(http_client_requests_seconds_count{job=\"transfer\"}[10s]) > bool 0.005",
@@ -344,7 +385,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -427,12 +468,16 @@
           "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\"2..\"})",
           "legendFormat": "gateway 정상",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"2..\"})",
@@ -445,7 +490,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"gateway\", status=~\".*ERROR|4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"gateway\", status=~\".*ERROR|4..|5..\"})",
@@ -458,7 +503,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"quick_start\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"quick_start\", status=~\"4..|5..\"})",
@@ -471,7 +516,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"2..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"2..\"})",
@@ -484,7 +529,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(http_client_requests_seconds_sum{job=\"transfer\", status=~\"4..|5..\"}) / \r\nsum(http_client_requests_seconds_count{job=\"transfer\", status=~\"4..|5..\"})",
@@ -514,7 +559,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -537,8 +582,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -580,7 +624,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "builder",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{job=~\"gateway\"})",
@@ -600,7 +644,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -623,8 +667,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -666,7 +709,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", job=~\"gateway\"})",
@@ -686,7 +729,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -709,8 +752,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -752,7 +794,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", job=~\"gateway\"})",
@@ -785,7 +827,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -830,8 +872,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -868,7 +909,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_sum{routeId=~\"quitstart\", job=~\"gateway\"}/spring_cloud_gateway_requests_seconds_count{routeId=~\"quitstart\", job=~\"gateway\"}",
@@ -884,7 +925,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_sum{routeId=~\"transfer\", job=~\"gateway\"}/spring_cloud_gateway_requests_seconds_count{routeId=~\"transfer\", job=~\"gateway\"}",
@@ -914,7 +955,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -960,8 +1001,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -998,7 +1038,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", routeId=~\"quitstart\", job=~\"gateway\"}",
@@ -1015,7 +1055,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome=\"SUCCESSFUL\", routeId=~\"transfer\", job=~\"gateway\"}",
@@ -1045,7 +1085,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1091,8 +1131,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1129,7 +1168,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", routeId=~\"quitstart\", job=~\"gateway\"}",
@@ -1145,7 +1184,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "spring_cloud_gateway_requests_seconds_count{outcome!=\"SUCCESSFUL\", routeId=~\"transfer\", job=~\"gateway\"}",
@@ -1175,7 +1214,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1221,8 +1260,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1259,7 +1297,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{routeId=~\"quitstart\", job=~\"gateway\"}) by (job, status)",
@@ -1275,7 +1313,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(spring_cloud_gateway_requests_seconds_count{routeId=~\"transfer\", job=~\"gateway\"}) by (job, status)",
@@ -1305,7 +1343,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1350,8 +1388,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1387,7 +1424,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1404,7 +1441,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "process_cpu_usage{job=~\"quick_start\"}",
@@ -1417,7 +1454,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "process_cpu_usage{job=~\"transfer\"}",
@@ -1434,7 +1471,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1479,8 +1516,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1516,7 +1552,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{job=~\"gateway\"}) by (job, instance)",
@@ -1531,7 +1567,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{job=~\"quitstart\"}) by (job, instance)",
@@ -1544,7 +1580,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(jvm_memory_used_bytes{job=~\"transfer\"}) by (job, instance)",
@@ -1561,7 +1597,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1606,8 +1642,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1643,7 +1678,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "jvm_threads_live_threads{job=~\"gateway\"}",
@@ -1657,7 +1692,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "jvm_threads_live_threads{job=~\"quitstart\"}",
@@ -1670,7 +1705,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "jvm_threads_live_threads{job=~\"transfer\"}",
@@ -1687,7 +1722,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4zsqld2lh4wd"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1732,8 +1767,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent",
-                "value": null
+                "color": "transparent"
               },
               {
                 "color": "red",
@@ -1769,7 +1803,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "de4zsqld2lh4wd"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "jvm_gc_memory_promoted_bytes_total/jvm_gc_memory_allocated_bytes_total",
           "format": "time_series",
@@ -1783,18 +1817,17 @@
       "type": "timeseries"
     }
   ],
-  "preload": false,
   "refresh": "1m",
   "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "All",
-          "value": "$__all"
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
         },
-        "datasource": "de4zsqld2lh4wd",
         "includeAll": true,
         "label": "Gateway Service",
         "multi": true,
@@ -1807,11 +1840,11 @@
         "type": "query"
       },
       {
-        "current": {
-          "text": "All",
-          "value": "$__all"
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
         },
-        "datasource": "de4zsqld2lh4wd",
         "includeAll": true,
         "label": "Route Id",
         "multi": true,
@@ -1833,6 +1866,6 @@
   "timezone": "",
   "title": "Spring Cloud Gateway",
   "uid": "de52f6s96xkhsd",
-  "version": 77,
+  "version": 80,
   "weekStart": ""
 }

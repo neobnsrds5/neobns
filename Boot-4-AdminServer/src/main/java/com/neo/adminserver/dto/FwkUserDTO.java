@@ -17,7 +17,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class FwkUserDTO implements Cloneable {	// Spider 사용자 정보 DTO
-
     private String userId;
     @NotBlank(message = "사용자ID는 필수 항목입니다")
     @Size(min = 3, max = 20, message = "사용자ID는 3~20 자리의 문자를 입력해주세요")

@@ -1,6 +1,7 @@
 package com.spider.demo.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,11 @@ public class TransactionItemService {
 		loggingService.logAMessageFail( "adding item with name " + item.getName());		
 		
 		
+	}
+
+	public List<TransactionItem> getAllItems() {
+		// TODO Auto-generated method stub
+		return itemRepository.findAll();
 	}
 
 }

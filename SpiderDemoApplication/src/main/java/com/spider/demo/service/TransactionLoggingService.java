@@ -1,5 +1,7 @@
 package com.spider.demo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,6 +41,11 @@ public class TransactionLoggingService {
 		 * RuntimeException("DummyException: this should cause rollback of both INSERTs (Item and Log)!"
 		 * ); }
 		 */
+	}
+
+	public List<TransactionLog> getAllLogs() {
+		// TODO Auto-generated method stub
+		return logRepository.findAll();
 	}
 
 }

@@ -849,24 +849,23 @@
 	    </div>
 	    
 	    <div th:if="${hasResults}" class="pagination">
-		    <!-- 이전 10페이지 그룹 -->
+		    <!-- 이전 페이지 그룹 -->
 		    <a th:if="${currentPage > 10}" 
-		       th:href="@{/admin/errors(page=${(currentPage - 11) / 10 * 10 + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}">
+		       th:href="@{/admin/errors(page=${currentPage - 10}, size=${size}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}">
 		       이전
 		    </a>
 		
 		    <!-- 페이지 번호 그룹 -->
-		    <span th:each="pageNum : ${#numbers.sequence(((currentPage - 1) / 10) * 10 + 1, 
-		                                                 Math.min(((currentPage - 1) / 10 + 1) * 10, totalPages))}">
-		        <a th:href="@{/admin/errors(page=${pageNum}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}"
+		    <span th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
+		        <a th:href="@{/admin/errors(page=${pageNum}, size=${size}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}"
 		           th:classappend="${pageNum == currentPage} ? 'active' : ''">
 		            <span th:text="${pageNum}"></span>
 		        </a>
 		    </span>
 		
-		    <!-- 다음 10페이지 그룹 -->
+		    <!-- 다음 페이지 그룹 -->
 		    <a th:if="${currentPage + 10 <= totalPages}" 
-		       th:href="@{/admin/errors(page=${(currentPage / 10 + 1) * 10 + 1}, size=10, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}">
+		       th:href="@{/admin/errors(page=${currentPage - 10}, size=${size}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, query=${query}, uri=${uri})}">
 		       다음
 		    </a>
 		</div>

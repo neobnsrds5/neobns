@@ -811,14 +811,13 @@
 		<div th:if="${hasResults}" class="pagination">
 		    <!-- 이전 페이지 그룹 -->
 		    <a th:if="${currentPage > 10}" 
-		       th:href="@{/admin/table(page=${(currentPage - 11) / 10 * 10 + 1}, size=10, callerMethod=${callerMethod})}">
+		       th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, callerMethod=${callerMethod})}">
 		       이전
 		    </a>
 		
 		    <!-- 페이지 번호 그룹 -->
-		    <span th:each="pageNum : ${#numbers.sequence(((currentPage - 1) / 10) * 10 + 1, 
-		                                                 Math.min(((currentPage - 1) / 10 + 1) * 10, totalPages))}">
-		        <a th:href="@{/admin/table(page=${pageNum}, size=10, callerMethod=${callerMethod})}" 
+		    <span th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
+		        <a th:href="@{/admin/table(page=${pageNum}, size=${size}, callerMethod=${callerMethod})}" 
 		           th:classappend="${pageNum == currentPage} ? 'active' : ''">
 		            <span th:text="${pageNum}"></span>
 		        </a>
@@ -826,7 +825,7 @@
 		
 		    <!-- 다음 페이지 그룹 -->
 		    <a th:if="${currentPage + 10 <= totalPages}" 
-		       th:href="@{/admin/table(page=${(currentPage / 10 + 1) * 10 + 1}, size=10, callerMethod=${callerMethod})}">
+		       th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, callerMethod=${callerMethod})}">
 		       다음
 		    </a>
 		</div>

@@ -8,7 +8,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.example.neobns.dto.ErrorLogDTO;
+import com.example.neobns.dto.FwkErrorHisDto;
 import com.example.neobns.mapper.ErrorMapper;
+import com.example.neobns.oraclemapper.OracleMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,16 +25,22 @@ public class NotificationScheduler {
     private static long maxId = 0;
 
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final ErrorMapper errorMapper;
+//    private final ErrorMapper errorMapper;
+    private final OracleMapper oracleMapper;
     private static final long DELAY = 10;
     
     @Scheduled(fixedDelay = DELAY,timeUnit = TimeUnit.SECONDS)
     public void publishErrorEvent() {
         log.info("Publishing events");
-        List<ErrorLogDTO> results = errorMapper.getRecord(maxId);
+//        List<ErrorLogDTO> results = errorMapper.getRecord(maxId);
+        if (maxId == 0) {
+        	maxId += oracleMapper.getCount();
+        }
+        List<FwkErrorHisDto> results = oracleMapper.getRecords(maxId);
+        
+        maxId += 20;
         
         results.forEach(dto -> {
-        	maxId = Math.max(maxId, dto.getEvent_id());
         	simpMessagingTemplate.convertAndSend("/topic/error", dto);});
     }
 }

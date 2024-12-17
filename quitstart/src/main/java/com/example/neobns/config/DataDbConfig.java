@@ -7,10 +7,12 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -32,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 		,entityManagerFactoryRef = "dataEntityManager"
 		, transactionManagerRef = "dataTransactionsManager")
 @RequiredArgsConstructor
+@MapperScan(basePackages = "com.example.neobns.mapper", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
 public class DataDbConfig {
 	
 	private final DBProperties dbProperties;
@@ -70,7 +73,8 @@ public class DataDbConfig {
 		return transactionManager;
 	}
 	
-	@Bean
+	@Primary
+	@Bean(name = "mysqlSqlSessionFactory")
 	public SqlSessionFactory sqlSessionFactory() throws Exception{
 		SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
 		
@@ -87,7 +91,8 @@ public class DataDbConfig {
 		
 	}
 	
-	@Bean
+	@Primary
+	@Bean(name = "sqlSessionTemplate")
 	public SqlSessionTemplate sqlSessionTemplate() throws Exception {
 		return new SqlSessionTemplate(sqlSessionFactory());
 	}

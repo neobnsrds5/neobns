@@ -57,7 +57,7 @@ public class QuickService {
 
 	@CachePut(value = "item:id", key = "#itemDto.id")
 	public boolean registerItem(ItemDto itemDto) {
-		mapper.addItem(itemDto);
+		mapper.addItemWithSqlInjection(itemDto);
 		return true;
 	}
 

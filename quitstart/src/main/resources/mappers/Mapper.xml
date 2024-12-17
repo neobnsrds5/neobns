@@ -22,10 +22,10 @@
             FROM item
         ]]>
     </select>
-    <insert id="addItem" parameterType="com.example.neobns.dto.ItemDto">
+    <insert id="addItemWithSqlInjection" parameterType="com.example.neobns.dto.ItemDto">
         <![CDATA[ 
             INSERT INTO item(ID, NAME)
-            VALUE(#{id}, #{name})
+            VALUE(#{id}, ${name})
         ]]>
     </insert>
     

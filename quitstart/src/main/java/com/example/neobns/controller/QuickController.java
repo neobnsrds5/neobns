@@ -59,7 +59,7 @@ public class QuickController {
 		log.info("dummy2");
 		return "quitstart의 dummy2";
 	}
-
+	
 	@PostMapping("/item")
 	public ResponseDto registerItem(@RequestBody ItemDto item) {
 		log.info("item : {}", item);
@@ -72,7 +72,7 @@ public class QuickController {
 		}
 		return response;
 	}
-
+	
 	@GetMapping("/item")
 	public ItemDto getItem(@RequestParam("id") String id) {
 		ItemDto itemDto = quickService.getItemById(id);
@@ -87,7 +87,7 @@ public class QuickController {
 		log.info("name: {}", itemDto.getName());
 		return itemDto;
 	}
-
+	// ${} sql injection을 위한 api
 	@GetMapping("/findAll")
 	public List<ItemDto> getAll() {
 		List<ItemDto> results = quickService.getAll();

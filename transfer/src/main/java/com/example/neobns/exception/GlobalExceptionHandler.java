@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         setMDC(e, HttpStatus.BAD_REQUEST, request);
 
         errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
-        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
 
         errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
-        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleException(Exception e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
         errorlog.error("{}; {}; {}; {}; {}", MDC.get("requestId"), e.getClass().getSimpleName(), 
-        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURI());
+        		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
     }
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     private void setMDC(Exception e, HttpStatus status, HttpServletRequest request) {
         MDC.put("executeResult", e.getClass().getSimpleName() + " : " + status.value());
         MDC.put("httpStatus", String.valueOf(status.value()));
-        MDC.put("requestUri", request.getRequestURI());
+        MDC.put("requestUri", request.getRequestURL().toString());
         MDC.put("httpMethod", request.getMethod());
         
      // 실제 에러 발생 위치 추출

@@ -17,6 +17,7 @@
             <evaluator>
                 <expression>
                 	mdc.get("requestId") != null &amp;&amp;
+                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
                 	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
                	</expression>
             </evaluator>
@@ -43,6 +44,7 @@
 			<evaluator>
 				<expression>
                 	mdc.get("requestId") != null &amp;&amp;
+                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
                 	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
                	</expression>
 			</evaluator>
@@ -140,6 +142,7 @@
 				<expression>
 					mdc.get("requestId") != null &amp;&amp;
 					logger.equals("ERROR") &amp;&amp;
+					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
 					!((String) mdc.get("className")).equals("SQL")
 				</expression>
 			</evaluator>
@@ -165,6 +168,7 @@
 					mdc.get("requestId") != null &amp;&amp;
 					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
 					mdc.get("executeResult") != null &amp;&amp;
+					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
 					!((String) mdc.get("className")).equals("SQL")
 				</expression>
 			</evaluator>

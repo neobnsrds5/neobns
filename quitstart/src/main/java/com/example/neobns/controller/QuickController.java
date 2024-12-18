@@ -1,7 +1,10 @@
 package com.example.neobns.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.neobns.batch.SubBatch1;
 import com.example.neobns.dto.AccountDTO;
 import com.example.neobns.dto.ErrorLogDTO;
 import com.example.neobns.dto.ItemDto;
@@ -30,6 +34,7 @@ public class QuickController {
 
 	private final QuickService quickService;
 	private final ErrorService errorService;
+	private static final Logger logger = LoggerFactory.getLogger("========Log Test=========");
 	
 	// transfer 호출
 	@PostMapping("/transfer")
@@ -132,5 +137,18 @@ public class QuickController {
 	public String errorBreak() {
 		throw new ArrayIndexOutOfBoundsException("from errorBreak");
 	}
+	
+	
+	
+	// 로그 변경 확인
+	@GetMapping("/changeLogLevel")
+	public void changeLogLevel() {
+		for (int i = 0; i < 10; i++) {
+			logger.info("로그테스트 실행 중");
+			logger.debug("로그테스트 실행 중");
+		}
+	}
+	
+	
 
 }

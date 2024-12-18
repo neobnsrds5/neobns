@@ -32,6 +32,7 @@ public class GatewayserverApplication {
 								.path("/accounts/**")
 								.filters( f -> f.rewritePath("/accounts/(?<segment>.*)","/${segment}")
 										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+										//짧은 시간에 많은 요청을 보내는 것을 차단
 										.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
 												.setKeyResolver(userKeyResolver()))
 										.circuitBreaker(config -> config.setName("accountsCircuitBreaker")

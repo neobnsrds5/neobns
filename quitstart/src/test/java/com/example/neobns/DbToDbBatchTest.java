@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class BatchTest {
+public class DbToDbBatchTest {
 	
 	@Autowired
 	private JobLauncher jobLauncher;
@@ -27,19 +27,5 @@ public class BatchTest {
 		MDC.remove("userId");
 		System.out.println("===============================db to db 끝==================================");
 	}
-	
-	
-	
-	@Test
-	public void fileToDb() throws Exception{
-		System.out.println("===============================file to db 시작==================================");
-		MDC.put("userId", "testBatch");
-		String uniqVal = String.valueOf(System.currentTimeMillis());
-		JobParameters jobParameters = new JobParametersBuilder().addString("fileToDBJob", uniqVal).toJobParameters();
-		jobLauncher.run(jobRegistry.getJob("fileToDBJob"), jobParameters);	
-		MDC.remove("userId");
-		System.out.println("================================file to db 끝=================================");
-	}
-	
 
 }

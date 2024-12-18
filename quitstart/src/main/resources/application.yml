@@ -7,14 +7,14 @@ server:
 #      force: true
 
 spring:  
-  kafka:
-    bootstrap-servers: localhost:9092
+#  kafka:
+#    bootstrap-servers: localhost:9092
   application:
     name: quitstart
   profiles:
     active: dev
-  config:
-    import: optional:configserver:http://config:1234@localhost:9393
+#  config:
+#    import: optional:configserver:http://config:1234@localhost:9393
 # 주석처리 한 부분은 config server의 prperties에 존재
 #  boot:
 #    admin:
@@ -29,21 +29,21 @@ spring:
     jdbc:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-mariadb.sql
-#  datasource-meta:
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://neobns.com:13306/db1
-#    username: POC_USER
-#    password: neobns1!
-#  datasource-data:
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://neobns.com:13306/db2
-#    username: POC_USER
-#    password: neobns1!
-#  datasource-target:
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://neobns.com:13306/db3
-#    username: POC_USER
-#    password: neobns1!
+  datasource-meta:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://neobns.com:13306/db1
+    username: POC_USER
+    password: neobns1!
+  datasource-data:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://neobns.com:13306/db2
+    username: POC_USER
+    password: neobns1!
+  datasource-target:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://neobns.com:13306/db3
+    username: POC_USER
+    password: neobns1!
   datasource-spiderdb:
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@3.35.132.32:1521/xe

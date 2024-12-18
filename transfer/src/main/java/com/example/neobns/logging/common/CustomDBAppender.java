@@ -53,6 +53,7 @@ public class CustomDBAppender extends DBAppender {
         } finally {
             // 이전 Auto-commit 상태 복원
             connection.setAutoCommit(previousAutoCommitState);
+            MDC.remove("queryLog");
         }
     }
 
@@ -169,9 +170,6 @@ public class CustomDBAppender extends DBAppender {
             errorStmt.setString(6, className);
             errorStmt.setString(7, methodName);
             errorStmt.setString(8, queryLog);
-            if(queryLog != null) {
-            	MDC.remove("queryLog");
-            }
             errorStmt.setString(9, uri);
             errorStmt.setString(10, errorName);
 

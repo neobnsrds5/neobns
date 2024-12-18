@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         setMDC(e, HttpStatus.BAD_REQUEST, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e, HttpServletRequest request) {
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
         clearMDC();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");

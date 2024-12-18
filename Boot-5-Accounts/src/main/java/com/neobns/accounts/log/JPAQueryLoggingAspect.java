@@ -31,7 +31,7 @@ public class JPAQueryLoggingAspect {
 			result = joinPoint.proceed();
 		} catch (Exception e) {
 			MDC.put("executeResult", e.getClass().getSimpleName());
-			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"),
+			errorLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), "SQL", MDC.get("methodName"),
 					e.getClass().getSimpleName());
 		}
 

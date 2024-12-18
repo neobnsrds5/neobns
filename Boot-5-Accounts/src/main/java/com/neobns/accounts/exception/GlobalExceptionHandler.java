@@ -44,7 +44,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
         });
         MDC.put("executeResult", String.valueOf(status.value()));
         
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), "ACCOUNTS", 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), "ACCOUNTS", 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), "ACCOUNTS", "ACCOUNTS");
 
         clearMDC();
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
         log.info("HandleGlobal 호출");
         setMDC(exception, HttpStatus.BAD_REQUEST, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), exception.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), exception.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
@@ -84,7 +84,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
         log.info("ResourceNotFound 호출");
         setMDC(exception, HttpStatus.BAD_REQUEST, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), exception.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), exception.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
@@ -103,7 +103,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
         log.info("CustomerAlreadyExist 호출");
         setMDC(exception, HttpStatus.BAD_REQUEST, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), exception.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), exception.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
@@ -116,7 +116,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
     	log.info("ILLEGAL 핸들러 호출");
         setMDC(e, HttpStatus.BAD_REQUEST, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();
@@ -128,7 +128,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
     	log.info("런타입 핸들러 호출");
         setMDC(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
 
-        errorlog.error("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
+        errorlog.info("[{}] [{} : {}] [{}] [{}]", MDC.get("requestId"), e.getClass().getSimpleName(), 
         		HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getMethod(), request.getRequestURL().toString());
 
         clearMDC();

@@ -52,6 +52,22 @@ CREATE TABLE `logging_error` (
   PRIMARY KEY (`event_id`)
 );
 
+CREATE TABLE logging_event_property (
+    event_id BIGINT NOT NULL,
+    mapped_key VARCHAR(255) NOT NULL,
+    mapped_value TEXT,
+    PRIMARY KEY (event_id, mapped_key),
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id) ON DELETE CASCADE
+);
+
+CREATE TABLE logging_event_exception (
+    event_id BIGINT NOT NULL,
+    i SMALLINT NOT NULL,
+    trace_line VARCHAR(255) NOT NULL,
+    PRIMARY KEY (event_id, i),
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id) ON DELETE CASCADE
+);
+
 CREATE TABLE `transfer_details` (
   `transfer_idx` int NOT NULL AUTO_INCREMENT,
   `from_account` varchar(30) DEFAULT NULL,

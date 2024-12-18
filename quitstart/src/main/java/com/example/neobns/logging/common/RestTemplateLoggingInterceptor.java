@@ -71,7 +71,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
             
 			return response;
 		} catch (Exception ex) {
-			errorLogger.error("[{}] [{} : {}] [{}]", requestId, uri, method, "failed: " + ex.getMessage());
+			errorLogger.error("[{}] [{} : {}] [{}]", requestId, uri, method, "failed: " + ex.getClass().getSimpleName());
 			throw ex;
 		} finally {
 			MDC.remove("className");

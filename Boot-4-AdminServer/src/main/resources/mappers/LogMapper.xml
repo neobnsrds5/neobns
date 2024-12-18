@@ -17,7 +17,7 @@
 
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
         SELECT * FROM logging_event
-        WHERE trace_id = #{traceId}
+        WHERE trace_id = #{traceId} AND logger_name IN ('TRACE', 'SLOW', 'ERROR')
         ORDER BY timestmp
     </select>
     
@@ -146,7 +146,7 @@
     <!-- table 검색 -->
     <select id="findByTable" resultType="LogDTO">
     	SELECT * FROM logging_event
-        WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class NOT LIKE 'http%' 
+        WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class NOT LIKE 'http://%' 
         <if test="searchType != null and searchType == 'callerMethod'">
         AND caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE)[[:space:]].*'
         AND caller_method LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -161,7 +161,7 @@
     <select id="countSQLTable" resultType="int">
 	    SELECT COUNT(*)
 	    FROM logging_event
-	    WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class NOT LIKE 'http%' 
+	    WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class NOT LIKE 'http://%' 
 	    <if test="searchType != null and searchType == 'callerMethod'">
 	    AND caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE)[[:space:]].*'
         AND caller_method LIKE CONCAT('%', #{searchKeyword}, '%')

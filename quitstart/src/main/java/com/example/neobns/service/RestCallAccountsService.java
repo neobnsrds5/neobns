@@ -54,10 +54,10 @@ public class RestCallAccountsService {
 	        log.info("외부 에러 쿼리 어플리케이션 결과 : {}", response.getStatusCode());
 	        return response.getBody();
 	    } catch (HttpClientErrorException e) {
-	        log.error("HTTP Error: Status Code {}, Response Body: {}", e.getStatusCode(), e.getResponseBodyAsString());
-	        throw e; // 예외를 다시 던져 컨트롤러에서 처리하도록 위임
+	        log.error("HTTP Error: Status Code {}, Simple Name: {}", e.getStatusCode(), e.getClass().getSimpleName());
+	        throw e; // 예외를 다시 던져 컨트롤러에서 처리하도록 위임s
 	    } catch (Exception e) {
-	        log.error("Unexpected error occurred: {}", e.getMessage(), e);
+	        log.error("Unexpected error occurred: {}", e.getClass().getSimpleName());
 	        throw new RuntimeException("Unexpected error occurred: " + e.getMessage(), e);
 	    }
 	}

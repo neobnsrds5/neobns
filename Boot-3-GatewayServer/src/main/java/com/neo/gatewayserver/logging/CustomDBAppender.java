@@ -36,7 +36,7 @@ public class CustomDBAppender extends DBAppender {
             }
             
             // 로그 레벨이 ERROR인 경우 추가적으로 logging_error 테이블에 저장
- 			if ("ERROR".equals(event.getLevel().toString()) && loggingEventInserted) {
+ 			if ("ERROR".equals(event.getLoggerName()) && loggingEventInserted) {
  				saveErrorLog(event, connection);
  			}
 

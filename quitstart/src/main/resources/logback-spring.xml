@@ -43,7 +43,6 @@
 			<evaluator>
 				<expression>
                 	return (mdc.get("requestId") != null) &amp;&amp;
-                		(level &lt; ERROR) &amp;&amp;
                 		!((String) mdc.get("className")).contains("prometheus");
                	</expression>
 			</evaluator>

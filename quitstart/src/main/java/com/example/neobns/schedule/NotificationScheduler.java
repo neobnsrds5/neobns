@@ -33,7 +33,7 @@ public class NotificationScheduler {
     
     @Scheduled(fixedDelay = DELAY,timeUnit = TimeUnit.SECONDS)
     public void publishErrorEvent() {
-        log.info("Publishing events");
+//        log.info("Publishing events");
 //        List<ErrorLogDTO> results = errorMapper.getRecord(maxId);
 //        if (isFirst && maxId == 0) {
 //        	maxId = oracleMapper.getCount();

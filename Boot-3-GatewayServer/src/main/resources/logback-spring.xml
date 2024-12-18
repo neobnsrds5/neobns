@@ -16,9 +16,8 @@
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator>
                 <expression>
-                	mdc.get("requestId") != null &amp;&amp;
-                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-                	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
+                	return mdc.get("requestId") != null &amp;&amp;
+	                	!((String) mdc.get("className")).contains("prometheus");
                	</expression>
             </evaluator>
             <onMatch>ACCEPT</onMatch>
@@ -43,9 +42,8 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-                	mdc.get("requestId") != null &amp;&amp;
-                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-                	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
+                	return mdc.get("requestId") != null &amp;&amp;
+                		!((String) mdc.get("className")).contains("prometheus");
                	</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -67,9 +65,11 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
-					((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						((String) mdc.get("className")).equals("SQL") &amp;&amp;
+						(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
+						mdc.get("executeResult") != null;
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -85,15 +85,17 @@
 	<!-- SQL ERROR 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_ERROR_SQL" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/error-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-error-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					logger.equals("ERROR") &amp;&amp;
-					((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						((String) mdc.get("className")).equals("SQL") &amp;&amp;
+						logger.equals("ERROR") &amp;&amp;
+						mdc.get("executeResult") != null;
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -115,10 +117,13 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					logger.equals("ERROR") &amp;&amp;
-					((String) mdc.get("className")).equals("SQL") &amp;&amp;
-					((String) mdc.get("methodName")).contains("$")
+					return mdc.get("requestId") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						((String) mdc.get("className")).equals("SQL") &amp;&amp;
+						logger.equals("ERROR") &amp;&amp;
+						mdc.get("executeResult") != null &amp;&amp;
+						mdc.get("methodName") != null &amp;&amp;
+						((String) mdc.get("methodName")).contains("$");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -140,10 +145,11 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					logger.equals("ERROR") &amp;&amp;
-					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-					!((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+				       	logger.equals("ERROR") &amp;&amp;
+				       	mdc.get("className") != null &amp;&amp;
+				       	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
+				       	!((String) mdc.get("className")).equals("SQL");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -165,11 +171,12 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
-					mdc.get("executeResult") != null &amp;&amp;
-					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-					!((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+						(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
+						mdc.get("executeResult") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
+						!((String) mdc.get("className")).equals("SQL");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>

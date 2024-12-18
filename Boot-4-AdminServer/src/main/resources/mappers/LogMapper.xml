@@ -146,9 +146,13 @@
     <!-- table 검색 -->
     <select id="findByTable" resultType="LogDTO">
     	SELECT * FROM logging_event
-        WHERE logger_name = 'TRACE' AND caller_class = 'SQL' AND execute_result IS NULL
-        <if test="callerMethod != null and callerMethod != ''">
-        AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
+        WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class NOT LIKE 'http%' 
+        <if test="searchType != null and searchType == 'callerMethod'">
+        AND caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE)[[:space:]].*'
+        AND caller_method LIKE CONCAT('%', #{searchKeyword}, '%')
+    	</if>
+    	<if test="searchType != null and searchType == 'callerClass'">
+        AND caller_class LIKE CONCAT('%', #{searchKeyword}, '%')
     	</if>
         ORDER BY timestmp DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -157,10 +161,14 @@
     <select id="countSQLTable" resultType="int">
 	    SELECT COUNT(*)
 	    FROM logging_event
-	    WHERE logger_name = 'TRACE' AND caller_class = 'SQL' AND execute_result IS NULL
-	    <if test="callerMethod != null and callerMethod != ''">
-        AND caller_method LIKE CONCAT('%', #{callerMethod}, '%')
+	    WHERE logger_name = 'TRACE' AND execute_result IS NULL AND caller_class NOT LIKE 'http%' 
+	    <if test="searchType != null and searchType == 'callerMethod'">
+	    AND caller_method REGEXP '^(SELECT|INSERT|UPDATE|DELETE)[[:space:]].*'
+        AND caller_method LIKE CONCAT('%', #{searchKeyword}, '%')
    		</if>
+   		<if test="searchType != null and searchType == 'callerClass'">
+        AND caller_class LIKE CONCAT('%', #{searchKeyword}, '%')
+    	</if>
 	</select>
 
 </mapper>

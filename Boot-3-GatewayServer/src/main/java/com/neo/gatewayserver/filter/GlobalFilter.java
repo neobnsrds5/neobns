@@ -108,7 +108,7 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 		MDC.put("className", uri);
 		MDC.put("methodName", method);
 		
-		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), uri, method, "start");
+		traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), uri, method, "start");
 		
 		MDC.remove("className");
         MDC.remove("methodName");
@@ -147,10 +147,10 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 		MDC.put(MDC_CLIENT_IP, clientIp);
         MDC.put(MDC_USER_AGENT, userAgent);
 		
-		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
+		traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
 		// 설정 시간보다 느리면 slow 로깅
         if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-        	slowLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
+        	slowLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
         }
 		
 		MDC.clear();

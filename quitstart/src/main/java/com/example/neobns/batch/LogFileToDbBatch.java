@@ -147,10 +147,21 @@ public class LogFileToDbBatch {
 	@Bean
 	public CompositeItemWriter<LogDTO> compositeWriter() {
 		CompositeItemWriter<LogDTO> writer = new CompositeItemWriter<>();
-		writer.setDelegates(List.of(conditionalErrorWriter(), loggingEventWriter(), conditionalSlowWriter()));
+		writer.setDelegates(List.of(conditionalEventWriter(), conditionalErrorWriter(), conditionalSlowWriter()));
 		return writer;
 	}
 
+	@Bean
+	public ItemWriter<LogDTO> conditionalEventWriter() {
+		return items -> {
+			for (LogDTO log : items) {
+				if ("trace".equalsIgnoreCase(log.getLoggerName()) || "slow".equalsIgnoreCase(log.getLoggerName()) || "error".equalsIgnoreCase(log.getLoggerName())) {
+					loggingEventWriter().write(new Chunk<>(List.of(log)));
+				}
+			}
+		};
+	}
+	
 	@Bean
 	public ItemWriter<LogDTO> conditionalSlowWriter() {
 		return items -> {
@@ -170,7 +181,6 @@ public class LogFileToDbBatch {
 					try {
 						loggingErrorWriter().write(new Chunk<>(List.of(log)));
 					} catch (Exception e) {
-						System.err.println("Error in loggingErrorWriter: " + e.getMessage());
 						e.printStackTrace();
 					}
 				}

@@ -104,7 +104,7 @@ public class DbToDbBatch {
 			public Map<String, Object> process(Map<String, Object> item) throws Exception {
 				String threadName = Thread.currentThread().getName();
 				System.out.println("\tProcessing item: " + item.toString() + " on thread: " + threadName);
-				System.out.println("dummy processor is processing " + item.toString());
+				System.out.println("db to db processor is processing " + item.toString());
 				// dummy processor logic 추가
 //				for (int i = 0; i < item.size(); i++) {
 //					System.out.println("dummy processor is processing1 " + item.toString());

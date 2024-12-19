@@ -37,6 +37,7 @@ public class DbToDbBatchTest {
 		
 		List<AccountDTO> result1 = targetMapper.findAllAccounts();
 		System.out.println();
+		System.out.println("Db To Db Batch 실행 전 DB Row 개수 : " + result1.size());
 		System.out.println("===============================db3 : before db to db==================================");
 		System.out.println();
 		for (int i = 0; i < result1.size(); i++) {
@@ -53,6 +54,7 @@ public class DbToDbBatchTest {
 		
 		List<AccountDTO> result2 = targetMapper.findAllAccounts();
 		System.out.println();
+		System.out.println("Db To Db Batch 실행 후 DB Row 개수 : " + result2.size());
 		System.out.println("===============================db3 : after db to db==================================");
 		System.out.println();
 		for (int i = 0; i < result2.size(); i++) {

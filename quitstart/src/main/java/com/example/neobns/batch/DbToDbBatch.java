@@ -121,7 +121,7 @@ public class DbToDbBatch {
 	public Job job() throws Exception {
 		return new JobBuilder("dbCopyJob", jobRepository)
 //				.start(partitoinStep())
-				.start(step()).listener(listener).build();
+				.start(step()).build();
 	}
 
 	@Bean

@@ -48,7 +48,7 @@ public class FileToDbBatch {
 	@Bean
 	public Job fileToDBJob() {
 		return new JobBuilder("fileToDBJob", jobRepository)
-				.start(fileToDBStep()).listener(listener).build();
+				.start(fileToDBStep()).build();
 	}
 	
 	@Bean

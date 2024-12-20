@@ -30,7 +30,7 @@ import com.example.neobns.dto.FwkErrorHisDto;
 
 @Configuration
 public class ScheduledErrorBatch {
-
+	// 스케쥴을 통한 에러 테이블 데이터 이동
 	/*
 	 * private final DataSource spiderDataSource; private final JobRepository
 	 * jobRepository; private final PlatformTransactionManager transactionManager;

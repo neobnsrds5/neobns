@@ -14,7 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class SubBatch1 {
 
-	private static final Logger logger = LoggerFactory.getLogger(SubBatch1.class);
+//	private static final Logger logger = LoggerFactory.getLogger(SubBatch1.class);
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
 	private final CustomBatchJobListener listener;
@@ -36,11 +36,11 @@ public class SubBatch1 {
 	public Step subBatch1Step() {
 
 		return (Step) new StepBuilder("subBatch1Step", jobRepository).tasklet((stepContribution, chunkContext) -> {
-			logger.info("Sub Batch1 실행 중");
-			logger.debug("Sub Batch1 실행 중");
+//			logger.info("Sub Batch1 실행 중");
+//			logger.debug("Sub Batch1 실행 중");
 			Thread.sleep(1000);
-			logger.info("Sub Batch1 실행 완료");
-			logger.debug("Sub Batch1 실행 완료");
+//			logger.info("Sub Batch1 실행 완료");
+//			logger.debug("Sub Batch1 실행 완료");
 			return null;
 		}, platformTransactionManager).build();
 

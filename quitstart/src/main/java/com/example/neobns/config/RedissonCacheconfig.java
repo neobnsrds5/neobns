@@ -28,7 +28,7 @@ public class RedissonCacheconfig {
 
 	@Bean
 	public CacheManager cacheManager(RedissonClient redissonClient) {
-		
+		// 레디스 캐시 시 JsonJacksonCodec를 이용해 DTO를 JSON 형식으로 직렬화 및 역직렬화
 		RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient);
 		cacheManager.setCodec(new JsonJacksonCodec());
 		return cacheManager;

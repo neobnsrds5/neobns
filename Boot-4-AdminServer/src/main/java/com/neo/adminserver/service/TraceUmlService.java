@@ -47,16 +47,19 @@ public class TraceUmlService {
 			String callerClass = log.getCallerClass();
 			String callerMethod = log.getCallerMethod();
 			String executeResult = log.getExecuteResult();
-			
-			if (i == 0 && umlList.size() == 1) {
-				uml.setSource("Gateway");
 
-				// HTTP
-				if (callerClass.contains("http://")) {
-					String[] parts = callerClass.split("/");
-					appList.add(parts[3]);
-					user = parts[3];
-
+			// HTTP
+			if (callerClass.contains("http://")) {
+				String[] parts = callerClass.split("/");
+				appList.add(parts[3]);
+				user = parts[3];
+				
+				// ip:port 간단하게 정리
+				String port = "\"" + parts[2] + "\"";
+				uml.setSource(port);
+				
+				// -> 방향인 경우
+				if (executeResult == null) {
 					// URI 간단하게 정리
 					String simpleUrl = "";
 					for (int j = 3; j < parts.length; j++) {
@@ -64,112 +67,91 @@ public class TraceUmlService {
 					}
 					uml.setContent(simpleUrl + " : " + callerMethod);
 				}
-
-			} else {
-				// HTTP
-				if (callerClass.contains("http://")) {
-					String[] parts = callerClass.split("/");
-					if (parts[3].equals(user)) {
-						uml.setSource("Gateway");
-					} else {
-						appList.add(parts[3]);
-						uml.setSource("RestTemplate");
-					}
-
-					// -> 방향인 경우
-					if (executeResult == null) {
-						String simpleUrl = "";
-						for (int j = 3; j < parts.length; j++) {
-							simpleUrl += ("/" + parts[j]);
-						}
-						uml.setContent(simpleUrl + " : " + callerMethod);
-					}
-					// <- 방향인 경우
-					else {
-						String content = "";
-
-						// error인 경우 에러 정보 출력
-						stateLog = checkError(log, errorList);
-						if (stateLog != null) {
-							content += (" [ " + stateLog.getExecuteResult() + " ] ");
-							uml.setColor("red");
-						}
-						// error가 아닌 경우 slow 확인
-						else {
-							stateLog = checkSlow(log, slowList);
-							if (stateLog != null) {
-								uml.setColor("orangered");
-							}
-						}
-
-						content += (" [ " + executeResult + "ms ] ");
-						uml.setContent(content);
-					}
-
-				}
-				// SQL
-				else if (callerClass.equals("SQL")) {
-					uml.setSource("Database");
-
-					// -> 방향
-					if (executeResult == null) {
-						uml.setContent(callerMethod);
-					}
-					// <- 방향
-					else {
-						String content = "";
-						
-						stateLog = checkError(log, errorList);
-						if (stateLog != null) {
-							content += (" [ " + stateLog.getExecuteResult() + " ] "); // 에러 정보 추가
-							uml.setColor("red");
-						} else {
-							stateLog = checkSlow(log, slowList);
-							if (stateLog != null) {
-								uml.setColor("orangered");
-								content += (" [ " + executeResult + "ms ]"); // 소요 시간 추가
-							}
-						}
-						uml.setContent(content);
-					}
-				}
-				// AOP
+				// <- 방향인 경우
 				else {
-					int index = callerClass.lastIndexOf(".");
-					uml.setSource(callerClass.substring(index + 1));
+					String content = "";
 
-					// -> 방향인 경우
-					if (executeResult == null) {
-						uml.setContent(callerMethod);
+					// error인 경우 에러 정보 출력
+					stateLog = checkError(log, errorList);
+					if (stateLog != null) {
+						content += (" [ " + stateLog.getExecuteResult() + " ] ");
+						uml.setColor("red");
 					}
-					// <- 방향인 경우
+					// error가 아닌 경우 slow 확인
 					else {
-						String content = "";
-
-						// error인 경우 에러 정보 출력
-						stateLog = checkError(log, errorList);
+						stateLog = checkSlow(log, slowList);
 						if (stateLog != null) {
-							content += (" [ " + stateLog.getExecuteResult() + " ] ");
-							uml.setColor("red");
+							uml.setColor("orangered");
 						}
-						// error가 아닌 경우 slow 확인
-						else {
-							stateLog = checkSlow(log, slowList);
-							if (stateLog != null) {
-								uml.setColor("orangered");
-							}
-						}
-
-						content += (" [ " + executeResult + "ms ] ");
-						uml.setContent(content);
 					}
+
+					content += (" [ " + executeResult + "ms ] ");
+					uml.setContent(content);
+				}
+
+			}
+			// SQL
+			else if (callerClass.equals("SQL")) {
+				uml.setSource("Database");
+
+				// -> 방향
+				if (executeResult == null) {
+					continue;
+				}
+				// <- 방향
+				else {
+					String content = callerMethod;
+
+					stateLog = checkError(log, errorList);
+					if (stateLog != null) {
+						content += ("\\n<font color=red>[ " + stateLog.getExecuteResult() + " ] "); // 에러 정보 추가
+						uml.setColor("red");
+					} else {
+						stateLog = checkSlow(log, slowList);
+						if (stateLog != null) {
+							uml.setColor("orangered");
+							content += ("\\n<font color=orangered>[ " + executeResult + "ms ]"); // 소요 시간 추가
+						}
+					}
+					uml.setContent(content);
+				}
+			}
+			// AOP
+			else {
+				int index = callerClass.lastIndexOf(".");
+				uml.setSource(callerClass.substring(index + 1));
+
+				// -> 방향인 경우
+				if (executeResult == null) {
+					uml.setContent(callerMethod);
+				}
+				// <- 방향인 경우
+				else {
+					String content = "";
+
+					// error인 경우 에러 정보 출력
+					stateLog = checkError(log, errorList);
+					if (stateLog != null) {
+						content += (" [ " + stateLog.getExecuteResult() + " ] ");
+						uml.setColor("red");
+					}
+					// error가 아닌 경우 slow 확인
+					else {
+						stateLog = checkSlow(log, slowList);
+						if (stateLog != null) {
+							uml.setColor("orangered");
+						}
+					}
+
+					content += (" [ " + executeResult + "ms ] ");
+					uml.setContent(content);
 				}
 			}
 			umlList.add(uml);
 		}
 
 		umlList.add(new UmlDTO("User", "", "black"));
-		
+
 		return buildUmlDiagram(umlList);
 	}
 
@@ -183,34 +165,24 @@ public class TraceUmlService {
 			isReturn = (umlList.size() / 2) <= i;
 			UmlDTO curUml = umlList.get(i);
 			UmlDTO nextUml = umlList.get(i + 1);
-			
-			if(curUml.getSource().equals(nextUml.getSource())) {
-				
-				UmlDTO prevUml = umlList.get(i-1);
-				UmlDTO afterUml = umlList.get(i+2);
-				
-				if(!afterUml.getSource().equals("Database")) {
-					if(!prevUml.getSource().equals(afterUml.getSource())) {
-						sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-								prevUml.getSource(), nextUml.getColor(), nextUml.getContent()));
-						nextUml.setSource(prevUml.getSource());
-					}
-					
-				}else {
-					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-							nextUml.getSource(), nextUml.getColor(), curUml.getContent() + nextUml.getContent()));
-				}
-				
+
+			if (curUml.getSource().equals(nextUml.getSource())) {
 				continue;
 			}
-			if(isReturn) {
-				sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-						nextUml.getSource(), curUml.getColor(), curUml.getContent()));
-			}else {
-				sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-						nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
+			if (nextUml.getSource().equals("Database")) {
+				sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->", curUml.getSource(),
+						nextUml.getColor(), nextUml.getContent()));
+				nextUml.setSource(curUml.getSource());
+			} else {
+				if (isReturn) {
+					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
+							nextUml.getSource(), curUml.getColor(), curUml.getContent()));
+				} else {
+					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
+							nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
+				}
 			}
-			
+
 		}
 
 		return sb.toString();

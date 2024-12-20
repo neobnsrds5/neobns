@@ -40,13 +40,13 @@ public class TransferServiceImpl implements ITransferService {
 	        log.info("잘못된 쿼리 수행 결과 : {}", result);
 	        return result;
 	    } catch (PersistenceException pe) {
-	        logger.error("Persistence error during query execution: {}", pe.getMessage(), pe);
+	        logger.error("Persistence error during query execution: {}", pe.getClass().getSimpleName());
 	        throw new RuntimeException("Persistence error: " + pe.getMessage(), pe);
 	    } catch (DataAccessException dae) {
-	        logger.error("Data access error during query execution: {}", dae.getMessage(), dae);
+	        logger.error("Data access error during query execution: {}", dae.getClass().getSimpleName());
 	        throw new RuntimeException("Database query error: " + dae.getMessage(), dae);
 	    } catch (Exception e) {
-	        logger.error("Unexpected error: {}", e.getMessage(), e);
+	        logger.error("Unexpected error: {}", e.getClass().getSimpleName());
 	        throw new RuntimeException("Unexpected error: " + e.getMessage(), e);
 	    }
 	}

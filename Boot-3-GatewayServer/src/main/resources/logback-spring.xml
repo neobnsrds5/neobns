@@ -16,9 +16,8 @@
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator>
                 <expression>
-                	mdc.get("requestId") != null &amp;&amp;
-                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-                	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
+                	return mdc.get("requestId") != null &amp;&amp;
+	                	!((String) mdc.get("className")).contains("prometheus");
                	</expression>
             </evaluator>
             <onMatch>ACCEPT</onMatch>
@@ -37,15 +36,14 @@
 	<!-- 모든 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE" class="com.neo.gatewayserver.logging.CustomFileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/application.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-application.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- 필터 설정 (DB와 동일) -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-                	mdc.get("requestId") != null &amp;&amp;
-                	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-                	(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR"))
+                	return mdc.get("requestId") != null &amp;&amp;
+                		!((String) mdc.get("className")).contains("prometheus");
                	</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -61,15 +59,17 @@
 	<!-- SQL 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_PERFROM_SQL" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/perform-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-perform-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- MDC의 callerclass가 SQL이면 perform-sql에 저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
-					((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						((String) mdc.get("className")).equals("SQL") &amp;&amp;
+						(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
+						mdc.get("executeResult") != null;
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -85,15 +85,17 @@
 	<!-- SQL ERROR 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_ERROR_SQL" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/error-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-error-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					logger.equals("ERROR") &amp;&amp;
-					((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						((String) mdc.get("className")).equals("SQL") &amp;&amp;
+						logger.equals("ERROR") &amp;&amp;
+						mdc.get("executeResult") != null;
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -109,16 +111,19 @@
 	<!-- SQL Dynamic ERROR 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_ERROR_DYNAMIC_SQL" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/error-dynamic-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-error-dynamic-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					logger.equals("ERROR") &amp;&amp;
-					((String) mdc.get("className")).equals("SQL") &amp;&amp;
-					((String) mdc.get("methodName")).contains("$")
+					return mdc.get("requestId") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						((String) mdc.get("className")).equals("SQL") &amp;&amp;
+						logger.equals("ERROR") &amp;&amp;
+						mdc.get("executeResult") != null &amp;&amp;
+						mdc.get("methodName") != null &amp;&amp;
+						((String) mdc.get("methodName")).contains("$");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -134,16 +139,17 @@
 	<!-- AOP ERROR 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_ERROR_AOP" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/error-aop.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-error-aop.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- logger 이름이 ERROR이고 MDC의 callerclass가 SQL이 아니면 저장하도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					logger.equals("ERROR") &amp;&amp;
-					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-					!((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+				       	logger.equals("ERROR") &amp;&amp;
+				       	mdc.get("className") != null &amp;&amp;
+				       	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
+				       	!((String) mdc.get("className")).equals("SQL");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -159,17 +165,18 @@
 	<!-- 성능(소요시간) 로그를 저장하는 파일 어펜더 -->
 	<appender name="FILE_PERFORM_AOP" class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
-		<file>../logs/perform-aop.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
+		<file>../logs/gateway-perform-aop.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
 		<!-- MDC의 callerclass가 SQL이면 sql.log에 저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-					mdc.get("requestId") != null &amp;&amp;
-					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
-					mdc.get("executeResult") != null &amp;&amp;
-					!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-					!((String) mdc.get("className")).equals("SQL")
+					return mdc.get("requestId") != null &amp;&amp;
+						(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
+						mdc.get("executeResult") != null &amp;&amp;
+						mdc.get("className") != null &amp;&amp;
+						!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
+						!((String) mdc.get("className")).equals("SQL");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>

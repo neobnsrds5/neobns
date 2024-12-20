@@ -48,7 +48,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 		MDC.put("className", uri);
 		MDC.put("methodName", method);
 		
-		traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, "start", userId);
+		traceLogger.info("[{}] [{} : {}] [{}]", requestId, uri, method, "start");
 		
 		MDC.remove("className");
         MDC.remove("methodName");
@@ -63,15 +63,15 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 			MDC.put("executeResult", Long.toString(elapsedTime));
 
 			// After REST Call
-			traceLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
+			traceLogger.info("[{}] [{} : {}] [{}]", requestId, uri, method, elapsedTime);
 			
 			if(elapsedTime > SLOW_PAGE_THRESHOLD_MS) {
-				slowLogger.info("{}; {}; {}; {}; {}", requestId, uri, method, elapsedTime, userId);
+				slowLogger.info("[{}] [{} : {}] [{}]", requestId, uri, method, elapsedTime);
 			}
             
 			return response;
 		} catch (Exception ex) {
-			errorLogger.error("{}; {}; {}; {}; {}", requestId, uri, method, "failed: " + ex.getMessage(), userId);
+			errorLogger.error("[{}] [{} : {}] [{}]", requestId, uri, method, "failed: " + ex.getClass().getSimpleName());
 			throw ex;
 		} finally {
 			MDC.remove("className");

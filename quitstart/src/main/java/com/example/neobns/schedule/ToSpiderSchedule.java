@@ -22,7 +22,7 @@ public class ToSpiderSchedule {
 
 //	@Scheduled(cron = "*/30 * * * * * ", zone = "Asia/Seoul")
 	public void runSpiderSchedule() throws Exception {
-
+		// error 내역 오라클 db로 전달하는 스케쥴링을 주석처리해 실행하지 않음
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
 		String date = LocalDateTime.now().format(formatter);
 

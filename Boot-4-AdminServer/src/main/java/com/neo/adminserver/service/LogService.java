@@ -89,13 +89,13 @@ public class LogService {
         return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query, uri);
     }
     
-	public List<LogDTO> findByTable(int page, int size, String callerMethod) {
+	public List<LogDTO> findByTable(int page, int size, String searchType, String searchKeyword) {
 		int offset = (page - 1) * size;
-	    return logMapper.findByTable(size, offset, callerMethod);
+	    return logMapper.findByTable(size, offset, searchType, searchKeyword);
 	}
 	
-    public int countSQLTable(String callerMethod) {
-        return logMapper.countSQLTable(callerMethod);
+    public int countSQLTable(String searchType, String searchKeyword) {
+        return logMapper.countSQLTable(searchType, searchKeyword);
     }
 
 }

@@ -50,7 +50,7 @@ public class LoggingAspect {
         MDC.put("methodName", methodName);
 
         // 메서드 실행 전 로깅
-        traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), "start");
+        traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), "start");
         
         MDC.remove("className");
         MDC.remove("methodName");
@@ -65,7 +65,7 @@ public class LoggingAspect {
             MDC.put("executeResult", Long.toString(elapsedTime));
 
             // 메서드 실행 후 trace 로깅
-            traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
+            traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
             
             MDC.remove("className");
             MDC.remove("methodName");

@@ -385,7 +385,7 @@
 		                                        <a class="sub-nav-link" href="/admin/errors">오류 어플리케이션</a>
 		                                   </li>
 		                                   <li class="sub-nav-item">
-		                                        <a class="sub-nav-link" href="/admin/table">테이블 영향도</a>
+		                                        <a class="sub-nav-link" href="/admin/table">영향도 분석</a>
 		                                   </li>
 		                              </ul>
 		                         </div>
@@ -750,10 +750,20 @@
 	<!-- //레이아웃 없이, 데모용 메뉴만 추가.--> 
 	
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
-		<h2 class="mb-4 text-center" ><a href="/admin/table">테이블 영향도 분석 관리</a></h2>
+		<h2 class="mb-4 text-center" ><a href="/admin/table">영향도 분석 관리</a></h2>
 		
-		<form id="searchForm" action="/admin/table" method="get"  class="row">
-		    <input type="text" style="width: 250px" class="form-control me-1 border border-dark" name="callerMethod" placeholder="테이블 명" />
+		<form id="searchForm" action="/admin/table" method="get" class="row">
+		    <!-- 검색 조건 선택 -->
+		    <select name="searchType" class="form-select me-1 border border-dark" style="width: 150px;">
+		        <option value="callerMethod" th:selected="${param.searchType == 'callerMethod'}">테이블 명</option>
+		        <option value="callerClass" th:selected="${param.searchType == 'callerClass'}">클래스 명</option>
+		    </select>
+		
+		    <!-- 검색 키워드 입력 -->
+		    <input type="text" style="width: 250px" class="form-control me-1 border border-dark" 
+		           name="searchKeyword" placeholder="검색어를 입력하세요" th:value="${param.searchKeyword}" />
+		
+		    <!-- 검색 버튼 -->
 		    <button type="submit" style="width: 80px" class="btn btn-primary">검색</button>
 		</form>
 		
@@ -769,8 +779,7 @@
 					<!-- <th scope="col"><input type="checkbox" id="select-all" class="form-check-input"></th> -->
 					<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
 		            <th>추적ID</th> <!-- 추적 아이디 -->
-		            <th>호출</th> <!-- caller_class 정보 -->
-		            <th>호출상세</th> <!-- caller_method 정보 -->
+		            <th>테이블/클래스</th> <!-- caller_method 정보 -->
 		            <th>사용자ID</th> <!-- 사용자 아이디 -->
 				</tr>
 			</thead>
@@ -789,13 +798,12 @@
 						<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
 	                    <span th:unless="${log.traceId != null}">N/A</span>
 					</td>
-					<!-- 호출 -->
-		            <td th:text="${log.callerClass}"></td>
 		            <!-- 호출상세 -->
-		            
 		            <td class="text-start trace-id">
 		            	<span th:if="${log.traceId != null}">
-	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.callerMethod}"></a>
+	                        <a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}" target="_blank"
+					           th:text="${log.callerClass == 'SQL' ? log.callerMethod : log.callerClass}">
+					        </a>
 	                    </span>
 	                    <span th:unless="${log.callerMethod != null}">N/A</span>
                     </td>
@@ -811,13 +819,13 @@
 		<div th:if="${hasResults}" class="pagination">
 		    <!-- 이전 페이지 그룹 -->
 		    <a th:if="${currentPage > 10}" 
-		       th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, callerMethod=${callerMethod})}">
+		       th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
 		       이전
 		    </a>
 		
 		    <!-- 페이지 번호 그룹 -->
 		    <span th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
-		        <a th:href="@{/admin/table(page=${pageNum}, size=${size}, callerMethod=${callerMethod})}" 
+		        <a th:href="@{/admin/table(page=${pageNum}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}" 
 		           th:classappend="${pageNum == currentPage} ? 'active' : ''">
 		            <span th:text="${pageNum}"></span>
 		        </a>
@@ -825,7 +833,7 @@
 		
 		    <!-- 다음 페이지 그룹 -->
 		    <a th:if="${currentPage + 10 <= totalPages}" 
-		       th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, callerMethod=${callerMethod})}">
+		       th:href="@{/admin/table(page=${currentPage + 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
 		       다음
 		    </a>
 		</div>

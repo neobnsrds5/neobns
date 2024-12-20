@@ -23,7 +23,7 @@ public class RedissonConfig {
 
 	@Bean
 	public RedissonClient redissonClient() {
-
+		// 레디스 서버 설정
 		Config config = new Config();
 		config.useSingleServer().setAddress("redis://" + redisHost + ":" + redisPort)
 				.setPassword(redisPassword.isEmpty() ? null : redisPassword);

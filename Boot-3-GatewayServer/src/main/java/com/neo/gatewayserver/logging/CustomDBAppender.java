@@ -36,7 +36,7 @@ public class CustomDBAppender extends DBAppender {
             }
             
             // 로그 레벨이 ERROR인 경우 추가적으로 logging_error 테이블에 저장
- 			if ("ERROR".equals(event.getLevel().toString()) && loggingEventInserted) {
+ 			if ("ERROR".equals(event.getLoggerName()) && loggingEventInserted) {
  				saveErrorLog(event, connection);
  			}
 
@@ -51,6 +51,7 @@ public class CustomDBAppender extends DBAppender {
         } finally {
             // 이전 Auto-commit 상태 복원
             connection.setAutoCommit(previousAutoCommitState);
+            MDC.remove("queryLog");
         }
     }
 
@@ -166,9 +167,6 @@ public class CustomDBAppender extends DBAppender {
             errorStmt.setString(6, className);
             errorStmt.setString(7, methodName);
             errorStmt.setString(8, queryLog);
-            if(queryLog != null) {
-            	MDC.remove("queryLog");
-            }
             errorStmt.setString(9, uri);
             errorStmt.setString(10, errorName);
 

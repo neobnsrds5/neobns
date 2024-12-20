@@ -185,6 +185,9 @@ public class TraceUmlService {
 
 		}
 
+		System.out.println("만들어진 uml string \n"+ sb.toString());
+		
+		
 		return sb.toString();
 	}
 

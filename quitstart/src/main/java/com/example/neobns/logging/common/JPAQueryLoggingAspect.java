@@ -25,43 +25,62 @@ public class JPAQueryLoggingAspect {
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
 
-		
-		System.out.println("instead of sql");
-		
-		System.out.println(joinPoint.getSignature().toString());
-		String repositoryString = joinPoint.getSignature().toString();
+		// 레포짓토리 실행 시작 시간
+		long repositoryStart = System.currentTimeMillis();
+
+
+		// com.example.neobns.repository.CustomerRepository.findByMobileNumber(String)
+		String repositoryString = joinPoint.getSignature().toString().replaceAll(".*?\s", "").trim();
 		String[] arrays = repositoryString.split("\\.");
-		System.out.println(arrays.length);
-		System.out.println(arrays[arrays.length-1]);
 		String methodName = joinPoint.getSignature().getName();
+//		String className = arrays[4];
+		String className = repositoryString.substring(0, repositoryString.lastIndexOf("."));
 
-//		Optional com.example.neobns.repository.CustomerRepository.findByMobileNumber(String)
-
-		String className = arrays[4];
+		// CustomerRepository
 		MDC.put("className", className);
+		// findByMobileNumber
 		MDC.put("methodName", methodName);
+
+		// sql 실행 전 레포짓토리 로깅
+		traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), "start");
 
 		long start = System.currentTimeMillis();
 
 		Object result = null;
 		try {
+			// SQL 실행 시작 시간
 			result = joinPoint.proceed();
 		} catch (Exception e) {
+			MDC.put("className", "SQL");
+			MDC.put("methodName", MDC.get("queryLog"));
 			MDC.put("executeResult", e.getClass().getSimpleName());
 			errorLogger.error("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
-					e.getClass().getSimpleName());
+					MDC.get("executeResult"));
 		}
 
-		long elapsedTime = System.currentTimeMillis() - start;
-		MDC.put("executeResult", Long.toString(elapsedTime));
+		long sqlElapsedTime = System.currentTimeMillis() - start;
+		MDC.put("className", "SQL");
+		MDC.put("methodName", MDC.get("queryLog"));
+		MDC.put("executeResult", Long.toString(sqlElapsedTime));
 
 		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
-				elapsedTime);
+				MDC.get("executeResult"));
 
-		if (result != null && elapsedTime > SLOW_QUERY_THRESHOLD_MS) {
+		if (result != null && sqlElapsedTime > SLOW_QUERY_THRESHOLD_MS) {
 			slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
-					elapsedTime);
+					MDC.get("executeResult"));
 		}
+
+		long repositoryEnd = System.currentTimeMillis();
+		// 리포짓토리 총 수행시간
+		long repoElapsedTime = System.currentTimeMillis() - repositoryStart;
+
+		MDC.put("className", className);
+		MDC.put("methodName", methodName);
+		MDC.put("executeResult", Long.toString(repoElapsedTime));
+
+		traceLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
+				MDC.get("executeResult"));
 
 		MDC.remove("executeResult");
 		MDC.remove("className");

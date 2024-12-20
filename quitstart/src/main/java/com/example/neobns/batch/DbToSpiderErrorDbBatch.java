@@ -68,7 +68,7 @@ public class DbToSpiderErrorDbBatch {
 
 	@Bean
 	public PagingQueryProvider spiderQueryProvider() throws Exception {
-
+		// 서버 실행 시간 이후의 에러 기록을 에러 히스토리 테이블에 전달
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
 		factory.setSelectClause("SELECT *");

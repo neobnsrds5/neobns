@@ -29,12 +29,12 @@ public class BlackListService {
 	}
 
 	public String getRealIp(HttpServletRequest request) {
-
+		// 게이트웨이 등을 통해 ip가 변경되었더라도 원래의 ip를 가져옴
 		String clientIp = request.getHeader("X-Forwarded-For");
 		if (clientIp != null && !clientIp.isEmpty() && "unknown".equalsIgnoreCase(clientIp)) {
 			return clientIp.split(",")[0].trim();
 		}
-
+		// "X-Real-IP" 헤더에서 ip 주소를 가져옴
 		clientIp = request.getHeader("X-Real-IP");
 		if (clientIp != null && !clientIp.isEmpty() && "unknown".equalsIgnoreCase(clientIp)) {
 			return clientIp.trim();

@@ -18,11 +18,13 @@ public class TransactionLoggingService {
 	@Autowired
 	private TransactionLogRepository logRepository;
 
+	// 항상 로그 메세지 데이터 저장
 	public void logAMessageSuccess(String logMessage) {
 		TransactionLog log = new TransactionLog(logMessage);
 		logRepository.save(log);
 	}
 
+	// 타임아웃에 의한 롤백으로 로그 메세지 데이터 저장 안됨 
 	@Transactional(propagation = Propagation.SUPPORTS, timeout = 1)
 	public void logAMessageFail(String logMessage) {
 		

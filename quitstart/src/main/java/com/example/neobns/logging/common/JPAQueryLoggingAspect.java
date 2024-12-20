@@ -20,6 +20,7 @@ public class JPAQueryLoggingAspect {
 	private static final Logger errorLogger = LoggerFactory.getLogger("ERROR");
 	public static long SLOW_QUERY_THRESHOLD_MS = 0;
 
+	// repository 접근 시 실행되어 슬로우 / 정상 / 에러 상태에 따라 다른 로그 남김
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
 

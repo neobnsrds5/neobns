@@ -27,7 +27,7 @@ public class SpiderDbConfig {
 
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource-spiderdb")
-	public DataSource spiderDataSource() {
+	public DataSource spiderDataSource() { // 오라클 디비 연결
 		return DataSourceBuilder.create().url(dbProperties.getSpiderUrl()).build();
 	}
 

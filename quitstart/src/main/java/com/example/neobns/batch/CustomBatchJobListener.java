@@ -23,6 +23,7 @@ public class CustomBatchJobListener{
 		
 	}
 
+	// 배치 잡 이름, 아이디를 히스토리 내역 테이블에 저장
 	@AfterJob
 	public void afterJob(JobExecution jobExecution) {
 		String jobName = jobExecution.getJobInstance().getJobName();

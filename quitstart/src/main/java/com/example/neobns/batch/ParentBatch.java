@@ -32,7 +32,7 @@ public class ParentBatch {
 
 	@Bean
 	public Job parentBatchJob() {
-
+		// 하위 배치 작업을 스텝을 통해 차례대로 실행
 		return new JobBuilder("parentBatchJob", jobRepository).start(step1()).next(step2()).listener(listener).build();
 
 	}

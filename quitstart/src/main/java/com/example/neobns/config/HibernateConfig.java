@@ -18,6 +18,7 @@ public class HibernateConfig {
 	
 	@Bean
 	public HibernatePropertiesCustomizer hibernatePropertiesCustomizer() {
+		// hibernate 설정에 커스텀 Statement Inspector를 등록. inspect는 쿼리 생성 시 실행됨
 		return hibernateProperties->{
 			hibernateProperties.put(AvailableSettings.STATEMENT_INSPECTOR, jpaLoggingInspector);
 		};

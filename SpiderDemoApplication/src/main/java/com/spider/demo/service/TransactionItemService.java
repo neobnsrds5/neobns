@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class TransactionItemService {
-	
+
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 
 	@Autowired
@@ -28,22 +28,20 @@ public class TransactionItemService {
 
 	@Autowired
 	private TransactionLoggingService loggingService;
-	
 
+	// 항상 데이터 저장
 	public void persistAnItem() {
-		
+
 		TransactionItem item = new TransactionItem("Item1", LocalDate.of(2022, 5, 1), 29);
 		itemRepository.save(item);
-		loggingService.logAMessageSuccess( "adding item with name " + item.getName());
-		
-		
-
+		loggingService.logAMessageSuccess("adding item with name " + item.getName());
 
 	}
 
+	// 타임아웃으로 인한 롤백으로 데이터 저장 안됨
 	@SpiderTransaction(propagation = Propagation.REQUIRED, timeout = 1)
 	public void persistAnItemFail() {
-		
+
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -51,12 +49,10 @@ public class TransactionItemService {
 			e.printStackTrace();
 		}
 
-		
 		TransactionItem item = new TransactionItem("Item2", LocalDate.of(2022, 5, 1), 30);
 		itemRepository.save(item);
-		loggingService.logAMessageFail( "adding item with name " + item.getName());		
-		
-		
+		loggingService.logAMessageFail("adding item with name " + item.getName());
+
 	}
 
 	public List<TransactionItem> getAllItems() {

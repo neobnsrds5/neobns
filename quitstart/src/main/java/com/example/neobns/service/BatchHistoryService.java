@@ -30,7 +30,7 @@ public class BatchHistoryService {
 		this.spiderTemplate = spiderTemplate;
 		this.jobRegistry = jobRegistry;
 	}
-
+	// 배치 실행 내역을 테이블 형식에 맞게 변환 해 전달
 	public void saveBatchHistory(JobExecution jobExecution) {
 
 		int maxLen = 3000;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.Inflater;
 
 import com.neo.adminserver.dto.LogDTO;
 
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 public class TraceUmlService {
 
@@ -53,11 +55,11 @@ public class TraceUmlService {
 				String[] parts = callerClass.split("/");
 				appList.add(parts[3]);
 				user = parts[3];
-				
+
 				// ip:port 간단하게 정리
 				String port = "\"" + parts[2] + "\"";
 				uml.setSource(port);
-				
+
 				// -> 방향인 경우
 				if (executeResult == null) {
 					// URI 간단하게 정리
@@ -152,6 +154,11 @@ public class TraceUmlService {
 
 		umlList.add(new UmlDTO("User", "", "black"));
 
+		System.out.println("<umlList>");
+		for (int i = 0; i < umlList.size(); i++) {
+			System.out.println(umlList.get(i).toString());
+		}
+
 		return buildUmlDiagram(umlList);
 	}
 
@@ -177,18 +184,31 @@ public class TraceUmlService {
 				if (isReturn) {
 					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
 							nextUml.getSource(), curUml.getColor(), curUml.getContent()));
-				} else {
-					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-							nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
+				} else { // -> 방향 rest call인 경우
+					if (i != 0 && nextUml.getSource().startsWith("\"")) {
+						// 가장 최근의 service를 rest service라 가정
+						int restCallServiceIndex = 0;
+						for (int j = i; j >= 0; j--) {
+							if (umlList.get(j).getSource().contains("Service")) {
+								restCallServiceIndex = j;
+								break;
+							}
+						}
+						UmlDTO restUml = umlList.get(restCallServiceIndex);
+						sb.append(String.format("%s %s %s : <font color=%s> %s\n", restUml.getSource(), "->",
+								nextUml.getSource(), nextUml.getColor(), nextUml.getContent())); 
+					} else {
+						sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
+								nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
+					}
 				}
 			}
-
 		}
 
-		System.out.println("만들어진 uml string \n"+ sb.toString());
-		
-		
+		System.out.println("만들어진 uml string \n" + sb.toString());
+
 		return sb.toString();
+
 	}
 
 	public static LogDTO checkError(LogDTO curLog, List<LogDTO> errorList) {
@@ -214,6 +234,7 @@ public class TraceUmlService {
 
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 class UmlDTO {

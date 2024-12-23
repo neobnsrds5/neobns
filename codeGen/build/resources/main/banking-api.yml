@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
-  title: Banking Account Management API
+  title: Customer Management API
   version: 1.0.0
 paths:
-  /accounts:
+  /customers:
     get:
-      summary: Get a list of accounts
+      summary: Get a list of customers
       parameters:
         - name: filters
           in: query
@@ -28,44 +28,44 @@ paths:
           default: 10
       responses:
         '200':
-          description: List of accounts
+          description: List of customers
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Account'
+                  $ref: '#/components/schemas/Customer'
     post:
-      summary: Create a new account
+      summary: Create a new customer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Account'
+              $ref: '#/components/schemas/Customer'
       responses:
         '201':
-          description: Account created successfully
-  /accounts/{accountId}:
+          description: Customer created successfully
+  /customers/{customerId}:
     get:
-      summary: Get account details by ID
+      summary: Get customer details by ID
       parameters:
-        - name: accountId
+        - name: customerId
           in: path
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: Account details
+          description: Customer details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                $ref: '#/components/schemas/Customer'
     put:
-      summary: Update account by ID
+      summary: Update customer by ID
       parameters:
-        - name: accountId
+        - name: customerId
           in: path
           required: true
           schema:
@@ -75,59 +75,50 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Account'
+              $ref: '#/components/schemas/Customer'
       responses:
         '200':
-          description: Account updated successfully
+          description: Customer updated successfully
     delete:
-      summary: Delete account by ID
+      summary: Delete customer by ID
       parameters:
-        - name: accountId
+        - name: customerId
           in: path
           required: true
           schema:
             type: integer
       responses:
         '204':
-          description: Account deleted successfully
+          description: Customer deleted successfully
 components:
   schemas:
-    Account:
+    Customer:
       type: object
       properties:
-        accountId:
+        customerId:
           type: integer
           example: 1
-        accountNumber:
+        firstName:
           type: string
-          example: "123456789"
-        accountName:
+          example: "Jane"
+        lastName:
           type: string
-          example: "John Doe"
-        accountType:
+          example: "Doe"
+        email:
           type: string
-          enum:
-            - savings
-            - checking
-          example: savings
-        balance:
-          type: number
-          format: double
-          example: 1000.50
-        currency:
+          format: email
+          example: "jane.doe@example.com"
+        phoneNumber:
           type: string
-          example: "USD"
+          example: "+1234567890"
+        address:
+          type: string
+          example: "123 Main St, Anytown, USA"
         createdAt:
           type: string
           format: date-time
           example: "2024-01-01T12:00:00Z"
-        createdBy:
-          type: string
-          example: "system"
         updatedAt:
           type: string
           format: date-time
           example: "2024-01-02T15:00:00Z"
-        updatedBy:
-          type: string
-          example: "admin"

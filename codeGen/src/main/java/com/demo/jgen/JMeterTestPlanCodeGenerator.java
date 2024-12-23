@@ -3,10 +3,13 @@ package com.demo.jgen;
 import io.swagger.v3.oas.models.media.Schema;
 import java.io.IOException;
 
+/*
+ * JMeter 테스트 코드 생성기
+ */
 public class JMeterTestPlanCodeGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String baseUrl = "localhost:8080";  // Adjust this to your actual base URL
         String testPlan = createJMeterTestPlan(packageName, resourceName, baseUrl);
         

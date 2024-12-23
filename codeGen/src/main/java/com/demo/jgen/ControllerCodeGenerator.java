@@ -3,10 +3,13 @@ package com.demo.jgen;
 import io.swagger.v3.oas.models.media.Schema;
 import java.io.IOException;
 
+/*
+ * 컨트롤러 코드 생성기
+ */
 public class ControllerCodeGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String controllerCode = """
                 package %s;
 
@@ -53,8 +56,15 @@ public class ControllerCodeGenerator implements BaseCodeGenerator {
                         service.delete(id);
                     }
                 }
-                """.formatted(packageName, resourceName.toLowerCase(), resourceName, resourceName, resourceName, resourceName,
-                              resourceName, resourceName, resourceName);
+                """.formatted(
+            		packageName, // 패키지명
+            		resourceName.toLowerCase(), // @RequestMapping("/%s")
+            		resourceName, resourceName, // 클래스명, Service
+            		resourceName, // findAll()
+            		resourceName, // findByPage()
+            		resourceName, // findById()
+            		resourceName, // create()
+            		resourceName); // update()
 
         writeToFile(packageDir + resourceName + "Controller.java", controllerCode);
     }

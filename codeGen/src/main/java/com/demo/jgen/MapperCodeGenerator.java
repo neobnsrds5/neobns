@@ -3,10 +3,13 @@ package com.demo.jgen;
 import io.swagger.v3.oas.models.media.Schema;
 import java.io.IOException;
 
+/*
+ * Mapper 코드 생성기
+ */
 public class MapperCodeGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String mapperCode = """
                 package %s;
 
@@ -30,7 +33,13 @@ public class MapperCodeGenerator implements BaseCodeGenerator {
 
                     void deleteById(Long id);
                 }
-                """.formatted(packageName, resourceName, resourceName, resourceName, resourceName, resourceName, resourceName);
+                """.formatted(
+                	packageName, resourceName, // 패키지명, 인터페이스명
+                	resourceName, // findAll()
+                	resourceName, // findByPage()
+                	resourceName, // findById()
+                	resourceName, // insert()
+                	resourceName); // update()
 
         writeToFile(packageDir + resourceName + "Mapper.java", mapperCode);
     }

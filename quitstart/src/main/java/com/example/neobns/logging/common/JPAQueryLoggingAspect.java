@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.standard.expression.AdditionSubtractionExpression;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Aspect
@@ -31,9 +29,7 @@ public class JPAQueryLoggingAspect {
 
 		// com.example.neobns.repository.CustomerRepository.findByMobileNumber(String)
 		String repositoryString = joinPoint.getSignature().toString().replaceAll(".*?\s", "").trim();
-		String[] arrays = repositoryString.split("\\.");
 		String methodName = joinPoint.getSignature().getName();
-//		String className = arrays[4];
 		String className = repositoryString.substring(0, repositoryString.lastIndexOf("."));
 
 		// CustomerRepository
@@ -71,7 +67,6 @@ public class JPAQueryLoggingAspect {
 					MDC.get("executeResult"));
 		}
 
-		long repositoryEnd = System.currentTimeMillis();
 		// 리포짓토리 총 수행시간
 		long repoElapsedTime = System.currentTimeMillis() - repositoryStart;
 

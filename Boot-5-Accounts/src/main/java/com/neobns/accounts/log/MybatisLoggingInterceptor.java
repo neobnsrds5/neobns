@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.plugin.*;
@@ -46,18 +45,13 @@ public class MybatisLoggingInterceptor implements Interceptor {
 		
 		// 쿼리 정보 가져오기
 		MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
-		Object parameter = invocation.getArgs()[1];
 		
 //		BoundSql boundSql = mappedStatement.getBoundSql(parameter);
 //		String sql = boundSql.getSql().replaceAll("\\s+", " ").trim(); // 바운딩된 SQL
 		
 		SqlSource sqlSource = mappedStatement.getSqlSource();
         String rawSql = getRootSqlNode(sqlSource).replaceAll("\\s+", " ").trim(); // 바운딩 전 SQL
-
 		MDC.put("queryLog", rawSql);
-		MDC.put("className", "SQL");
-        MDC.put("methodName", rawSql);
-        traceLogger.info("[{}] [{} : {}]", MDC.get("requestId"), "SQL", rawSql);
 		
 		Object result = null;
 		try {
@@ -88,9 +82,9 @@ public class MybatisLoggingInterceptor implements Interceptor {
 				slowLogger.info("[{}] [{} : {}] [{}ms]", MDC.get("requestId"), "SQL", rawSql, elapsedTime);
 			}
 
-			MDC.remove("executeResult");
 			MDC.remove("className");
 			MDC.remove("methodName");
+			MDC.remove("executeResult");
 		}
 		return result;
 	}

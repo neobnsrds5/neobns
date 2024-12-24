@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.Inflater;
 
 import com.neo.adminserver.dto.LogDTO;
 
@@ -12,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 public class TraceUmlService {
 
@@ -24,9 +22,6 @@ public class TraceUmlService {
 
 		List<UmlDTO> umlList = new ArrayList<>();
 		umlList.add(new UmlDTO("User", "", "black"));
-
-		Set<String> appList = new HashSet<>();
-		String user = "";
 
 		for (LogDTO log : logList) {
 			switch (log.getLoggerName()) {
@@ -53,8 +48,6 @@ public class TraceUmlService {
 			// HTTP
 			if (callerClass.contains("http://")) {
 				String[] parts = callerClass.split("/");
-				appList.add(parts[3]);
-				user = parts[3];
 
 				// ip:port 간단하게 정리
 				String port = "\"" + parts[2] + "\"";
@@ -94,29 +87,24 @@ public class TraceUmlService {
 			}
 			// SQL
 			else if (callerClass.equals("SQL")) {
-				uml.setSource("Database");
+				uml.setSource(callerClass);
 
-				// -> 방향
-				if (executeResult == null) {
-					continue;
-				}
-				// <- 방향
-				else {
-					String content = callerMethod;
+				String content = callerMethod;
 
-					stateLog = checkError(log, errorList);
+				stateLog = checkError(log, errorList);
+				if (stateLog != null) {
+					content += ("\\n<font color=red>[ " + stateLog.getExecuteResult() + " ] "); // 에러 정보 추가
+					uml.setColor("red");
+				} else {
+					stateLog = checkSlow(log, slowList);
 					if (stateLog != null) {
-						content += ("\\n<font color=red>[ " + stateLog.getExecuteResult() + " ] "); // 에러 정보 추가
-						uml.setColor("red");
-					} else {
-						stateLog = checkSlow(log, slowList);
-						if (stateLog != null) {
-							uml.setColor("orangered");
-							content += ("\\n<font color=orangered>[ " + executeResult + "ms ]"); // 소요 시간 추가
-						}
+						uml.setColor("orangered");
+						content += ("\\n<font color=orangered>[ " + executeResult + "ms ]"); // 소요 시간 추가
+					}else {
+						content += ("\\n<font color=black>[ " + executeResult + "ms ]"); // 소요 시간 추가
 					}
-					uml.setContent(content);
 				}
+				uml.setContent(content);
 			}
 			// AOP
 			else {
@@ -171,7 +159,7 @@ public class TraceUmlService {
 			if (curUml.getSource().equals(nextUml.getSource())) {
 				continue;
 			}
-			if (nextUml.getSource().equals("Database")) {
+			if (nextUml.getSource().equals("SQL")) {
 				sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->", curUml.getSource(),
 						nextUml.getColor(), nextUml.getContent()));
 				nextUml.setSource(curUml.getSource());
@@ -227,7 +215,6 @@ public class TraceUmlService {
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 class UmlDTO {

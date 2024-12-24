@@ -167,8 +167,8 @@ public class TraceUmlService {
 				if (isReturn) {
 					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
 							nextUml.getSource(), curUml.getColor(), curUml.getContent()));
-				} else { // -> 방향 rest call인 경우
-					if (i != 0 && nextUml.getSource().startsWith("\"")) {
+				} else { // -> 방향
+					if (i != 0 && nextUml.getSource().startsWith("\"")) { // rest call인 경우
 						// 가장 최근의 service를 rest service라 가정
 						int restCallServiceIndex = 0;
 						for (int j = i; j >= 0; j--) {

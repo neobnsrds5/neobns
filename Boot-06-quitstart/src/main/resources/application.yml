@@ -1,0 +1,113 @@
+server:
+  port: 7777
+#  servlet:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
+spring:  
+#  kafka:
+#    bootstrap-servers: localhost:9092
+  application:
+    name: quitstart
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:http://config:1234@localhost:9393
+# 주석처리 한 부분은 config server의 prperties에 존재
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:9000/adminPage
+##        username: admin
+##        password: admin
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+      schema: classpath:org/springframework/batch/core/schema-mariadb.sql
+#  datasource-meta:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://neobns.com:13306/db1
+#    username: POC_USER
+#    password: neobns1!
+#  datasource-data:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://neobns.com:13306/db2
+#    username: POC_USER
+#    password: neobns1!
+#  datasource-target:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://neobns.com:13306/db3
+#    username: POC_USER
+#    password: neobns1!
+# neobns oracle db
+#  datasource-spiderdb:
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+#    url: jdbc:oracle:thin:@3.35.132.32:1521/xe
+#    username: system
+#    password: neobns
+      
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+
+  data:
+    redis:
+#      host: 3.35.132.32
+      host: localhost
+      # 레디스 돌릴 서버 호스트로 수정할 것
+      # sudo vim /etc/redis/redis.conf
+      # # 1) 모든 IP에서 접속 허용
+      # bind 0.0.0.0
+      # 2) 외부 접속 허용 (권장 비밀번호 설정)
+      # requirepass your_password
+      # 3) 포트 설정 (기본값 6379)
+      # port 6379
+      port: 6379
+#      password: neobns1!
+      password:
+
+# 주석처리 한 부분은 config server의 prperties에 존재
+#mybatis:
+#  mapper-locations: classpath:mappers/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eureka:1234@localhost:8761/eureka
+      
+#management:
+#  httpexchanges:
+#    recording:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#      base-path: /actuator
+#  endpoint:
+#    metrics:
+#      enabled: true
+#    health:
+#      show-details: always
+#    prometheus:
+#      enabled: true
+#    env:
+#      enabled: true
+#    busrefresh:
+#      enabled: true
+#  info:
+#    env:
+#      enabled: true
+#  metrics:
+#    enable:
+#      hikaricp: true

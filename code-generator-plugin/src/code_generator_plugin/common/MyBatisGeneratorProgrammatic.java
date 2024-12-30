@@ -107,12 +107,12 @@ public class MyBatisGeneratorProgrammatic {
 					"Code generated successfully at: " + targetPath + " for tables: " + tables);
 
 			String servicePackage = "com.example.service";
-			String contorllerPackage = "com.example.contorller";
+			String controllerPackage = "com.example.controller";
 			// table 별로 code generator를 활용해서 코드 생성
 			for (String table : tables) {
 				JUnitTestGenerator.generateJunitTest(toCamelCase(table), mapperPackage, targetPath);
 				ServiceCodeGenerator.generateServiceCode(toCamelCase(table), servicePackage, targetPath);
-				ControllerCodeGenerator.generateControllerCode(toCamelCase(table), contorllerPackage, targetPath);
+				ControllerCodeGenerator.generateControllerCode(toCamelCase(table), controllerPackage, targetPath);
 			}
 			return true;
 		} catch (Exception e) {

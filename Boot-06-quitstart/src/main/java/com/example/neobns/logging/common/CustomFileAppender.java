@@ -25,13 +25,13 @@ public class CustomFileAppender extends FileAppender<ILoggingEvent> {
 		// TODO Auto-generated method stub
 		super.append(eventObject);
 		
-		try (Producer<String, String> producer = new KafkaProducer<>(getProps())){
-			String logMessage = new String(this.encoder.encode(eventObject), StandardCharsets.UTF_8);
-			System.out.println(logMessage);
-			if (!logMessage.contains("clearAllAccountCache")) {
-				producer.send(new ProducerRecord<>("logs", logMessage));
-			}
-		}
+//		try (Producer<String, String> producer = new KafkaProducer<>(getProps())){
+//			String logMessage = new String(this.encoder.encode(eventObject), StandardCharsets.UTF_8);
+//			System.out.println(logMessage);
+//			if (!logMessage.contains("clearAllAccountCache")) {
+//				producer.send(new ProducerRecord<>("logs", logMessage));
+//			}
+//		}
 	}
 	
 	@Override

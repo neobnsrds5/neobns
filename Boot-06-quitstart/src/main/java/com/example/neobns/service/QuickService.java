@@ -55,13 +55,13 @@ public class QuickService {
 
 	}
 
-	@CachePut(value = "item:id", key = "#itemDto.id")
+//	@CachePut(value = "item:id", key = "#itemDto.id")
 	public boolean registerItem(ItemDto itemDto) {
 		mapper.addItemWithSqlInjection(itemDto);
 		return true;
 	}
 
-	@Cacheable(value = "item:id", key = "#id")
+//	@Cacheable(value = "item:id", key = "#id")
 	public ItemDto getItemById(String id) {
 		ItemDto itemDto = mapper.findById(id);
 		return itemDto;

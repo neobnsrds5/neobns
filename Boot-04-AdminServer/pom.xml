@@ -34,17 +34,17 @@
 
 	<dependencies>
 	
-		<!-- config client -->
+<!--		 config client 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		
-		<!-- eureka client -->
+		 eureka client 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
+		</dependency>-->
 	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -6,200 +6,170 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Bean;
+
+/*
+ * DB To DB 배치 코드 생성기
+ */
 public class DbToDbGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
-
-        // 생성할 파일 내용 생성
-        String content = generateClassContent(packageName, resourceName, schema);
-
-        writeToFile(packageDir + resourceName + "DbToDbBatch.java", content);
-    }
-
-    private String generateClassContent(String packageName, String className, Schema schema) {
-
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
+    	// Extracting schema properties (fields)
+    	// yml 파일에서 components > schemas > properties에 정의된 속성의 이름과 타입 정보를 Map 형태로 반환
+        Map<String, Schema> properties = schema.getProperties();
         StringBuilder mapBuilder = new StringBuilder();
         StringBuilder sqlBuilder = new StringBuilder();
         StringBuilder paramBuilder = new StringBuilder();
-        Map<String, Schema> properties = schema.getProperties();
-        String tableName = className.toLowerCase();
+        String tableName = resourceName.toLowerCase();
 
         for (Map.Entry<String, Schema> entry : properties.entrySet()) {
             String fieldName = entry.getKey();
             if (fieldName.toLowerCase().equals("id"))
                 continue;
-            String getMethod = mapSchemaTypeToJavaType(entry.getValue().getType(), entry.getValue().getFormat());
-            mapBuilder.append("\t\t\tmap.put(")
-                    .append("\"").append(fieldName).append("\", rs.get")
-                    .append(getMethod).append("(")
-                    .append("\"").append(fieldName).append("\"));\n");
+            String getMethod = OpenApiCodeGenerator.mapSchemaTypeToJavaType(entry.getValue().getType(), entry.getValue().getFormat());
+            
+            // JdbcPagingItemReader<Map<String, Object>> reader()에 사용될 Map put
+            mapBuilder.append("map.put(\"")
+                    .append(fieldName).append("\", rs.get")
+                    .append(getMethod).append("(\"")
+                    .append(fieldName).append("\"));\n			");
+            
+            // JdbcBatchItemWriter<Map<String, Object>> writer()에 MapSqlParameterSource
+            paramBuilder.append("params.addValue(\"")
+        	.append(fieldName).append("\", item.get(\"")
+        	.append(fieldName).append("\"));\n				");
         }
+        
+        // JdbcBatchItemWriter<Map<String, Object>> writer()에 사용될 INSERT문 생성
         sqlBuilder.append("INSERT INTO ").append(tableName).append(" (")
-                .append(String.join(", ", properties.keySet().stream()
-                        .filter(field -> !field.equalsIgnoreCase("id"))
-                        .toList()))
-                .append(") VALUES (:")
-                .append(String.join(", :", properties.keySet().stream()
-                        .filter(field -> !field.equalsIgnoreCase("id"))
-                        .toList())).append(")");
-        for (Map.Entry<String, Schema> entry : properties.entrySet()) {
-            String fieldName = entry.getKey();
-            if (fieldName.toLowerCase().equals("id"))
-                continue;
-            String getMethod = mapSchemaTypeToJavaType(entry.getValue().getType(), entry.getValue().getFormat());
-            paramBuilder.append("\t\t\t\tparams.addValue(")
-                    .append("\"").append(fieldName).append("\", item.get")
+        		.append(String.join(", ", properties.keySet().stream()
+        				.filter(field -> !field.equalsIgnoreCase("id"))
+        				.toList()))
+        		.append(") VALUES (:")
+        		.append(String.join(", :", properties.keySet().stream()
+        				.filter(field -> !field.equalsIgnoreCase("id"))
+        				.toList()))
+        		.append(")");
 
-                    .append("\"").append(fieldName).append("\"));\n");
-        }
-
-        return "package " + packageName + ";\n\n" +
-                "import java.util.HashMap;\n" +
-                "import java.util.Map;\n\n" +
-                "import javax.sql.DataSource;\n\n" +
-                "import org.springframework.batch.core.Job;\n" +
-                "import org.springframework.batch.core.Step;\n" +
-                "import org.springframework.batch.core.job.builder.JobBuilder;\n" +
-                "import org.springframework.batch.core.repository.JobRepository;\n" +
-                "import org.springframework.batch.core.step.builder.StepBuilder;\n" +
-                "import org.springframework.batch.item.database.JdbcBatchItemWriter;\n" +
-                "import org.springframework.batch.item.database.JdbcPagingItemReader;\n" +
-                "import org.springframework.batch.item.database.PagingQueryProvider;\n" +
-                "import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;\n" +
-                "import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;\n" +
-                "import org.springframework.beans.factory.annotation.Qualifier;\n" +
-                "import org.springframework.context.annotation.Bean;\n" +
-                "import org.springframework.context.annotation.Configuration;\n" +
-                "import org.springframework.core.task.TaskExecutor;\n" +
-                "import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;\n" +
-                "import org.springframework.transaction.PlatformTransactionManager;\n\n" +
-                "@Configuration\n" +
-                "public class " + className + "DbToDbBatch {\n\n" +
-                "\tprivate final DataSource realSource;\n" +
-                "\tprivate final DataSource targetSource;\n\n" +
-                "\tprivate final JobRepository jobRepository;\n" +
-                "\tprivate final PlatformTransactionManager transactionManager;\n\n" +
-                "\tpublic " + className + "(@Qualifier(\"dataDBSource\") DataSource realSource,\n" +
-                "\t\t\t@Qualifier(\"targetDataSource\") DataSource targetSource,\n" +
-                "\t\t\tJobRepository jobRepository,\n" +
-                "\t\t\tPlatformTransactionManager transactionManager) {\n" +
-                "\t\tthis.realSource = realSource;\n" +
-                "\t\tthis.targetSource = targetSource;\n" +
-                "\t\tthis.jobRepository = jobRepository;\n" +
-                "\t\tthis.transactionManager = transactionManager;\n" +
-                "\t}\n\n" +
-                "\t@Bean\n" +
-                "\tpublic JdbcPagingItemReader<Map<String, Object>> reader() throws Exception {\n" +
-                "\t\tJdbcPagingItemReader<Map<String, Object>> reader = new JdbcPagingItemReader<>();\n" +
-                "\t\treader.setDataSource(realSource);\n" +
-                "\t\treader.setName(\"pagingReader\");\n" +
-                "\t\treader.setQueryProvider(queryProvider());\n" +
-                "\t\treader.setRowMapper((rs, rowNum) -> {\n" +
-                "\t\t\tMap<String, Object> map = new HashMap<>();\n" +
-                mapBuilder.toString() + "\n" +
-                "\t\t\treturn map;\n" +
-                "\t\t});\n" +
-                "\t\treader.setPageSize(10);\n" +
-                "\t\treturn reader;\n" +
-                "\t}\n\n" +
-                "\t@Bean\n" +
-                "\tpublic PagingQueryProvider queryProvider() throws Exception {\n" +
-                "\t\tSqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();\n" +
-                "\t\tfactory.setDataSource(realSource);\n" +
-                "\t\tfactory.setSelectClause(\"SELECT *\");\n" +
-                "\t\tfactory.setFromClause(\"FROM " + tableName + "\");\n" +
-                "\t\tfactory.setSortKey(\"id\");\n" +
-                "\t\treturn factory.getObject();\n" +
-                "\t}\n\n" +
-                "\t@Bean\n" +
-                "\tpublic JdbcBatchItemWriter<Map<String, Object>> writer() {\n" +
-                "\t\treturn new JdbcBatchItemWriterBuilder<Map<String, Object>>()\n" +
-                "\t\t\t.dataSource(targetSource)\n" +
-                "\t\t\t.sql(" + sqlBuilder.toString() + ");\n" +
-                "\t\t\t.itemSqlParameterSourceProvider(item -> {\n" +
-                "\t\t\t\tMapSqlParameterSource params = new MapSqlParameterSource();\n" +
-                paramBuilder.toString() +
-                "\t\t\t\treturn params;\n" +
-                "\t\t\t})\n" +
-                "\t\t\t.build();\n" +
-                "\t}\n\n" +
-                "\t@Bean\n" +
-                "\tpublic Step step() throws Exception {\n" +
-                "\t\treturn new StepBuilder(\"dbCopyStep\", jobRepository)\n" +
-                "\t\t\t.<Map<String, Object>, Map<String, Object>>chunk(100, transactionManager)\n" +
-                "\t\t\t.reader(reader())\n" +
-                "\t\t\t.writer(writer())\n" +
-                "\t\t\t.taskExecutor(taskExecutor())\n" +
-                "\t\t\t.build();\n" +
-                "\t}\n\n" +
-                "\t@Bean\n" +
-                "\tpublic Job job() throws Exception {\n" +
-                "\t\treturn new JobBuilder(\"dbCopyJob\", jobRepository)\n" +
-                "\t\t\t.start(step())\n" +
-                "\t\t\t.build();\n" +
-                "\t}\n\n" +
-                "\t@Bean\n" +
-                "\tpublic TaskExecutor taskExecutor() {\n" +
-                "\t\tThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();\n" +
-                "\t\texecutor.setCorePoolSize(4);\n" +
-                "\t\texecutor.setMaxPoolSize(8);\n" +
-                "\t\texecutor.setQueueCapacity(50);\n" +
-                "\t\texecutor.setThreadNamePrefix(\"dbCopyTask\");\n" +
-                "\t\texecutor.initialize();\n" +
-                "\t\treturn executor;\n" +
-                "\t}\n\n" +
-                "}";
-    }
-
-
-    private String mapSchemaTypeToJavaType(String schemaType, String schemaFormat) {
-        if (schemaType == null) {
-            return "Object";
-        }
-
-        switch (schemaType) {
-            case "string":
-                if ("date".equals(schemaFormat)) {
-                    return "java.time.LocalDate";
-                } else if ("date-time".equals(schemaFormat)) {
-                    return "java.time.LocalDateTime";
-                } else if ("uuid".equals(schemaFormat)) {
-                    return "java.util.UUID";
-                } else {
-                    return "String";
-                }
-
-            case "integer":
-                if ("int32".equals(schemaFormat)) {
-                    return "Integer";
-                } else if ("int64".equals(schemaFormat)) {
-                    return "Long";
-                } else {
-                    return "Integer"; // Default to Integer for unspecified formats
-                }
-
-            case "number":
-                if ("float".equals(schemaFormat)) {
-                    return "Float";
-                } else if ("double".equals(schemaFormat)) {
-                    return "Double";
-                } else {
-                    return "Double"; // Default to Double for unspecified formats
-                }
-
-            case "boolean":
-                return "Boolean";
-
-            case "array":
-                return "List"; // Could be extended to include generics if items are provided
-
-            case "object":
-                return "Map"; // Could be extended for specific object definitions
-
-            default:
-                return "Object"; // Fallback for unknown types
-        }
-    }
-
+        String batchCode = """
+				package %s;
+				
+				import java.util.HashMap;
+				import java.util.Map;
+				
+				import javax.sql.DataSource;
+				
+				import org.springframework.batch.core.Job;
+				import org.springframework.batch.core.Step;
+				import org.springframework.batch.core.job.builder.JobBuilder;
+				import org.springframework.batch.core.repository.JobRepository;
+				import org.springframework.batch.core.step.builder.StepBuilder;
+				import org.springframework.batch.item.database.JdbcBatchItemWriter;
+				import org.springframework.batch.item.database.JdbcPagingItemReader;
+				import org.springframework.batch.item.database.PagingQueryProvider;
+				import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+				import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
+				import org.springframework.beans.factory.annotation.Qualifier;
+				import org.springframework.context.annotation.Bean;
+				import org.springframework.context.annotation.Configuration;
+				import org.springframework.core.task.TaskExecutor;
+				import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+				import org.springframework.transaction.PlatformTransactionManager;
+				
+				@Configuration
+				public class %sDbToDbBatch {
+				
+					private final DataSource realSource;
+					private final DataSource targetSource;
+				
+					private final JobRepository jobRepository;
+					private final PlatformTransactionManager transactionManager;
+				
+					public %sDbToDbBatch(@Qualifier("dataDBSource") DataSource realSource,
+							@Qualifier("targetDBSource") DataSource targetSource,
+							JobRepository jobRepository,
+							PlatformTransactionManager transactionManager) {
+						this.realSource = realSource;
+						this.targetSource = targetSource;
+						this.jobRepository = jobRepository;
+						this.transactionManager = transactionManager;
+					}
+				
+					@Bean
+					public JdbcPagingItemReader<Map<String, Object>> reader() throws Exception {
+						JdbcPagingItemReader<Map<String, Object>> reader = new JdbcPagingItemReader<>();
+						reader.setDataSource(realSource);
+						reader.setName("pagingReader");
+						reader.setQueryProvider(queryProvider());
+						reader.setRowMapper((rs, rowNum) -> {
+							Map<String, Object> map = new HashMap<>();
+							%s
+							return map;
+						});
+						reader.setPageSize(10);
+						return reader;
+					}
+				
+					@Bean
+					public PagingQueryProvider queryProvider() throws Exception {
+						SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
+						factory.setDataSource(realSource);
+						factory.setSelectClause("SELECT *");
+						factory.setFromClause("FROM %s");
+						factory.setSortKey("id");
+						return factory.getObject();
+					}
+				
+					@Bean
+					public JdbcBatchItemWriter<Map<String, Object>> writer() {
+						return new JdbcBatchItemWriterBuilder<Map<String, Object>>()
+							.dataSource(targetSource)
+							.sql("%s")
+							.itemSqlParameterSourceProvider(item -> {
+								MapSqlParameterSource params = new MapSqlParameterSource();
+								%s
+								return params;
+							})
+							.build();
+					}
+				
+					@Bean
+					public Step step() throws Exception {
+						return new StepBuilder("dbCopyStep", jobRepository)
+							.<Map<String, Object>, Map<String, Object>>chunk(100, transactionManager)
+							.reader(reader())
+							.writer(writer())
+							.taskExecutor(taskExecutor())
+							.build();
+					}
+				
+					@Bean
+					public Job job() throws Exception {
+						return new JobBuilder("dbCopyJob", jobRepository)
+							.start(step())
+							.build();
+					}
+				
+					@Bean
+					public TaskExecutor taskExecutor() {
+						ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+						executor.setCorePoolSize(4);
+						executor.setMaxPoolSize(8);
+						executor.setQueueCapacity(50);
+						executor.setThreadNamePrefix("dbCopyTask");
+						executor.initialize();
+						return executor;
+					}
+				}
+        		""".formatted(
+        			packageName, resourceName, resourceName, // 패키지명, 클래스명, 생성자명
+        			mapBuilder.toString(), // reader()의 setRowMapper
+        			tableName, // queryProvider()의 SELECT문
+        			sqlBuilder.toString(), // writer()의 INSERT문
+        			paramBuilder.toString()); // writer()의 MapSqlParameterSource
+        
+        // Write the generated code to a file
+        writeToFile(packageDir + resourceName + "DbToDbBatch.java", batchCode);
+	}
 }

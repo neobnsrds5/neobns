@@ -3,10 +3,13 @@ package com.demo.jgen;
 import io.swagger.v3.oas.models.media.Schema;
 import java.io.IOException;
 
+/*
+ * 서비스 코드 생성기
+ */
 public class ServiceCodeGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String serviceCode = """
                 package %s;
 
@@ -46,7 +49,13 @@ public class ServiceCodeGenerator implements BaseCodeGenerator {
                         mapper.deleteById(id);
                     }
                 }
-                """.formatted(packageName, resourceName, resourceName, resourceName, resourceName, resourceName, resourceName, resourceName);
+                """.formatted(
+            		packageName, resourceName, resourceName, // 패키지명, 클래스명, Mapper
+            		resourceName, // findAll()
+            		resourceName, // findByPage()
+            		resourceName, // findById()
+            		resourceName, // create
+            		resourceName); // update
 
         writeToFile(packageDir + resourceName + "Service.java", serviceCode);
     }

@@ -8,13 +8,20 @@ import java.util.Random;
 
 import static com.demo.jgen.OpenApiCodeGenerator.mapSchemaTypeToJavaType;
 
+/*
+ * sql 파일 생성기
+ */
 public class TestDataSQLGenerator implements BaseCodeGenerator {
 
     private Random random = new Random();
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
-        String tableName = resourceName.toLowerCase(); // 테이블 이름은 대개 resourceName을 소문자로 사용
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
+    	// Extracting schema properties (fields)
+    	// yml 파일에서 components > schemas > properties에 정의된 속성의 이름과 타입 정보를 Map 형태로 반환
+        Map<String, Schema> properties = schema.getProperties();
+        
+    	String tableName = resourceName.toLowerCase(); // 테이블 이름은 대개 resourceName을 소문자로 사용
         StringBuilder createTableBuilder = new StringBuilder();
         StringBuilder sqlBuilder = new StringBuilder();
 
@@ -24,8 +31,6 @@ public class TestDataSQLGenerator implements BaseCodeGenerator {
         createTableBuilder.append("CREATE TABLE ").append(tableName).append(" (\n");
         // Define the id field explicitly
         createTableBuilder.append("    id BIGINT AUTO_INCREMENT PRIMARY KEY,\n");
-        // 테이블에 삽입할 필드를 찾는다
-        Map<String, Schema> properties = schema.getProperties();
 
         for (Map.Entry<String, Schema> entry : properties.entrySet()) {
             String fieldName = entry.getKey();

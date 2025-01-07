@@ -9,16 +9,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/*
+ * 아스키독 생성기
+ */
 public class AsciiDocCodeGenerator implements BaseCodeGenerator {
     
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String asciiDoc = generateResourceDocumentation(packageName, resourceName, schema);
         writeToFile(packageDir + resourceName + ".adoc", asciiDoc);
         generateSnippets(packageDir, resourceName.toLowerCase());
     }
     
-    private String generateResourceDocumentation(String packageName, String resourceName, Schema schema) {
+    private String generateResourceDocumentation(String packageName, String resourceName, Schema<?> schema) {
         StringBuilder doc = new StringBuilder();
         
         // Document Header

@@ -4,11 +4,14 @@ import io.swagger.v3.oas.models.media.Schema;
 
 import java.io.IOException;
 
+/*
+ * 배치를 위한 Scheduler 코드 생성기
+ */
 public class ScheduleGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
-        String serviceCode = """
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
+        String scheduleCode = """
                 package %s;
 
                 import java.text.SimpleDateFormat;
@@ -25,7 +28,7 @@ public class ScheduleGenerator implements BaseCodeGenerator {
                 
                 @Configuration
                 @RequiredArgsConstructor
-                public class ToRestSchedule {
+                public class BatchScheduler {
 
                     private final JobLauncher jobLauncher;
                     private final JobRegistry jobRegistry;
@@ -43,8 +46,8 @@ public class ScheduleGenerator implements BaseCodeGenerator {
                     }
                     
                 }
-                """;
+                """.formatted(packageName);
 
-        writeToFile(packageDir + "ToRestSchedule.java", serviceCode);
+        writeToFile(packageDir + "BatchScheduler.java", scheduleCode);
     }
 }

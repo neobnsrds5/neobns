@@ -3,10 +3,13 @@ package com.demo.jgen;
 import io.swagger.v3.oas.models.media.Schema;
 import java.io.IOException;
 
+/*
+ * 컨트롤러 Mock 테스트 코드 생성기, Service와 Mapper까지 포함한 더 복합적인 테스트 코드
+ */
 public class ControllerMockTestCodeGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String controllerTestCode = """
                 package %s;
 
@@ -97,9 +100,16 @@ public class ControllerMockTestCodeGenerator implements BaseCodeGenerator {
                                .andExpect(status().isOk());
                     }
                 }
-                """.formatted(packageName, resourceName, resourceName, resourceName, resourceName, resourceName, resourceName.toLowerCase(),
-                              resourceName, resourceName.toLowerCase(), resourceName, resourceName.toLowerCase(),
-                              resourceName.toLowerCase(), resourceName.toLowerCase(), resourceName.toLowerCase());
+                """.formatted(
+                	packageName, // 패키지명
+                	resourceName, // @WebMvcTest(%sController.class)
+                	resourceName, resourceName, resourceName, // 클래스명, Service, Mapper
+                	resourceName, resourceName.toLowerCase(), // testFindAll()
+                	resourceName, resourceName.toLowerCase(), // testFindByPage()
+                	resourceName, resourceName.toLowerCase(), // testFindById()
+                	resourceName.toLowerCase(), // testCreate()
+                	resourceName.toLowerCase(), // testUpdate()
+                	resourceName.toLowerCase()); // testDelete()
 
         writeToFile(packageDir + resourceName + "ControllerMockTest.java", controllerTestCode);
     }

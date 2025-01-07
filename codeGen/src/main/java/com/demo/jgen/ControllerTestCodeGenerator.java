@@ -3,10 +3,13 @@ package com.demo.jgen;
 import io.swagger.v3.oas.models.media.Schema;
 import java.io.IOException;
 
+/*
+ * 컨트롤러 Mock 테스트 코드 생성기, 서비스와의 상호작용만 검증
+ */
 public class ControllerTestCodeGenerator implements BaseCodeGenerator {
 
     @Override
-    public void generateCode(String packageName, String resourceName, String packageDir, Schema schema) throws IOException {
+    public void generateCode(String packageName, String resourceName, String packageDir, Schema<?> schema) throws IOException {
         String controllerTestCode = """
                 package %s;
 
@@ -94,9 +97,17 @@ public class ControllerTestCodeGenerator implements BaseCodeGenerator {
                                .andExpect(status().isOk());
                     }
                 }
-                """.formatted(packageName, resourceName, resourceName, resourceName, resourceName, resourceName.toLowerCase(),
-                              resourceName, resourceName.toLowerCase(), resourceName, resourceName.toLowerCase(),
-                              resourceName.toLowerCase(), resourceName.toLowerCase(), resourceName.toLowerCase());
+                """.formatted(
+            		packageName, 
+            		packageName, // 패키지명
+                	resourceName, // @WebMvcTest(%sController.class)
+                	resourceName, resourceName, // 클래스명, Service
+                	resourceName, resourceName.toLowerCase(), // testFindAll()
+                	resourceName, resourceName.toLowerCase(), // testFindByPage()
+                	resourceName, resourceName.toLowerCase(), // testFindById()
+                	resourceName.toLowerCase(), // testCreate()
+                	resourceName.toLowerCase(), // testUpdate()
+                	resourceName.toLowerCase()); // testDelete()
 
         writeToFile(packageDir + resourceName + "ControllerTest.java", controllerTestCode);
     }

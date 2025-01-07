@@ -11,7 +11,7 @@ Bundle-ClassPath: .,
  lib/junit-jupiter-api-5.11.3.jar
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.datatools.enablement.mysql;bundle-version="1.2.102"
+ org.eclipse.datatools.enablement.mysql
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: code.generator.plugin
 Import-Package: jakarta.inject

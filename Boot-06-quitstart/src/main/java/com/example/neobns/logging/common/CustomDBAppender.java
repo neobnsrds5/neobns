@@ -131,7 +131,7 @@ public class CustomDBAppender extends DBAppender {
 			for (int i = 0; i < 4; i++) {
 				if (args != null) {
 					stmt.setString(7 + i, (args != null && i < args.length && args[i] != null)
-							? args[i].toString().length() > 30 ? args[i].toString().substring(0, 30)
+							? args[i].toString().length() > 200 ? args[i].toString().substring(0, 200)
 									: args[i].toString()
 							: null);
 				} else {

@@ -18,11 +18,8 @@
 		<!-- 필터 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
-<!-- 				<expression>
-					return (mdc.get("requestId") != null) &amp;&amp;
-					!((String)
-					mdc.get("className")).contains("prometheus");
-				</expression> -->
+				<!-- <expression> return (mdc.get("requestId") != null) &amp;&amp; !((String) 
+					mdc.get("className")).contains("prometheus"); </expression> -->
 				<expression>
 					return (mdc.get("requestId") != null) &amp;&amp;
 					(mdc.get("className") == null || !((String)
@@ -256,19 +253,21 @@
 		<appender-ref ref="CONSOLE" />
 
 		<!-- sync db appender -->
-<!-- 		<appender-ref ref="CUSTOM_DB" /> -->
+		<!-- <appender-ref ref="CUSTOM_DB" /> -->
 
 		<!-- async db appender -->
-		<appender-ref ref="ASYNC_DB" />
+		<!-- <appender-ref ref="ASYNC_DB" /> -->
 
 		<!-- sync file appender -->
-		<!-- <appender-ref ref="FILE" /> -->
+		<appender-ref ref="FILE" />
 
 		<!-- async file appender -->
 		<!-- <appender-ref ref="ASYNC_FILE" /> -->
 
-		<!-- <appender-ref ref="FILE_PERFROM_SQL" /> <appender-ref ref="FILE_ERROR_SQL" 
-			/> <appender-ref ref="FILE_ERROR_DYNAMIC_SQL" /> <appender-ref ref="FILE_ERROR_AOP" 
-			/> <appender-ref ref="FILE_PERFORM_AOP" /> -->
+<!-- 		<appender-ref ref="FILE_PERFROM_SQL" />
+		<appender-ref ref="FILE_ERROR_SQL" />
+		<appender-ref ref="FILE_ERROR_DYNAMIC_SQL" />
+		<appender-ref ref="FILE_ERROR_AOP" />
+		<appender-ref ref="FILE_PERFORM_AOP" /> -->
 	</root>
 </configuration>

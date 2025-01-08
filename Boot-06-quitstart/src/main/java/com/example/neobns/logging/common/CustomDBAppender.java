@@ -1,15 +1,45 @@
 package com.example.neobns.logging.common;
 
-import ch.qos.logback.classic.db.DBAppender;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-
-import org.slf4j.MDC;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.slf4j.MDC;
+
+import ch.qos.logback.classic.db.DBAppender;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
+
 public class CustomDBAppender extends DBAppender {
+
+	// logging_event_exception 의 trace_line 길이 자르는 로직 추가
+	@Override
+	protected void secondarySubAppend(ILoggingEvent event, Connection connection, long eventId) throws Throwable {
+		if (event.getThrowableProxy() != null) {
+	        // Throwable 데이터 삽입 SQL
+	        String exceptionSQL = "INSERT INTO logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
+
+	        try (PreparedStatement stmt = connection.prepareStatement(exceptionSQL)) {
+	            int i = 0;
+	            for (StackTraceElementProxy elementProxy : event.getThrowableProxy().getStackTraceElementProxyArray()) {
+	                String traceLine = elementProxy.getSTEAsString();
+
+	                // trace_line 길이 제한 (200자로 제한)
+	                if (traceLine.length() > 200) {
+	                    traceLine = traceLine.substring(0, 200);
+	                }
+
+	                stmt.setLong(1, eventId); // event_id
+	                stmt.setInt(2, i++); // i
+	                stmt.setString(3, traceLine); // trace_line
+
+	                stmt.executeUpdate();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
 
 	@Override
 	protected String getInsertSQL() {
@@ -96,8 +126,17 @@ public class CustomDBAppender extends DBAppender {
 			stmt.setShort(6, computeReferenceMask(event));
 
 			Object[] args = event.getArgumentArray();
+
+			// args null인 경우, 데이터 길 경우 고려
 			for (int i = 0; i < 4; i++) {
-				stmt.setString(7 + i, (args != null && i < args.length) ? args[i].toString() : null);
+				if (args != null) {
+					stmt.setString(7 + i, (args != null && i < args.length && args[i] != null)
+							? args[i].toString().length() > 30 ? args[i].toString().substring(0, 30)
+									: args[i].toString()
+							: null);
+				} else {
+					stmt.setString(7 + i, "");
+				}
 			}
 
 			// Caller 데이터와 MDC 값 우선순위 처리

@@ -22,7 +22,7 @@ import javax.sql.DataSource;
     sqlSessionFactoryRef = "metaSqlSessionFactory"
 )
 @RequiredArgsConstructor
-public class metaDbConfig {
+public class MetaDbConfig {
 	
 	private final Environment environment;
 

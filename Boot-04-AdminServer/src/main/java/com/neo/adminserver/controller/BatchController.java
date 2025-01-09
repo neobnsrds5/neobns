@@ -57,12 +57,11 @@ public class BatchController {
 	    searchMap.setPgtl(pgtl);
 	    
 		List<BatchJobInstanceDTO> list = batchService.list(searchMap);
-		
 
 		String[] status = {"COMPLETED", "STARTING", "STARTED", "STOPPING", "STOPPED", "FAILED", "UNKNOWN"};
 		
-		for(int i=0; i<status.length; i++) {
-		    logger.info(i + "::"+status[i]);
+		for(int i=0; i<total; i++) {
+		    logger.info("JobInstance : {}", list.get(i).toString());
 		}
 		
 		model.addAttribute("list", list);

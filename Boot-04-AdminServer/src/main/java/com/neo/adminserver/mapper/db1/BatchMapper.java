@@ -1,4 +1,4 @@
-package com.neo.adminserver.mapper;
+package com.neo.adminserver.mapper.db1;
 
 import java.util.HashMap;
 import java.util.List;

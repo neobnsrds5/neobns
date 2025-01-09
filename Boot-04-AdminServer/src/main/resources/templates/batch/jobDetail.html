@@ -899,19 +899,15 @@
 			</div>
 			<div class="card-body border-top ">
 				<div class="row g-0  border-bottom py-2 px-2">
-					<div class="col-2">keyName</div>
-					<div class="col-1 pe-3">typeCd</div>
-					<div class="col-3">stringVal</div>
-					<div class="col-3">longVal</div>
-					<div class="col-md-auto mb-0">dateVal</div>
+					<div class="col-4">paramName</div>
+					<div class="col-4 pe-3">paramType</div>
+					<div class="col-4">paramVal</div>
 				</div>
 				<div th:each="pm, i : ${job.execParams}" class="row g-0 border-bottom py-2 px-2">
-					<div class="col-2"><code th:text="${pm.primaryKey.keyName}"></code></div>
-					<div class="col-1 pe-3"><span class="badge rounded-pill bg-secondary" th:text="${pm.typeCd}"></span>
+					<div class="col-4"><code th:text="${pm.parameterName}"></code></div>
+					<div class="col-4 pe-3"><span class="badge rounded-pill bg-secondary" th:text="${pm.parameterType}"></span>
 					</div>
-					<div class="col-3" th:text="${pm.stringVal}"></div>
-					<div class="col-3" th:text="${pm.longVal}"></div>
-					<div class="col-md-auto mb-0" th:text="${@DateUtil.getDateTimeFormat(pm.dateVal)}"></div>
+					<div class="col-4" th:text="${pm.parameterValue}"></div>
 				</div>
 	
 			</div>

@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.neo.adminserver</groupId>
-	<artifactId>Boot-4-AdminServer</artifactId>
+	<artifactId>Boot-04-AdminServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>AdminServer</name>
 	<description>Admin Server</description>

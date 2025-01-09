@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(
-    basePackages = "com.neo.adminserver.mapper", // 공통 Mapper 패키지
+    basePackages = "com.neo.adminserver.mapper.db1", // 공통 Mapper 패키지
     sqlSessionFactoryRef = "batchSqlSessionFactory"
 )
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class BatchDbConfig {
         factoryBean.setDataSource(dataSource);
         factoryBean.setTypeAliasesPackage("com.neo.adminserver.dto"); // 공통 엔티티 경로
         factoryBean.setMapperLocations(
-            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/batch/*.xml")
+            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/db1/*.xml")
         );
         org.apache.ibatis.session.Configuration mybatisConfig = new org.apache.ibatis.session.Configuration();
         mybatisConfig.setMapUnderscoreToCamelCase(true); // underscore to camelCase

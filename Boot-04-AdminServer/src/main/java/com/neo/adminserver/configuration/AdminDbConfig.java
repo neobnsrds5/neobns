@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @MapperScan(
-    basePackages = "com.neo.adminserver.mapper", // 공통 Mapper 패키지
+    basePackages = "com.neo.adminserver.mapper.db2", // 공통 Mapper 패키지
     sqlSessionFactoryRef = "adminSqlSessionFactory"
 )
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class AdminDbConfig {
         factoryBean.setDataSource(dataSource);
         factoryBean.setTypeAliasesPackage("com.neo.adminserver.dto"); // 공통 엔티티 경로
         factoryBean.setMapperLocations(
-            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml")
+            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/db2/*.xml")
         );
         org.apache.ibatis.session.Configuration mybatisConfig = new org.apache.ibatis.session.Configuration();
         mybatisConfig.setMapUnderscoreToCamelCase(true); // underscore to camelCase

@@ -253,13 +253,13 @@
 		<appender-ref ref="CONSOLE" />
 
 		<!-- sync db appender -->
-		<!-- <appender-ref ref="CUSTOM_DB" /> -->
+		<appender-ref ref="CUSTOM_DB" />
 
 		<!-- async db appender -->
 		<!-- <appender-ref ref="ASYNC_DB" /> -->
 
 		<!-- sync file appender -->
-		<appender-ref ref="FILE" />
+<!-- 		<appender-ref ref="FILE" /> -->
 
 		<!-- async file appender -->
 		<!-- <appender-ref ref="ASYNC_FILE" /> -->

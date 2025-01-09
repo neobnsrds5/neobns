@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.neo.adminserver</groupId>
-	<artifactId>Boot-4-AdminServer</artifactId>
+	<artifactId>Boot-04-AdminServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>AdminServer</name>
 	<description>Admin Server</description>
@@ -34,17 +34,17 @@
 
 	<dependencies>
 	
-		<!-- config client -->
+<!--		 config client 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		
-		<!-- eureka client -->
+		 eureka client 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
+		</dependency>-->
 	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -10,7 +10,7 @@
 //import org.springframework.stereotype.Service;
 //
 //import com.neo.adminserver.dto.FwkUserDTO;
-//import com.neo.adminserver.mapper.AuthMapper;
+//import com.neo.adminserver.mapper.db2.AuthMapper;
 //
 //@Service
 //public class CustomUserDetailsService implements UserDetailsService {

@@ -1,4 +1,4 @@
-package com.neo.adminserver.mapper;
+package com.neo.adminserver.mapper.data;
 
 import java.util.List;
 

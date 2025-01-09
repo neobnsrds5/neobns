@@ -1,9 +1,0 @@
-@startuml
-user -> QuickController : GET
-QuickController -> QuickService : getAccountJPA
-QuickService -> SQL : getAccountByIdJPA
-SQL -> QuickService : <font color=red> select id,accountNumber,money,name from Account where id=?
-QuickService -> QuickController : getAccountByIdJPA
-QuickController -> user : getAccountJPA
-user -> user : GET
-@enduml

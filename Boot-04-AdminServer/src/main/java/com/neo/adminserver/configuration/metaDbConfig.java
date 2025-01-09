@@ -18,28 +18,28 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(
-    basePackages = "com.neo.adminserver.mapper.db1", // 공통 Mapper 패키지
-    sqlSessionFactoryRef = "batchSqlSessionFactory"
+    basePackages = "com.neo.adminserver.mapper.meta", // 공통 Mapper 패키지
+    sqlSessionFactoryRef = "metaSqlSessionFactory"
 )
 @RequiredArgsConstructor
-public class BatchDbConfig {
+public class metaDbConfig {
 	
 	private final Environment environment;
 
-    @Bean(name = "batchDataSource")
+    @Bean(name = "metaDataSource")
     @ConfigurationProperties(prefix = "spring.datasource-meta") // batch DB 관련 설정
-    public DataSource batchDataSource() {
+    public DataSource metaDataSource() {
         return DataSourceBuilder.create().url(environment.getProperty("spring.datasource-meta.url")).build();
     }
 
-    @Bean(name = "batchSqlSessionFactory")
-    public SqlSessionFactory batchSqlSessionFactory(
-            @Qualifier("batchDataSource") DataSource dataSource) throws Exception {
+    @Bean(name = "metaSqlSessionFactory")
+    public SqlSessionFactory metaSqlSessionFactory(
+            @Qualifier("metaDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setTypeAliasesPackage("com.neo.adminserver.dto"); // 공통 엔티티 경로
         factoryBean.setMapperLocations(
-            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/db1/*.xml")
+            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/meta/*.xml")
         );
         org.apache.ibatis.session.Configuration mybatisConfig = new org.apache.ibatis.session.Configuration();
         mybatisConfig.setMapUnderscoreToCamelCase(true); // underscore to camelCase
@@ -47,9 +47,9 @@ public class BatchDbConfig {
         return factoryBean.getObject();
     }
 
-    @Bean(name = "batchSqlSessionTemplate")
-    public SqlSessionTemplate batchSqlSessionTemplate(
-            @Qualifier("batchSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "metaSqlSessionTemplate")
+    public SqlSessionTemplate metaSqlSessionTemplate(
+            @Qualifier("metaSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

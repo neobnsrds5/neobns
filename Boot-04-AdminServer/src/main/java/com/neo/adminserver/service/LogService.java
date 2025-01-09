@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
-import com.neo.adminserver.mapper.db2.LogMapper;
+import com.neo.adminserver.mapper.data.LogMapper;
 
 import lombok.RequiredArgsConstructor;
 

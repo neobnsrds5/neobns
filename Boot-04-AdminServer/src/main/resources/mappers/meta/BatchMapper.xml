@@ -1,5 +1,5 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.neo.adminserver.mapper.db1.BatchMapper">
+<mapper namespace="com.neo.adminserver.mapper.meta.BatchMapper">
 
     <!--BatchJobInstance : BATCH_JOB_INSTANCE table -->
   <resultMap id="instanceResultMap" type="com.neo.adminserver.dto.BatchJobInstanceDTO">
@@ -68,13 +68,10 @@
       FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e left join BATCH_JOB_EXECUTION_PARAMS p
       ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
       WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
-      <!-- <if test="executionId > 0"> and e.JOB_EXECUTION_ID = #{executionId} </if> 
+      <if test="executionId > 0"> and e.JOB_EXECUTION_ID = #{executionId} </if>
       <if test="jobName != null and jobName != ''"> and j.JOB_NAME like concat('%', #{jobName}, '%')</if> 
       <if test="startDate != null and startDate != ''"> and CREATE_TIME between concat(#{startDate}, ' 00:00:00') and concat(#{endDate}, ' 23:59:59') </if>
-      
-      <if test="startTime != null"> and START_TIME = #{startTime} </if>             
-      <if test="endTime != null"> and END_TIME = #{endTime} </if>
-      <if test="status != null and status != ''"> and STATUS = #{status} </if> -->
+      <if test="status != null and status != ''"> and STATUS = #{status} </if>
   </select>
           
   <select id="list" parameterType="hashmap"  resultMap="instanceResultMap">
@@ -86,13 +83,10 @@
       FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e left join BATCH_JOB_EXECUTION_PARAMS p
       ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
       WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
-      <!-- <if test="executionId > 0"> and e.JOB_EXECUTION_ID = #{executionId} </if> 
+      <if test="executionId > 0"> and e.JOB_EXECUTION_ID = #{executionId} </if>
       <if test="jobName != null and jobName != ''"> and j.JOB_NAME like concat('%', #{jobName}, '%')</if> 
       <if test="startDate != null and startDate != ''"> and CREATE_TIME between concat(#{startDate}, ' 00:00:00') and concat(#{endDate}, ' 23:59:59') </if>
-      
-      <if test="startTime != null"> and START_TIME = #{startTime} </if>             
-      <if test="endTime != null"> and END_TIME = #{endTime} </if>
-      <if test="status != null and status != ''"> and STATUS = #{status} </if> -->
+      <if test="status != null and status != ''"> and STATUS = #{status} </if>
       order by j.JOB_INSTANCE_ID desc, e.JOB_EXECUTION_ID desc         
     <if test="pgtl != null"><include refid="commonPagingFooter" /></if>
   </select>

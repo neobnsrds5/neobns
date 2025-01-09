@@ -18,31 +18,31 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @MapperScan(
-    basePackages = "com.neo.adminserver.mapper.db2", // 공통 Mapper 패키지
-    sqlSessionFactoryRef = "adminSqlSessionFactory"
+    basePackages = "com.neo.adminserver.mapper.data", // 공통 Mapper 패키지
+    sqlSessionFactoryRef = "dataSqlSessionFactory"
 )
 @RequiredArgsConstructor
-public class AdminDbConfig {
+public class DataDbConfig {
 	
 	private final Environment environment;
 
-	@Bean(name = "adminDataSource")
+	@Bean(name = "dataDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource-data")
-	public DataSource adminDataSource() {
+	public DataSource dataDataSource() {
 	    return DataSourceBuilder
 	            .create()
 	            .url(environment.getProperty("spring.datasource-data.url"))
 	            .build();
 	}
 	
-	@Bean(name = "adminSqlSessionFactory")
-    public SqlSessionFactory adminSqlSessionFactory(
-            @Qualifier("adminDataSource") DataSource dataSource) throws Exception {
+	@Bean(name = "dataSqlSessionFactory")
+    public SqlSessionFactory dataSqlSessionFactory(
+            @Qualifier("dataDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setTypeAliasesPackage("com.neo.adminserver.dto"); // 공통 엔티티 경로
         factoryBean.setMapperLocations(
-            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/db2/*.xml")
+            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/data/*.xml")
         );
         org.apache.ibatis.session.Configuration mybatisConfig = new org.apache.ibatis.session.Configuration();
         mybatisConfig.setMapUnderscoreToCamelCase(true); // underscore to camelCase
@@ -51,9 +51,9 @@ public class AdminDbConfig {
         return factoryBean.getObject();
     }
 
-    @Bean(name = "adminSqlSessionTemplate")
-    public SqlSessionTemplate adminSqlSessionTemplate(
-            @Qualifier("adminSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "dataSqlSessionTemplate")
+    public SqlSessionTemplate dataSqlSessionTemplate(
+            @Qualifier("dataSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

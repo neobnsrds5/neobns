@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.neo.adminserver.dto.BatchJobExecutionDTO;
 import com.neo.adminserver.dto.BatchJobInstanceDTO;
 import com.neo.adminserver.dto.BatchStepExecutionDTO;
-import com.neo.adminserver.mapper.db1.BatchMapper;
+import com.neo.adminserver.mapper.meta.BatchMapper;
 
 import lombok.RequiredArgsConstructor;
 

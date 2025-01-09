@@ -3,11 +3,11 @@ package com.example.neobns.dto;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class LogDTO {
 
 	private String timestmp;

@@ -38,7 +38,7 @@ public class LogFileToDbBatch {
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
 
-	public LogFileToDbBatch(@Qualifier("targetDataSource")  DataSource datasource, JobRepository jobRepository,
+	public LogFileToDbBatch(@Qualifier("dataDataSource")  DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		super();
 		this.datasource = datasource;
@@ -70,7 +70,7 @@ public class LogFileToDbBatch {
 			public LogDTO process(LogDTO item) throws Exception {
 				String threadName = Thread.currentThread().getName();
 				System.out.println("\tProcessing item: " + item.toString() + " on Thread: " + threadName);
-				System.out.println("dummy processor is processing " + item.toString());
+//				System.out.println("dummy processor is processing " + item.toString());
 				// dummy processor logic 추가
 //				for (int i = 0; i < 5; i++) {
 //					System.out.println("dummy processor is processing3 " + item.toString());

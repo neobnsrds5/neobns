@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration debug="true">
+	<property name="FILE_LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri}%n" />
 
 	<logger name="org.apache.kafka" level="WARN" />
 
@@ -51,7 +56,9 @@
 			<evaluator>
 				<expression>
 					return (mdc.get("requestId") != null) &amp;&amp;
-					!((String) mdc.get("className")).contains("prometheus");
+					(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR")) &amp;&amp;
+					(mdc.get("className") == null ||
+					!((String) mdc.get("className")).contains("prometheus"));
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -60,10 +67,12 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
-				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
-				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
-				%X{requestUri}%n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<!-- <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; 
+				%X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; 
+				%X{queryLog}; %X{requestUri}%n</pattern> 로그의 날짜 및 메시지 포맷 -->
+
+			<pattern>${FILE_LOG_PATTERN}</pattern>
+
 		</encoder>
 	</appender>
 
@@ -250,24 +259,22 @@
 
 	<!-- 루트 로거 -->
 	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
+		<!-- <appender-ref ref="CONSOLE" /> -->
 
 		<!-- sync db appender -->
-		<appender-ref ref="CUSTOM_DB" />
+		<!-- <appender-ref ref="CUSTOM_DB" /> -->
 
 		<!-- async db appender -->
 		<!-- <appender-ref ref="ASYNC_DB" /> -->
 
 		<!-- sync file appender -->
-<!-- 		<appender-ref ref="FILE" /> -->
+		<appender-ref ref="FILE" />
 
 		<!-- async file appender -->
 		<!-- <appender-ref ref="ASYNC_FILE" /> -->
 
-<!-- 		<appender-ref ref="FILE_PERFROM_SQL" />
-		<appender-ref ref="FILE_ERROR_SQL" />
-		<appender-ref ref="FILE_ERROR_DYNAMIC_SQL" />
-		<appender-ref ref="FILE_ERROR_AOP" />
-		<appender-ref ref="FILE_PERFORM_AOP" /> -->
+		<!-- <appender-ref ref="FILE_PERFROM_SQL" /> <appender-ref ref="FILE_ERROR_SQL" 
+			/> <appender-ref ref="FILE_ERROR_DYNAMIC_SQL" /> <appender-ref ref="FILE_ERROR_AOP" 
+			/> <appender-ref ref="FILE_PERFORM_AOP" /> -->
 	</root>
 </configuration>

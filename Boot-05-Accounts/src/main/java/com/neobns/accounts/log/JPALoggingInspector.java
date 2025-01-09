@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JPALoggingInspector implements StatementInspector {
 
-	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
-
 	@Override
 	public String inspect(String sql) {
 		// jpa sql 저장 시 테이블 별칭, 칼럼네임 등 가독성이 좋지 않아 수정

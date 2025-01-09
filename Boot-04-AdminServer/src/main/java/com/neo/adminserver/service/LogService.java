@@ -1,13 +1,12 @@
 package com.neo.adminserver.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.LogDTO;
-import com.neo.adminserver.mapper.LogMapper;
+import com.neo.adminserver.mapper.data.LogMapper;
 
 import lombok.RequiredArgsConstructor;
 

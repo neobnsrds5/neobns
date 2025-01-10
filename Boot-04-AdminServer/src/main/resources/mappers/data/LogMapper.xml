@@ -4,21 +4,21 @@
     <select id="findSlowByPage" resultType="LogDTO">
         SELECT * FROM logging_slow
         WHERE 1=1
-        ORDER BY timestmp DESC
+        ORDER BY timestmp DESC, event_id DESC
     	LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="findErrorByPage" resultType="LogDTO">
         SELECT * FROM logging_error
         WHERE 1=1
-        ORDER BY timestmp DESC
+        ORDER BY timestmp DESC, event_id DESC
     	LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
         SELECT * FROM logging_event
         WHERE trace_id = #{traceId} AND logger_name IN ('TRACE', 'SLOW', 'ERROR')
-        ORDER BY timestmp
+        ORDER BY timestmp ASC, event_id ASC
     </select>
     
     <select id="countSlowLogs" resultType="int">
@@ -55,7 +55,7 @@
         <if test="executeResult != null and executeResult != ''">
             AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)
         </if>
-        ORDER BY timestmp DESC
+        ORDER BY timestmp DESC, event_id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -112,7 +112,7 @@
         <if test="uri != null and uri != ''">
             AND uri LIKE CONCAT('%', #{uri}, '%')
         </if>
-        ORDER BY timestmp DESC
+        ORDER BY timestmp DESC, event_id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -154,7 +154,7 @@
     	<if test="searchType != null and searchType == 'callerClass'">
         AND caller_class LIKE CONCAT('%', #{searchKeyword}, '%')
     	</if>
-        ORDER BY timestmp DESC
+        ORDER BY timestmp DESC, event_id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
     

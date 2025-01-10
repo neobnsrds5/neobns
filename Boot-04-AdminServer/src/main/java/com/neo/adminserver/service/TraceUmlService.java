@@ -44,6 +44,8 @@ public class TraceUmlService {
 			String callerClass = log.getCallerClass();
 			String callerMethod = log.getCallerMethod();
 			String executeResult = log.getExecuteResult();
+			System.out.println("trace log : " + "\n" + log.toString());
+			System.out.println();
 
 			// HTTP
 			if (callerClass.contains("http://")) {
@@ -187,6 +189,8 @@ public class TraceUmlService {
 				}
 			}
 		}
+		
+		System.out.println("<trace uml>" + "\n" + sb.toString());
 
 		return sb.toString();
 

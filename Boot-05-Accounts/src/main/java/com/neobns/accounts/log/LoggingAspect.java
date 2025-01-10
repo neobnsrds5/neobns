@@ -29,6 +29,14 @@ public class LoggingAspect {
     public Object logServiceLayer(ProceedingJoinPoint joinPoint) throws Throwable {
         return logExecution(joinPoint, "Service");
     }
+    
+    /**
+     * ServiceImpl 계층의 메서드 로깅
+     */
+    @Around("execution(* com.neobns.accounts.service.impl..*(..))")
+    public Object logServiceImlLayer(ProceedingJoinPoint joinPoint) throws Throwable {
+    	return logExecution(joinPoint, "ServiceImpl");
+    }
 
     /**
      * MyBatis Mapper 계층의 메서드 로깅

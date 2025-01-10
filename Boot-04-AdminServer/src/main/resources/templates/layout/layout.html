@@ -24,6 +24,14 @@
 
 	<!-- Theme Config js (Require in all Page) -->
 	<script src="/assets/js/config.min.js"></script>
+
+	<!-- 요청 파라미터 저장 Js -->
+	<script src="/assets/js/parameterSave.js"></script>
+
+	<!-- jQuery Js -->
+	<script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.7.1.min.js"
+	        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="></script>
+
 </head>
 <body>
 <!-- START Wrapper -->
@@ -33,7 +41,7 @@
 	<th:block th:replace="~{layout/topbar :: topbar}"></th:block>
 
 	<!-- Right Sidebar -->
-	<th:block th:replace="~{layout/right_sidebar :: right_sidebar}"></th:block>
+	<th:block th:replace="~{layout/sidebar :: sidebar}"></th:block>
 
 	<!-- App Menu -->
 	<th:block th:replace="~{layout/appmenu :: appmenu}"></th:block>
@@ -52,5 +60,6 @@
 
 <!-- Custom Js -->
 <script src="/assets/js/pages/widgets.js"></script>
+
 </body>
 </html>

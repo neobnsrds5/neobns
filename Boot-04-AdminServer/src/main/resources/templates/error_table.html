@@ -10,22 +10,28 @@
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
 		<h2 class="mb-4 text-center"><a href="/admin/errors">오류 어플리케이션 관리</a></h2>
 
-		<form action="/admin/errors" class="row align-items-start" id="searchForm" method="get">
-			<input class="col form-control me-1 border border-dark" name="startTime" placeholder="시작 시간"
-			       th:value="${param.startTime}" type="datetime-local"/>
-			<input class="col form-control me-1 border border-dark" name="endTime" placeholder="종료 시간"
-			       th:value="${param.endTime}" type="datetime-local"/>
-			<input class="col form-control me-1 border border-dark" name="traceId" placeholder="추적 ID" th:value="${param.traceId}"
-			       type="text"/>
-			<input class="col form-control me-1 border border-dark" name="userId" placeholder="사용자 ID" th:value="${param.userId}"
-			       type="text"/>
-			<input class="col form-control me-1 border border-dark" name="ipAddress" placeholder="IP 주소" th:value="${param.ipAddress}"
-			       type="text"/>
-			<input class="col form-control me-1 border border-dark" name="query" placeholder="쿼리" th:value="${param.query}"
-			       type="text"/>
-			<input class="col form-control me-1 border border-dark" name="uri" placeholder="URI/포트" th:value="${param.uri}"
-			       type="text"/>
-			<button class="btn btn-primary" style="width: 80px" type="submit">검색</button>
+		<form action="/admin/errors" class="row justify-content-end" id="searchForm" method="get">
+			<div class="col-12 p-0">
+				<div class="input-group">
+					<input class="form-control" name="startTime" placeholder="시작 시간"
+					       th:value="${param.startTime}" type="datetime-local"/>
+					<span class="px-2 align-middle">~</span>
+					<input class="form-control" name="endTime" placeholder="종료 시간"
+					       th:value="${param.endTime}" type="datetime-local"/>
+					<input class="form-control ms-2" name="traceId" placeholder="추적 ID" th:value="${param.traceId}"
+					       type="text"/>
+					<input class="form-control ms-2" name="userId" placeholder="사용자 ID" th:value="${param.userId}"
+					       type="text"/>
+					<input class="form-control ms-2" name="ipAddress" placeholder="IP 주소" th:value="${param.ipAddress}"
+					       type="text"/>
+					<input class="form-control ms-2" name="query" placeholder="쿼리" th:value="${param.query}"
+					       type="text"/>
+					<input class="form-control ms-2" name="uri" placeholder="URI/포트" th:value="${param.uri}"
+					       type="text"/>
+					<button class="btn btn-sm btn-primary" type="submit">
+						<i class="ri-search-line fs-5"></i></button>
+				</div>
+			</div>
 		</form>
 
 		<div class="table-responsive">
@@ -65,7 +71,7 @@
 					<!-- 추적 ID -->
 					<td class="text-start trace-id">
 	                    <span th:if="${log.traceId != 'MISSED-ID'}">
-	                        <a target="_blank" th:href="'/admin/trace?traceId=' + ${log.traceId}"
+	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}"
 	                           th:text="${log.traceId}"></a>
 	                    </span>
 						<span th:unless="${log.traceId != 'MISSED-ID'}">N/A</span>
@@ -112,25 +118,27 @@
 
 		<div class="pagination" th:if="${hasResults}">
 			<!-- 이전 페이지 그룹 -->
-
-			<a th:href="@{/admin/errors(page=${currentPage - 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, query=${param.query}, uri=${param.uri})}"
-			   th:if="${currentPage > 10}">
-				이전
-			</a>
-
+			<span class="page-item">
+				<a class="page-link" th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+				   th:if="${currentPage > 10}">
+					 « 이전
+				</a>
+			</span>
 			<!-- 페이지 번호 그룹 -->
-			<span th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
-		        <a th:classappend="${pageNum == currentPage} ? 'active' : ''"
-		           th:href="@{/admin/errors(page=${currentPage + 1}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, query=${param.query}, uri=${param.uri})}">
+			<span class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
+		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
+		           th:href="@{/admin/table(page=${pageNum}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
 		            <span th:text="${pageNum}"></span>
 		        </a>
 		    </span>
 
 			<!-- 다음 페이지 그룹 -->
-			<a th:href="@{/admin/errors(page=${currentPage - 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, query=${param.query}, uri=${param.uri})}"
-			   th:if="${currentPage + 10 <= totalPages}">
-				다음
-			</a>
+			<span class="page-item">
+				<a class="page-link" th:href="@{/admin/table(page=${currentPage + 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+				   th:if="${currentPage + 10 <= totalPages}">
+					 다음 »
+				</a>
+			</span>
 		</div>
 
 	</div>

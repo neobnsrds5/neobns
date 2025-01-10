@@ -8,51 +8,46 @@
 <div class="page-content" layout:fragment="main">
 
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
-		<h2 class="mb-4 text-center"><a href="/admin/errors">배치 JOB 목록</a></h2>
+		<h2 class="mb-4 text-center"><a href="/batch/jobList">배치 JOB 목록</a></h2>
 
 		<form action="/batch/jobList" method="get" name="frm">
 
-			<div class="row main-head ">
-				<div class="col-4 p-0 main-title ">
-					Batch List <!--  <span >th:text="${@IConstants.BatchStatus.COMPLETED.name()}"</span> -->
-				</div>
-				<div class="col-8 p-0 main-toolbar ">
+			<div class="row justify-content-end">
+				<div class="col-8 p-0">
 
 					<div class="input-group">
 
 						<select class="form-select" name="status">
-							<option selected value="">Status ALL</option>
+							<option selected value="">---상태---</option>
 							<option th:each="status : ${statusList}"
 							        th:selected="${#strings.equals(status, searchMap.status)}" th:text="${status}"
 							        th:value="${status}"></option>
 						</select>
-						<input aria-label="jobName" class="form-control form-control-sm mx-2 border" name="jobName"
-						       placeholder="JobName" th:value="${searchMap.jobName}" type="text"/>
-						<input class="form-control form-control-sm " name="startDate" th:value="${searchMap.startDate}"
-						       type="date"/>
+						<input aria-label="jobName" class="form-control mx-2" name="jobName"
+						       placeholder="Job 이름" th:value="${searchMap.jobName}" type="text"/>
+						<input class="form-control " name="startDate" th:value="${searchMap.startDate}"
+						       placeholder="시작날짜" type="date"/>
 						<span class="px-2">~</span>
-						<input class="form-control form-control-sm " name="endDate" th:value="${searchMap.endDate}"
-						       type="date"/>
-						<button class="btn btn-sm btn btn-primary" type="submit"><span
-								class="fa fa-search fs--1"></span></button>
+						<input class="form-control " name="endDate" th:value="${searchMap.endDate}"
+						       placeholder="종료날짜" type="date"/>
+						<button class="btn btn-sm btn-primary" type="submit">
+							<i class="ri-search-line fs-5"></i></button>
 					</div>
 				</div>
 			</div>
-			<div class="table-responsive portlet scrollbar">
-				<table class="table table-sm table-hover tb-success">
+			<div class="">
+				<table class="table table-sm table-hover">
 					<thead>
-					<tr class="text-center text-800">
-						<th class="sort white-space-nowrap" data-sort="no">#</th>
-						<th class="sort white-space-nowrap" data-sort="instanceId">insId</th>
-						<th class="sort white-space-nowrap" data-sort="executionId">exeId</th>
-						<th class="sort white-space-nowrap" data-sort="ver">ver</th>
-						<th class="sort white-space-nowrap" data-sort="jobName">jobName</th>
-						<th class="sort white-space-nowrap" data-sort="channel">channel</th>
-						<th class="sort white-space-nowrap" data-sort="status">status</th>
-						<th class="sort white-space-nowrap" data-sort="exitCode">exitCode</th>
-						<th class="sort white-space-nowrap" data-sort="createTime">createTime</th>
-						<th class="sort white-space-nowrap" data-sort="updateTime">updateTime</th>
-						<th class="no-sort white-space-nowrap">Actions</th>
+					<tr class="text-center">
+						<th class="sort white-space-nowrap" data-sort="no">No.</th>
+						<th class="sort white-space-nowrap" data-sort="instanceId">인스턴스ID</th>
+						<th class="sort white-space-nowrap" data-sort="executionId">실행ID</th>
+						<th class="sort white-space-nowrap" data-sort="ver">버전</th>
+						<th class="sort white-space-nowrap" data-sort="jobName">Job이름</th>
+						<th class="sort white-space-nowrap" data-sort="status">상태</th>
+						<th class="sort white-space-nowrap" data-sort="exitCode">종료코드</th>
+						<th class="sort white-space-nowrap" data-sort="createTime">생성시간</th>
+						<th class="sort white-space-nowrap" data-sort="updateTime">변경시간</th>
 					</tr>
 					</thead>
 					<tbody class="list" id="table-orders-body">
@@ -65,7 +60,6 @@
 							<td class="excutionId" th:text="${job.exec.executionId}"></td>
 							<td class="ver" th:text="${job.version}"></td>
 							<td class="jobName" th:text="${job.jobName}"></td>
-							<td class="channel" th:text="${job.execParams.get(0).parameterValue}"></td>
 							<td class="status">
 								<span th:attr="class=${job.exec.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
                                     <span th:text="${job.exec.status}"></span>
@@ -78,7 +72,6 @@
 							</td>
 							<td class="createTime" th:text="${@DateUtil.getDateTimeFormat(job.exec.createTime)}"></td>
 							<td class="updateTime" th:text="${@DateUtil.getDateTimeFormat(job.exec.updateTime)}"></td>
-							<td class="">-</td>
 						</tr>
 					</th:block>
 					</tbody>

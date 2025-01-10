@@ -10,19 +10,24 @@
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
 		<h2 class="mb-4 text-center"><a href="/admin/table">영향도 분석 관리</a></h2>
 
-		<form action="/admin/table" class="row" id="searchForm" method="get">
-			<!-- 검색 조건 선택 -->
-			<select class="form-select me-1 border border-dark" name="searchType" style="width: 150px;">
-				<option th:selected="${param.searchType == 'callerMethod'}" value="callerMethod">테이블 명</option>
-				<option th:selected="${param.searchType == 'callerClass'}" value="callerClass">클래스 명</option>
-			</select>
+		<form action="/admin/table" class="row justify-content-end" id="searchForm" method="get">
+			<div class="col-4 p-0">
+				<div class="input-group">
+					<!-- 검색 조건 선택 -->
+					<select class="form-select" name="searchType">
+						<option th:selected="${param.searchType == 'callerMethod'}" value="callerMethod">테이블 명</option>
+						<option th:selected="${param.searchType == 'callerClass'}" value="callerClass">클래스 명</option>
+					</select>
 
-			<!-- 검색 키워드 입력 -->
-			<input class="form-control me-1 border border-dark" name="searchKeyword" placeholder="검색어를 입력하세요"
-			       style="width: 250px" th:value="${param.searchKeyword}" type="text"/>
+					<!-- 검색 키워드 입력 -->
+					<input class="form-control ms-2" name="searchKeyword" placeholder="검색어를 입력하세요"
+					       th:value="${param.searchKeyword}" type="text"/>
 
-			<!-- 검색 버튼 -->
-			<button class="btn btn-primary" style="width: 80px" type="submit">검색</button>
+					<!-- 검색 버튼 -->
+					<button class="btn btn-sm btn-primary" type="submit">
+						<i class="ri-search-line fs-5"></i></button>
+				</div>
+			</div>
 		</form>
 
 		<br/>
@@ -59,7 +64,7 @@
 					<!-- 호출상세 -->
 					<td class="text-start trace-id">
 		            	<span th:if="${log.traceId != null}">
-	                        <a target="_blank" th:href="@{'/admin/trace?traceId=' + ${log.traceId}}"
+	                        <a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}"
 	                           th:text="${log.callerClass == 'SQL' ? log.callerMethod : log.callerClass}">
 					        </a>
 	                    </span>
@@ -74,26 +79,30 @@
 				</tbody>
 			</table>
 		</div>
+
 		<div class="pagination" th:if="${hasResults}">
 			<!-- 이전 페이지 그룹 -->
-			<a th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
-			   th:if="${currentPage > 10}">
-				이전
-			</a>
-
+			<span class="page-item">
+				<a class="page-link" th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+				   th:if="${currentPage > 10}">
+					 « 이전
+				</a>
+			</span>
 			<!-- 페이지 번호 그룹 -->
-			<span th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
-		        <a th:classappend="${pageNum == currentPage} ? 'active' : ''"
+			<span class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
+		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
 		           th:href="@{/admin/table(page=${pageNum}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
 		            <span th:text="${pageNum}"></span>
 		        </a>
 		    </span>
 
 			<!-- 다음 페이지 그룹 -->
-			<a th:href="@{/admin/table(page=${currentPage + 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
-			   th:if="${currentPage + 10 <= totalPages}">
-				다음
-			</a>
+			<span class="page-item">
+				<a class="page-link" th:href="@{/admin/table(page=${currentPage + 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+				   th:if="${currentPage + 10 <= totalPages}">
+					 다음 »
+				</a>
+			</span>
 		</div>
 
 	</div>

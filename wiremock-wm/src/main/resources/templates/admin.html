@@ -101,6 +101,9 @@
             </div>
             <div class="modal-body">
                 <form id="add-api-form">
+	                <div class="mb-3">
+				        <input type="hidden" id="statusSelector" value="normal">
+				    </div>
                     <div class="mb-3">
                         <label for="apiName" class="form-label">API 이름</label>
                         <input type="text" id="apiName" class="form-control" required>
@@ -109,34 +112,19 @@
                         <label for="apiUrl" class="form-label">API 주소</label>
                         <input type="url" id="apiUrl" class="form-control" required>
                     </div>
+                    <!-- 상태 선택 -->
                     <div class="mb-3">
-                        <label for="apiMappings" class="form-label">mappings(url, bodyFileName 변경 불가)</label>
-                        <textarea id="apiMappings" class="form-control" rows="8" required>
-{
-  "request": {
-    "method": "GET",
-    "url": "/mock/api/{id}"
-  },
-  "response": {
-    "status": 200,
-    "bodyFileName": "{apiName}-response.json",
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization"
-    }
-  }
-}
-</textarea>
+                        <label for="apiMappings" class="form-label">mappings</label>
+                        <div class="btn-group mb-2" role="group" aria-label="Mappings Templates">
+                            <button type="button" class="btn btn-outline-primary" onclick="setMappingTemplate('normal')">정상</button>
+                            <button type="button" class="btn btn-outline-warning" onclick="setMappingTemplate('delay')">지연</button>
+                            <button type="button" class="btn btn-outline-danger" onclick="setMappingTemplate('error')">에러</button>
+                        </div>
+                        <textarea id="apiMappings" class="form-control" rows="8" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="apiFiles" class="form-label">__files</label>
-                        <textarea id="apiFiles" class="form-control" rows="8" required>
-{
-  "key": "value"
-}
-</textarea>
+                        <textarea id="apiFiles" class="form-control" rows="8" required></textarea>
                     </div>
                 </form>
             </div>

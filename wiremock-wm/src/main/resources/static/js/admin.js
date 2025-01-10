@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-
     // "저장" 버튼 클릭 시 API 추가
     const saveApiButton = document.getElementById("saveApiButton");
     saveApiButton.addEventListener("click", function () {
@@ -128,13 +127,23 @@ const addNewApi = () => {
     const apiName = document.getElementById("apiName").value;
     const apiUrl = document.getElementById("apiUrl").value;
 	const apiMappings = document.getElementById("apiMappings").value;
-    const apiFiles = document.getElementById("apiFiles").value;
+    const apiFiles  = document.getElementById("apiFiles").value;
+
+    // 지연과 에러 데이터를 상태 저장소에서 가져옴
+    const delayMappings = templates.delay.mappings;
+    const delayFiles = templates.delay.files;
+    const errorMappings = templates.error.mappings;
+    const errorFiles = templates.error.files;
+	
+	// 상태 선택 값 확인
+    const statusType = document.getElementById("statusSelector").value;
 
     if (!apiName || !apiUrl) {
         alert("API 이름과 주소를 입력해주세요.");
         return;
     }
 	
+/*
 	if (!isValidJson(apiMappings)) {
 	        alert("mappings 필드에 올바른 JSON 형식을 입력해주세요.");
 	        return;
@@ -144,25 +153,63 @@ const addNewApi = () => {
         alert("__files 필드에 올바른 JSON 형식을 입력해주세요.");
         return;
     }
+	*/
 	
-	// 고정 값 정의
-    const fixedUrl = '"url": "/mock/api/{id}"';
-    const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
-	
-	// 고정 값 검증 및 복원
-    if (!apiMappings.includes(fixedUrl)) {
-        apiMappings = apiMappings.replace(/"url":\s*".*?"/, fixedUrl);
-    }
-    if (!apiMappings.includes(fixedBodyFileName)) {
-        apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+	// 상태별 고정값 적용
+    if (statusType === "normal") {
+        const fixedUrl = '"url": "/mock/api/{id}"';
+        const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
+
+        if (!apiMappings.includes(fixedUrl)) {
+            apiMappings = apiMappings.replace(/"url":\s*".*?"/, fixedUrl);
+        }
+        if (!apiMappings.includes(fixedBodyFileName)) {
+            apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+        }
+    } else if (statusType === "delay") {
+        const fixedUrlPattern = '"urlPattern": "/mock/stub/delay"';
+        const fixedBodyFileName = '"bodyFileName": "{apiName}-delay-response.json"';
+
+        // `__files` 필드가 변경된 경우에만 `bodyFileName` 업데이트
+        if (apiFiles !== delayFiles) {
+            if (!apiMappings.includes(fixedUrlPattern)) {
+                apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
+            }
+            if (!apiMappings.includes(fixedBodyFileName)) {
+                apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+            }
+        }
+    } else if (statusType === "error") {
+        const fixedUrlPattern = '"urlPattern": "/mock/stub/bad"';
+        const fixedBodyFileName = '"bodyFileName": "{apiName}-bad-response.json"';
+
+        // `__files` 필드가 변경된 경우에만 `bodyFileName` 업데이트
+        if (apiFiles !== errorFiles) {
+            if (!apiMappings.includes(fixedUrlPattern)) {
+                apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
+            }
+            if (!apiMappings.includes(fixedBodyFileName)) {
+                apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+            }
+        }
     }
 
+
+	console.log("Validated API Mappings:", apiMappings);
     fetch('/api/add', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ apiName, apiUrl, apiMappings, apiFiles })
+        body: JSON.stringify({ 
+			apiName, 
+			apiUrl, 
+			normalMappings: apiMappings,
+			normalFiles: apiFiles,
+			delayMappings, 
+			delayFiles, 
+			errorMappings, 
+			errorFiles,  })
     })
     .then(response => {
         if (response.status === 201) {
@@ -178,11 +225,136 @@ const addNewApi = () => {
     });
 };
 
+// files 수정 시 지연, 오류 mapping 수정
+const apiFilesField = document.getElementById("apiFiles");
+
+apiFilesField.addEventListener("input", () => {
+    const statusType = document.getElementById("statusSelector").value;
+    let mappings = document.getElementById("apiMappings").value;
+
+    // 상태별 bodyFileName 업데이트
+	let targetBodyFileName;
+    if (statusType === "delay") {
+        targetBodyFileName = '"bodyFileName": "{apiName}-delay-response.json"';
+    } else if (statusType === "error") {
+        targetBodyFileName = '"bodyFileName": "{apiName}-bad-response.json"';
+    }
+
+	// bodyFileName이 이미 원하는 값인지 확인
+    if (targetBodyFileName && !mappings.includes(targetBodyFileName)) {
+        // 기존 bodyFileName 값을 새로운 값으로 변경
+        mappings = mappings.replace(/"bodyFileName":\s*".*?"/, targetBodyFileName);
+
+        // 업데이트된 mappings 적용
+        document.getElementById("apiMappings").value = mappings;
+    }
+});
+
+// Mappings, Files 템플릿 기본 포맷
+const templates = {
+    normal: {
+        mappings: `{
+  "request": {
+    "method": "GET",
+    "url": "/mock/api/{id}"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "{apiName}-response.json",
+	"headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  }
+}`,
+        files: `{
+  "message": "정상 응답입니다."
+}`
+    },
+    delay: {
+        mappings: `{
+  "request": {
+    "method": "ANY",
+    "urlPattern": "/mock/stub/delay"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "common-delay-response.json",
+	"headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    },
+    "fixedDelayMilliseconds": 3000
+  }
+}`,
+        files: `{
+  "message": "지연 응답입니다."
+}`
+    },
+    error: {
+        mappings: `{
+  "request": {
+    "method": "ANY",
+    "urlPattern": "/mock/stub/bad"
+  },
+  "response": {
+    "status": 500,
+    "bodyFileName": "common-bad-response.json",
+	"headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  }
+}`,
+        files: `{
+  "message": "에러 응답입니다."
+}`
+    }
+};
+
+// 상태별 데이터 임시 저장소
+const stateData = {
+    normal: { mappings: templates.normal.mappings, files: templates.normal.files },
+    delay: { mappings: templates.delay.mappings, files: templates.delay.files },
+    error: { mappings: templates.error.mappings, files: templates.error.files },
+};
+
+// 템플릿 설정 및 데이터 복원
+const setMappingTemplate = (type) => {
+    if (templates[type]) {
+        // 현재 상태의 입력값 저장
+        const currentType = document.getElementById("statusSelector").value;
+        stateData[currentType] = {
+            mappings: document.getElementById("apiMappings").value || templates[currentType].mappings,
+            files: document.getElementById("apiFiles").value || templates[currentType].files,
+        };
+
+        // 새로운 상태 설정
+        document.getElementById("statusSelector").value = type;
+
+        // 템플릿 데이터 복원
+        const newMappings = stateData[type].mappings || templates[type].mappings;
+        const newFiles = stateData[type].files || templates[type].files;
+		
+        // 입력 필드에 값 설정
+        document.getElementById("apiMappings").value = newMappings;
+        document.getElementById("apiFiles").value = newFiles;
+    } else {
+        console.error("알 수 없는 템플릿 타입:", type);
+    }
+};
 
 // JSON 검증 함수
 const isValidJson = (input) => {
     try {
         JSON.parse(input); // JSON 파싱 시도
+		console.log("Parsed JSON:", json);
         return true; // 유효한 JSON 형식
     } catch (error) {
         return false; // JSON 파싱 실패
@@ -242,23 +414,47 @@ const saveEditApi = (id) => {
 // API Mappings 입력 시 실시간 검증
 const apiMappingsField = document.getElementById("apiMappings");
 apiMappingsField.addEventListener("input", () => {
-    const fixedUrl = '"url": "/mock/api/{id}"';
-    const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
-    let currentValue = apiMappingsField.value;
+	const statusType = document.getElementById("statusSelector").value; // 현재 상태 가져오기
+	    let currentValue = apiMappingsField.value;
 
-    // url 부분 고정
-    if (!currentValue.includes(fixedUrl)) {
-        currentValue = currentValue.replace(/"url":\s*".*?"/, fixedUrl);
-    }
+	    if (statusType === "normal") {
+	        const fixedUrl = '"url": "/mock/api/{id}"';
+	        const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
 
-    // bodyFileName 부분 고정
-    if (!currentValue.includes(fixedBodyFileName)) {
-        currentValue = currentValue.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
-    }
+	        // url 및 bodyFileName 고정값 적용
+	        if (!currentValue.includes(fixedUrl)) {
+	            currentValue = currentValue.replace(/"url":\s*".*?"/, fixedUrl);
+	        }
+	        if (!currentValue.includes(fixedBodyFileName)) {
+	            currentValue = currentValue.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+	        }
+	    } else if (statusType === "delay") {
+	        const fixedUrlPattern = '"urlPattern": "/mock/stub/delay"';
+	        const fixedBodyFileName = '"bodyFileName": "{apiName}-delay-response.json"';
 
-    // 수정된 텍스트 필드 값 반영
-    apiMappingsField.value = currentValue;
-});
+	        // urlPattern 및 bodyFileName 고정값 적용
+	        if (!currentValue.includes(fixedUrlPattern)) {
+	            currentValue = currentValue.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
+	        }
+	        if (!currentValue.includes(fixedBodyFileName)) {
+	            currentValue = currentValue.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+	        }
+	    } else if(statusType === "error"){
+			const fixedUrlPattern = '"urlPattern": "/mock/stub/bad"';
+	        const fixedBodyFileName = '"bodyFileName": "{apiName}-bad-response.json"';
+
+	        // urlPattern 및 bodyFileName 고정값 적용
+	        if (!currentValue.includes(fixedUrlPattern)) {
+	            currentValue = currentValue.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
+	        }
+	        if (!currentValue.includes(fixedBodyFileName)) {
+	            currentValue = currentValue.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+	        }
+		}
+
+	    // 수정된 값 반영
+	    apiMappingsField.value = currentValue;
+	});
 
 // API 삭제
 const deleteApi = (button) => {
@@ -379,7 +575,6 @@ const executeApi = (button) => {
 	const id = button.getAttribute("data-id");
 	
 	const newWindow = window.open("", "_blank");
-
     fetch(`/api/execute/${id}`, {
         method: "GET",
         redirect: "follow"
@@ -391,7 +586,7 @@ const executeApi = (button) => {
 		} else throw new Error("API 실행 중 리디렉션이 발생하지 않았습니다.");
     })
     .catch(error => {
-        console.error("Error:", error);
+        console.error("Error:", error);	
         newWindow.close();
         alert("API 실행 중 오류가 발생했습니다. 다시 시도해주세요.");
     });

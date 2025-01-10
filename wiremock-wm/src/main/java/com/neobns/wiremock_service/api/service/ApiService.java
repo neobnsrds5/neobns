@@ -10,7 +10,10 @@ public interface ApiService {
 	List<ApiVO> getAllApis();
 	ApiVO getApi(int id);
 	List<ApiVO> getApis(List<Integer> ids);
-	void saveNewApi(String apiName, String apiUrl, String apiMappings, String apiFiles);
+	void saveNewApi(String apiName, String apiUrl, 
+            String normalMappings, String normalFiles,
+            String delayMappings, String delayFiles,
+            String errorMappings, String errorFiles);
 	void updateCheckedApiInfo(int id, LocalDateTime checkedTime, Integer checkedStatus);
 	void toggleResponseStatusById(int id);
 	void changeModeById(int id, boolean targetMode/*1:대응답ON,0:대응답OFF(실서버)*/);

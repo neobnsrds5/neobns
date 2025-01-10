@@ -34,11 +34,18 @@ public class ApiApiController {
 	public ResponseEntity<String> addApi(@RequestBody Map<String, String> apiData) {
 	    try {
 	    	String apiName = apiData.get("apiName");
-	    	String apiUrl = apiData.get("apiUrl");
-	        String apiMappings = apiData.get("apiMappings");
-	        String apiFiles = apiData.get("apiFiles");
-	    	
-	        apiService.saveNewApi(apiName, apiUrl, apiMappings, apiFiles);
+	        String apiUrl = apiData.get("apiUrl");
+        
+	        // 상태별 데이터 수집
+	        String normalMappings = apiData.getOrDefault("normalMappings", "");
+	        String normalFiles = apiData.getOrDefault("normalFiles", "");
+	        String delayMappings = apiData.getOrDefault("delayMappings", "");
+	        String delayFiles = apiData.getOrDefault("delayFiles", "");
+	        String errorMappings = apiData.getOrDefault("errorMappings", "");
+	        String errorFiles = apiData.getOrDefault("errorFiles", "");
+	        
+	        // API 저장 호출
+	        apiService.saveNewApi(apiName, apiUrl, normalMappings, normalFiles, delayMappings, delayFiles, errorMappings, errorFiles);
 	        return ResponseEntity.status(HttpStatus.CREATED).body("API successfully added.");
 	    } catch (Exception e) {
 	        e.printStackTrace();

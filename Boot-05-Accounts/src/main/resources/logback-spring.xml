@@ -42,8 +42,10 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-                	return mdc.get("requestId") != null &amp;&amp;
-                		!((String) mdc.get("className")).contains("prometheus");
+                	return (mdc.get("requestId") != null) &amp;&amp;
+					(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR")) &amp;&amp;
+					(mdc.get("className") == null ||
+					!((String) mdc.get("className")).contains("prometheus"));
                	</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -192,12 +194,12 @@
 	<!-- 루트 로거 -->
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="CUSTOM_DB" />
+<!-- 		<appender-ref ref="CUSTOM_DB" /> -->
 		<appender-ref ref="FILE" />
-		<appender-ref ref="FILE_PERFROM_SQL" />
+<!-- 		<appender-ref ref="FILE_PERFROM_SQL" />
 		<appender-ref ref="FILE_ERROR_SQL" />
 		<appender-ref ref="FILE_ERROR_DYNAMIC_SQL" />
 		<appender-ref ref="FILE_ERROR_AOP" />
-		<appender-ref ref="FILE_PERFORM_AOP" />
+		<appender-ref ref="FILE_PERFORM_AOP" /> -->
 	</root>
 </configuration>

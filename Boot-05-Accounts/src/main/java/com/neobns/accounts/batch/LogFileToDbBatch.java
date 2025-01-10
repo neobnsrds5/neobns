@@ -1,4 +1,4 @@
-package com.example.neobns.batch;
+package com.neobns.accounts.batch;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.example.neobns.dto.LogDTO;
+import com.neobns.accounts.dto.LogDTO;
 
 @Configuration
 public class LogFileToDbBatch {
@@ -35,20 +35,18 @@ public class LogFileToDbBatch {
 	private final DataSource datasource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	private final CustomBatchJobListener listener;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource")  DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
+			PlatformTransactionManager transactionManager) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
-		this.listener = listener;
 	}
 
 	@Bean
 	public Job logToDBJob() {
-		return new JobBuilder("logToDBJob", jobRepository).start(logToDBStep()).listener(listener).build();
+		return new JobBuilder("logToDBJob", jobRepository).start(logToDBStep()).build();
 	}
 
 	@Bean
@@ -98,7 +96,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public FlatFileItemReader<LogDTO> logReader() {
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
-		String path = "../logs/application.log";
+		String path = "../logs/accounts-application.log";
 		reader.setResource(new FileSystemResource(path));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>();

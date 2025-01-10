@@ -26,6 +26,8 @@
 
      <!-- Theme Config js (Require in all Page) -->
      <script src="/assets/js/config.min.js"></script>
+
+	<script src="/js/parameterSave.js"></script>
 </head>
 
 <body>
@@ -801,7 +803,7 @@
 		            <!-- 호출상세 -->
 		            <td class="text-start trace-id">
 		            	<span th:if="${log.traceId != null}">
-	                        <a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}" target="_blank"
+	                        <a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}"
 					           th:text="${log.callerClass == 'SQL' ? log.callerMethod : log.callerClass}">
 					        </a>
 	                    </span>
@@ -863,6 +865,6 @@
 	<script src="/assets/js/app.js"></script>
 	
 	<!-- 팝업 기능 Javascript -->
-	<script src="/assets/js/popup.js"></script>
+<!--	<script src="/assets/js/popup.js"></script>-->
 </body>
 </html>

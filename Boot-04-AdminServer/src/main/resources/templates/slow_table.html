@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+	<script th:src="@{/js/parameterSave.js}"></script>
 <script>
     // 검색 결과 없을 때 알림 표시 및 폼 초기화
     function handleNoResults(hasResults) {
@@ -9,6 +10,7 @@
             document.getElementById("searchForm").reset(); // 폼 초기화
         }
     }
+
 </script>
      <!-- Title Meta -->
      <meta charset="utf-8" />
@@ -806,7 +808,7 @@
 					<!-- 추적 ID -->
 	                <td class="text-start trace-id">
 	                    <span th:if="${log.traceId != null}">
-	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" th:text="${log.traceId}"></a>
 	                    </span>
 	                    <span th:unless="${log.traceId != null}">N/A</span>
 	                </td>
@@ -878,7 +880,7 @@
 	<script src="/assets/js/app.js"></script>
 	
 	<!-- 팝업 기능 Javascript -->
-	<script src="/assets/js/popup.js"></script>
+<!--	<script src="/assets/js/popup.js"></script>-->
 	
 </body>
 </html>

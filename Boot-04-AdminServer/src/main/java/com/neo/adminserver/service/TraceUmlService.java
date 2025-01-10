@@ -19,7 +19,6 @@ public class TraceUmlService {
 		List<LogDTO> traceList = new ArrayList<LogDTO>();
 		List<LogDTO> errorList = new ArrayList<LogDTO>();
 		List<LogDTO> slowList = new ArrayList<LogDTO>();
-
 		List<UmlDTO> umlList = new ArrayList<>();
 		umlList.add(new UmlDTO("User", "", "black"));
 
@@ -39,13 +38,13 @@ public class TraceUmlService {
 
 		for (int i = 0; i < traceList.size(); i++) {
 			LogDTO log = traceList.get(i);
+			System.out.println("");
+			System.out.println(log.toString());
 			LogDTO stateLog = null;
 			UmlDTO uml = new UmlDTO();
 			String callerClass = log.getCallerClass();
 			String callerMethod = log.getCallerMethod();
 			String executeResult = log.getExecuteResult();
-			System.out.println("trace log : " + "\n" + log.toString());
-			System.out.println();
 
 			// HTTP
 			if (callerClass.contains("http://")) {
@@ -56,7 +55,7 @@ public class TraceUmlService {
 				uml.setSource(port);
 
 				// -> 방향인 경우
-				if (executeResult == null) {
+				if (executeResult == null || executeResult.trim().equals("")) {
 					// URI 간단하게 정리
 					String simpleUrl = "";
 					for (int j = 3; j < parts.length; j++) {
@@ -114,12 +113,15 @@ public class TraceUmlService {
 				uml.setSource(callerClass.substring(index + 1));
 
 				// -> 방향인 경우
-				if (executeResult == null) {
+				if (executeResult == null || executeResult.trim().equals("")) {
 					uml.setContent(callerMethod);
+					System.out.println("-> aop log : " + log.toString());
 				}
 				// <- 방향인 경우
 				else {
 					String content = "";
+					
+					System.out.println("<- aop log : " + log.toString());
 
 					// error인 경우 에러 정보 출력
 					stateLog = checkError(log, errorList);

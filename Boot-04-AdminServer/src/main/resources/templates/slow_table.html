@@ -112,24 +112,24 @@
 		<div class="pagination" th:if="${hasResults}">
 			<!-- 이전 페이지 그룹 -->
 			<span class="page-item">
-				<a class="page-link" th:href="@{/admin/table(page=${currentPage - 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
-				   th:if="${currentPage > 10}">
-					 « 이전
+				<a class="page-link" th:if="${currentPage > 10}"
+				   th:href="@{/admin/slow(page=${(currentPage - 1)/10 * 10}, size=${size}, startTime=${startTime}, endTime=${endTime}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}">
+					« 이전
 				</a>
 			</span>
 			<!-- 페이지 번호 그룹 -->
-			<span class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage-1)/10 * 10 + 1, ((currentPage-1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage-1)/10 + 1) * 10)}">
+			<span class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
 		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-		           th:href="@{/admin/table(page=${pageNum}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
+		           th:href="@{/admin/slow(page=${pageNum}, size=${size}, startTime=${startTime}, endTime=${endTime}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}">
 		            <span th:text="${pageNum}"></span>
 		        </a>
 		    </span>
 
 			<!-- 다음 페이지 그룹 -->
 			<span class="page-item">
-				<a class="page-link" th:href="@{/admin/table(page=${currentPage + 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
-				   th:if="${currentPage + 10 <= totalPages}">
-					 다음 »
+				<a class="page-link" th:if="${currentPage + 10 <= totalPages}"
+				   th:href="@{/admin/slow(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, startTime=${startTime}, endTime=${endTime}, traceId=${traceId}, userId=${userId}, ipAddress=${ipAddress}, uri=${uri}, executeResult=${executeResult})}">
+		       	    다음 »
 				</a>
 			</span>
 		</div>

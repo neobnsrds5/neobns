@@ -7,13 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-//import com.example.neobns.blacklist.BlackListService;
-
-import jakarta.servlet.Servlet;
-import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
@@ -33,12 +26,13 @@ public class LoggingAspect {
 	@Around("execution(* com.example.neobns.controller..*(..))")
 	public Object logControllerLayer(ProceedingJoinPoint joinPoint) throws Throwable {
 
-		String mdcIp = MDC.get("clientIp") != null ? MDC.get("clientIp").trim() : "";
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
-				.currentRequestAttributes();
-		HttpServletRequest request = attributes.getRequest();
+		// blacklist ip 차단 기능 주석처리
+//		String mdcIp = MDC.get("clientIp") != null ? MDC.get("clientIp").trim() : "";
+//		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
+//				.currentRequestAttributes();
+//		HttpServletRequest request = attributes.getRequest();
 //		String realIp = blackListService.getRealIp(request);
-		
+
 //		System.out.println("mdc ip : " + mdcIp + " real ip : " + realIp + " " +  MDC.getCopyOfContextMap());
 
 //		if (blackListService.isBlackListed(mdcIp) || blackListService.isBlackListed(realIp)) {
@@ -68,6 +62,7 @@ public class LoggingAspect {
 	 * 공통 실행 로깅 메서드
 	 */
 	private Object logExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
+
 		long start = System.currentTimeMillis();
 		String className = layer.equals("Mapper") ? joinPoint.getTarget().getClass().getInterfaces()[0].getName()
 				: joinPoint.getTarget().getClass().getName();

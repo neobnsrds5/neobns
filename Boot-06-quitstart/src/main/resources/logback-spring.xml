@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration debug="true">
+<!-- value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri}%n" -->
 	<property name="FILE_LOG_PATTERN"
-		value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+		value="%X{nanoTime}; %logger{}; %level{};
 				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
 				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
 				%X{requestUri}%n" />

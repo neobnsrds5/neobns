@@ -1,5 +1,10 @@
 package com.example.neobns.logging.common;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -63,6 +68,12 @@ public class LoggingAspect {
 	 */
 	private Object logExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
 
+		// 타임스탬프를 .SSSSSS 형식으로 변환
+		String nanoTime = getNanoTime();
+		MDC.put("nanoTime", nanoTime);
+
+		System.out.println("logExecution1 : " + MDC.getCopyOfContextMap().toString());
+
 		long start = System.currentTimeMillis();
 		String className = layer.equals("Mapper") ? joinPoint.getTarget().getClass().getInterfaces()[0].getName()
 				: joinPoint.getTarget().getClass().getName();
@@ -76,6 +87,7 @@ public class LoggingAspect {
 
 		MDC.remove("className");
 		MDC.remove("methodName");
+		MDC.remove("nanoTime");
 
 		try {
 			return joinPoint.proceed(); // 실제 메서드 실행
@@ -85,15 +97,33 @@ public class LoggingAspect {
 			MDC.put("className", className);
 			MDC.put("methodName", methodName);
 			MDC.put("executeResult", Long.toString(elapsedTime));
+			
+			// 타임스탬프를 .SSSSSS 형식으로 변환
+			nanoTime = getNanoTime();
+			MDC.put("nanoTime", nanoTime);
 
 			// 메서드 실행 후 trace 로깅
 			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
 					MDC.get("executeResult"));
+			
+			System.out.println("logExecution2 : " + MDC.getCopyOfContextMap().toString());
 
 			MDC.remove("className");
 			MDC.remove("methodName");
 			MDC.remove("executeResult");
+			MDC.remove("nanoTime");
 		}
+	}
+
+	private String getNanoTime() {
+
+		// 타임스탬프를 .SSSSSS 형식으로 변환
+		Instant now = Instant.now();
+		LocalDateTime localDateTime = LocalDateTime.ofInstant(now, ZoneId.systemDefault());
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnn");
+		String nanoTime = localDateTime.format(dateTimeFormatter);
+
+		return nanoTime;
 	}
 
 }

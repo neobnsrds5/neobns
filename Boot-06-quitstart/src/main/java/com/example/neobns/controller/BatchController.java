@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.neobns.service.FileMaintenanceService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class BatchController {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
+	private final FileMaintenanceService fileMaintenanceService;
 
 	@GetMapping("/batch/dbtoapi/{value}")
 	public String firstApi(@PathVariable("value") String value) throws Exception {
@@ -57,11 +60,13 @@ public class BatchController {
 	public String logToDbTest(@PathVariable("value") String value) {
 
 		String uniqVal = value + System.currentTimeMillis();
+		String filePath = "../logs/application.log";
 
 		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal).toJobParameters();
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
+			fileMaintenanceService.cleanupLogFile(filePath);
 			return "OK";
 		} catch (Exception e) {
 			return "FAIL";
@@ -85,11 +90,11 @@ public class BatchController {
 
 	@GetMapping("/batch/spiderDb/{value}")
 	public String spiderBatchTest(@PathVariable("value") String value) {
-		
+
 		String uniqVal = value + System.currentTimeMillis();
-		
+
 		JobParameters jobParameters = new JobParametersBuilder().addString("spiderBatch", uniqVal).toJobParameters();
-		
+
 		try {
 			jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJob"), jobParameters);
 			return "OK";

@@ -23,21 +23,25 @@ public class RequestInterceptor implements HandlerInterceptor {
 	private static final String MDC_USER_ID_KEY = "userId";
 	private static final String MDC_USER_AGENT = "userAgent";
 	private static final String MDC_CLIENT_IP = "clientIp";
-	
+
 	private static final Logger traceLogger = LoggerFactory.getLogger("TRACE");
 	private static final Logger slowLogger = LoggerFactory.getLogger("SLOW");
-	
+
 	private static final long SLOW_PAGE_THRESHOLD_MS = 1000; // slow page 기준, 나중에 환경 변수로 빼기..!
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
+		// 게이트웨이 거치지 않은 요청인 경우 처음, 마지막 로깅 추가 필요
+		MDC.put("startTime", String.valueOf(System.currentTimeMillis()));
+
 		String requestId = request.getHeader(REQUEST_ID_HEADER);
-		boolean isDirectRequest = false;
+		String isDirectRequest = "false";
 
 		if (requestId == null || requestId.isEmpty()) {
 			requestId = generateRandomRequestId(); // 새로운 Request ID 생성
-			isDirectRequest = true; // 게이트웨이 거치지 않은 요청인 경우 처음, 마지막 로깅 추가 필요
+			isDirectRequest = "true";
+			MDC.put("isDirectRequest", isDirectRequest);
 //        	requestId = "MISSED-ID";
 		}
 
@@ -75,17 +79,15 @@ public class RequestInterceptor implements HandlerInterceptor {
 		response.setHeader(REQUEST_ID_HEADER, requestId);
 		response.setHeader(USER_ID_HEADER, userId);
 
-		MDC.put("startTime", String.valueOf(System.currentTimeMillis()));
-
-		System.out.println("pre : MDC.getCopyOfContextMap : " + MDC.getCopyOfContextMap().toString());
-		
 		String uri = request.getRequestURL().toString();
 		String method = request.getMethod().toString();
-		
+
 		MDC.put("className", uri);
 		MDC.put("methodName", method);
-		
-		traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), uri, method, "start");
+
+		if (MDC.get("isDirectRequest").equals("true")) {
+			traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), uri, method, "start");
+		}
 
 		return true;
 		// 요청을 다음 단계로 전달할지에 대한 여부. true면 요청 처리 계속 진행하여 컨트롤러 호출.
@@ -95,10 +97,10 @@ public class RequestInterceptor implements HandlerInterceptor {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
-		
+
 		String uri = request.getRequestURL().toString();
 		String method = request.getMethod().toString();
-		
+
 		MDC.put("className", uri);
 		MDC.put("methodName", method);
 
@@ -107,20 +109,25 @@ public class RequestInterceptor implements HandlerInterceptor {
 		MDC.put("executeResult", String.valueOf(executeTime));
 
 		System.out.println("after : MDC.getCopyOfContextMap : " + MDC.getCopyOfContextMap().toString());
-		
-		traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
-		// 설정 시간보다 느리면 slow 로깅
-        if(executeTime > SLOW_PAGE_THRESHOLD_MS) {
-        	slowLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"), MDC.get("executeResult"));
-        }
-		
-//		MDC.clear();
+
+		// 게이트웨이를 거치지 않은 요청인 경우
+		if (MDC.get("isDirectRequest").equals("true")) {
+			traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
+					MDC.get("executeResult"));
+			// 설정 시간보다 느리면 slow 로깅
+			if (executeTime > SLOW_PAGE_THRESHOLD_MS) {
+				slowLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"),
+						MDC.get("methodName"), MDC.get("executeResult"));
+			}
+		}
+
+		MDC.clear();
 
 		// 요청 완료 후 MDC에서 제거
-		MDC.remove(MDC_REQUEST_ID_KEY);
-		MDC.remove(MDC_USER_ID_KEY);
-		MDC.remove(MDC_CLIENT_IP);
-		MDC.remove(MDC_USER_AGENT);
+//		MDC.remove(MDC_REQUEST_ID_KEY);
+//		MDC.remove(MDC_USER_ID_KEY);
+//		MDC.remove(MDC_CLIENT_IP);
+//		MDC.remove(MDC_USER_AGENT);
 
 	}
 

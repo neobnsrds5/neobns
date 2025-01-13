@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.neobns.wiremock_service.api.dto.ChangeModeRequest;
 import com.neobns.wiremock_service.api.service.ApiService;
+import com.neobns.wiremock_service.api.util.JsonPathCheck;
 import com.neobns.wiremock_service.api.vo.ApiVO;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -103,6 +104,8 @@ public class ApiApiController {
 		
 		String redirectUrl;
 		
+		int checkCustom = apiService.jsonCheck(apiVO.getApiName(), id);
+		
 		if(isHealthy) {	//서버 정상 시 실서버/대응답 DB 상태에 따라 처리
 			if(isMockMode) redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/api/" + id;	//대응답
 			else redirectUrl = apiUrl;																		//실서버
@@ -110,10 +113,19 @@ public class ApiApiController {
 			switch(apiVO.getLastCheckedStatus()) {
 				case 1:	//장애
 				case 2:	//다운
-					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/bad";
+					if(checkCustom == 2) {
+						redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/bad/" + id;
+					}else {
+						redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/bad";
+					}
 					break;
 				case 3:	//지연
-					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/delay";
+					if(checkCustom == 3) {
+						redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/delay/" + id;
+					}else {
+						redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/delay";
+					}
+					
 					break;
 				default:
 					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

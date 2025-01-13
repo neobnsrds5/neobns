@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.neobns.wiremock_service.api.dao.ApiDao;
+import com.neobns.wiremock_service.api.util.JsonPathCheck;
 import com.neobns.wiremock_service.api.vo.ApiVO;
 
 import lombok.RequiredArgsConstructor;
@@ -69,6 +69,7 @@ public class ApiServiceImpl implements ApiService {
 			
 		    // 상태별 파일 저장
 	        saveApiFiles(mappingsDir, filesDir, apiName, "", normalMappings, normalFiles, generatedId);
+	        
 	        if(!delayMappings.contains("common-delay-response.json")) {
 	        	saveApiFiles(mappingsDir, filesDir, apiName, "-delay", delayMappings, delayFiles, generatedId);
 	        }
@@ -84,21 +85,24 @@ public class ApiServiceImpl implements ApiService {
 		
 	}
 	
+	@Override
+	public int jsonCheck(String fileName, int id) {
+		return JsonPathCheck.checkFileState(fileName, id);
+	}
+	
 	private void saveApiFiles(Path mappingsDir, Path filesDir, String apiName, String suffix, 
             String mappings, String files, int id) throws IOException {
 		
-		String processedMappings;
-		if(mappings.contains("{id}")) {
-			processedMappings = mappings.replace("{id}", String.valueOf(id))
-            .replace("{apiName}", apiName);
-		}else {
-			processedMappings = mappings.replace("{apiName}", apiName);
-		}
+		String processedMappings = mappings;
+		if (mappings.contains("{id}")) {
+	        processedMappings = processedMappings.replace("{id}", String.valueOf(id));
+	    }
+	    processedMappings = processedMappings.replace("{apiName}", apiName);
 
 		
 		// 파일 경로 설정
-		Path mappingsPath = mappingsDir.resolve(apiName + suffix + "-mapping.json");
-		Path filesPath = filesDir.resolve(apiName + suffix + "-response.json");
+		Path mappingsPath = mappingsDir.resolve(id + "-" + apiName + suffix + "-mapping.json");
+		Path filesPath = filesDir.resolve(id + "-" + apiName + suffix + "-response.json");
 		
 		// 파일 저장
 		Files.writeString(mappingsPath, processedMappings, StandardCharsets.UTF_8);
@@ -199,7 +203,7 @@ public class ApiServiceImpl implements ApiService {
 		if(apiVO == null) {
 			throw new IllegalArgumentException("삭제할 API가 존재하지 않습니다.");
 		}
-		deleteApiFiles(apiVO.getApiName());
+		deleteApiFiles(apiVO.getApiName(), id);
 		apiDao.deleteById(id);
 	}
 	
@@ -219,7 +223,7 @@ public class ApiServiceImpl implements ApiService {
 	        apiDao.updateApi(apiVO);
 	        
 	        if(!oldApiName.equals(apiName)) {
-	        	deleteApiFiles(oldApiName);
+	        	deleteApiFiles(oldApiName, id);
 	        }
 	        
 	        // Mappings JSON 데이터에 {id}, {apiName}를 실제 ID, apiName으로 치환
@@ -242,17 +246,17 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	// 파일 삭제
-	private void deleteApiFiles(String apiName) {
+	private void deleteApiFiles(String apiName, int id) {
 		try {
 	        // 기존 파일 경로 설정
-	        Path mappingsPath = Paths.get("src", "main", "resources", "wiremock", "mappings", apiName + "-mapping.json");
-	        Path filesPath = Paths.get("src", "main", "resources", "wiremock", "__files", apiName + "-response.json");
+	        Path mappingsPath = Paths.get("src", "main", "resources", "wiremock", "mappings",id + "-"+ apiName + "-mapping.json");
+	        Path filesPath = Paths.get("src", "main", "resources", "wiremock", "__files",id + "-"+ apiName + "-response.json");
 
-	        Path delayMappingPath = Paths.get("src", "main", "resources", "wiremock", "mappings", apiName + "-delay-mapping.json");
-	        Path delayFilesPath = Paths.get("src", "main", "resources", "wiremock", "__files", apiName + "-delay-response.json");
+	        Path delayMappingPath = Paths.get("src", "main", "resources", "wiremock", "mappings",id + "-"+ apiName + "-delay-mapping.json");
+	        Path delayFilesPath = Paths.get("src", "main", "resources", "wiremock", "__files",id + "-"+ apiName + "-delay-response.json");
 	        
-	        Path badMappingPath = Paths.get("src", "main", "resources", "wiremock", "mappings", apiName + "-bad-mapping.json");
-	        Path badFilesPath = Paths.get("src", "main", "resources", "wiremock", "__files", apiName + "-bad-response.json");
+	        Path badMappingPath = Paths.get("src", "main", "resources", "wiremock", "mappings",id + "-"+ apiName + "-bad-mapping.json");
+	        Path badFilesPath = Paths.get("src", "main", "resources", "wiremock", "__files",id + "-"+ apiName + "-bad-response.json");
 	        
 	        // delay, bad 있을 경우 삭제
 	        if(Files.exists(delayMappingPath)) {

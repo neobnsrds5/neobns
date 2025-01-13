@@ -124,41 +124,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // API 추가 함수
 const addNewApi = () => {
-    const apiName = document.getElementById("apiName").value;
+	
+	const apiName = document.getElementById("apiName").value;
     const apiUrl = document.getElementById("apiUrl").value;
-	const apiMappings = document.getElementById("apiMappings").value;
-    const apiFiles  = document.getElementById("apiFiles").value;
 
-    // 지연과 에러 데이터를 상태 저장소에서 가져옴
-    const delayMappings = templates.delay.mappings;
-    const delayFiles = templates.delay.files;
-    const errorMappings = templates.error.mappings;
-    const errorFiles = templates.error.files;
-	
-	// 상태 선택 값 확인
-    const statusType = document.getElementById("statusSelector").value;
+    // 현재 상태 데이터를 가져옵니다.
+    const currentStatus = document.getElementById("statusSelector").value;
+    let apiMappings = document.getElementById("apiMappings").value;
+    let apiFiles = document.getElementById("apiFiles").value;
 
-    if (!apiName || !apiUrl) {
-        alert("API 이름과 주소를 입력해주세요.");
-        return;
-    }
-	
-/*
-	if (!isValidJson(apiMappings)) {
-	        alert("mappings 필드에 올바른 JSON 형식을 입력해주세요.");
-	        return;
-    }
-
-    if (!isValidJson(apiFiles)) {
-        alert("__files 필드에 올바른 JSON 형식을 입력해주세요.");
-        return;
-    }
-	*/
-	
-	// 상태별 고정값 적용
-    if (statusType === "normal") {
+    // 상태별 고정값 적용
+    if (currentStatus === "normal") {
         const fixedUrl = '"url": "/mock/api/{id}"';
-        const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
+        const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-response.json"';
 
         if (!apiMappings.includes(fixedUrl)) {
             apiMappings = apiMappings.replace(/"url":\s*".*?"/, fixedUrl);
@@ -166,50 +144,61 @@ const addNewApi = () => {
         if (!apiMappings.includes(fixedBodyFileName)) {
             apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
         }
-    } else if (statusType === "delay") {
-        const fixedUrlPattern = '"urlPattern": "/mock/stub/delay"';
-        const fixedBodyFileName = '"bodyFileName": "{apiName}-delay-response.json"';
+    } else if (currentStatus === "delay") {
+        //const fixedUrlPattern = '"urlPattern": "/mock/stub/delay"';
+        const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-delay-response.json"';
 
-        // `__files` 필드가 변경된 경우에만 `bodyFileName` 업데이트
-        if (apiFiles !== delayFiles) {
-            if (!apiMappings.includes(fixedUrlPattern)) {
-                apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
-            }
-            if (!apiMappings.includes(fixedBodyFileName)) {
-                apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
-            }
+		/*
+        if (!apiMappings.includes(fixedUrlPattern)) {
+            apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
         }
-    } else if (statusType === "error") {
-        const fixedUrlPattern = '"urlPattern": "/mock/stub/bad"';
-        const fixedBodyFileName = '"bodyFileName": "{apiName}-bad-response.json"';
+		*/
+        if (!apiMappings.includes(fixedBodyFileName)) {
+            apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+        }
+    } else if (currentStatus === "error") {
+        //const fixedUrlPattern = '"urlPattern": "/mock/stub/bad"';
+        const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-bad-response.json"';
 
-        // `__files` 필드가 변경된 경우에만 `bodyFileName` 업데이트
-        if (apiFiles !== errorFiles) {
-            if (!apiMappings.includes(fixedUrlPattern)) {
-                apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
-            }
-            if (!apiMappings.includes(fixedBodyFileName)) {
-                apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
-            }
+		/*
+        if (!apiMappings.includes(fixedUrlPattern)) {
+            apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
+        }
+		*/
+        if (!apiMappings.includes(fixedBodyFileName)) {
+            apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
         }
     }
 
+    // 상태별 데이터 저장소 업데이트
+    stateData[currentStatus] = {
+        mappings: apiMappings,
+        files: apiFiles,
+    };
 
-	console.log("Validated API Mappings:", apiMappings);
+    // 모든 상태 데이터를 전송
+    const payload = {
+        apiName,
+        apiUrl,
+        normalMappings: stateData.normal.mappings,
+        normalFiles: stateData.normal.files,
+        delayMappings: stateData.delay.mappings,
+        delayFiles: stateData.delay.files,
+        errorMappings: stateData.error.mappings,
+        errorFiles: stateData.error.files,
+    };
+	
+	if (!apiName || !apiUrl) {
+        alert("API 이름과 주소를 입력해주세요.");
+        return;
+    }
+
     fetch('/api/add', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ 
-			apiName, 
-			apiUrl, 
-			normalMappings: apiMappings,
-			normalFiles: apiFiles,
-			delayMappings, 
-			delayFiles, 
-			errorMappings, 
-			errorFiles,  })
+        body: JSON.stringify(payload)
     })
     .then(response => {
         if (response.status === 201) {
@@ -234,20 +223,30 @@ apiFilesField.addEventListener("input", () => {
 
     // 상태별 bodyFileName 업데이트
 	let targetBodyFileName;
+	let targetUrlPattern;
     if (statusType === "delay") {
-        targetBodyFileName = '"bodyFileName": "{apiName}-delay-response.json"';
+		targetUrlPattern = '"urlPattern": "/mock/stub/delay/{id}"'
+        targetBodyFileName = '"bodyFileName": "{id}-{apiName}-delay-response.json"';
     } else if (statusType === "error") {
-        targetBodyFileName = '"bodyFileName": "{apiName}-bad-response.json"';
+		targetUrlPattern = '"urlPattern": "/mock/stub/bad/{id}"'
+        targetBodyFileName = '"bodyFileName": "{id}-{apiName}-bad-response.json"';
     }
 
 	// bodyFileName이 이미 원하는 값인지 확인
     if (targetBodyFileName && !mappings.includes(targetBodyFileName)) {
         // 기존 bodyFileName 값을 새로운 값으로 변경
         mappings = mappings.replace(/"bodyFileName":\s*".*?"/, targetBodyFileName);
-
-        // 업데이트된 mappings 적용
-        document.getElementById("apiMappings").value = mappings;
+        
+        
     }
+	// urlPattern이 이미 원하는 값인지 확인하고 수정
+    if (targetUrlPattern && !mappings.includes(targetUrlPattern)) {
+        mappings = mappings.replace(/"urlPattern":\s*".*?"/, targetUrlPattern);
+    }
+	
+	// 업데이트된 mappings, urlPattern 적용
+	document.getElementById("apiMappings").value = mappings;
+	
 });
 
 // Mappings, Files 템플릿 기본 포맷
@@ -260,7 +259,7 @@ const templates = {
   },
   "response": {
     "status": 200,
-    "bodyFileName": "{apiName}-response.json",
+    "bodyFileName": "{id}-{apiName}-response.json",
 	"headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -337,14 +336,8 @@ const setMappingTemplate = (type) => {
 
         // 새로운 상태 설정
         document.getElementById("statusSelector").value = type;
-
-        // 템플릿 데이터 복원
-        const newMappings = stateData[type].mappings || templates[type].mappings;
-        const newFiles = stateData[type].files || templates[type].files;
-		
-        // 입력 필드에 값 설정
-        document.getElementById("apiMappings").value = newMappings;
-        document.getElementById("apiFiles").value = newFiles;
+        document.getElementById("apiMappings").value = stateData[type].mappings;
+        document.getElementById("apiFiles").value = stateData[type].files;
     } else {
         console.error("알 수 없는 템플릿 타입:", type);
     }
@@ -380,7 +373,7 @@ const saveEditApi = (id) => {
 	
 	// 고정 값 정의
     const fixedUrl = '"url": "/mock/api/{id}"';
-    const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
+    const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-response.json"';
 	
 	// 고정 값 검증 및 복원
     if (!apiMappings.includes(fixedUrl)) {
@@ -419,7 +412,7 @@ apiMappingsField.addEventListener("input", () => {
 
 	    if (statusType === "normal") {
 	        const fixedUrl = '"url": "/mock/api/{id}"';
-	        const fixedBodyFileName = '"bodyFileName": "{apiName}-response.json"';
+	        const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-response.json"';
 
 	        // url 및 bodyFileName 고정값 적용
 	        if (!currentValue.includes(fixedUrl)) {
@@ -430,7 +423,7 @@ apiMappingsField.addEventListener("input", () => {
 	        }
 	    } else if (statusType === "delay") {
 	        const fixedUrlPattern = '"urlPattern": "/mock/stub/delay"';
-	        const fixedBodyFileName = '"bodyFileName": "{apiName}-delay-response.json"';
+	        const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-delay-response.json"';
 
 	        // urlPattern 및 bodyFileName 고정값 적용
 	        if (!currentValue.includes(fixedUrlPattern)) {
@@ -441,7 +434,7 @@ apiMappingsField.addEventListener("input", () => {
 	        }
 	    } else if(statusType === "error"){
 			const fixedUrlPattern = '"urlPattern": "/mock/stub/bad"';
-	        const fixedBodyFileName = '"bodyFileName": "{apiName}-bad-response.json"';
+	        const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-bad-response.json"';
 
 	        // urlPattern 및 bodyFileName 고정값 적용
 	        if (!currentValue.includes(fixedUrlPattern)) {

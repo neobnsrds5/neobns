@@ -24,4 +24,5 @@ public interface ApiService {
 	void deleteApi(int id);
 	void updateApi(int id, String apiName, String apiUrl, String apiMappings, String apiFiles);
 	Map<String, Object> loadApi(int id);
+	int jsonCheck(String fileName, int id);
 }

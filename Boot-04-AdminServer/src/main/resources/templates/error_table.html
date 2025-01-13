@@ -26,6 +26,7 @@
 
      <!-- Theme Config js (Require in all Page) -->
      <script src="/assets/js/config.min.js"></script>
+	<script src="/js/parameterSave.js"></script>
      
 </head>
 <body>
@@ -804,7 +805,7 @@
 	                <!-- 추적 ID -->
 	                <td class="text-start trace-id">
 	                    <span th:if="${log.traceId != 'MISSED-ID'}">
-	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" target="_blank" th:text="${log.traceId}"></a>
+	                        <a th:href="'/admin/trace?traceId=' + ${log.traceId}" th:text="${log.traceId}"></a>
 	                    </span>
 	                    <span th:unless="${log.traceId != 'MISSED-ID'}">N/A</span>
 	                </td>
@@ -896,7 +897,7 @@
 	<script src="/assets/js/app.js"></script>
 
 	<!-- 팝업 기능 Javascript -->
-	<script src="/assets/js/popup.js"></script>
+<!--	<script src="/assets/js/popup.js"></script>-->
 </body>
 
 </html>

@@ -23,11 +23,24 @@
 
      <!-- Theme Config js (Require in all Page) -->
      <script src="/assets/js/config.min.js"></script>
+	 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script>
+
+		const getBackQuery = () => {
+			const searchState = JSON.parse(sessionStorage.getItem("searchState"));
+			const {paramPath, ...params} = searchState;
+			return searchState.paramPath + "?" + new URLSearchParams(params).toString();
+		};
+
+		$(function(){
+			$('#backToSearch').attr("href", getBackQuery());
+		});
+	</script>
 </head>
 
 <body>
-
 	<div class="container my-5" style="max-width: 90%; margin: 0 auto; padding: 20px;">
+		<h1><a id="backToSearch" href="" th:text="돌아가기"></a></h1>
 		<h2 class="mb-4 text-center">영향도 및 추적 관리</h2>
 
 		<div style="justify-items: center;justify-content: center;" id="plantuml-container">

@@ -41,9 +41,10 @@ public class RequestInterceptor implements HandlerInterceptor {
 		if (requestId == null || requestId.isEmpty()) {
 			requestId = generateRandomRequestId(); // 새로운 Request ID 생성
 			isDirectRequest = "true";
-			MDC.put("isDirectRequest", isDirectRequest);
 //        	requestId = "MISSED-ID";
 		}
+		
+		MDC.put("isDirectRequest", isDirectRequest);
 
 		String userId = request.getHeader(USER_ID_HEADER);
 		if (userId == null || userId.isEmpty()) {

@@ -1,11 +1,6 @@
 package com.example.neobns.logging.common;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
@@ -22,7 +17,7 @@ public class CustomFileAppender extends FileAppender<ILoggingEvent> {
 	
 	@Override
 	protected void append(ILoggingEvent eventObject) {
-		// TODO Auto-generated method stub
+
 		super.append(eventObject);
 		
 //		try (Producer<String, String> producer = new KafkaProducer<>(getProps())){

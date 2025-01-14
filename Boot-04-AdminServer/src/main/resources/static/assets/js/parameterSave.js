@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const urlParams = new URLSearchParams(queryString);
     urlParams.forEach(
         (value, key) => {
-            if (key === 'page' || key === 'curPage'){
+            if (key === 'page' || key === 'currPage'){
                 searchState[key] = getCurrentPage();
                 // searchState.page = getCurrentPage();
             } else {

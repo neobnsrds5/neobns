@@ -1,5 +1,0 @@
-@startuml
-user -> QuickController : GET
-QuickController -> QuickController : getAccountJPA
-QuickController -> user : getAccountJPA
-@enduml

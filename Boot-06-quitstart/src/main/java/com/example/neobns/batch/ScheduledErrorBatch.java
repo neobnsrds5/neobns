@@ -18,7 +18,7 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.function.context.config.ContextFunctionCatalogInitializer.DummyProcessor;
+//import org.springframework.cloud.function.context.config.ContextFunctionCatalogInitializer.DummyProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;

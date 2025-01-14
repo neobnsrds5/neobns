@@ -22,7 +22,10 @@ public interface ApiService {
 	void checkAllApiHealthCheck();
 	
 	void deleteApi(int id);
-	void updateApi(int id, String apiName, String apiUrl, String apiMappings, String apiFiles);
+	void updateApi(int id, String apiName, String apiUrl, 
+	        String normalMappings, String normalFiles, 
+	        String delayMappings, String delayFiles, 
+	        String errorMappings, String errorFiles);
 	Map<String, Object> loadApi(int id);
 	int jsonCheck(String fileName, int id);
 }

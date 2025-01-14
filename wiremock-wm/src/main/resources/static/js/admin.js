@@ -1,5 +1,27 @@
 //전역 상태 플래그
 let isRequestInProgress = false;
+let currentApiId = null;
+
+// 수정 부분 처리
+const editStateData = {
+    normal: { mappings: "{}", files: "{}" },
+    delay: { mappings: "{}", files: "{}" },
+    error: { mappings: "{}", files: "{}" },
+};
+let currentEditState = "normal";
+
+// 상태 데이터 로드 함수
+const loadEditStateData = (state) => {
+    currentEditState = state; // 현재 상태 업데이트
+    document.getElementById("editApiMappings").value = editStateData[state].mappings;
+    document.getElementById("editApiFiles").value = editStateData[state].files;
+};
+
+// 상태 데이터 저장 함수
+const saveEditStateData = () => {
+    editStateData[currentEditState].mappings = document.getElementById("editApiMappings").value;
+    editStateData[currentEditState].files = document.getElementById("editApiFiles").value;
+};
 
 document.addEventListener("DOMContentLoaded", function () {
 	
@@ -9,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const apiAddModal = new bootstrap.Modal(document.getElementById("apiAddModal"));
         apiAddModal.show();
     });
-	
+
 	// "수정" 버튼 클릭 시 팝업 열기
     const editButtons = document.querySelectorAll(".btn-edit");
     editButtons.forEach(button => {
@@ -17,10 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const apiEditModal = new bootstrap.Modal(document.getElementById("apiEditModal"));
             
             // API ID 가져오기
-            const apiId = button.getAttribute("data-id");
+            currentApiId = button.getAttribute("data-id");
 
             // API 데이터를 가져와 모달에 채우기
-            fetch(`/api/get/${apiId}`)
+            fetch(`/api/get/${currentApiId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("API 데이터를 가져오는 데 실패했습니다.");
@@ -28,24 +50,48 @@ document.addEventListener("DOMContentLoaded", function () {
                     return response.json();
                 })
                 .then(api => {
-                    // 모달 입력 필드에 데이터 설정
-                    document.getElementById("editApiName").value = api.apiName;
-                    document.getElementById("editApiUrl").value = api.apiUrl;
-                    document.getElementById("editApiMappings").value = api.apiMappings || "{}";
-                    document.getElementById("editApiFiles").value = api.apiFiles || "{}";
+					// 기본 정보 채우기
+	                document.getElementById("editApiName").value = api.apiName || "";
+	                document.getElementById("editApiUrl").value = api.apiUrl || "";
+	
+					
+					
+					// 상태별 데이터 로드
+	                editStateData.normal = { mappings: api.normalMappings || "{}", files: api.normalFiles || "{}" };
+	                editStateData.delay = { mappings: api.delayMappings || "{}", files: api.delayFiles || "{}" };
+	                editStateData.error = { mappings: api.errorMappings || "{}", files: api.errorFiles || "{}" };     
 
+	                // 상태 버튼 이벤트 연결
+	                document.getElementById("editNormalButton").onclick = () => {
+	                    saveEditStateData();
+	                    loadEditStateData("normal");
+	                };
+	                document.getElementById("editDelayButton").onclick = () => {
+	                    saveEditStateData();
+	                    loadEditStateData("delay");
+	                };
+	                document.getElementById("editErrorButton").onclick = () => {
+	                    saveEditStateData();
+	                    loadEditStateData("error");
+	                };
+					
+					// 기본 상태 로드
+            		loadEditStateData("normal");
+					
                     // 모달 열기
                     apiEditModal.show();
 
                     // 저장 버튼 이벤트 설정
-                    document.getElementById("saveEditApiButton").onclick = () => saveEditApi(apiId);
+                    document.getElementById("saveEditApiButton").onclick = () => saveEditApi(currentApiId);
                 })
                 .catch(error => {
+					console.log("errorapi : " + api);
                     console.error("Error fetching API data:", error);
                     alert("API 데이터를 가져오는 중 오류가 발생했습니다.");
                 });
         });
     });
+	
 
     // "저장" 버튼 클릭 시 API 추가
     const saveApiButton = document.getElementById("saveApiButton");
@@ -122,6 +168,80 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 });
 
+// 수정 데이터 저장
+const saveEditApi = (id) => {
+	// 현재 활성화된 상태 데이터 저장
+    saveEditStateData();
+
+    const apiName = document.getElementById("editApiName").value;
+    const apiUrl = document.getElementById("editApiUrl").value;
+	
+	// 상태별 고정값 적용 함수
+    const applyFixedFormat = (state) => {
+    let mappings = editStateData[state].mappings;
+    let files = editStateData[state].files;
+
+    if (state === "normal") {
+        const fixedUrl = `"url": "/mock/api/{id}"`;
+        const fixedBodyFileName = `"bodyFileName": "{id}-{apiName}-response.json"`;
+
+        // URL과 bodyFileName에 고정값 적용
+        if (!mappings.includes(fixedUrl)) {
+            mappings = mappings.replace(/"url":\s*".*?"/, fixedUrl);
+        }
+        if (!mappings.includes(fixedBodyFileName)) {
+            mappings = mappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+        }
+    } else if (state === "delay") {
+        const fixedBodyFileName = `"bodyFileName": "{id}-{apiName}-delay-response.json"`;
+        if (!mappings.includes(fixedBodyFileName)) {
+            mappings = mappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+        }
+    } else if (state === "error") {
+        const fixedBodyFileName = `"bodyFileName": "{id}-{apiName}-bad-response.json"`;
+        if (!mappings.includes(fixedBodyFileName)) {
+            mappings = mappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
+        }
+    }
+	
+    // 업데이트된 데이터를 반영
+    editStateData[state].mappings = mappings;
+    editStateData[state].files = files;
+	};
+	
+	// 모든 상태에 고정값 포맷 적용
+    applyFixedFormat("normal", apiName);
+    applyFixedFormat("delay", apiName);
+    applyFixedFormat("error", apiName);
+
+    fetch(`/api/edit/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            apiName,
+            apiUrl,
+			normalMappings: editStateData.normal.mappings,
+            normalFiles: editStateData.normal.files,
+            delayMappings: editStateData.delay.mappings,
+            delayFiles: editStateData.delay.files,
+            errorMappings: editStateData.error.mappings,
+            errorFiles: editStateData.error.files,
+        }),
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("API가 성공적으로 수정되었습니다.");
+                window.location.reload();
+            } else {
+                alert("API 수정 중 문제가 발생했습니다.");
+            }
+        })
+        .catch(error => {
+            console.error("Error updating API:", error);
+            alert("네트워크 오류가 발생했습니다.");
+        });
+};
+
 // API 추가 함수
 const addNewApi = () => {
 	
@@ -145,26 +265,14 @@ const addNewApi = () => {
             apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
         }
     } else if (currentStatus === "delay") {
-        //const fixedUrlPattern = '"urlPattern": "/mock/stub/delay"';
         const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-delay-response.json"';
 
-		/*
-        if (!apiMappings.includes(fixedUrlPattern)) {
-            apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
-        }
-		*/
         if (!apiMappings.includes(fixedBodyFileName)) {
             apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
         }
     } else if (currentStatus === "error") {
-        //const fixedUrlPattern = '"urlPattern": "/mock/stub/bad"';
         const fixedBodyFileName = '"bodyFileName": "{id}-{apiName}-bad-response.json"';
 
-		/*
-        if (!apiMappings.includes(fixedUrlPattern)) {
-            apiMappings = apiMappings.replace(/"urlPattern":\s*".*?"/, fixedUrlPattern);
-        }
-		*/
         if (!apiMappings.includes(fixedBodyFileName)) {
             apiMappings = apiMappings.replace(/"bodyFileName":\s*".*?"/, fixedBodyFileName);
         }
@@ -354,21 +462,27 @@ const isValidJson = (input) => {
     }
 };
 
+
+/*
 // API Edit
 const saveEditApi = (id) => {
-    let apiName = document.getElementById("editApiName").value;
-    let apiUrl = document.getElementById("editApiUrl").value;
-    let apiMappings = document.getElementById("editApiMappings").value;
-    let apiFiles = document.getElementById("editApiFiles").value;
-	
-	if (!isValidJson(apiMappings)) {
-		    alert("mappings 필드에 올바른 JSON 형식을 입력해주세요.");
-		    return;
-		}
+    const apiName = document.getElementById("editApiName").value;
+    const apiUrl = document.getElementById("editApiUrl").value;
+	const normalMappings = document.getElementById("editNormalMappings").value;
+    const normalFiles = document.getElementById("editNormalFiles").value;
 
-	if (!isValidJson(apiFiles)) {
-	    alert("__files 필드에 올바른 JSON 형식을 입력해주세요.");
-	    return;
+    const delayMappings = document.getElementById("editDelayMappings").value;
+    const delayFiles = document.getElementById("editDelayFiles").value;
+
+    const errorMappings = document.getElementById("editErrorMappings").value;
+    const errorFiles = document.getElementById("editErrorFiles").value;
+	
+	// json 유효성 검증
+	const isJsonValid = [normalMappings, normalFiles, delayMappings, delayFiles, errorMappings, errorFiles].every(isValidJson);
+	
+	if(!isJsonValid){
+		alert("Json 필드가 올바르 형식이어야 합니다.");
+		return;
 	}
 	
 	// 고정 값 정의
@@ -388,7 +502,16 @@ const saveEditApi = (id) => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ apiName, apiUrl, apiMappings, apiFiles }),
+        body: JSON.stringify({ 		
+			apiName,
+            apiUrl,
+            normalMappings,
+            normalFiles,
+            delayMappings,
+            delayFiles,
+            errorMappings,
+            errorFiles, 
+		}),
     })
         .then(response => {
             if (response.ok) {
@@ -403,6 +526,7 @@ const saveEditApi = (id) => {
             alert("네트워크 오류가 발생했습니다.");
         });
 };
+*/
 
 // API Mappings 입력 시 실시간 검증
 const apiMappingsField = document.getElementById("apiMappings");

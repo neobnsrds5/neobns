@@ -33,6 +33,8 @@ public class ApiServiceImpl implements ApiService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final ApiDao apiDao;
 	private final RestTemplate restTemplate;
+	private final Path filesDir = Paths.get("src", "main", "resources", "wiremock", "__files");
+	private final Path mappingsDir = Paths.get("src", "main", "resources", "wiremock", "mappings");
 
 	@Override
 	public List<ApiVO> getAllApis() {
@@ -63,9 +65,6 @@ public class ApiServiceImpl implements ApiService {
 			apiDao.saveApi(apiVO);
 			
 			int generatedId = apiVO.getId();
-			
-			Path filesDir = Paths.get("src", "main", "resources", "wiremock", "__files");
-		    Path mappingsDir = Paths.get("src", "main", "resources", "wiremock", "mappings");
 			
 		    // 상태별 파일 저장
 	        saveApiFiles(mappingsDir, filesDir, apiName, "", normalMappings, normalFiles, generatedId);
@@ -99,7 +98,7 @@ public class ApiServiceImpl implements ApiService {
 	    }
 	    processedMappings = processedMappings.replace("{apiName}", apiName);
 
-		
+	    
 		// 파일 경로 설정
 		Path mappingsPath = mappingsDir.resolve(id + "-" + apiName + suffix + "-mapping.json");
 		Path filesPath = filesDir.resolve(id + "-" + apiName + suffix + "-response.json");
@@ -208,7 +207,10 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	@Override
-	public void updateApi(int id, String apiName, String apiUrl, String apiMappings, String apiFiles) {
+	public void updateApi(int id, String apiName, String apiUrl, 
+	        String normalMappings, String normalFiles, 
+	        String delayMappings, String delayFiles, 
+	        String errorMappings, String errorFiles) {
 		try {
 	        // 1. DB에서 기존 API 조회 및 수정
 	        ApiVO apiVO = apiDao.findById(id);
@@ -221,22 +223,30 @@ public class ApiServiceImpl implements ApiService {
 	        apiVO.setApiName(apiName);
 	        apiVO.setApiUrl(apiUrl);
 	        apiDao.updateApi(apiVO);
-	        
+
 	        if(!oldApiName.equals(apiName)) {
-	        	deleteApiFiles(oldApiName, id);
+	        	deleteApiFiles(oldApiName, apiVO.getId());
 	        }
+	        String normalCheck = id + "-" + oldApiName + "-mapping.json";
+	        normalMappings = normalMappings.replace(normalCheck, apiName);
 	        
-	        // Mappings JSON 데이터에 {id}, {apiName}를 실제 ID, apiName으로 치환
-	        String processedMappings = apiMappings.replace("{id}", String.valueOf(id))
-	        									.replace("{apiName}", apiName);
+	        String delayCheck = id + "-" + oldApiName + "-mapping.json";
+	        delayMappings = normalMappings.replace(delayCheck, apiName);
+	        
+	        String badCheck = id + "-" + oldApiName + "-mapping.json";
+	        errorMappings = normalMappings.replace(badCheck, apiName);
 
-	        // 2. 파일 경로 설정
-	        Path mappingsPath = Paths.get("src", "main", "resources", "wiremock", "mappings", apiVO.getApiName() + "-mapping.json");
-	        Path filesPath = Paths.get("src", "main", "resources", "wiremock", "__files", apiVO.getApiName() + "-response.json");
-
-	        // 3. 파일 내용 업데이트
-	        Files.writeString(mappingsPath, processedMappings, StandardCharsets.UTF_8);
-	        Files.writeString(filesPath, apiFiles, StandardCharsets.UTF_8);
+	        // 상태별 파일 저장
+	        saveApiFiles(mappingsDir, filesDir, apiName, "", normalMappings, normalFiles, id);
+	        Path delayMapping = mappingsDir.resolve(id + "-"+ oldApiName + "-delay-mapping.json");
+	        Path badMapping = mappingsDir.resolve(id + "-"+ oldApiName + "-bad-mapping.json");
+	        
+	        if(!Files.exists(delayMapping) || !delayMappings.contains("common-delay-response.json")) {
+	        	saveApiFiles(mappingsDir, filesDir, apiName, "-delay", delayMappings, delayFiles, id);
+	        }
+	        if(!Files.exists(badMapping) || !errorMappings.contains("common-bad-response.json")) {
+	        	saveApiFiles(mappingsDir, filesDir, apiName, "-bad", errorMappings, errorFiles, id);
+	        }       
 
 	        logger.info("API '{}' updated successfully.", apiName);
 	    } catch (Exception e) {
@@ -249,14 +259,15 @@ public class ApiServiceImpl implements ApiService {
 	private void deleteApiFiles(String apiName, int id) {
 		try {
 	        // 기존 파일 경로 설정
-	        Path mappingsPath = Paths.get("src", "main", "resources", "wiremock", "mappings",id + "-"+ apiName + "-mapping.json");
-	        Path filesPath = Paths.get("src", "main", "resources", "wiremock", "__files",id + "-"+ apiName + "-response.json");
 
-	        Path delayMappingPath = Paths.get("src", "main", "resources", "wiremock", "mappings",id + "-"+ apiName + "-delay-mapping.json");
-	        Path delayFilesPath = Paths.get("src", "main", "resources", "wiremock", "__files",id + "-"+ apiName + "-delay-response.json");
+			Path mappingsPath = mappingsDir.resolve(id + "-" + apiName + "-mapping.json");
+	        Path filesPath = filesDir.resolve(id + "-" + apiName + "-response.json");     
+
+	        Path delayMappingPath = mappingsDir.resolve(id + "-"+ apiName + "-delay-mapping.json");
+	        Path delayFilesPath = filesDir.resolve(id + "-"+ apiName + "-delay-response.json");
 	        
-	        Path badMappingPath = Paths.get("src", "main", "resources", "wiremock", "mappings",id + "-"+ apiName + "-bad-mapping.json");
-	        Path badFilesPath = Paths.get("src", "main", "resources", "wiremock", "__files",id + "-"+ apiName + "-bad-response.json");
+	        Path badMappingPath = mappingsDir.resolve(id + "-"+ apiName + "-bad-mapping.json");
+	        Path badFilesPath = filesDir.resolve(id + "-"+ apiName + "-bad-response.json");
 	        
 	        // delay, bad 있을 경우 삭제
 	        if(Files.exists(delayMappingPath)) {
@@ -293,19 +304,37 @@ public class ApiServiceImpl implements ApiService {
 	        }
 
 	        // 파일 경로 설정
-	        Path mappingsPath = Paths.get("src", "main", "resources", "wiremock", "mappings", apiVO.getApiName() + "-mapping.json");
-	        Path filesPath = Paths.get("src", "main", "resources", "wiremock", "__files", apiVO.getApiName() + "-response.json");
+	        Path mappingsPath = mappingsDir.resolve(id + "-" + apiVO.getApiName() + "-mapping.json");
+	        Path filesPath = filesDir.resolve(id + "-" + apiVO.getApiName() + "-response.json");     
 
+	        Path delayMappingPath = mappingsDir.resolve(id + "-"+ apiVO.getApiName() + "-delay-mapping.json");
+	        Path delayFilesPath = filesDir.resolve(id + "-"+ apiVO.getApiName() + "-delay-response.json");
+	        
+	        Path badMappingPath = mappingsDir.resolve(id + "-"+ apiVO.getApiName() + "-bad-mapping.json");
+	        Path badFilesPath = filesDir.resolve(id + "-"+ apiVO.getApiName() + "-bad-response.json");
+	        
 	        // 파일 읽기
 	        String mappingsContent = Files.exists(mappingsPath) ? Files.readString(mappingsPath, StandardCharsets.UTF_8) : "{}";
 	        String filesContent = Files.exists(filesPath) ? Files.readString(filesPath, StandardCharsets.UTF_8) : "{}";
+	        String delayMappingsContent = Files.exists(delayMappingPath) ? 
+	        		Files.readString(delayMappingPath, StandardCharsets.UTF_8) : Files.readString(mappingsDir.resolve(Paths.get("stub", "delay-stub.json")), StandardCharsets.UTF_8); ;
+	        String delayFilesContent = Files.exists(delayFilesPath) ? 
+	        		Files.readString(delayFilesPath, StandardCharsets.UTF_8) : Files.readString(filesDir.resolve("common-delay-response.json"));
+	        String badMappingContent = Files.exists(badMappingPath) ? 
+	        		Files.readString(badMappingPath, StandardCharsets.UTF_8) : Files.readString(mappingsDir.resolve(Paths.get("stub", "bad-stub.json")), StandardCharsets.UTF_8); 
+	        String badFilesContent = Files.exists(badFilesPath) ? 
+	        		Files.readString(badFilesPath, StandardCharsets.UTF_8) : Files.readString(filesDir.resolve("common-bad-response.json"));
 
 	        // 응답 데이터 생성
 	        Map<String, Object> response = Map.of(
 	                "apiName", apiVO.getApiName(),
 	                "apiUrl", apiVO.getApiUrl(),
-	                "apiMappings", mappingsContent,
-	                "apiFiles", filesContent
+	                "normalMappings", mappingsContent,
+	                "normalFiles", filesContent,
+	                "delayMappings", delayMappingsContent,
+	                "delayFiles", delayFilesContent,
+	                "errorMappings", badMappingContent,
+	                "errorFiles", badFilesContent
 	        );
 
 	        return response;

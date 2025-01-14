@@ -156,10 +156,19 @@ public class ApiApiController {
 	    try {
 	        String apiName = apiData.get("apiName");
 	        String apiUrl = apiData.get("apiUrl");
-	        String apiMappings = apiData.get("apiMappings");
-	        String apiFiles = apiData.get("apiFiles");
+	        
+	        String normalMappings = apiData.get("normalMappings");
+	        String normalFiles = apiData.get("normalFiles");
 
-	        apiService.updateApi(id, apiName, apiUrl, apiMappings, apiFiles);
+	        String delayMappings = apiData.get("delayMappings");
+	        String delayFiles = apiData.get("delayFiles");
+
+	        String errorMappings = apiData.get("errorMappings");
+	        String errorFiles = apiData.get("errorFiles");
+	        
+	       // int checkCustom = apiService.jsonCheck(apiName, id);
+
+	        apiService.updateApi(id, apiName, apiUrl, normalMappings, normalFiles, delayMappings, delayFiles, errorMappings, errorFiles);
 
 	        return ResponseEntity.status(HttpStatus.OK).body("API successfully updated.");
 	    } catch (Exception e) {

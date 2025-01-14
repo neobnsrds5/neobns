@@ -146,6 +146,9 @@
             </div>
             <div class="modal-body">
                 <form id="edit-api-form">
+	                <div class="mb-3">
+					        <input type="hidden" id="statusSelector" value="normal">
+					    </div>
                     <div class="mb-3">
                         <label for="editApiName" class="form-label">API 이름</label>
                         <input type="text" id="editApiName" class="form-control" required>
@@ -154,8 +157,14 @@
                         <label for="editApiUrl" class="form-label">API 주소</label>
                         <input type="url" id="editApiUrl" class="form-control" required>
                     </div>
+                    <!-- 상태 선택 -->
                     <div class="mb-3">
                         <label for="editApiMappings" class="form-label">mappings</label>
+                        <div class="btn-group mb-2" role="group" aria-label="Mappings Templates">
+                            <button type="button" class="btn btn-outline-primary" id="editNormalButton">정상</button>
+                            <button type="button" class="btn btn-outline-warning" id="editDelayButton">지연</button>
+                            <button type="button" class="btn btn-outline-danger" id="editErrorButton">에러</button>
+                        </div>
                         <textarea id="editApiMappings" class="form-control" rows="8" required></textarea>
                     </div>
                     <div class="mb-3">

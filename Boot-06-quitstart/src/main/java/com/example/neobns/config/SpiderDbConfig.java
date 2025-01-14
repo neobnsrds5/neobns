@@ -20,7 +20,7 @@
 //
 //@Configuration
 //@RequiredArgsConstructor
-//@MapperScan(basePackages = "com.example.neobns.oraclemapper", sqlSessionFactoryRef = "oracleSqlSessionFactory")
+//@MapperScan(basePackages = "com.example.neobns.mapper", sqlSessionFactoryRef = "oracleSqlSessionFactory")
 //public class SpiderDbConfig {
 //
 //	private final DBProperties dbProperties;

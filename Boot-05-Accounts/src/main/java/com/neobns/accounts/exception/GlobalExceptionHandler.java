@@ -49,7 +49,7 @@ public class GlobalExceptionHandler  extends ResponseEntityExceptionHandler {
 
         clearMDC();
         
-        System.out.println("재정의 메서드에서 에러 처리함");
+        // 재정의 메서드에서 에러 처리함;
         return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
     }
 

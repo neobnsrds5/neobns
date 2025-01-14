@@ -17,7 +17,6 @@ public class ErrorService {
 	
 	public ErrorLogDTO getError() {
 		List<ErrorLogDTO> result = mapper.getRecord(10L);
-		System.out.println(result.get(0).getEvent_id());
 		return result.get(0);
 	}
 }

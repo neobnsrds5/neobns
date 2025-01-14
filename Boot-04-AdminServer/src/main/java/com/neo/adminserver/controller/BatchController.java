@@ -44,10 +44,10 @@ public class BatchController {
 		// SearchMap Init
 		// ------------------------------------------------------------------------
 		SearchMap searchMap = new SearchMap(paramMap);
-		searchMap.initParam("status", "COMPLETED");
+		searchMap.initParam("status", "");
 		searchMap.initParam("jobName", "");
-		searchMap.initParam("startDate", todayDate);
-		searchMap.initParam("endDate", todayDate);
+		searchMap.initParam("startDate", "");
+		searchMap.initParam("endDate", "");
 
 		// ------------------------------------------------------------------------
 		// pageLink init

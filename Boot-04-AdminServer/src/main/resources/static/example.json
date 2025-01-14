@@ -1,4 +1,4 @@
 {
-  "searchPage" : ["/admin/slow", "/admin/errors", "/admin/table"],
-  "detailPage" : ["/admin/trace"]
+  "searchPage" : ["/admin/slow", "/admin/errors", "/admin/table", "/batch/jobList"],
+  "detailPage" : ["/admin/trace", "/batch/jobDetail"]
 }

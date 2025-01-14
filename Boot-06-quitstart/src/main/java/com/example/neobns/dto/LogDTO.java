@@ -20,6 +20,7 @@ public class LogDTO {
 	private String device;
 	private String executeResult;
 	private String serverId = "BT20";
+	private long lineNumber;
 
 	// FWK_ERROR_HIS 로 매핑
 	public String mapErrorCode() {

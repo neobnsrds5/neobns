@@ -18,6 +18,7 @@ public class LogDTO {
 	private String device;
 	private String executeResult;
 	private String serverId = "BT20";
+	private long lineNumber;
 
 	
 }

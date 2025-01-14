@@ -28,39 +28,39 @@ function initSearchState(){
 
 //DOM이 준비되었을 때 자동으로 실행
 document.addEventListener('DOMContentLoaded', function(){
-
-    let parameterConfig = JSON.parse(sessionStorage.getItem("parameterConfig"));
-    if (parameterConfig == null){
-        (async () => {
-            try{
-                const response = await fetch('/example.json');
-                const data = await response.json();
-                sessionStorage.setItem("parameterConfig", JSON.stringify(data));
-                parameterConfig ={...data};
-            } catch (error){
-                console.log("Error fetching JSON: " + error);
-            }
-
-        })();
-    }
+    //
+    // let parameterConfig = JSON.parse(sessionStorage.getItem("parameterConfig"));
+    // if (parameterConfig == null){
+    //     (async () => {
+    //         try{
+    //             const response = await fetch('/example.json');
+    //             const data = await response.json();
+    //             sessionStorage.setItem("parameterConfig", JSON.stringify(data));
+    //             parameterConfig ={...data};
+    //         } catch (error){
+    //             console.log("Error fetching JSON: " + error);
+    //         }
+    //
+    //     })();
+    // }
 
     const searchState = getSearchState();
 
-    // 현재 페이지가 검색 페이지가 아닐 경우
-    if (!parameterConfig.searchPage.includes(window.location.pathname)){
-        // 그러나 상세 정보 페이지에는 해당하는 경우
-        if (parameterConfig.detailPage.includes(window.location.pathname)){
-            // 아무것도 하지 않고 함수를 종료한다.
-            return null;
-        }
-        // 상세 페이지 역시도 아닐 경우
-        // 만약 스토리지에 searchState 값이 존재한다면 삭제한다.
-        if (searchState != null){
-            sessionStorage.removeItem("searchState");
-        }
-        // 함수를 종료하여 이후의 코드가 실행되지 않도록 한다.
-        return null;
-    }
+    // // 현재 페이지가 검색 페이지가 아닐 경우
+    // if (!parameterConfig.searchPage.includes(window.location.pathname)){
+    //     // 그러나 상세 정보 페이지에는 해당하는 경우
+    //     if (parameterConfig.detailPage.includes(window.location.pathname)){
+    //         // 아무것도 하지 않고 함수를 종료한다.
+    //         return null;
+    //     }
+    //     // 상세 페이지 역시도 아닐 경우
+    //     // 만약 스토리지에 searchState 값이 존재한다면 삭제한다.
+    //     if (searchState != null){
+    //         sessionStorage.removeItem("searchState");
+    //     }
+    //     // 함수를 종료하여 이후의 코드가 실행되지 않도록 한다.
+    //     return null;
+    // }
 
     const queryString = window.location.search;
 

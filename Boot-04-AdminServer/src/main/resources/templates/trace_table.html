@@ -7,8 +7,10 @@
 	<script>
         const getBackQuery = () => {
             const searchState = JSON.parse(sessionStorage.getItem("searchState"));
+			if (searchState == null){
+				return "/"
+			}
             const {paramPath, ...params} = searchState;
-            console.log(searchState.paramPath);
             return searchState.paramPath + "?" + new URLSearchParams(params).toString();
         };
 

@@ -29,17 +29,19 @@ function initSearchState(){
 //DOM이 준비되었을 때 자동으로 실행
 document.addEventListener('DOMContentLoaded', function(){
 
-    let parameterConfig = JSON.parse(sessionStorage.getItem("searchPage"));
+    let parameterConfig = JSON.parse(sessionStorage.getItem("parameterConfig"));
     if (parameterConfig == null){
-        fetch('/example.json')
-            .then(response => response.json())
-            .then(data => {
+        (async () => {
+            try{
+                const response = await fetch('/example.json');
+                const data = await response.json();
                 sessionStorage.setItem("parameterConfig", JSON.stringify(data));
-                parameterConfig = data;
-            })
-            .catch(error => {
+                parameterConfig ={...data};
+            } catch (error){
                 console.log("Error fetching JSON: " + error);
-            })
+            }
+
+        })();
     }
 
     const searchState = getSearchState();

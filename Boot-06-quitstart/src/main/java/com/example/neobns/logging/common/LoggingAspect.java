@@ -72,8 +72,6 @@ public class LoggingAspect {
 		String nanoTime = getNanoTime();
 		MDC.put("nanoTime", nanoTime);
 
-		System.out.println("logExecution1 : " + MDC.getCopyOfContextMap().toString());
-
 		long start = System.currentTimeMillis();
 		String className = layer.equals("Mapper") ? joinPoint.getTarget().getClass().getInterfaces()[0].getName()
 				: joinPoint.getTarget().getClass().getName();
@@ -105,8 +103,6 @@ public class LoggingAspect {
 			// 메서드 실행 후 trace 로깅
 			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
 					MDC.get("executeResult"));
-			
-			System.out.println("logExecution2 : " + MDC.getCopyOfContextMap().toString());
 
 			MDC.remove("className");
 			MDC.remove("methodName");

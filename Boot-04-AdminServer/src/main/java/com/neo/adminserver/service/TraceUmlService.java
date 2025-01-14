@@ -38,8 +38,6 @@ public class TraceUmlService {
 
 		for (int i = 0; i < traceList.size(); i++) {
 			LogDTO log = traceList.get(i);
-			System.out.println("");
-			System.out.println(log.toString());
 			LogDTO stateLog = null;
 			UmlDTO uml = new UmlDTO();
 			String callerClass = log.getCallerClass();
@@ -101,7 +99,7 @@ public class TraceUmlService {
 					if (stateLog != null) {
 						uml.setColor("orangered");
 						content += ("\\n<font color=orangered>[ " + executeResult + "ms ]"); // 소요 시간 추가
-					}else {
+					} else {
 						content += ("\\n<font color=black>[ " + executeResult + "ms ]"); // 소요 시간 추가
 					}
 				}
@@ -115,13 +113,10 @@ public class TraceUmlService {
 				// -> 방향인 경우
 				if (executeResult == null || executeResult.trim().equals("")) {
 					uml.setContent(callerMethod);
-					System.out.println("-> aop log : " + log.toString());
 				}
 				// <- 방향인 경우
 				else {
 					String content = "";
-					
-					System.out.println("<- aop log : " + log.toString());
 
 					// error인 경우 에러 정보 출력
 					stateLog = checkError(log, errorList);
@@ -183,7 +178,7 @@ public class TraceUmlService {
 						}
 						UmlDTO restUml = umlList.get(restCallServiceIndex);
 						sb.append(String.format("%s %s %s : <font color=%s> %s\n", restUml.getSource(), "->",
-								nextUml.getSource(), nextUml.getColor(), nextUml.getContent())); 
+								nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
 					} else {
 						sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
 								nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
@@ -191,8 +186,6 @@ public class TraceUmlService {
 				}
 			}
 		}
-		
-		System.out.println("<trace uml>" + "\n" + sb.toString());
 
 		return sb.toString();
 

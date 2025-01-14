@@ -1,4 +1,4 @@
-//package com.example.neobns.oraclemapper;
+//package com.example.neobns.mapper;
 //
 //import java.util.List;
 //
@@ -6,5 +6,6 @@
 //
 //public interface OracleMapper {
 //	List<FwkErrorHisDto> getRecords(Long startLine);
+//
 //	long getCount();
 //}

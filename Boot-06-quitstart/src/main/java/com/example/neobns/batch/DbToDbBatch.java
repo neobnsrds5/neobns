@@ -34,7 +34,6 @@ public class DbToDbBatch {
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
 
-	
 	public DbToDbBatch(@Qualifier("dataDataSource") DataSource realSource,
 			@Qualifier("targetDataSource") DataSource targetSource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
@@ -91,8 +90,7 @@ public class DbToDbBatch {
 		int chunkSize = 500; // 10, 50, 100
 
 		return new StepBuilder("dbCopyStep", jobRepository)
-				.<Map<String, Object>, Map<String, Object>>chunk(chunkSize, transactionManager)
-				.reader(reader())
+				.<Map<String, Object>, Map<String, Object>>chunk(chunkSize, transactionManager).reader(reader())
 				.processor(dummyProcessor1()).writer(writer()).taskExecutor(taskExecutor()).build();
 	}
 
@@ -103,15 +101,6 @@ public class DbToDbBatch {
 			@Override
 			public Map<String, Object> process(Map<String, Object> item) throws Exception {
 				String threadName = Thread.currentThread().getName();
-				System.out.println("\tProcessing item: " + item.toString() + " on thread: " + threadName);
-				System.out.println("db to db processor is processing " + item.toString());
-				// dummy processor logic 추가
-//				for (int i = 0; i < item.size(); i++) {
-//					System.out.println("dummy processor is processing1 " + item.toString());
-//				}
-				
-				
-				
 				return item;
 			}
 		};
@@ -120,7 +109,6 @@ public class DbToDbBatch {
 	@Bean
 	public Job job() throws Exception {
 		return new JobBuilder("dbCopyJob", jobRepository)
-//				.start(partitoinStep())
 				.start(step()).listener(listener).build();
 	}
 
@@ -129,7 +117,7 @@ public class DbToDbBatch {
 
 		int corePoolSize = 4; // 4~8
 		int maxPoolSize = 8; // 8~16
-		int queueSize = 50; //50~100
+		int queueSize = 50; // 50~100
 
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);

@@ -109,8 +109,6 @@ public class RequestInterceptor implements HandlerInterceptor {
 
 		MDC.put("executeResult", String.valueOf(executeTime));
 
-		System.out.println("after : MDC.getCopyOfContextMap : " + MDC.getCopyOfContextMap().toString());
-
 		// 게이트웨이를 거치지 않은 요청인 경우
 		if (MDC.get("isDirectRequest").equals("true")) {
 			traceLogger.info("[{}] [{} : {}] [{}]", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),

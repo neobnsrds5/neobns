@@ -29,13 +29,13 @@ import com.example.neobns.dto.AccountDTO;
 
 @Configuration
 public class FileToDbBatch {
-	
+
 	private final DataSource datasource;
-	
+
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
-	
+
 	public FileToDbBatch(@Qualifier("targetDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		super();
@@ -44,43 +44,31 @@ public class FileToDbBatch {
 		this.transactionManager = transactionManager;
 		this.listener = listener;
 	}
-	
+
 	@Bean
 	public Job fileToDBJob() {
-		return new JobBuilder("fileToDBJob", jobRepository)
-				.start(fileToDBStep()).listener(listener).build();
+		return new JobBuilder("fileToDBJob", jobRepository).start(fileToDBStep()).listener(listener).build();
 	}
-	
+
 	@Bean
 	public Step fileToDBStep() {
-		
+
 		int chunkSize = 500; // 10, 50, 100
-		
+
 		return new StepBuilder("fileToDBStep", jobRepository)
-				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager)
-				.reader(fileReader())
-				.processor(dummyProcessor2())
-				.writer(fileToDbWriter())
-				.taskExecutor(fileToDBTaskExecutor())
-				.build();
-				
+				.<AccountDTO, AccountDTO>chunk(chunkSize, transactionManager).reader(fileReader())
+				.processor(dummyProcessor2()).writer(fileToDbWriter()).taskExecutor(fileToDBTaskExecutor()).build();
+
 	}
-	
-	
+
 	@Bean
 	public ItemProcessor<AccountDTO, AccountDTO> dummyProcessor2() {
 		return new ItemProcessor<AccountDTO, AccountDTO>() {
-			
+
 			@Override
 			public AccountDTO process(AccountDTO item) throws Exception {
-				
+
 				String threadName = Thread.currentThread().getName();
-				System.out.println("\tProcessing item: " + item.toString() + " on Thread: " + threadName);
-				System.out.println("file to db processor is processing " + item.toString());
-				// dummy processor logic 추가
-//				for (int i = 0; i < 5; i++) {
-//					System.out.println("dummy processor is processing2 " + item.toString());
-//				}
 				return item;
 			}
 		};
@@ -88,11 +76,11 @@ public class FileToDbBatch {
 
 	@Bean
 	public TaskExecutor fileToDBTaskExecutor() {
-		
+
 		int corePoolSize = 4; // 4~8
 		int maxPoolSize = 8; // 8~16
-		int queueSize = 50; //50~100
-		
+		int queueSize = 50; // 50~100
+
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
@@ -101,35 +89,32 @@ public class FileToDbBatch {
 		executor.initialize();
 		return executor;
 	}
-	
+
 	@Bean
-	public FlatFileItemReader<AccountDTO> fileReader(){
+	public FlatFileItemReader<AccountDTO> fileReader() {
 		FlatFileItemReader<AccountDTO> reader = new FlatFileItemReader<>();
 		String path = "csv/test.csv";
-//		reader.setResource(new FileSystemResource(path));
 		reader.setResource(new ClassPathResource(path));
 		reader.setLinesToSkip(1);
-		
+
 		DefaultLineMapper<AccountDTO> lineMapper = new DefaultLineMapper<>();
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setNames("id", "accountNumber", "money", "name");
 		lineMapper.setLineTokenizer(tokenizer);
-		
+
 		BeanWrapperFieldSetMapper<AccountDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
 		fieldSetMapper.setTargetType(AccountDTO.class);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
-		
+
 		reader.setLineMapper(lineMapper);
 		return reader;
 	}
-	
+
 	@Bean
-	public JdbcBatchItemWriter<AccountDTO> fileToDbWriter(){
-		return new JdbcBatchItemWriterBuilder<AccountDTO>()
-				.dataSource(datasource)
+	public JdbcBatchItemWriter<AccountDTO> fileToDbWriter() {
+		return new JdbcBatchItemWriterBuilder<AccountDTO>().dataSource(datasource)
 				.sql("INSERT INTO Account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
-				.beanMapped()
-				.build();
+				.beanMapped().build();
 	}
 
 }

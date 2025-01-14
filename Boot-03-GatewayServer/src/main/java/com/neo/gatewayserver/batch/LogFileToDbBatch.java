@@ -36,7 +36,7 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 
-	public LogFileToDbBatch(@Qualifier("gatewayDataSource")  DataSource datasource, JobRepository jobRepository,
+	public LogFileToDbBatch(@Qualifier("gatewayDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {
 		super();
 		this.datasource = datasource;
@@ -93,7 +93,17 @@ public class LogFileToDbBatch {
 		String path = "../logs/gateway-application.log";
 		reader.setResource(new FileSystemResource(path));
 
-		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>();
+		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
+			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함
+			@Override
+			public LogDTO mapLine(String line, int lineNumber) throws Exception {
+				LogDTO log = super.mapLine(line, lineNumber);
+				log.setLineNumber(lineNumber);
+				return log;
+			}
+
+		};
+		
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(";");
 		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId",
@@ -110,8 +120,8 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
-		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result) "
-				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, :executeResult)";
+		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
+				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, :executeResult, :lineNumber)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 	}
@@ -146,13 +156,14 @@ public class LogFileToDbBatch {
 	public ItemWriter<LogDTO> conditionalEventWriter() {
 		return items -> {
 			for (LogDTO log : items) {
-				if ("trace".equalsIgnoreCase(log.getLoggerName()) || "slow".equalsIgnoreCase(log.getLoggerName()) || "error".equalsIgnoreCase(log.getLoggerName())) {
+				if ("trace".equalsIgnoreCase(log.getLoggerName()) || "slow".equalsIgnoreCase(log.getLoggerName())
+						|| "error".equalsIgnoreCase(log.getLoggerName())) {
 					loggingEventWriter().write(new Chunk<>(List.of(log)));
 				}
 			}
 		};
 	}
-	
+
 	@Bean
 	public ItemWriter<LogDTO> conditionalSlowWriter() {
 		return items -> {

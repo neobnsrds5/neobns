@@ -76,9 +76,9 @@ public class LogFileToDbBatch {
 	@Bean
 	public TaskExecutor logToDBTaskExecutor() {
 
-		int corePoolSize = 4; // 4~8
-		int maxPoolSize = 8; // 8~16
-		int queueSize = 50; // 50~100
+		int corePoolSize = 8; // 4~8
+		int maxPoolSize = 10; // 8~16
+		int queueSize = 100; // 50~100
 
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
@@ -95,7 +95,17 @@ public class LogFileToDbBatch {
 		String path = "../logs/application.log";
 		reader.setResource(new FileSystemResource(path));
 
-		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>();
+		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
+			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함
+			@Override
+			public LogDTO mapLine(String line, int lineNumber) throws Exception {
+				LogDTO log = super.mapLine(line, lineNumber);
+				log.setLineNumber(lineNumber);
+				return log;
+			}
+
+		};
+
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(";");
 		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId",
@@ -105,15 +115,14 @@ public class LogFileToDbBatch {
 		BeanWrapperFieldSetMapper<LogDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
 		fieldSetMapper.setTargetType(LogDTO.class);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
-
 		reader.setLineMapper(lineMapper);
 		return reader;
 	}
 
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
-		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result) "
-				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, :executeResult)";
+		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
+				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, :executeResult, :lineNumber)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 	}

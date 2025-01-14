@@ -28,12 +28,12 @@ public class JPAQueryLoggingAspect {
 	@Around("execution(* org.springframework.data.jpa.repository.JpaRepository+.*(..))")
 	public Object logJPAQueries(ProceedingJoinPoint joinPoint) throws Throwable {
 
-		// 타임스탬프를 .SSSSSS 형식으로 변환
-		Instant now = Instant.now();
-		LocalDateTime localDateTime = LocalDateTime.ofInstant(now, ZoneId.systemDefault());
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-		String nanoTime = localDateTime.format(dateTimeFormatter);
-		MDC.put("nanoTime", nanoTime);
+		// 타임스탬프를 나노초 형식으로 변환
+//		Instant now = Instant.now();
+//		LocalDateTime localDateTime = LocalDateTime.ofInstant(now, ZoneId.systemDefault());
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+//		String nanoTime = localDateTime.format(dateTimeFormatter);
+//		MDC.put("nanoTime", nanoTime);
 
 		// 레포짓토리 실행 시작 시간
 		long repositoryStart = System.currentTimeMillis();
@@ -91,7 +91,7 @@ public class JPAQueryLoggingAspect {
 		MDC.remove("executeResult");
 		MDC.remove("className");
 		MDC.remove("methodName");
-		MDC.remove("nanoTime");
+//		MDC.remove("nanoTime");
 
 		return result;
 

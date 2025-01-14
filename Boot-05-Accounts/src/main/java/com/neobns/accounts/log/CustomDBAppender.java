@@ -103,7 +103,6 @@ public class CustomDBAppender extends DBAppender {
                 for (int i = 0; i < 4; i++) {
                     // Debugging: Log the args[i] value
                     if (i < args.length) {
-                        System.out.println("args[" + i + "]: " + args[i]);
                         if (args[i] != null) {
                             stmt.setString(7 + i, args[i].toString());
                         } else {

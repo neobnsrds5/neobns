@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration debug="true">
-<!-- value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
-				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
-				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
-				%X{requestUri}%n" -->
+	<!-- nano time까지 동일해 timestamp로 정렬 불가한 경우 확인. 로깅 방식 변경 중 -->
+	<!-- value="%X{nanoTime}; %logger{}; %level{}; %X{className}; %X{methodName}; 
+		%X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; 
+		%X{queryLog}; %X{requestUri}%n" -->
+
 	<property name="FILE_LOG_PATTERN"
-		value="%X{nanoTime}; %logger{}; %level{};
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
 				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
 				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
 				%X{requestUri}%n" />
@@ -60,7 +61,8 @@
 			<evaluator>
 				<expression>
 					return (mdc.get("requestId") != null) &amp;&amp;
-					(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR")) &amp;&amp;
+					(logger.equals("TRACE") || logger.equals("SLOW") ||
+					logger.equals("ERROR")) &amp;&amp;
 					(mdc.get("className") == null ||
 					!((String) mdc.get("className")).contains("prometheus"));
 				</expression>
@@ -263,10 +265,10 @@
 
 	<!-- 루트 로거 -->
 	<root level="INFO">
-<!-- 		<appender-ref ref="CONSOLE" /> -->
+		<!-- <appender-ref ref="CONSOLE" /> -->
 
 		<!-- sync db appender -->
-<!-- 		<appender-ref ref="CUSTOM_DB" /> -->
+		<!-- <appender-ref ref="CUSTOM_DB" /> -->
 
 		<!-- async db appender -->
 		<!-- <appender-ref ref="ASYNC_DB" /> -->

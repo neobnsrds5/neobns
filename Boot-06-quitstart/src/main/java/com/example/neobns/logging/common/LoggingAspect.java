@@ -68,9 +68,9 @@ public class LoggingAspect {
 	 */
 	private Object logExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
 
-		// 타임스탬프를 .SSSSSS 형식으로 변환
-		String nanoTime = getNanoTime();
-		MDC.put("nanoTime", nanoTime);
+		// nano time까지 동일해 timestamp로 정렬 불가한 경우 확인. 로깅 방식 변경 중
+		// String nanoTime = getNanoTime();
+		// MDC.put("nanoTime", nanoTime);
 
 		long start = System.currentTimeMillis();
 		String className = layer.equals("Mapper") ? joinPoint.getTarget().getClass().getInterfaces()[0].getName()
@@ -85,7 +85,7 @@ public class LoggingAspect {
 
 		MDC.remove("className");
 		MDC.remove("methodName");
-		MDC.remove("nanoTime");
+//		MDC.remove("nanoTime");
 
 		try {
 			return joinPoint.proceed(); // 실제 메서드 실행
@@ -95,10 +95,10 @@ public class LoggingAspect {
 			MDC.put("className", className);
 			MDC.put("methodName", methodName);
 			MDC.put("executeResult", Long.toString(elapsedTime));
-			
-			// 타임스탬프를 .SSSSSS 형식으로 변환
-			nanoTime = getNanoTime();
-			MDC.put("nanoTime", nanoTime);
+
+			// nano time까지 동일해 timestamp로 정렬 불가한 경우 확인. 로깅 방식 변경 중
+			// nanoTime = getNanoTime();
+			// MDC.put("nanoTime", nanoTime);
 
 			// 메서드 실행 후 trace 로깅
 			traceLogger.info("{}; {}; {}; {}", MDC.get("requestId"), MDC.get("className"), MDC.get("methodName"),
@@ -107,13 +107,13 @@ public class LoggingAspect {
 			MDC.remove("className");
 			MDC.remove("methodName");
 			MDC.remove("executeResult");
-			MDC.remove("nanoTime");
+//			MDC.remove("nanoTime");
 		}
 	}
 
 	private String getNanoTime() {
 
-		// 타임스탬프를 .SSSSSS 형식으로 변환
+		// 타임스탬프를 나노초까지 표시되는 형식으로 변환
 		Instant now = Instant.now();
 		LocalDateTime localDateTime = LocalDateTime.ofInstant(now, ZoneId.systemDefault());
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnn");

@@ -153,11 +153,6 @@ public class TraceUmlService {
 
 		umlList.add(new UmlDTO("User", "", "black"));
 
-		System.out.println("<umlList>");
-		for (int i = 0; i < umlList.size(); i++) {
-			System.out.println(umlList.get(i).toString());
-		}
-
 		return buildUmlDiagram(umlList);
 	}
 
@@ -203,8 +198,6 @@ public class TraceUmlService {
 				}
 			}
 		}
-
-		System.out.println("만들어진 uml string \n" + sb.toString());
 
 		return sb.toString();
 

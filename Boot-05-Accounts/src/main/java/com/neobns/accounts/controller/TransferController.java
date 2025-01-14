@@ -23,7 +23,7 @@ public class TransferController {
 	
 	@GetMapping("/ex/{accountNumber}")
 	public ResponseEntity<String> makeSqlError(@PathVariable Long accountNumber) {
-	    System.out.println("에러쿼리컨트롤러 호출");
+	    // 에러쿼리컨트롤러 호출
 	    // 예외를 잡지 않고, 서비스에서 발생한 예외를 그대로 던져서 GlobalExceptionHandler로 위임
 	    transferService.fetchTransfersByInvalidQuery(accountNumber);
 	    

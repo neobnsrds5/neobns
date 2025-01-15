@@ -188,4 +188,40 @@ public class ApiApiController {
         return ResponseEntity.ok(loadApiInfo);
 	
 	}
+	
+	@GetMapping("/test/{id}/{type}")
+	public void testApiById(@PathVariable int id, @PathVariable int type, HttpServletResponse response) throws IOException {
+		ApiVO apiVO = apiService.getApi(id);
+		if (apiVO == null) {
+	        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	        response.setContentType("application/json");
+	        response.getWriter().write("{\"error\": \"해당 ID의 API 정보를 찾을 수 없습니다.\"}");
+	        return;
+	    }
+		int checkCustom = apiService.jsonCheck(apiVO.getApiName(), id);
+		String redirectUrl ;
+		
+		switch (type) {
+	        case 1: // 정상 요청
+	            redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/api/" + id;
+	            break;
+	        case 2: // 오류 요청
+	            redirectUrl = checkCustom == 2
+	                ? "http://localhost:" + wireMockServer.port() + "/mock/stub/bad/" + id
+	                : "http://localhost:" + wireMockServer.port() + "/mock/stub/bad";
+	            break;
+	        case 3: // 지연 요청
+	            redirectUrl = checkCustom == 3
+	                ? "http://localhost:" + wireMockServer.port() + "/mock/stub/delay/" + id
+	                : "http://localhost:" + wireMockServer.port() + "/mock/stub/delay";
+	            break;
+	        default: // 유효하지 않은 type 값 처리
+	            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	            response.setContentType("application/json");
+	            response.getWriter().write("{\"error\": \"유효하지 않은 요청 유형입니다.\"}");
+	            return;
+		}
+		
+		response.sendRedirect(redirectUrl);
+	}
 }

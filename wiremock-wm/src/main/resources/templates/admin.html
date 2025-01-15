@@ -34,6 +34,7 @@
 	            <th>실행</th>
 	            <th>삭제</th>
 	            <th>수정</th>
+	            <th>테스트</th>
 	        </tr>
         </thead>
         <tbody>
@@ -85,6 +86,19 @@
 				<!-- 수정 -->
 				<td>
 					<button class="btn-edit btn-sm btn-danger" th:attr="data-id=${api.id}">수정</button>
+				</td>
+				<!-- 응답 확인 -->
+				<td>
+					<div class="dropdown">
+				        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton-[[${api.id}]]" data-bs-toggle="dropdown" aria-expanded="false">
+				            옵션
+				        </button>
+				        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-[[${api.id}]]" th:data-id="${api.id}">
+				            <li><a class="dropdown-item" href="#" data-type="1">정상</a></li>
+				            <li><a class="dropdown-item" href="#" data-type="2">오류</a></li>
+				            <li><a class="dropdown-item" href="#" data-type="3">지연</a></li>
+				        </ul>
+				    </div>
 				</td>
 	        </tr>
         </tbody>

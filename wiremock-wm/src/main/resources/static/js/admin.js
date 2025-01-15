@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
         apiAddModal.show();
     });
 
+	
 	// "수정" 버튼 클릭 시 팝업 열기
     const editButtons = document.querySelectorAll(".btn-edit");
     editButtons.forEach(button => {
@@ -53,9 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					// 기본 정보 채우기
 	                document.getElementById("editApiName").value = api.apiName || "";
 	                document.getElementById("editApiUrl").value = api.apiUrl || "";
-	
-					
-					
+				
 					// 상태별 데이터 로드
 	                editStateData.normal = { mappings: api.normalMappings || "{}", files: api.normalFiles || "{}" };
 	                editStateData.delay = { mappings: api.delayMappings || "{}", files: api.delayFiles || "{}" };
@@ -92,6 +91,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 	
+	// test api
+	const dropdownItems = document.querySelectorAll('.dropdown-item');
+	dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault(); // 기본 동작 방지 (링크 이동 방지)
+            
+            const id = item.closest(".dropdown-menu").getAttribute("data-id"); // API id 가져오기
+            const type = item.getAttribute("data-type"); // 요청 유형 가져오기
+
+            testApi(id, type); // testApi 함수 호출
+        });
+    });
 
     // "저장" 버튼 클릭 시 API 추가
     const saveApiButton = document.getElementById("saveApiButton");
@@ -653,3 +664,30 @@ const getSelectedIdsFromCheckbox = (checkboxes) => {
 	});
 	return selectedIds;
 }
+
+// testApi 함수 정의
+function testApi(id, type) {
+    // 서버로 보낼 URL 생성
+    const url = `/api/test/${id}/${type}`;
+	const newWindow = window.open("", "_blank");
+    
+    // fetch로 백엔드 API 호출
+	fetch(url, {
+        method: "GET",
+        redirect: "follow" // 리디렉션 허용
+    })
+        .then(response => {
+            if (response.redirected) {
+                // 리디렉션된 URL로 새 창 이동
+                newWindow.location.href = response.url;
+            } else {
+                throw new Error("API 실행 중 리디렉션이 발생하지 않았습니다.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            newWindow.close(); // 새 창 닫기
+            alert("API 실행 중 오류가 발생했습니다. 다시 시도해주세요.");
+        });
+}
+

@@ -54,7 +54,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public Step logToDBStep() {
 
-		int chunkSize = 500; // 10, 50, 100
+		int chunkSize = 100; // 10, 50, 100
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader()).processor(dummyProcessor3()).writer(compositeWriter())
@@ -76,9 +76,9 @@ public class LogFileToDbBatch {
 	@Bean
 	public TaskExecutor logToDBTaskExecutor() {
 
-		int corePoolSize = 8; // 4~8
-		int maxPoolSize = 10; // 8~16
-		int queueSize = 100; // 50~100
+		int corePoolSize = 4; // 4~8
+		int maxPoolSize = 8; // 8~16
+		int queueSize = 50; // 50~100
 
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);

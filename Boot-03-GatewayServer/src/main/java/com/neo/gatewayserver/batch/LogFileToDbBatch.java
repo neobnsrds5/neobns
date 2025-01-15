@@ -52,7 +52,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public Step logToDBStep() {
 
-		int chunkSize = 500; // 10, 50, 100
+		int chunkSize = 100; // 10, 50, 100
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader()).processor(dummyProcessor3()).writer(compositeWriter())

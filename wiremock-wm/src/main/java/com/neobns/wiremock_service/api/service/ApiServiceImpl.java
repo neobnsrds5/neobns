@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neobns.wiremock_service.api.dao.ApiDao;
 import com.neobns.wiremock_service.api.util.JsonPathCheck;
+import com.neobns.wiremock_service.api.util.JsonValidation;
 import com.neobns.wiremock_service.api.vo.ApiVO;
 
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,17 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ApiServiceImpl implements ApiService {
+	
+	private final JsonValidation jsonValidation;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final ApiDao apiDao;
 	private final RestTemplate restTemplate;
 	private final Path filesDir = Paths.get("src", "main", "resources", "wiremock", "__files");
 	private final Path mappingsDir = Paths.get("src", "main", "resources", "wiremock", "mappings");
-
+	private static final String COMMON_DELAY_RESPONSE = "common-delay-response.json";
+	private static final String COMMON_BAD_RESPONSE = "common-bad-response.json";
+	
 	@Override
 	public List<ApiVO> getAllApis() {
 		return apiDao.findAll();
@@ -56,6 +61,11 @@ public class ApiServiceImpl implements ApiService {
             String normalMappings, String normalFiles,
             String delayMappings, String delayFiles,
             String errorMappings, String errorFiles) {
+		
+		validateApiFiles(normalMappings, normalFiles);
+	    validateApiFiles(delayMappings, delayFiles);
+	    validateApiFiles(errorMappings, errorFiles);
+	    
 		try {
 			
 			// 1. DB에 API 정보 저장
@@ -69,10 +79,10 @@ public class ApiServiceImpl implements ApiService {
 		    // 상태별 파일 저장
 	        saveApiFiles(mappingsDir, filesDir, apiName, "", normalMappings, normalFiles, generatedId);
 	        
-	        if(!delayMappings.contains("common-delay-response.json")) {
+	        if(!delayMappings.contains(COMMON_DELAY_RESPONSE)) {
 	        	saveApiFiles(mappingsDir, filesDir, apiName, "-delay", delayMappings, delayFiles, generatedId);
 	        }
-	        if(!errorMappings.contains("common-bad-response.json")) {
+	        if(!errorMappings.contains(COMMON_BAD_RESPONSE)) {
 	        	saveApiFiles(mappingsDir, filesDir, apiName, "-bad", errorMappings, errorFiles, generatedId);
 	        }
 	        
@@ -211,6 +221,11 @@ public class ApiServiceImpl implements ApiService {
 	        String normalMappings, String normalFiles, 
 	        String delayMappings, String delayFiles, 
 	        String errorMappings, String errorFiles) {
+		
+		validateApiFiles(normalMappings, normalFiles);
+	    validateApiFiles(delayMappings, delayFiles);
+	    validateApiFiles(errorMappings, errorFiles);
+	    
 		try {
 	        // 1. DB에서 기존 API 조회 및 수정
 	        ApiVO apiVO = apiDao.findById(id);
@@ -244,10 +259,10 @@ public class ApiServiceImpl implements ApiService {
 	        Path delayMapping = mappingsDir.resolve(id + "-"+ oldApiName + "-delay-mapping.json");
 	        Path badMapping = mappingsDir.resolve(id + "-"+ oldApiName + "-bad-mapping.json");
 	        
-	        if(!Files.exists(delayMapping) || !delayMappings.contains("common-delay-response.json")) {
+	        if(!Files.exists(delayMapping) || !delayMappings.contains(COMMON_DELAY_RESPONSE)) {
 	        	saveApiFiles(mappingsDir, filesDir, apiName, "-delay", delayMappings, delayFiles, id);
 	        }
-	        if(!Files.exists(badMapping) || !errorMappings.contains("common-bad-response.json")) {
+	        if(!Files.exists(badMapping) || !errorMappings.contains(COMMON_BAD_RESPONSE)) {
 	        	saveApiFiles(mappingsDir, filesDir, apiName, "-bad", errorMappings, errorFiles, id);
 	        }       
 
@@ -322,11 +337,11 @@ public class ApiServiceImpl implements ApiService {
 	        String delayMappingsContent = Files.exists(delayMappingPath) ? 
 	        		Files.readString(delayMappingPath, StandardCharsets.UTF_8) : Files.readString(mappingsDir.resolve(Paths.get("stub", "delay-stub.json")), StandardCharsets.UTF_8); ;
 	        String delayFilesContent = Files.exists(delayFilesPath) ? 
-	        		Files.readString(delayFilesPath, StandardCharsets.UTF_8) : Files.readString(filesDir.resolve("common-delay-response.json"));
+	        		Files.readString(delayFilesPath, StandardCharsets.UTF_8) : Files.readString(filesDir.resolve(COMMON_DELAY_RESPONSE));
 	        String badMappingContent = Files.exists(badMappingPath) ? 
 	        		Files.readString(badMappingPath, StandardCharsets.UTF_8) : Files.readString(mappingsDir.resolve(Paths.get("stub", "bad-stub.json")), StandardCharsets.UTF_8); 
 	        String badFilesContent = Files.exists(badFilesPath) ? 
-	        		Files.readString(badFilesPath, StandardCharsets.UTF_8) : Files.readString(filesDir.resolve("common-bad-response.json"));
+	        		Files.readString(badFilesPath, StandardCharsets.UTF_8) : Files.readString(filesDir.resolve(COMMON_BAD_RESPONSE));
 
 	        // 응답 데이터 생성
 	        Map<String, Object> response = Map.of(
@@ -344,6 +359,16 @@ public class ApiServiceImpl implements ApiService {
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	        return null;
+	    }
+	}
+	
+	private void validateApiFiles(String mappings, String files) {
+
+		if (mappings != null && !mappings.isBlank()) {
+	        jsonValidation.validateMappingJson(mappings);
+	    }
+		if (files != null && !files.isBlank()) {
+	        jsonValidation.validateJson(files);
 	    }
 	}
 	

@@ -324,7 +324,7 @@ const addNewApi = () => {
             alert("API가 성공적으로 추가되었습니다.");
             window.location.reload();
         } else {
-            alert("API 추가 중 문제가 발생했습니다.");
+            alert("API 형식이 맞지 않습니다.");
         }
     })
     .catch(error => {

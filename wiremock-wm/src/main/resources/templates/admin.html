@@ -32,9 +32,9 @@
 	            <th>Mode Button</th>
 	            <th>상태</th>
 	            <th>실행</th>
-	            <th>삭제</th>
-	            <th>수정</th>
 	            <th>테스트</th>
+	            <th>수정</th>
+	            <th>삭제</th>
 	        </tr>
         </thead>
         <tbody>
@@ -79,14 +79,6 @@
 				        <span class="triangle"></span>
 				    </button>
 				</td>
-				<!-- 삭제 -->
-				<td>
-				    <button class="btn-delete btn-sm btn-danger" th:attr="data-id=${api.id}">삭제</button>
-				</td>
-				<!-- 수정 -->
-				<td>
-					<button class="btn-edit btn-sm btn-danger" th:attr="data-id=${api.id}">수정</button>
-				</td>
 				<!-- 응답 확인 -->
 				<td>
 					<div class="dropdown">
@@ -99,6 +91,14 @@
 				            <li><a class="dropdown-item" href="#" data-type="3">지연</a></li>
 				        </ul>
 				    </div>
+				</td>
+				<!-- 수정 -->
+				<td>
+					<button class="btn-edit btn-sm btn-danger" th:attr="data-id=${api.id}">수정</button>
+				</td>
+				<!-- 삭제 -->
+				<td>
+				    <button class="btn-delete btn-sm btn-danger" th:attr="data-id=${api.id}">삭제</button>
 				</td>
 	        </tr>
         </tbody>

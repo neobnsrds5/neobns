@@ -231,10 +231,13 @@ public class ApiServiceImpl implements ApiService {
 	        normalMappings = normalMappings.replace(normalCheck, apiName);
 	        
 	        String delayCheck = id + "-" + oldApiName + "-mapping.json";
-	        delayMappings = normalMappings.replace(delayCheck, apiName);
+	        delayMappings = delayMappings.replace(delayCheck, apiName);
 	        
 	        String badCheck = id + "-" + oldApiName + "-mapping.json";
-	        errorMappings = normalMappings.replace(badCheck, apiName);
+	        errorMappings = errorMappings.replace(badCheck, apiName);
+	        
+	        System.out.println("delayMappings : " + delayMappings);
+	        System.out.println("errorMappings : " + errorMappings);
 
 	        // 상태별 파일 저장
 	        saveApiFiles(mappingsDir, filesDir, apiName, "", normalMappings, normalFiles, id);

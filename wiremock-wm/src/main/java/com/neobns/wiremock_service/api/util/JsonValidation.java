@@ -55,9 +55,9 @@ public class JsonValidation {
 	        if (!responseNode.has("bodyFileName") || !responseNode.get("bodyFileName").isTextual()) {
 	            throw new IllegalArgumentException("Invalid or missing 'bodyFileName' field.");
 	        }
-	        if(!responseNode.has("headers") || !requestNode.get("headers").isTextual()) {
-	        	throw new IllegalArgumentException("Invalid or missing 'headers' field.");
-	        }
+			if (!responseNode.has("headers") || !responseNode.get("headers").isObject()) {
+			    throw new IllegalArgumentException("Invalid or missing 'headers' field.");
+			}
 
 	        // 파일 참조 검증
 	        String bodyFileName = responseNode.get("bodyFileName").asText();

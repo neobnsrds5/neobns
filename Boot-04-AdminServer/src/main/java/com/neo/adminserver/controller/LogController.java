@@ -1,4 +1,4 @@
-package com.neo.adminserver.controller;
+package com.neo.adminserver.controller; // 패키지명 변경 com.neobns.admin.e2e.controller
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,11 +23,11 @@ public class LogController {
 
 	private final LogService logService;
 
-	@GetMapping("/admin/slow")
+	@GetMapping("/admin/slow") // uri 자세하게 변경 /admin/e2e/slow
     public String findSlowLogs(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-			@RequestParam HashMap<String, Object> paramMap,
+			@RequestParam HashMap<String, Object> paramMap, // SearchMap으로 바로 받아
             Model model) {
 		// 시간 변환
 		// 실행 시간 조건 처리 (초 단위 → 밀리초 변환)
@@ -38,7 +38,7 @@ public class LogController {
 //	    }
 
 	    // 검색 실행
-		// SearchMap 초기화
+		// SearchMap 초기화 - hashmap tkdthr qkedktj
 		SearchMap searchMap = new SearchMap(paramMap);
 		searchMap.initParam("startTime", "");
 		searchMap.initParam("endTime", "");
@@ -48,7 +48,7 @@ public class LogController {
 		searchMap.initParam("uri", "");
 		searchMap.initParam("executeResult", "");
 
-		model.addAttribute("searchMap", searchMap);
+		model.addAttribute("searchMap", searchMap); // 
 
 
 		List<LogDTO> slowLogs = logService.selectSlowLogs(searchMap, page, size);

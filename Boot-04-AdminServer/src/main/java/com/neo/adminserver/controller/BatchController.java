@@ -1,4 +1,4 @@
-package com.neo.adminserver.controller;
+package com.neo.adminserver.controller; // 패키지명 com.neobns.admin.batch.controller
 
 import java.util.HashMap;
 import java.util.List;

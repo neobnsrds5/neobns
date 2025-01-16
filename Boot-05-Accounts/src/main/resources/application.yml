@@ -18,6 +18,9 @@ spring:
     admin:
       client:
         url: http://localhost:19000/admin  
+  batch:
+    job:
+      enabled: false
         
 management:
   httpexchanges:

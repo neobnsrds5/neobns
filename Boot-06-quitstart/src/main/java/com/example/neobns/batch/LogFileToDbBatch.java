@@ -1,15 +1,22 @@
 package com.example.neobns.batch;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import javax.sql.DataSource;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.partition.PartitionHandler;
+import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.scope.context.StepSynchronizationManager;
+import org.springframework.batch.core.step.builder.PartitionStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -28,6 +35,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.neobns.dto.LogDTO;
+import com.example.neobns.service.FileMaintenanceService;
 
 @Configuration
 public class LogFileToDbBatch {
@@ -36,29 +44,94 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
+	private final FileMaintenanceService fileService;
+	private String path = "../logs/application.log";
+	private int gridSize = 200;
+	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener,
+			FileMaintenanceService fileMaintenanceService) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
 		this.listener = listener;
+		this.fileService = fileMaintenanceService;
 	}
+
+	// Partition Size (Grid Size): 데이터를 논리적 파티션(Partition)으로 나누는 단위.
+	// Chunk Size: 파티션 내부에서 데이터를 처리하는 단위.
+	// 각 파티션의 StepExecution에서 Chunk 단위로 데이터를 처리.
+	// ex) 30000 data , Partition Size 300, chunk size 50
+	// -> 300개의 각 파티션은 30000/300=100개 데이터를 병렬 처리
+	// -> 하나의 파티션에서 처리 chunk size 50개씩 병렬 처리
 
 	@Bean
 	public Job logToDBJob() {
-		return new JobBuilder("logToDBJob", jobRepository).start(logToDBStep()).listener(listener).build();
+		return new JobBuilder("logToDBJob", jobRepository)
+				/* .start(logToDBStep()) */
+				.start(masterStep()).listener(listener).build();
 	}
 
+	// 파티션 스텝
+	@Bean
+	public Step masterStep() {
+		return new PartitionStepBuilder(new StepBuilder("masterStep", jobRepository))
+				.partitioner("slaveStep", partitioner()) // 파티셔닝 설정
+				.step(logToDBStep()) // 마스터의 슬레이브 스텝 설정
+				.partitionHandler(partitionerHandler()) // 파티셔닝 핸들러 설정
+				.build();
+
+	}
+
+	// 파티셔닝 설정. startline, endline을 컨텍스트에 넣어 reader에서 사용할 수 있게 함
+	@Bean
+	public Partitioner partitioner() {
+		return gridSize -> {
+
+			Map<String, ExecutionContext> partitionMap = new HashMap<>();
+			long totalLines = fileService.findFileLinesCount(path);
+			long partitionSize = (int) totalLines / gridSize;
+
+			for (int i = 0; i < gridSize; i++) {
+				ExecutionContext executionContext = new ExecutionContext();
+
+				long start = 1 + (i) * partitionSize;
+				long end = (i == gridSize - 1) ? totalLines : start + partitionSize - 1;
+
+				executionContext.putLong("start", start);
+				executionContext.putLong("end", end);
+				partitionMap.put("partition" + (i + 1), executionContext);
+
+			}
+
+			return partitionMap;
+
+		};
+	}
+
+	// 파티셔닝 핸들러 설정
+	@Bean
+	public PartitionHandler partitionerHandler() {
+
+		TaskExecutorPartitionHandler handler = new TaskExecutorPartitionHandler();
+		handler.setGridSize(gridSize); // 변경 변수
+		handler.setStep(logToDBStep());
+		handler.setTaskExecutor(logToDBTaskExecutor());
+
+		return handler;
+	}
+
+	// 마스터의 슬레이브 스텝 설정
 	@Bean
 	public Step logToDBStep() {
 
-		int chunkSize = 100; // 10, 50, 100
-
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
-				.reader(logReader()).processor(dummyProcessor3()).writer(compositeWriter())
-				.taskExecutor(logToDBTaskExecutor()).build();
+				.reader(logReader())
+				// 배치 성능 개선을 위해 dummy processor 주석처리
+				/* .processor(dummyProcessor3()) */
+				.writer(compositeWriter()).taskExecutor(logToDBTaskExecutor()).build();
 	}
 
 	@Bean
@@ -89,11 +162,27 @@ public class LogFileToDbBatch {
 		return executor;
 	}
 
+	// 현재 실행중인 step의 execution context를 가져오는 메서드
+	public ExecutionContext getExecutionContext() {
+		return StepSynchronizationManager.getContext().getStepExecution().getExecutionContext();
+	}
+
+	// 파티셔닝 컨텍스트에서 startline, endline을 읽어와 해당하는 것만 읽기 진행.
 	@Bean
+	@StepScope
 	public FlatFileItemReader<LogDTO> logReader() {
+
+		// 저장된 값 가져옴
+		long start = getExecutionContext().getLong("start");
+		long end = getExecutionContext().getLong("end");
+
+//		System.out.println("reader start : " + start + ", reader end : " + end);
+
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
-		String path = "../logs/application.log";
+
 		reader.setResource(new FileSystemResource(path));
+		reader.setLinesToSkip((int) (start - 1));
+		reader.setMaxItemCount((int) (end - start + 1));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함

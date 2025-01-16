@@ -193,7 +193,7 @@
 	
 	<!-- 루트 로거 -->
 	<root level="INFO">
-<!-- 		<appender-ref ref="CONSOLE" /> -->
+		<appender-ref ref="CONSOLE" />
 <!-- 		<appender-ref ref="CUSTOM_DB" /> -->
 		<appender-ref ref="FILE" />
 <!-- 		<appender-ref ref="FILE_PERFROM_SQL" />

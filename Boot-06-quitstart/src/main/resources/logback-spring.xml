@@ -17,8 +17,7 @@
 	<appender name="CONSOLE"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} -
-				%msg%n</pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -265,7 +264,7 @@
 
 	<!-- 루트 로거 -->
 	<root level="INFO">
-<!-- 		<appender-ref ref="CONSOLE" /> -->
+	<appender-ref ref="CONSOLE" />
 
 		<!-- sync db appender -->
 		<!-- <appender-ref ref="CUSTOM_DB" /> -->

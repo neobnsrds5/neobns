@@ -6,12 +6,12 @@ server:
 #      enabled: true
 #      force: true
 
-resilience4j:
-  bulkhead:
-    instances:
-      globalBulkhead:
-        max-concurrent-calls: 5
-        max-wait-duration: 500ms
+#resilience4j:
+#  bulkhead:
+#    instances:
+#      globalBulkhead:
+#        max-concurrent-calls: 5
+#        max-wait-duration: 500ms
 
 spring:  
 #  kafka:

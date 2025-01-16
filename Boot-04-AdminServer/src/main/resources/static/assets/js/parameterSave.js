@@ -11,6 +11,7 @@ function getCurrentPage(){
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     let currentPage = urlParams.get('page');
+    console.log("currentPage : ", currentPage);
 
     //기본 페이지는 1
     if (currentPage == null){
@@ -78,14 +79,17 @@ document.addEventListener('DOMContentLoaded', function(){
     const urlParams = new URLSearchParams(queryString);
     urlParams.forEach(
         (value, key) => {
-            if (key === 'page' || key === 'currPage'){
-                searchState[key] = getCurrentPage();
-                // searchState.page = getCurrentPage();
+            if (key === 'page'){
+                // searchState = getCurrentPage();
+                searchState.page = getCurrentPage();
             } else {
                 searchState[key] = value;
             }
         }
     );
+    if (!urlParams.has('page')){
+        searchState.page = '1';
+    }
 
     //최종 반영
     sessionStorage.setItem("searchState", JSON.stringify(searchState));

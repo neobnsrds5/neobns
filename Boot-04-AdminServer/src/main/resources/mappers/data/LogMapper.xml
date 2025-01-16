@@ -21,8 +21,30 @@
         ORDER BY timestmp ASC
     </select>
     
-    <select id="countSlowLogs" resultType="int">
+    <select id="countSlowLogs" parameterType="hashmap" resultType="int">
         SELECT COUNT(*) FROM logging_slow
+        WHERE 1=1
+        <if test="startTime != null and startTime != ''"> AND timestmp &gt;= #{startTime}</if>
+        <if test="endTime != null and endTime != ''"> AND timestmp &lt;= #{endTime}</if>
+        <if test="traceId != null and traceId != ''"> AND trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
+        <if test="userId != null and userId != ''"> AND user_id LIKE CONCAT('%', #{userId}, '%')</if>
+        <if test="ipAddress != null and ipAddress != ''"> AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')</if>
+        <if test="uri != null and uri != ''"> AND uri LIKE CONCAT('%', #{uri}, '%')</if>
+        <if test="executeResult != null and executeResult != ''"> AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)</if>
+    </select>
+
+    <select id="selectSlowLogs" parameterType="hashmap" resultType="LogDTO">
+        SELECT * FROM logging_slow
+        WHERE 1=1
+        <if test="startTime != null and startTime != ''"> AND timestmp &gt;= #{startTime}</if>
+        <if test="endTime != null and endTime != ''"> AND timestmp &lt;= #{endTime}</if>
+        <if test="traceId != null and traceId != ''"> AND trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
+        <if test="userId != null and userId != ''"> AND user_id LIKE CONCAT('%', #{userId}, '%')</if>
+        <if test="ipAddress != null and ipAddress != ''"> AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')</if>
+        <if test="uri != null and uri != ''"> AND uri LIKE CONCAT('%', #{uri}, '%')</if>
+        <if test="executeResult != null and executeResult != ''"> AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)</if>
+        ORDER BY timestmp DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="countErrorLogs" resultType="int">

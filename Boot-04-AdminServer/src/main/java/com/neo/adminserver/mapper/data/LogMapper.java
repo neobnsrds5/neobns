@@ -1,6 +1,7 @@
 package com.neo.adminserver.mapper.data;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -17,7 +18,9 @@ public interface LogMapper {
 	
 	List<LogDTO> findByTraceId(String traceId);
 	
-	int countSlowLogs();
+	int countSlowLogs(HashMap<String, Object> map);
+	List<LogDTO> selectSlowLogs(HashMap<String, Object> map);
+
     int countErrorLogs();
 	
     List<LogDTO> findSlowLogs(

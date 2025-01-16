@@ -1,6 +1,7 @@
 package com.neo.adminserver.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -30,8 +31,14 @@ public class LogService {
 		return logMapper.findByTraceId(traceId);
 	}
 	
-	public int countSlowLogs() {
-        return logMapper.countSlowLogs();
+	public int countSlowLogs(HashMap<String, Object> map) {
+        return logMapper.countSlowLogs(map);
+    }
+    public List<LogDTO> selectSlowLogs(HashMap<String, Object> map, int page, int size) {
+        int offset = (page - 1) * size;
+        map.put("limit", size);
+        map.put("offset", offset);
+        return logMapper.selectSlowLogs(map);
     }
 
     public int countErrorLogs() {

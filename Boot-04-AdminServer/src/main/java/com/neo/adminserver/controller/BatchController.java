@@ -33,8 +33,6 @@ public class BatchController {
 	@GetMapping("/jobList")
 	public String list(Model model, @RequestParam HashMap<String, Object> paramMap, PageUtil pgtl) {
 
-		String todayDate = DateUtil.getDate("yyyy-MM-dd");
-
 		logger.info("----------------------------------------------------");
 		logger.info("/batch/jobList");
 		logger.info("paramMap : " + paramMap);

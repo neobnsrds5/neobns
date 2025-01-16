@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/21"
+    "url": "/mock/api/20"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-21-response.json",
+    "bodyFileName": "20-우주에 있는 비행사 정보-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

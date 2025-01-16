@@ -1,6 +1,6 @@
 spring:
   application:
-    name: wiremock_service
+    name: wiremock_wm
   web:
     resources:
       static-locations: classpath:/resources/, classpath:/static/, classpath:/wiremock/mappings/

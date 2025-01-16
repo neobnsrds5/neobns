@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/3"
+    "url": "/mock/api/13"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-3-response.json",
+    "bodyFileName": "13-숫자에 대한 흥미로운 사실-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

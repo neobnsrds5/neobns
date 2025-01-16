@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/1"
+    "url": "/mock/api/22"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-1-response.json",
+    "bodyFileName": "22-포켓몬 정보-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

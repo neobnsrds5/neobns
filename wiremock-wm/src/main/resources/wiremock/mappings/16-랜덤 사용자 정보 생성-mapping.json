@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/6"
+    "url": "/mock/api/16"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-6-response.json",
+    "bodyFileName": "16-랜덤 사용자 정보 생성-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

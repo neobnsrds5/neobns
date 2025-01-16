@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/5"
+    "url": "/mock/api/4"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-5-response.json",
+    "bodyFileName": "4-가상 REST API 4-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

@@ -319,14 +319,36 @@ const addNewApi = () => {
         },
         body: JSON.stringify(payload)
     })
-    .then(response => {
-        if (response.status === 201) {
-            alert("API가 성공적으로 추가되었습니다.");
-            window.location.reload();
-        } else {
-            alert("API 형식이 맞지 않습니다.");
-        }
-    })
+	.then(response => {
+	    if (response.status === 201) {
+	        alert("API가 성공적으로 추가되었습니다.");
+	        window.location.reload();
+	    } else if (response.status === 400) {
+	        response.text().then(errorMessage => {
+	            if (errorMessage.includes("Missing 'request'")) {
+	                alert("요청 데이터에 'request' 필드가 없습니다.");
+	            } else if (errorMessage.includes("Invalid 'url'")) {
+	                alert("'url' 필드가 잘못되었습니다.");
+	            } else if (errorMessage.includes("Missing 'response'")) {
+	                alert("요청 데이터에 'response' 필드가 없습니다.");
+	            } else if (errorMessage.includes("Invalid HTTP method")) {
+	                alert("HTTP 메서드가 유효하지 않습니다.");
+	            } else if (errorMessage.includes("Invalid HTTP status code")) {
+	                alert("HTTP 상태 코드가 잘못되었습니다.");
+	            } else if (errorMessage.includes("Invalid 'bodyFileName'")) {
+	                alert("'bodyFileName' 필드가 잘못되었습니다.");
+				} else if(errorMessage.includes("Invalid or missing 'headers' field")){
+					alert("요청 데이터에 'headers' 필드가 없습니다.")				
+ 				}else if(errorMessage.includes("Invalid JSON format")){
+					alert("Json 형식이 잘못되었습니다.")	
+				}else {
+	                alert("Json Validation 에러가 발생했습니다: " );
+	            }
+	        });
+	    } else {
+	        alert("Json Validation 에러가 발생했습니다.");
+	    }
+	})
     .catch(error => {
         console.error("Error:", error);
         alert("네트워크 오류가 발생했습니다.");

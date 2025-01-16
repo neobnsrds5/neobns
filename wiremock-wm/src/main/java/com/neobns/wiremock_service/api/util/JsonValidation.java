@@ -12,6 +12,8 @@ public class JsonValidation {
 
 	public void validateMappingJson(String mappings) {
 		try {
+			validateJson(mappings);
+			
 	        JsonNode mappingNode = objectMapper.readTree(mappings);
 
 	        // 필수 필드 검증
@@ -53,6 +55,9 @@ public class JsonValidation {
 	        if (!responseNode.has("bodyFileName") || !responseNode.get("bodyFileName").isTextual()) {
 	            throw new IllegalArgumentException("Invalid or missing 'bodyFileName' field.");
 	        }
+	        if(!responseNode.has("headers") || !requestNode.get("headers").isTextual()) {
+	        	throw new IllegalArgumentException("Invalid or missing 'headers' field.");
+	        }
 
 	        // 파일 참조 검증
 	        String bodyFileName = responseNode.get("bodyFileName").asText();
@@ -60,6 +65,8 @@ public class JsonValidation {
 	        if (!bodyFileName.endsWith(".json")) {
 	            throw new IllegalArgumentException("Invalid 'bodyFileName': must end with .json");
 	        }
+	        
+	        
 	    } catch (Exception e) {
 	        throw new IllegalArgumentException("Invalid mapping JSON: " + e.getMessage());
 	    }

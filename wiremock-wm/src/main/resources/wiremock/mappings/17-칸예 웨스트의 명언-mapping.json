@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/7"
+    "url": "/mock/api/17"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-7-response.json",
+    "bodyFileName": "17-칸예 웨스트의 명언-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

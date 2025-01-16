@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/4"
+    "url": "/mock/api/21"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-4-response.json",
+    "bodyFileName": "21-클라이언트 지리적 위치 정보-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

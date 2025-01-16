@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/16"
+    "url": "/mock/api/18"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-16-response.json",
+    "bodyFileName": "18-대학 목록-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

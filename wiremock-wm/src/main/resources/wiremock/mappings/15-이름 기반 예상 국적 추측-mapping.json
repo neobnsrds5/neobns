@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/13"
+    "url": "/mock/api/15"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-13-response.json",
+    "bodyFileName": "15-이름 기반 예상 국적 추측-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

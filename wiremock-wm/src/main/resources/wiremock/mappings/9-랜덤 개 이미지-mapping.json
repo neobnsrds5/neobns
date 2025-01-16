@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/2"
+    "url": "/mock/api/9"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-2-response.json",
+    "bodyFileName": "9-랜덤 개 이미지-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

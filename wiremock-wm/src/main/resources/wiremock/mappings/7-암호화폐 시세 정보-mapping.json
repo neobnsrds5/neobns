@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/22"
+    "url": "/mock/api/7"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-22-response.json",
+    "bodyFileName": "7-암호화폐 시세 정보-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

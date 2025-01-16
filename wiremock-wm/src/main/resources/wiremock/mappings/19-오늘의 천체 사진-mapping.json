@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/15"
+    "url": "/mock/api/19"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-15-response.json",
+    "bodyFileName": "19-오늘의 천체 사진-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

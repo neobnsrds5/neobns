@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/18"
+    "url": "/mock/api/8"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-18-response.json",
+    "bodyFileName": "8-고양이에 대한 랜덤 사실-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

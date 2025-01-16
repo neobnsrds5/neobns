@@ -48,7 +48,9 @@ public class ApiApiController {
 	        // API 저장 호출
 	        apiService.saveNewApi(apiName, apiUrl, normalMappings, normalFiles, delayMappings, delayFiles, errorMappings, errorFiles);
 	        return ResponseEntity.status(HttpStatus.CREATED).body("API successfully added.");
-	    } catch (Exception e) {
+	    }catch(IllegalArgumentException e) {
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add API.");
 	    }

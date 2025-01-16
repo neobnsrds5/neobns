@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/mock/api/20"
+    "url": "/mock/api/12"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-20-response.json",
+    "bodyFileName": "12-농담-response.json",
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

@@ -33,16 +33,26 @@ function listTables() {
 			alert("please provide password");
 			return;
 		}
-		var result = invokeListTables(url,username,password); // java의 ListTables 메소드 호출
-		if(result) {
-			result.split(",").forEach(val => {
-			const element = document.createElement('p');
-			//element.innerHTML = `<button type="button" class="btn btn-secondary" onClick = 'generateCode("${val}")'>${val}</button>`;
-			element.innerHTML = "<p>" + val + "<p>";
-			document.getElementById("tables").appendChild(element);
+		var tableList = JSON.parse(invokeListTables(url,username,password)); // java의 ListTables 메소드 호출
+		if(tableList) {
+			tableList.forEach(table => {
+				const divElement = document.createElement('div');
+				let tableName = '<div>${table.tableName}</div>';
+				let codegenBtn = '<button type="button" class="btn btn-secondary" onClick = \'generateCode("${table.tableName}")\'>${table.tableName} 생성</button>';
+				let tableHead = '<tr>';
+				let tableBody = '<tr>';
+				let columnsArray = Object.entries(table.columns); // key 값을 알 수 없으므로 배열로 변환 후 index 로 접근
+				columnsArray.forEach(column => {
+					const [key, value] = column;
+					tableHead += ('<th>' + key + '</th>');
+					tableBody += ('<td>' + value + '</td>');
+				})
+				divElement.innerHTML = tableName + '<table><thead>' + tableHead + '</thead><tbody>' + tableBody + '</tbody></table>' + codegenBtn;
+				
+				document.getElementById("tables").appendChild(divElement);
 		});
 		const element = document.createElement('div');
-		element.innerHTML = `<button type="button" class="btn btn-secondary" onClick = 'generateCode("${url}","${username}","${password}")'>Generate Code</button>`;
+		element.innerHTML = `<button type="button" class="btn btn-secondary" onClick = 'generateCode("${url}","${username}","${password}")'>모든 테이블 생성</button>`;
 		document.getElementById("tables").appendChild(element);
 		} else {
 			alert("Invalid value ");

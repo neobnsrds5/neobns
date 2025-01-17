@@ -6,6 +6,8 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
+import code_generator_plugin.dto.TableDTO;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +19,7 @@ public class MyBatisGeneratorProgrammatic {
 
 	public static boolean execute(Shell shell, String url, String userId, String password, String targetPath) {
 		try {
-			List<String> tables = DatabaseConnector.getTables(url, userId, password);
+			List<TableDTO> tables = DatabaseConnector.getTablesInfo(url, userId, password);
 			// Warnings list to capture any warnings during the generation process
 			List<String> warnings = new ArrayList<>();
 
@@ -27,19 +29,25 @@ public class MyBatisGeneratorProgrammatic {
 			// Create the MyBatis Generator Configuration
 			Configuration config = new Configuration();
 
-			// Context (runtime: MyBatis3, MyBatis3Simple, etc.)
+
+			// ModelType.FLAT: 기본 키 분리 안함
+			// ModelType.HIERARCHICAL: 기본 키 분리함 (복합 키 가 있는 경우 유용)
+			// ModelType.CONDITIONAL: 복합 키가 있는 경우 HIERARCHICAL 방식, 없는 경우 FLAT 방식으로 자동 결정
 			Context context = new Context(ModelType.CONDITIONAL);
+			// Context (runtime: MyBatis3, MyBatis3Simple, etc.)
 			context.setId("MyBatis3Context");
+			// MyBatis3: Example 클래스 (동적 쿼리를 위한 도우미 클래스)도 추가
+			// MyBatis3Simple: deleteByPrimaryKey, insert, selectByPrimaryKey, updateByPrimaryKey
 			context.setTargetRuntime("MyBatis3"); // Use "MyBatis3Simple" if you want simpler output
 			config.addContext(context);
 
 			// JDBC Connection Configuration
-			JDBCConnectionConfiguration jdbcConnectionConfiguration = new JDBCConnectionConfiguration();
-			jdbcConnectionConfiguration.setDriverClass("com.mysql.cj.jdbc.Driver");
-			jdbcConnectionConfiguration.setConnectionURL(url);
-			jdbcConnectionConfiguration.setUserId(userId);
-			jdbcConnectionConfiguration.setPassword(password);
-			context.setJdbcConnectionConfiguration(jdbcConnectionConfiguration);
+			JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
+			jdbcConfig.setDriverClass("com.mysql.cj.jdbc.Driver");
+			jdbcConfig.setConnectionURL(url);
+			jdbcConfig.setUserId(userId);
+			jdbcConfig.setPassword(password);
+			context.setJdbcConnectionConfiguration(jdbcConfig);
 
 			Path javaPath = Paths.get(targetPath).resolve("src/main/java").toAbsolutePath();
 			Path resources = Paths.get(targetPath).resolve("src/main/resources").toAbsolutePath();
@@ -63,7 +71,7 @@ public class MyBatisGeneratorProgrammatic {
 
 			// SQL Map Generator Configuration
 			SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
-			sqlMapGeneratorConfiguration.setTargetPackage("com.example.mapper"); // Output package for XML files
+			sqlMapGeneratorConfiguration.setTargetPackage("mapper"); // Output package for XML files
 			sqlMapGeneratorConfiguration.setTargetProject(resources.toString()); // Output directory
 			context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
@@ -75,18 +83,18 @@ public class MyBatisGeneratorProgrammatic {
 			javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER"); // Use XML-based mapper
 			context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
 
-			for (String table : tables) {
+			for (TableDTO table : tables) {
 				// Add Table Configurations
-				TableConfiguration tableConfiguration = new TableConfiguration(context);
-				tableConfiguration.setTableName(table); // Table name in the database
-				tableConfiguration.setDomainObjectName(toCamelCase(table)); // Java entity name
-				tableConfiguration.setSelectByExampleStatementEnabled(false);
-				tableConfiguration.setDeleteByExampleStatementEnabled(false);
-				tableConfiguration.setCountByExampleStatementEnabled(false);
-				tableConfiguration.setUpdateByExampleStatementEnabled(false);
+				TableConfiguration tableConfig = new TableConfiguration(context);
+//				tableConfig.setTableName(table); // Table name in the database
+//				tableConfig.setDomainObjectName(toCamelCase(table)); // Java entity name
+//				tableConfig.setSelectByExampleStatementEnabled(false);
+//				tableConfig.setDeleteByExampleStatementEnabled(false);
+//				tableConfig.setCountByExampleStatementEnabled(false);
+//				tableConfig.setUpdateByExampleStatementEnabled(false);
 				// tableConfiguration.setGeneratedKey(new GeneratedKey("id", "JDBC", true,
 				// null)); // Optional: configure primary key generation
-				context.addTableConfiguration(tableConfiguration);
+				context.addTableConfiguration(tableConfig);
 			}
 
 			// Additional Plugins (Optional)
@@ -109,10 +117,10 @@ public class MyBatisGeneratorProgrammatic {
 			String servicePackage = "com.example.service";
 			String controllerPackage = "com.example.controller";
 			// table 별로 code generator를 활용해서 코드 생성
-			for (String table : tables) {
-				JUnitTestGenerator.generateJunitTest(toCamelCase(table), mapperPackage, targetPath);
-				ServiceCodeGenerator.generateServiceCode(toCamelCase(table), servicePackage, targetPath);
-				ControllerCodeGenerator.generateControllerCode(toCamelCase(table), controllerPackage, targetPath);
+			for (TableDTO table : tables) {
+//				JUnitTestGenerator.generateJunitTest(toCamelCase(table), mapperPackage, targetPath);
+//				ServiceCodeGenerator.generateServiceCode(toCamelCase(table), servicePackage, targetPath);
+//				ControllerCodeGenerator.generateControllerCode(toCamelCase(table), controllerPackage, targetPath);
 			}
 			return true;
 		} catch (Exception e) {

@@ -6,7 +6,7 @@ import java.util.Properties;
 //import org.apache.kafka.clients.producer.ProducerRecord;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
-
+ 
 public class CustomFileAppender extends FileAppender<ILoggingEvent> {
 //	private Properties getProps() {
 //		Properties prop = new Properties();
@@ -16,6 +16,8 @@ public class CustomFileAppender extends FileAppender<ILoggingEvent> {
 //    	
 //    	return prop;
 //	}
+	
+	// rolling appender 추가 해 각각 분단위로 할 것
 	
 	@Override
 	protected void append(ILoggingEvent eventObject) {

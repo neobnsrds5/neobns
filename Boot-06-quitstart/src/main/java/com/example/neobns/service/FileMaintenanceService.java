@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class FileMaintenanceService {
 
 	public void cleanupLogFile(String filePath) {
-
+		// rolling appender 추가 해 각각 분단위로 하고 백업 파일은 그대로 두고 분단위로 저장되게 할 것
 		try (FileWriter fileWriter = new FileWriter(filePath, false);) {
 
 			fileWriter.write("");

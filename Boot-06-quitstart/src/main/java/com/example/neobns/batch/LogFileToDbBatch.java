@@ -39,7 +39,7 @@ import com.example.neobns.service.FileMaintenanceService;
 
 @Configuration
 public class LogFileToDbBatch {
-
+	// 커스텀 디비 어펜더처럼 ps에 대입하는 방식으로 되어있는 지 확인할 것
 	private final DataSource datasource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;

@@ -1,9 +1,13 @@
 package com.neobns.accounts.batch;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.sql.DataSource;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -19,6 +23,7 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -208,29 +213,113 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
-		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
-				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, :executeResult, :lineNumber)";
+//		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
+//				+ "VALUES (:timestmp, :loggerName, :levelString, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device, :executeResult, :lineNumber)";
+//
+//		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 
-		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
+		// 성능 개선을 위해 ps 방식으로 변경
+		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
+				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+
+		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
+				.itemPreparedStatementSetter(new eventWriterItemPSSetter()).build();
+
+	}
+
+	public class eventWriterItemPSSetter implements ItemPreparedStatementSetter<LogDTO> {
+
+		@Override
+		public void setValues(LogDTO item, PreparedStatement ps) throws SQLException {
+			ps.setString(1, item.getTimestmp());
+			ps.setString(2, item.getLoggerName());
+			ps.setString(3, item.getLevelString());
+			ps.setString(4, item.getCallerClass());
+			ps.setString(5, item.getCallerMethod());
+			ps.setString(6, item.getUserId());
+			ps.setString(7, item.getTraceId());
+			ps.setString(8, item.getIpAddress());
+			ps.setString(9, item.getDevice());
+			ps.setString(10, item.getExecuteResult());
+			ps.setLong(11, item.getLineNumber());
+
+		}
+
 	}
 
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingSlowWriter() {
-		String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
-				+ "VALUES (:timestmp, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
-				+ ":executeResult, "
-				+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
+//		String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
+//				+ "VALUES (:timestmp, :callerClass, :callerMethod, :userId, :traceId, :ipAddress, :device,"
+//				+ ":executeResult, "
+//				+ "CASE WHEN :callerClass = 'SQL' THEN :callerMethod ELSE NULL END, CASE WHEN :callerClass != 'SQL' THEN :callerClass ELSE NULL END)";
 
-		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
+//		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
+
+		// 성능 개선을 위해 ps 방식으로 변경
+		String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
+				+ "VALUES(?,?,?,?,?,?,?,?, "
+				+ "CASE WHEN ? = 'SQL' THEN ? ELSE NULL END, CASE WHEN ? != 'SQL' THEN ? ELSE NULL END)";
+
+		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
+				.itemPreparedStatementSetter(new slowWriterItemPSSetter()).build();
+
+	}
+
+	public class slowWriterItemPSSetter implements ItemPreparedStatementSetter<LogDTO> {
+
+		@Override
+		public void setValues(LogDTO item, PreparedStatement ps) throws SQLException {
+			ps.setString(1, item.getTimestmp());
+			ps.setString(2, item.getCallerClass());
+			ps.setString(3, item.getCallerMethod());
+			ps.setString(4, item.getUserId());
+			ps.setString(5, item.getTraceId());
+			ps.setString(6, item.getIpAddress());
+			ps.setString(7, item.getDevice());
+			ps.setString(8, item.getExecuteResult());
+			ps.setString(9, item.getCallerClass());
+			ps.setString(10, item.getCallerMethod());
+			ps.setString(11, item.getCallerClass());
+			ps.setString(12, item.getCallerClass());
+
+		}
+
 	}
 
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingErrorWriter() {
-		String sql = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
-				+ "VALUES (:timestmp, :userId, :traceId, :ipAddress, :device, :callerClass, :callerMethod, "
-				+ ":query, :uri, :executeResult)";
+//		String sql = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
+//				+ "VALUES (:timestmp, :userId, :traceId, :ipAddress, :device, :callerClass, :callerMethod, "
+//				+ ":query, :uri, :executeResult)";
+//
+//		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
 
-		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql).beanMapped().build();
+		// 성능 개선을 위해 ps 방식으로 변경
+		String sql = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
+				+ "VALUES(?,?,?,?,?,?,?,?,?,?)";
+
+		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
+				.itemPreparedStatementSetter(new errorWriterItemPSSetter()).build();
+	}
+
+	public class errorWriterItemPSSetter implements ItemPreparedStatementSetter<LogDTO> {
+
+		@Override
+		public void setValues(LogDTO item, PreparedStatement ps) throws SQLException {
+			ps.setString(1, item.getTimestmp());
+			ps.setString(2, item.getUserId());
+			ps.setString(3, item.getTraceId());
+			ps.setString(4, item.getIpAddress());
+			ps.setString(5, item.getDevice());
+			ps.setString(6, item.getCallerClass());
+			ps.setString(7, item.getCallerMethod());
+			ps.setString(8, item.getQuery());
+			ps.setString(9, item.getUri());
+			ps.setString(10, item.getExecuteResult());
+
+		}
+
 	}
 
 	@Bean

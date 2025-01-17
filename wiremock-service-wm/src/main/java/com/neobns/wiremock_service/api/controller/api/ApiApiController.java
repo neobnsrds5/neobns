@@ -1,9 +1,11 @@
 package com.neobns.wiremock_service.api.controller.api;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,6 +101,35 @@ public class ApiApiController {
 		}
 		
 		response.sendRedirect(redirectUrl);
+	}
+	
+	@PostMapping("/add")
+	public ResponseEntity<String> addApi(@RequestBody Map<String, String> apiData) {
+	    try {
+	    	String apiName = apiData.get("apiName");
+	        String apiUrl = apiData.get("apiUrl");
+	       
+	        apiService.saveNewApi(apiName, apiUrl);
+	        return ResponseEntity.status(HttpStatus.CREATED).body("API successfully added.");
+	    }catch(IllegalArgumentException e) {
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add API.");
+	    }
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteApi(@PathVariable int id){
+		
+		try {
+			apiService.deleteApi(id);
+	        return ResponseEntity.status(HttpStatus.OK).body("API successfully deleted.");
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete API");
+	    }
+		
 	}
 	
 }

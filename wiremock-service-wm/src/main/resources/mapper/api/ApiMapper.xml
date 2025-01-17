@@ -94,4 +94,10 @@
     		id = #{id}
     </update>
     
+    <!-- API 삭제 -->
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM tb_api_list_m
+        WHERE id = #{id}
+    </delete>
+    
 </mapper>

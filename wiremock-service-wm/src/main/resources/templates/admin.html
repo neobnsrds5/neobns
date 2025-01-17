@@ -14,6 +14,7 @@
     <h2 class="mb-4 text-center">API 관리</h2>
 
     <div class="d-flex justify-content-end mb-3 gap-2">
+    	<button class="btn btn-primary btn-api-add">API 추가</button>
 	    <button class="btn-common btn-api-mock">선택한 API 대응답 전환</button>
 	    <button class="btn-common btn-api-real">선택한 API 실서버 전환</button>
 	</div>
@@ -78,6 +79,37 @@
 	        </tr>
         </tbody>
     </table>
+</div>
+
+<!-- API 추가 팝업 -->
+<div class="modal" id="apiAddModal" tabindex="-1" aria-labelledby="apiAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="apiAddModalLabel">새로운 API 추가</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-api-form">
+	                <div class="mb-3">
+				        <input type="hidden" id="statusSelector" value="normal">
+				    </div>
+                    <div class="mb-3">
+                        <label for="apiName" class="form-label">API 이름</label>
+                        <input type="text" id="apiName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apiUrl" class="form-label">API 주소</label>
+                        <input type="url" id="apiUrl" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="saveApiButton">추가</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Bootstrap JS -->

@@ -1,11 +1,17 @@
 package com.neobns.wiremock_service.api.service;
 
+import java.io.IOException;
+import java.net.http.HttpHeaders;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import org.apache.hc.core5.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neobns.wiremock_service.api.dao.ApiDao;
 import com.neobns.wiremock_service.api.vo.ApiVO;
@@ -92,32 +99,24 @@ public class ApiServiceImpl implements ApiService {
 		if(apiVO == null) throw new IllegalArgumentException("해당 ID의 API가 존재하지 않습니다.");
 		
 		String apiUrl = apiVO.getApiUrl();
-		int statusCode = 0;	//0: 정상, 1-3: 비정상 
+		int statusCode = 0;	//0: 정상, 1: 장애, 2: 다운, 3: 지연
 		
 		try {
 			ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
-			//장애 판별 로직: Content-Type이 json인지 검사하여 판별(Content-type이 없거나 html이라도 json 결과값이 파싱되면 정상 처리)
+			saveStubToWireMock(apiUrl, response);
+			// 응답 상태 코드 확인
 			if(response.getStatusCode() == HttpStatus.OK) {
-				if(response.getHeaders().getContentType() != null 
-						&& response.getHeaders().getContentType().toString().contains("application/json")) {
-					statusCode = 0;
-				} else {
-					ObjectMapper objectMapper = new ObjectMapper();
-					try {
-						objectMapper.readTree(response.getBody());
-						statusCode = 0;
-					} catch(Exception e) {
-						statusCode = 1;
-					}
-				}
-			} else {
+				statusCode = validateJson(response);
+			} else { 
 				statusCode = 1;
 			}
+			
 		} catch(Exception e) {
 			statusCode = handleException(apiUrl, e);
 		}
 		
 		updateCheckedApiInfo(id, LocalDateTime.now(), statusCode);
+		
 		if(statusCode != 0) changeModeById(id, false);//서버 문제 시, 자동 대응답 처리
 		return apiDao.findById(id);
 	}
@@ -136,6 +135,122 @@ public class ApiServiceImpl implements ApiService {
         	}
         }));
         executorService.shutdown();
+	}
+	
+	private int validateJson(ResponseEntity<String> response) {
+		try {
+	        if (response.getHeaders().getContentType() != null &&
+	            response.getHeaders().getContentType().toString().contains("application/json")) {
+	            return 0; // 정상
+	        }
+
+	        // Content-Type이 없거나 JSON이 아니더라도 Body를 JSON으로 파싱 시도
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        objectMapper.readTree(response.getBody());
+	        return 0; // 정상
+	    } catch (Exception e) {
+	        return 1; // JSON 파싱 오류
+	    }
+	}
+	
+	private boolean isStubExists(String apiUrl) {
+	    String wireMockAdminUrl = "http://localhost:8080/__admin/mappings";
+
+	    try {
+	        // WireMock Admin API 호출
+	        ResponseEntity<String> response = restTemplate.getForEntity(wireMockAdminUrl, String.class);
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        JsonNode mappings = objectMapper.readTree(response.getBody()).get("mappings");
+
+	        // Stub 목록에서 URL 매칭 확인
+	        for (JsonNode mapping : mappings) {
+	            String stubUrl = mapping.get("request").get("url").asText();
+	            if (stubUrl.equals(apiUrl)) {
+	                return true; // Stub이 이미 존재
+	            }
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Failed to check stub existence: " + e.getMessage());
+	    }
+
+	    return false; // Stub이 존재하지 않음
+	}
+	
+	private String saveBodyToFile(String apiUrl, String bodyContent) {
+	    String sanitizedUrl = apiUrl.replaceAll("[^a-zA-Z0-9]", "_");
+	    String fileName = sanitizedUrl + ".json";
+
+	    Path filePath = Paths.get("src/main/resources/wiremock/__files", fileName);
+
+	    // 파일이 이미 존재하면 재사용
+	    if (Files.exists(filePath)) {
+	        return fileName; // 기존 파일명을 반환
+	    }
+
+	    // 새 파일 생성
+	    try {
+	        Files.createDirectories(filePath.getParent());
+	        Files.writeString(filePath, bodyContent);
+	    } catch (IOException e) {
+	        throw new RuntimeException("Failed to save body content to file: " + e.getMessage());
+	    }
+
+	    return fileName; // 새로 저장된 파일명 반환
+	}
+	
+	private void saveStubToWireMock(String apiUrl, ResponseEntity<String> response) {
+	    // Stub이 이미 존재하면 저장하지 않음
+	    if (isStubExists(apiUrl)) {
+	        System.out.println("Stub already exists for URL: " + apiUrl);
+	        return;
+	    }
+
+	    String bodyFileName = saveBodyToFile(apiUrl, response.getBody());
+
+	    String stubJson = generateStubJson(
+	        apiUrl,
+	        response.getStatusCodeValue(),
+	        response.getHeaders().getContentType() != null
+	            ? response.getHeaders().getContentType().toString()
+	            : "application/json",
+	        bodyFileName
+	    );
+
+	    String wireMockAdminUrl = "http://localhost:8080/__admin/mappings";
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.set("Content-Type", "application/json");
+	    HttpEntity<String> requestEntity = new HttpEntity<>(stubJson, headers);
+	    
+	    restTemplate.postForEntity(wireMockAdminUrl, requestEntity, String.class);
+	}
+	
+	private String generateStubJson(String apiUrl, int statusCode, String contentType, String bodyFileName) {
+	    return String.format("""
+	        {
+	            "request": {
+	                "method": "GET",
+	                "url": "%s"
+	            },
+	            "response": {
+	                "status": %d,
+	                "headers": {
+	                    "Content-Type": "%s"
+	                },
+	                "bodyFileName": "%s"
+	            }
+	        }
+	        """,
+	        apiUrl, statusCode, contentType, bodyFileName
+	    );
+	}
+	
+	@Override
+	public void deleteApi(int id) {
+		ApiVO apiVO = apiDao.findById(id);
+		if(apiVO == null) {
+			throw new IllegalArgumentException("삭제할 API가 존재하지 않습니다.");
+		}
+		apiDao.deleteById(id);
 	}
 	
 	//=== FUNCTION ===//

@@ -16,4 +16,5 @@ public interface ApiService {
 	void changeModeByIds(List<Integer> ids, boolean targetMode/*1:대응답ON,0:대응답OFF(실서버)*/);
 	ApiVO performHealthCheck(int id);
 	void checkAllApiHealthCheck();
+	void deleteApi(int id);
 }

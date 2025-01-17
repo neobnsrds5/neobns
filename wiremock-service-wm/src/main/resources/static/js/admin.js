@@ -62,6 +62,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	})
 	
+	// "API 추가" 버튼 클릭 시 팝업 열기
+    const apiAddButton = document.querySelector(".btn-api-add");
+    apiAddButton.addEventListener("click", function () {
+        const apiAddModal = new bootstrap.Modal(document.getElementById("apiAddModal"));
+        apiAddModal.show();
+    });
+	
+	// "저장" 버튼 클릭 시 API 추가
+    const saveApiButton = document.getElementById("saveApiButton");
+    saveApiButton.addEventListener("click", function () {
+        addNewApi();
+    });
+	
 });
 
 const toggleMode = (button) => {
@@ -186,3 +199,44 @@ const getSelectedIdsFromCheckbox = (checkboxes) => {
 	});
 	return selectedIds;
 }
+
+// API 추가 함수
+const addNewApi = () => {
+	
+	const apiName = document.getElementById("apiName").value;
+    const apiUrl = document.getElementById("apiUrl").value;
+	
+	if (!apiName || !apiUrl) {
+	        alert("API 이름과 주소를 입력해주세요.");
+	        return;
+	}
+	
+    // 모든 상태 데이터를 전송
+    const payload = {
+        apiName,
+        apiUrl,
+    };
+
+    fetch('/api/add', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+	.then(response => {
+	    if (response.status === 201) {
+	        alert("API가 성공적으로 추가되었습니다.");
+	        window.location.reload();  
+	    } else {
+	        alert("Json Validation 에러가 발생했습니다.");
+	    }
+	})
+    .catch(error => {
+        console.error("Error:", error);
+        alert("네트워크 오류가 발생했습니다.");
+    });
+};
+
+
+

@@ -15,9 +15,10 @@ public class WireMockConfig {
 	public WireMockServer wireMockServer() {
 		WireMockServer server = new WireMockServer(
 	            WireMockConfiguration.wireMockConfig()
-                .dynamicPort()
+                .port(56789)
                 .usingFilesUnderClasspath("wiremock")
         );
+		
 		
 		//파비콘 No Content 처리
 		server.stubFor(WireMock.request("GET", new UrlPattern(WireMock.equalTo("/favicon.ico"), false))

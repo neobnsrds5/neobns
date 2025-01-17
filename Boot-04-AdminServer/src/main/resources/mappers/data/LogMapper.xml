@@ -1,31 +1,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neo.adminserver.mapper.data.LogMapper">
 
-    <select id="findSlowByPage" resultType="LogDTO">
-        SELECT * FROM logging_slow
-        WHERE 1=1
-        ORDER BY timestmp DESC
-    	LIMIT #{limit} OFFSET #{offset}
-    </select>
-
-    <select id="findErrorByPage" resultType="LogDTO">
-        SELECT * FROM logging_error
-        WHERE 1=1
-        ORDER BY timestmp DESC
-    	LIMIT #{limit} OFFSET #{offset}
-    </select>
-
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
         SELECT * FROM logging_event
         WHERE trace_id = #{traceId} AND logger_name IN ('TRACE', 'SLOW', 'ERROR')
         ORDER BY timestmp ASC
     </select>
-    
-    <select id="countSlowLogs" parameterType="hashmap" resultType="int">
+
+    <!-- 지연 로그 개수 조회 -->
+    <select id="countSlowLogs" parameterType="LogDTO" resultType="int">
         SELECT COUNT(*) FROM logging_slow
         WHERE 1=1
-        <if test="startTime != null and startTime != ''"> AND timestmp &gt;= #{startTime}</if>
-        <if test="endTime != null and endTime != ''"> AND timestmp &lt;= #{endTime}</if>
+        <if test="startTime != null"> AND timestmp &gt;= #{startTime}</if>
+        <if test="endTime != null"> AND timestmp &lt;= #{endTime}</if>
         <if test="traceId != null and traceId != ''"> AND trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
         <if test="userId != null and userId != ''"> AND user_id LIKE CONCAT('%', #{userId}, '%')</if>
         <if test="ipAddress != null and ipAddress != ''"> AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')</if>
@@ -33,136 +20,47 @@
         <if test="executeResult != null and executeResult != ''"> AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)</if>
     </select>
 
-    <select id="selectSlowLogs" parameterType="hashmap" resultType="LogDTO">
+    <!-- 지연 로그 리스트 조회 -->
+    <select id="findSlowLogs" resultType="LogDTO">
         SELECT * FROM logging_slow
         WHERE 1=1
-        <if test="startTime != null and startTime != ''"> AND timestmp &gt;= #{startTime}</if>
-        <if test="endTime != null and endTime != ''"> AND timestmp &lt;= #{endTime}</if>
+        <if test="paramDto.startTime != null"> AND timestmp &gt;= #{paramDto.startTime}</if>
+        <if test="paramDto.endTime != null"> AND timestmp &lt;= #{paramDto.endTime}</if>
+        <if test="paramDto.traceId != null and paramDto.traceId != ''"> AND trace_id LIKE CONCAT('%', #{paramDto.traceId}, '%')</if>
+        <if test="paramDto.userId != null and paramDto.userId != ''"> AND user_id LIKE CONCAT('%', #{paramDto.userId}, '%')</if>
+        <if test="paramDto.ipAddress != null and paramDto.ipAddress != ''"> AND ip_address LIKE CONCAT('%', #{paramDto.ipAddress}, '%')</if>
+        <if test="paramDto.uri != null and paramDto.uri != ''"> AND uri LIKE CONCAT('%', #{paramDto.uri}, '%')</if>
+        <if test="paramDto.executeResult != null and paramDto.executeResult != ''"> AND CAST(execute_result AS UNSIGNED) >= CAST(#{paramDto.executeResult} AS UNSIGNED)</if>
+        ORDER BY timestmp DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 오류 로그 개수 조회 -->
+    <select id="countErrorLogs" parameterType="LogDTO" resultType="int">
+        SELECT COUNT(*) FROM logging_error
+        WHERE 1=1
+        <if test="startTime != null"> AND timestmp &gt;= #{startTime}</if>
+        <if test="endTime != null"> AND timestmp &lt;= #{endTime}</if>
         <if test="traceId != null and traceId != ''"> AND trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
         <if test="userId != null and userId != ''"> AND user_id LIKE CONCAT('%', #{userId}, '%')</if>
         <if test="ipAddress != null and ipAddress != ''"> AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')</if>
+        <if test="query != null and query != ''"> AND query LIKE CONCAT('%', #{query}, '%')</if>
         <if test="uri != null and uri != ''"> AND uri LIKE CONCAT('%', #{uri}, '%')</if>
-        <if test="executeResult != null and executeResult != ''"> AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)</if>
-        ORDER BY timestmp DESC
-        LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <select id="countErrorLogs" resultType="int">
-        SELECT COUNT(*) FROM logging_error
-    </select>
-    
-	<!-- slow 검색 쿼리 -->
-    <select id="findSlowLogs" resultType="LogDTO">
-        SELECT *
-        FROM logging_slow
-        WHERE 1=1
-        <if test="startTime != null">
-        	AND timestmp &gt;= #{startTime}
-	    </if>
-	    <if test="endTime != null">
-	        AND timestmp &lt;= #{endTime}
-	    </if>
-        <if test="traceId != null and traceId != ''">
-            AND trace_id LIKE CONCAT('%', #{traceId}, '%')
-        </if>
-        <if test="userId != null and userId != ''">
-            AND user_id LIKE CONCAT('%', #{userId}, '%')
-        </if>
-        <if test="ipAddress != null and ipAddress != ''">
-            AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')
-        </if>
-        <if test="uri != null and uri != ''">
-            AND uri LIKE CONCAT('%', #{uri}, '%')
-        </if>
-        <if test="executeResult != null and executeResult != ''">
-            AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)
-        </if>
-        ORDER BY timestmp DESC
-        LIMIT #{limit} OFFSET #{offset}
-    </select>
-
-    <!-- slow 검색 총 개수 -->
-    <select id="countSlowSearchLogs" resultType="int">
-        SELECT COUNT(*) FROM logging_slow
-        WHERE 1=1
-        <if test="startTime != null">
-        	AND timestmp &gt;= #{startTime}
-	    </if>
-	    <if test="endTime != null">
-	        AND timestmp &lt;= #{endTime}
-	    </if>
-        <if test="traceId != null and traceId != ''">
-            AND trace_id LIKE CONCAT('%', #{traceId}, '%')
-        </if>
-        <if test="userId != null and userId != ''">
-            AND user_id LIKE CONCAT('%', #{userId}, '%')
-        </if>
-        <if test="ipAddress != null and ipAddress != ''">
-            AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')
-        </if>
-        <if test="uri != null and uri != ''">
-            AND uri LIKE CONCAT('%', #{uri}, '%')
-        </if>
-        <if test="executeResult != null and executeResult != ''">
-            AND CAST(execute_result AS UNSIGNED) >= CAST(#{executeResult} AS UNSIGNED)
-        </if>
-    </select>
-    
-    <!-- error 검색 쿼리 -->
+    <!-- 오류 로그 리스트 조회 -->
     <select id="findErrorLogs" resultType="LogDTO">
-        SELECT *
-        FROM logging_error
+        SELECT * FROM logging_error
         WHERE 1=1
-        <if test="startTime != null">
-        	AND timestmp &gt;= #{startTime}
-	    </if>
-	    <if test="endTime != null">
-	        AND timestmp &lt;= #{endTime}
-	    </if>
-        <if test="traceId != null and traceId != ''">
-            AND trace_id LIKE CONCAT('%', #{traceId}, '%')
-        </if>
-        <if test="userId != null and userId != ''">
-            AND user_id LIKE CONCAT('%', #{userId}, '%')
-        </if>
-        <if test="ipAddress != null and ipAddress != ''">
-            AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')
-        </if>
-        <if test="query != null and query != ''">
-            AND query LIKE CONCAT('%', #{query}, '%')
-        </if>
-        <if test="uri != null and uri != ''">
-            AND uri LIKE CONCAT('%', #{uri}, '%')
-        </if>
+        <if test="paramDto.startTime != null"> AND timestmp &gt;= #{paramDto.startTime}</if>
+        <if test="paramDto.endTime != null"> AND timestmp &lt;= #{paramDto.endTime}</if>
+        <if test="paramDto.traceId != null and paramDto.traceId != ''"> AND trace_id LIKE CONCAT('%', #{paramDto.traceId}, '%')</if>
+        <if test="paramDto.userId != null and paramDto.userId != ''"> AND user_id LIKE CONCAT('%', #{paramDto.userId}, '%')</if>
+        <if test="paramDto.ipAddress != null and paramDto.ipAddress != ''"> AND ip_address LIKE CONCAT('%', #{paramDto.ipAddress}, '%')</if>
+        <if test="paramDto.query != null and paramDto.query != ''"> AND query LIKE CONCAT('%', #{paramDto.query}, '%')</if>
+        <if test="paramDto.uri != null and paramDto.uri != ''"> AND uri LIKE CONCAT('%', #{paramDto.uri}, '%')</if>
         ORDER BY timestmp DESC
         LIMIT #{limit} OFFSET #{offset}
-    </select>
-
-    <!-- error 검색 총 개수 -->
-    <select id="countErrorSearchLogs" resultType="int">
-        SELECT COUNT(*) FROM logging_error
-        WHERE 1=1
-        <if test="startTime != null">
-        	AND timestmp &gt;= #{startTime}
-	    </if>
-	    <if test="endTime != null">
-	        AND timestmp &lt;= #{endTime}
-	    </if>
-        <if test="traceId != null and traceId != ''">
-            AND trace_id LIKE CONCAT('%', #{traceId}, '%')
-        </if>
-        <if test="userId != null and userId != ''">
-            AND user_id LIKE CONCAT('%', #{userId}, '%')
-        </if>
-        <if test="ipAddress != null and ipAddress != ''">
-            AND ip_address LIKE CONCAT('%', #{ipAddress}, '%')
-        </if>
-        <if test="query != null and query != ''">
-            AND query LIKE CONCAT('%', #{query}, '%')
-        </if>
-        <if test="uri != null and uri != ''">
-          	AND uri LIKE CONCAT('%', #{uri}, '%')
-        </if>
     </select>
     
     <!-- table 검색 -->

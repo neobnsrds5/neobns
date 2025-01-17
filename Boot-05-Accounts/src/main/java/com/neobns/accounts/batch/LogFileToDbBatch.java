@@ -50,7 +50,7 @@ public class LogFileToDbBatch {
 	private final PlatformTransactionManager transactionManager;
 	private final FileMaintenanceService fileService;
 	private String path = "../logs/accounts-application.log";
-	private int gridSize = 200;
+	private int gridSize = 20;
 	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
@@ -73,8 +73,8 @@ public class LogFileToDbBatch {
 	@Bean
 	public Job logToDBJob() {
 		return new JobBuilder("logToDBJob", jobRepository)
-				/* .start(logToDBStep()) */
-				.start(masterStep()).build();
+				 .start(logToDBStep()) 
+				/* .start(masterStep()) */.build();
 	}
 
 	// 파티션 스텝
@@ -100,8 +100,8 @@ public class LogFileToDbBatch {
 			for (int i = 0; i < gridSize; i++) {
 				ExecutionContext executionContext = new ExecutionContext();
 
-				long start = 1 + (i) * partitionSize;
-				long end = (i == gridSize - 1) ? totalLines : start + partitionSize - 1;
+				long start = 1 + i * partitionSize;
+				long end = (start > totalLines) ? 0 : Math.min((i + 1) * partitionSize, totalLines);
 
 				executionContext.putLong("start", start);
 				executionContext.putLong("end", end);
@@ -176,16 +176,16 @@ public class LogFileToDbBatch {
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		// 저장된 값 가져옴
-		long start = getExecutionContext().getLong("start");
-		long end = getExecutionContext().getLong("end");
+//		long start = getExecutionContext().getLong("start");
+//		long end = getExecutionContext().getLong("end");
 
 //		System.out.println("reader start : " + start + ", reader end : " + end);
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
 
 		reader.setResource(new FileSystemResource(path));
-		reader.setLinesToSkip((int) (start - 1));
-		reader.setMaxItemCount((int) (end - start + 1));
+//		reader.setLinesToSkip((int) (start - 1));
+//		reader.setMaxItemCount((int) (end - start + 1));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함

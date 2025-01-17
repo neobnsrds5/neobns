@@ -49,8 +49,8 @@ public class LogFileToDbBatch {
 	private final CustomBatchJobListener listener;
 	private final FileMaintenanceService fileService;
 	private String path = "../logs/application.log";
-	private int gridSize = 2;
-	private int chunkSize = 5;
+	private int gridSize = 20;
+	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager, CustomBatchJobListener listener,
@@ -73,8 +73,8 @@ public class LogFileToDbBatch {
 	@Bean
 	public Job logToDBJob() {
 		return new JobBuilder("logToDBJob", jobRepository)
-				/* .start(logToDBStep()) */
-				.start(masterStep()).listener(listener).build();
+				 .start(logToDBStep()) 
+				/*.start(masterStep()).*/.listener(listener).build();
 	}
 
 	// 파티션 스텝
@@ -95,13 +95,21 @@ public class LogFileToDbBatch {
 
 			Map<String, ExecutionContext> partitionMap = new HashMap<>();
 			long totalLines = fileService.findFileLinesCount(path);
-			long partitionSize = (int) totalLines / gridSize;
+			long partitionSize = ((int) totalLines / gridSize) < 1 ?  1 : ((int) totalLines / gridSize) ;
 
 			for (int i = 0; i < gridSize; i++) {
 				ExecutionContext executionContext = new ExecutionContext();
 
-				long start = 1 + (i) * partitionSize;
-				long end = (i == gridSize - 1) ? totalLines : start + partitionSize - 1;
+				long start = 1 + i * partitionSize;
+				long end = (start > totalLines) ? 0 : Math.min((i + 1) * partitionSize, totalLines);
+				
+				if(start > totalLines) {
+					continue;
+				}
+				
+				System.out.println("total : " + totalLines);
+				System.out.println("start : " + start);
+				System.out.println("end : " + end);
 
 				executionContext.putLong("start", start);
 				executionContext.putLong("end", end);
@@ -172,20 +180,19 @@ public class LogFileToDbBatch {
 
 	// 파티셔닝 컨텍스트에서 startline, endline을 읽어와 해당하는 것만 읽기 진행.
 	@Bean
-	@StepScope
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		// 저장된 값 가져옴
-		long start = getExecutionContext().getLong("start");
-		long end = getExecutionContext().getLong("end");
-
+//		long start = getExecutionContext().getLong("start");
+//		long end = getExecutionContext().getLong("end");
+//
 //		System.out.println("reader start : " + start + ", reader end : " + end);
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
 
 		reader.setResource(new FileSystemResource(path));
-		reader.setLinesToSkip((int) (start - 1));
-		reader.setMaxItemCount((int) (end - start + 1));
+//		reader.setLinesToSkip((int) (start - 1));
+//		reader.setMaxItemCount((int) (end - start + 1));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함

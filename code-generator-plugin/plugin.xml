@@ -9,10 +9,10 @@
             id="CodeGenerator">
       </category>
       <view
-            id="codegeneratorplugin.views.BrowserView"
+            id="code_generator_plugin.views.BrowserView"
             name="Browser View"
             icon="icons/sample.png"
-            class="codegeneratorplugin.views.BrowserView"
+            class="code_generator_plugin.views.BrowserView"
             category="CodeGenerator"
             inject="true">
       </view>
@@ -22,7 +22,7 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
-               id="codegeneratorplugin.views.BrowserView"
+               id="code_generator_plugin.views.BrowserView"
                relative="org.eclipse.ui.views.ProblemView"
                relationship="stack">
          </view>

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import code_generator_plugin.dto.TableDTO;
@@ -52,7 +53,7 @@ public class DatabaseConnector {
 
                     try (ResultSet rs = stmt.executeQuery()) {
                     	TableDTO tableDto = new TableDTO();
-                        HashMap<String, Boolean> columns = new HashMap<String, Boolean>();
+                        HashMap<String, Boolean> columns = new LinkedHashMap<String, Boolean>();
                         
                         while (rs.next()) {
                             columns.put(rs.getString("COLUMN_NAME"), rs.getBoolean("IS_PRIMARY_KEY"));

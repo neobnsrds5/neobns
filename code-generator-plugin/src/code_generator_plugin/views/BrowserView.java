@@ -1,4 +1,4 @@
-package codegeneratorplugin.views;
+package code_generator_plugin.views;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ public class BrowserView extends ViewPart  {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "codegeneratorplugin.views.BrowserView";
+	public static final String ID = "code_generator_plugin.views.BrowserView";
 
 	@Inject
 	Shell shell;
@@ -77,7 +77,7 @@ public class BrowserView extends ViewPart  {
 		@Override
 		public Object function(Object[] arguments) {
 			return MyBatisGeneratorProgrammatic.execute(shell, arguments[0].toString(), arguments[1].toString(),
-					arguments[2].toString(), arguments[3].toString());
+					arguments[2].toString(), arguments[3].toString(), arguments[4].toString(), arguments[5].toString());
 		}
 	}
 	
@@ -102,11 +102,11 @@ public class BrowserView extends ViewPart  {
 		buffer.append("<label>데이터베이스 URL:</label><br>");
 		buffer.append("<input type=\"text\" id=\"dbUrl\" name=\"dbUrl\" value=\"jdbc:mysql://localhost:3306/db2\"><br>");
 		buffer.append("<label>사용자명:</label><br>");
-		buffer.append("<input type=\"text\" id=\"username\" name=\"username\"><br>");
+		buffer.append("<input type=\"text\" id=\"username\" name=\"username\" value=\"root\"><br>");
 		buffer.append("<label>비밀번호:</label><br>");
-		buffer.append("<input type=\"password\" id=\"password\" name=\"password\"><br>");
+		buffer.append("<input type=\"password\" id=\"password\" name=\"password\" value=\"1234\"><br>");
 		buffer.append("<label>저장할 폴더명:</label><br>");
-		buffer.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\"><br>");
+		buffer.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\" value=\"example\"><br>");
 		buffer.append("</form>");
 		buffer.append("<input id=button type=\"button\" value=\"전체 테이블 조회\" onclick=\"listTables();\">");
 		buffer.append("<h3>테이블 목록</h3>");

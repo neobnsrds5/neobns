@@ -25,15 +25,17 @@ function setSelection(text) {
 function listTables() {
 	try {
 		const tablesContainer = document.getElementById("tables");
-		tablesContainer.innerHTML = "";
+		tablesContainer.innerHTML = "<h3>테이블 목록</h3>";
 		
 		// DB 정보
 		const url = document.getElementById("dbUrl").value;
 		const username = document.getElementById("username").value;
 		const password = document.getElementById("password").value;
+		// 저장할 파일명
+		const targetPath = document.getElementById("targetPath").value;
 		
-		if (!url || !username || !password) {
-			alert("URL, 사용자 이름 및 비밀번호를 모두 입력해주세요.");
+		if (!url || !username || !password || !targetPath) {
+			alert("URL, 사용자 이름, 비밀번호 및 파일명을 모두 입력해주세요.");
 			return;
 		}
 
@@ -52,7 +54,7 @@ function listTables() {
                         <tr><th>컬럼명</th>${columnName}</tr>
                         <tr><th>기본키</th>${columnInfo}</tr>
                     </table>
-					<button type="button" class="btn btn-secondary" onClick='generateCode("${url}", "${username}", "${password}", "${table.tableName}")'>${table.tableName} 생성</button>
+					<button type="button" class="btn btn-secondary" onClick='generateCode("${url}", "${username}", "${password}", "${table.tableName}", "${targetPath}")'>${table.tableName} 생성</button>
 			   	`;
 
 				const tableElement = createElementWithHTML('div', tableHTML);
@@ -68,9 +70,8 @@ function listTables() {
 }
 
 // 기본키를 확인하고 generateCode 호출
-function generateCode(url, username, password, tableName) {
-	// 저장할 파일명
-	const targetPath = document.getElementById("targetPath").value;
+function generateCode(url, username, password, tableName, targetPath) {
+	
     // 해당 테이블의 선택된 기본키 찾기
     const selectedPK = document.querySelector(`input[name='pk_${tableName}']:checked`);
     

@@ -6,14 +6,11 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
-import code_generator_plugin.dto.TableDTO;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -117,11 +114,18 @@ public class MyBatisGeneratorProgrammatic {
 			PluginConfiguration toStringPlugin = new PluginConfiguration();
 			toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
 			context.addPluginConfiguration(toStringPlugin);
+			PluginConfiguration paginationPlugin = new PluginConfiguration();
+			paginationPlugin.setConfigurationType("code_generator_plugin.plugins.PaginationPlugin");
+			context.addPluginConfiguration(paginationPlugin);
 
 			// Run the MyBatis Generator
 			DefaultShellCallback callback = new DefaultShellCallback(overwrite);
 			MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
 			myBatisGenerator.generate(null);
+			// Run JavaPoet Generator
+			JUnitTestGenerator.generateJunitTest(toCamelCase(tableName), "com.example.mapper", targetPath);
+			ServiceCodeGenerator.generateServiceCode(toCamelCase(tableName), "com.example.service", targetPath);
+			ControllerCodeGenerator.generateControllerCode(toCamelCase(tableName), "com.example.controller", targetPath);
 
 			// Print warnings, if any
 			for (String warning : warnings) {
@@ -130,9 +134,6 @@ public class MyBatisGeneratorProgrammatic {
 			MessageDialog.openInformation(shell, "Code Generated",
 					"Code generated successfully at: " + targetPath + " for table: " + tableName);
 
-			JUnitTestGenerator.generateJunitTest(toCamelCase(tableName), "com.example.mapper", targetPath);
-			ServiceCodeGenerator.generateServiceCode(toCamelCase(tableName), "com.example.service", targetPath);
-			ControllerCodeGenerator.generateControllerCode(toCamelCase(tableName), "com.example.controller", targetPath);
 			return true;
 			
 		} catch (Exception e) {

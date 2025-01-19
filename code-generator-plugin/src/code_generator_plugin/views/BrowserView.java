@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -15,7 +13,6 @@ import org.eclipse.ui.part.ViewPart;
 
 import code_generator_plugin.common.DatabaseConnector;
 import code_generator_plugin.common.MyBatisGeneratorProgrammatic;
-import code_generator_plugin.dto.TableDTO;
 import jakarta.inject.Inject;
 
 /**
@@ -109,7 +106,6 @@ public class BrowserView extends ViewPart  {
 		buffer.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\" value=\"example\"><br>");
 		buffer.append("</form>");
 		buffer.append("<input id=button type=\"button\" value=\"전체 테이블 조회\" onclick=\"listTables();\">");
-		buffer.append("<h3>테이블 목록</h3>");
 		buffer.append("<div id=\"tables\"></div>");
 		buffer.append("</body>");
 		buffer.append("</html>");

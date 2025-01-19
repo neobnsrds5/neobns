@@ -173,14 +173,23 @@ const executeApi = (button) => {
 	const newWindow = window.open("", "_blank");
 
     fetch(`/api/execute/${id}`, {
-        method: "GET",
-        redirect: "follow"
+        method: "GET"
     })
     .then(response => {
-        if(response.redirected) {
-			newWindow.location.href = response.url;
-			window.location.reload();
-		} else throw new Error("API 실행 중 리디렉션이 발생하지 않았습니다.");
+        // 리다이렉트 여부 확인
+        if (response.redirected) {
+            newWindow.location.href = response.url; // 실서버 URL로 이동
+        } else {
+            return response.json(); // Stub 데이터 처리
+        }
+    })
+    .then(data => {
+        if (data) {
+            // Stub 데이터 표시
+            newWindow.document.open();
+            newWindow.document.write(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+            newWindow.document.close();
+        }
     })
     .catch(error => {
         console.error("Error:", error);

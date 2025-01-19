@@ -3,6 +3,8 @@ package com.neobns.wiremock_service.api.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.neobns.wiremock_service.api.vo.ApiVO;
 
 public interface ApiService {
@@ -17,4 +19,7 @@ public interface ApiService {
 	ApiVO performHealthCheck(int id);
 	void checkAllApiHealthCheck();
 	void deleteApi(int id);
+	
+	ResponseEntity<String> getStubResponse(String stubUrl);
+	String isStubExists(String apiUrl);
 }

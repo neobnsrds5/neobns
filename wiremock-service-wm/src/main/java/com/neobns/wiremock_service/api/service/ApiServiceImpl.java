@@ -1,7 +1,6 @@
 package com.neobns.wiremock_service.api.service;
 
 import java.io.IOException;
-import java.net.http.HttpHeaders;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,9 +10,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import org.apache.hc.core5.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,7 @@ public class ApiServiceImpl implements ApiService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final ApiDao apiDao;
 	private final RestTemplate restTemplate;
+	private final String WIREMOCK_ADMIN_URL = "http://localhost:56789/__admin/mappings"; // WIREMOCK_ADMIN_URL
 
 	@Override
 	public List<ApiVO> getAllApis() {
@@ -99,11 +100,12 @@ public class ApiServiceImpl implements ApiService {
 		if(apiVO == null) throw new IllegalArgumentException("해당 ID의 API가 존재하지 않습니다.");
 		
 		String apiUrl = apiVO.getApiUrl();
+		String apiName = apiVO.getApiName();
 		int statusCode = 0;	//0: 정상, 1: 장애, 2: 다운, 3: 지연
 		
 		try {
 			ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
-			saveStubToWireMock(apiUrl, response);
+			saveStubToWireMock(apiName, apiUrl, response);
 			// 응답 상태 코드 확인
 			if(response.getStatusCode() == HttpStatus.OK) {
 				statusCode = validateJson(response);
@@ -113,6 +115,7 @@ public class ApiServiceImpl implements ApiService {
 			
 		} catch(Exception e) {
 			statusCode = handleException(apiUrl, e);
+			System.out.println("statusCode : " + statusCode);
 		}
 		
 		updateCheckedApiInfo(id, LocalDateTime.now(), statusCode);
@@ -140,7 +143,7 @@ public class ApiServiceImpl implements ApiService {
 	private int validateJson(ResponseEntity<String> response) {
 		try {
 	        if (response.getHeaders().getContentType() != null &&
-	            response.getHeaders().getContentType().toString().contains("application/json")) {
+	            response.getHeaders().getContentType().toString().toLowerCase().contains("application/json")) {
 	            return 0; // 정상
 	        }
 
@@ -149,36 +152,41 @@ public class ApiServiceImpl implements ApiService {
 	        objectMapper.readTree(response.getBody());
 	        return 0; // 정상
 	    } catch (Exception e) {
+	    	logger.error("validateJson : " + response.getBody(), e);
 	        return 1; // JSON 파싱 오류
 	    }
 	}
 	
-	private boolean isStubExists(String apiUrl) {
-	    String wireMockAdminUrl = "http://localhost:8080/__admin/mappings";
+	@Override
+	public String isStubExists(String apiUrl) {
 
 	    try {
 	        // WireMock Admin API 호출
-	        ResponseEntity<String> response = restTemplate.getForEntity(wireMockAdminUrl, String.class);
+	        ResponseEntity<String> response = restTemplate.getForEntity(WIREMOCK_ADMIN_URL, String.class);
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        JsonNode mappings = objectMapper.readTree(response.getBody()).get("mappings");
 
-	        // Stub 목록에서 URL 매칭 확인
-	        for (JsonNode mapping : mappings) {
-	            String stubUrl = mapping.get("request").get("url").asText();
-	            if (stubUrl.equals(apiUrl)) {
-	                return true; // Stub이 이미 존재
-	            }
-	        }
+	        if (mappings != null && mappings.isArray()) {
+                for (JsonNode mapping : mappings) {
+                    JsonNode requestNode  = mapping.get("request"); // Stub의 UUID 확인
+                    if (requestNode  != null && requestNode.has("url")) {
+                    	String stubUrl = requestNode.get("url").asText();
+                        if (stubUrl.equals(apiUrl)) {
+                            return mapping.get("id").asText(); // UUID 반환
+                        }
+                    }
+                }
+            }
 	    } catch (Exception e) {
+	    	logger.error("Failed to check stub existence", e);
 	        throw new RuntimeException("Failed to check stub existence: " + e.getMessage());
 	    }
 
-	    return false; // Stub이 존재하지 않음
+	    return null; // Stub이 존재하지 않음
 	}
 	
-	private String saveBodyToFile(String apiUrl, String bodyContent) {
-	    String sanitizedUrl = apiUrl.replaceAll("[^a-zA-Z0-9]", "_");
-	    String fileName = sanitizedUrl + ".json";
+	private String saveBodyToFile(String apiName, String bodyContent) {
+	    String fileName = apiName + ".json";
 
 	    Path filePath = Paths.get("src/main/resources/wiremock/__files", fileName);
 
@@ -198,33 +206,31 @@ public class ApiServiceImpl implements ApiService {
 	    return fileName; // 새로 저장된 파일명 반환
 	}
 	
-	private void saveStubToWireMock(String apiUrl, ResponseEntity<String> response) {
+	private void saveStubToWireMock(String apiName, String apiUrl, ResponseEntity<String> response) {
 	    // Stub이 이미 존재하면 저장하지 않음
-	    if (isStubExists(apiUrl)) {
-	        System.out.println("Stub already exists for URL: " + apiUrl);
+	    if (isStubExists(apiName) != null) {
+	        System.out.println("Stub already exists for APINAME: " + apiName);
 	        return;
 	    }
 
-	    String bodyFileName = saveBodyToFile(apiUrl, response.getBody());
+	    String bodyFileName = saveBodyToFile(apiName, response.getBody());
 
 	    String stubJson = generateStubJson(
-	        apiUrl,
-	        response.getStatusCodeValue(),
-	        response.getHeaders().getContentType() != null
-	            ? response.getHeaders().getContentType().toString()
-	            : "application/json",
+	    	apiName,
+    		apiUrl,
+	        response.getStatusCode().value(),
+	        response.getHeaders().getContentType() != null ? response.getHeaders().getContentType().toString() : "application/octet-stream",
 	        bodyFileName
 	    );
 
-	    String wireMockAdminUrl = "http://localhost:8080/__admin/mappings";
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.set("Content-Type", "application/json");
 	    HttpEntity<String> requestEntity = new HttpEntity<>(stubJson, headers);
 	    
-	    restTemplate.postForEntity(wireMockAdminUrl, requestEntity, String.class);
+	    restTemplate.postForEntity(WIREMOCK_ADMIN_URL, requestEntity, String.class);
 	}
 	
-	private String generateStubJson(String apiUrl, int statusCode, String contentType, String bodyFileName) {
+	private String generateStubJson(String apiName, String apiUrl, int statusCode, String contentType, String bodyFileName) {
 	    return String.format("""
 	        {
 	            "request": {
@@ -242,6 +248,12 @@ public class ApiServiceImpl implements ApiService {
 	        """,
 	        apiUrl, statusCode, contentType, bodyFileName
 	    );
+	}
+	
+	@Override
+	public ResponseEntity<String> getStubResponse(String stubUrl) {
+		RestTemplate restTemplate = new RestTemplate();
+	    return restTemplate.getForEntity(stubUrl, String.class);
 	}
 	
 	@Override

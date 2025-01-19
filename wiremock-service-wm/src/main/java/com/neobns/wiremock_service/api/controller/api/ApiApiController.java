@@ -77,30 +77,49 @@ public class ApiApiController {
 		String apiUrl = apiVO.getApiUrl();
 		boolean isHealthy = apiVO.getLastCheckedStatus() == 0;
 		boolean isMockMode = !apiVO.getResponseStatus();
-		
-		String redirectUrl;
-		
+				
 		if(isHealthy) {	//서버 정상 시 실서버/대응답 DB 상태에 따라 처리
-			if(isMockMode) redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/api/" + id;	//대응답
-			else redirectUrl = apiUrl;																		//실서버
+			if (isMockMode) {
+	            // 대응답 처리 - WireMock Stub 요청
+				String stubUUID = apiService.isStubExists(apiUrl); // UUID로 Stub 조회
+				String mockApiUrl = "http://localhost:" + wireMockServer.port() + "/__admin/mappings/" + stubUUID;
+				System.out.println("MOCK : " + mockApiUrl);
+	            ResponseEntity<String> mockResponse = apiService.getStubResponse(mockApiUrl); // Stub 데이터를 가져옴
+	            
+	            response.setStatus(HttpServletResponse.SC_OK);
+	            response.setContentType("application/json");
+	            // Stub 데이터를 JSON 형태로 반환
+	            response.getWriter().write(mockResponse.getBody());
+	        } else {
+	        	// 실서버로 리다이렉트
+	        	response.sendRedirect(apiUrl);
+	        }														
 		} else {		//서버 장애 시 공통 Stub 처리
-			switch(apiVO.getLastCheckedStatus()) {
-				case 1:	//장애
-				case 2:	//다운
-					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/bad";
-					break;
-				case 3:	//지연
-					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/delay";
-					break;
-				default:
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	                response.setContentType("application/json");
-	                response.getWriter().write("{\"error\": \"서버 장애 상태를 처리할 수 없습니다.\"}");
-	                return;
-			}
+			// 상태에 따른 Stub 반환
+	        String stubUrl = handleFailureStatus(apiVO.getLastCheckedStatus(), wireMockServer.port());
+	        if (stubUrl == null) {
+	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            response.setContentType("application/json");
+	            response.getWriter().write("{\"error\": \"서버 장애 상태를 처리할 수 없습니다.\"}");
+	        } else {
+	        	ResponseEntity<String> stubResponse = apiService.getStubResponse(stubUrl); // 장애 Stub 데이터 가져오기
+	            response.setStatus(stubResponse.getStatusCode().value());
+	            response.setContentType(stubResponse.getHeaders().getContentType().toString());
+	            response.getWriter().write(stubResponse.getBody());
+	        }
 		}
-		
-		response.sendRedirect(redirectUrl);
+	}
+	
+	private String handleFailureStatus(int status, int wireMockPort) {
+	    switch (status) {
+	        case 1: // 장애
+	        case 2: // 다운
+	            return "http://localhost:" + wireMockPort + "/mock/stub/bad";
+	        case 3: // 지연
+	            return "http://localhost:" + wireMockPort + "/mock/stub/delay";
+	        default:
+	            return null; // 처리 불가
+	    }
 	}
 	
 	@PostMapping("/add")

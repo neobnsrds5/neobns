@@ -31,7 +31,7 @@ public class MyBatisGeneratorProgrammatic {
 			// Create the MyBatis Generator Configuration
 			Configuration config = new Configuration();
 			
-			setPrimaryKey(url, userId, password, tableName, primaryKey);
+//			setPrimaryKey(url, userId, password, tableName, primaryKey);
 
 			/*
 			 * Context 설정
@@ -114,8 +114,15 @@ public class MyBatisGeneratorProgrammatic {
 			PluginConfiguration toStringPlugin = new PluginConfiguration();
 			toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
 			context.addPluginConfiguration(toStringPlugin);
+			
+			PluginConfiguration virtualPKPlugin = new PluginConfiguration();
+			virtualPKPlugin.setConfigurationType("code_generator_plugin.plugins.ForceVirtualPrimaryKeyPlugin");
+			virtualPKPlugin.addProperty("primaryKeyColumns", primaryKey); // 기본 키로 사용할 컬럼 지정
+			context.addPluginConfiguration(virtualPKPlugin);
+			
 			PluginConfiguration paginationPlugin = new PluginConfiguration();
 			paginationPlugin.setConfigurationType("code_generator_plugin.plugins.PaginationPlugin");
+			paginationPlugin.addProperty("primaryKeyColumn", primaryKey); // 기본 키로 사용할 컬럼 지정
 			context.addPluginConfiguration(paginationPlugin);
 
 			// Run the MyBatis Generator

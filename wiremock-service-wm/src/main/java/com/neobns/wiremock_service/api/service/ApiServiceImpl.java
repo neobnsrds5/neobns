@@ -162,7 +162,7 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	@Override
-	public String isStubExists(String apiUrl) {
+	public String isStubExists(String apiUrl) { // stub uuid 값 반환
 
 	    try {
 	        // WireMock Admin API 호출
@@ -327,6 +327,34 @@ public class ApiServiceImpl implements ApiService {
 		if(apiVO == null) {
 			throw new IllegalArgumentException("삭제할 API가 존재하지 않습니다.");
 		}
+		
+		String stubUUID = isStubExists(apiVO.getApiUrl());
+		
+		String fileName = apiVO.getApiName() + ".json";
+		Path filePath = Paths.get("src/main/resources/wiremock/__files", fileName);
+		
+		if (Files.exists(filePath)) {
+	        try {
+				Files.delete(filePath);
+				logger.info("Response file deleted successfully: {}", filePath);
+			} catch (IOException e) {
+				logger.error("Failed to delete file: filePath = {}", filePath, e);
+			} 
+	    } else {
+	        logger.warn("Response file not found: {}", filePath);
+	    }
+		
+		if (stubUUID != null) {
+	        try {
+	            String deleteUrl = WIREMOCK_ADMIN_URL + "/" + stubUUID; // WireMock Stub 삭제 URL
+	            restTemplate.delete(deleteUrl);
+	        } catch (Exception e) {
+	            logger.error("Failed to delete Stub: UUID = {}", stubUUID, e);
+	        }
+	    } else {
+	        logger.warn("No Stub found for API URL: {}", apiVO.getApiUrl());
+	    }
+		
 		apiDao.deleteById(id);
 	}
 	

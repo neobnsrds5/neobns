@@ -32,6 +32,7 @@
 	            <th>Mode Button</th>
 	            <th>상태</th>
 	            <th>실행</th>
+	            <th>삭제</th>
 	        </tr>
         </thead>
         <tbody>
@@ -75,6 +76,10 @@
 				    <button class="btn-execute" th:attr="data-id=${api.id}">
 				        <span class="triangle"></span>
 				    </button>
+				</td>
+				<!-- 삭제 -->
+				<td>
+				    <button class="btn-delete btn-sm btn-danger" th:attr="data-id=${api.id}">삭제</button>
 				</td>
 	        </tr>
         </tbody>

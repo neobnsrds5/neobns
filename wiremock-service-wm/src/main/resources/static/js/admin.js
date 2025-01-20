@@ -75,6 +75,14 @@ document.addEventListener("DOMContentLoaded", function () {
         addNewApi();
     });
 	
+	// 삭제 버튼 이벤트
+	const deleteButtons = document.querySelectorAll(".btn-delete");
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            deleteApi(button);
+        });
+    });
+	
 });
 
 const toggleMode = (button) => {
@@ -247,5 +255,28 @@ const addNewApi = () => {
     });
 };
 
+// API 삭제
+const deleteApi = (button) => {
+    const id = button.getAttribute("data-id");
 
+    if (!confirm(`${id}번 API를 삭제하시겠습니까?`)) {
+        return;
+    }
+
+    fetch(`/api/delete/${id}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if (response.status === 200) {
+            alert("API가 성공적으로 삭제되었습니다.");
+            window.location.reload();
+        } else {
+            alert("API 삭제 중 오류가 발생했습니다.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("네트워크 오류가 발생했습니다.");
+    });
+};
 

@@ -120,3 +120,8 @@ th {
 .badge-status-mock {
     background-color: #dc3545;
 }
+.btn-delete{
+	font-size: 14px;
+	text-align: center;
+    white-space: nowrap;
+}

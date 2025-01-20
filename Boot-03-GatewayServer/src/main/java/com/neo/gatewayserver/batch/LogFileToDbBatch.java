@@ -49,7 +49,8 @@ public class LogFileToDbBatch {
 	private final PlatformTransactionManager transactionManager;
 	private final FileMaintenanceService fileService;
 	private String path = "../logs/gateway-application.log";
-	private int gridSize = 20;
+	private int gridSize = 2; // 초기 설정 그리드 사이즈
+	private int realGrid = 0; // 실제로 가능한 그리드 사이즈
 	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("gatewayDataSource") DataSource datasource, JobRepository jobRepository,
@@ -104,6 +105,8 @@ public class LogFileToDbBatch {
 				if(start > totalLines) {
 					continue;
 				}
+				
+				realGrid++;
 				
 				System.out.println("start : " + start);
 				System.out.println("end : " + end);

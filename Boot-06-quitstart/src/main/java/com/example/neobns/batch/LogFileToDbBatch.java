@@ -49,7 +49,8 @@ public class LogFileToDbBatch {
 	private final CustomBatchJobListener listener;
 	private final FileMaintenanceService fileService;
 	private String path = "../logs/application.log";
-	private int gridSize = 20;
+	private int gridSize = 2;
+	private int realGrid = 0;
 	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
@@ -74,7 +75,7 @@ public class LogFileToDbBatch {
 	public Job logToDBJob() {
 		return new JobBuilder("logToDBJob", jobRepository)
 				 .start(logToDBStep()) 
-				/*.start(masterStep()).*/.listener(listener).build();
+				/* .start(masterStep()) */.listener(listener).build();
 	}
 
 	// 파티션 스텝
@@ -95,18 +96,20 @@ public class LogFileToDbBatch {
 
 			Map<String, ExecutionContext> partitionMap = new HashMap<>();
 			long totalLines = fileService.findFileLinesCount(path);
-			long partitionSize = ((int) totalLines / gridSize) < 1 ?  1 : ((int) totalLines / gridSize) ;
+			long partitionSize = ((int) totalLines / gridSize) < 1 ? 1 : ((int) totalLines / gridSize);
 
 			for (int i = 0; i < gridSize; i++) {
 				ExecutionContext executionContext = new ExecutionContext();
 
 				long start = 1 + i * partitionSize;
 				long end = (start > totalLines) ? 0 : Math.min((i + 1) * partitionSize, totalLines);
-				
-				if(start > totalLines) {
+
+				if (start > totalLines) {
 					continue;
 				}
 				
+				realGrid++;
+
 				System.out.println("total : " + totalLines);
 				System.out.println("start : " + start);
 				System.out.println("end : " + end);
@@ -127,7 +130,7 @@ public class LogFileToDbBatch {
 	public PartitionHandler partitionerHandler() {
 
 		TaskExecutorPartitionHandler handler = new TaskExecutorPartitionHandler();
-		handler.setGridSize(gridSize); // 변경 변수
+		handler.setGridSize(realGrid); // 실제 그리드 사이즈
 		handler.setStep(logToDBStep());
 		handler.setTaskExecutor(logToDBTaskExecutor());
 

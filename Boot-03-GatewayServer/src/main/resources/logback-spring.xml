@@ -1,40 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
 
-    <logger name="org.apache.kafka" level="WARN"/>
-    
+	<logger name="org.apache.kafka" level="WARN" />
+
+	<property name="FILE_LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri}%n" />
+
 	<!-- 콘솔에 로그 출력 -->
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} -
+				%msg%n</pattern>
 		</encoder>
 	</appender>
-	
-	<!-- CustomDBAppender: 데이터베이스에 로그 저장 -->
-    <appender name="CUSTOM_DB" class="com.neo.gatewayserver.logging.CustomDBAppender">
-        <!-- 필터 설정 -->
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator>
-                <expression>
-                	return mdc.get("requestId") != null &amp;&amp;
-	                	!((String) mdc.get("className")).contains("prometheus");
-               	</expression>
-            </evaluator>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
 
-        <!-- 데이터베이스 연결 설정 -->
-        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-            <driverClass>org.mariadb.jdbc.Driver</driverClass>
-            <url>jdbc:mariadb://neobns.com:13306/db2</url>
-            <user>POC_USER</user>
-            <password>neobns1!</password>
-        </connectionSource>
-    </appender>
+	<!-- CustomDBAppender: 데이터베이스에 로그 저장 -->
+	<appender name="CUSTOM_DB"
+		class="com.neo.gatewayserver.logging.CustomDBAppender">
+		<!-- 필터 설정 -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>
+					return mdc.get("requestId") != null &amp;&amp;
+					!((String) mdc.get("className")).contains("prometheus");
+				</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<!-- 데이터베이스 연결 설정 -->
+		<connectionSource
+			class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>org.mariadb.jdbc.Driver</driverClass>
+			<url>jdbc:mariadb://neobns.com:13306/db2</url>
+			<user>POC_USER</user>
+			<password>neobns1!</password>
+		</connectionSource>
+	</appender>
 
 	<!-- 모든 로그를 저장하는 파일 어펜더 -->
-	<appender name="FILE" class="com.neo.gatewayserver.logging.CustomFileAppender">
+	<appender name="FILE"
+		class="com.neo.gatewayserver.logging.CustomFileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/gateway-application.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
@@ -42,11 +53,14 @@
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
-                	return (mdc.get("requestId") != null) &amp;&amp;
-					(logger.equals("TRACE") || logger.equals("SLOW") || logger.equals("ERROR")) &amp;&amp;
+					return (mdc.get("requestId") != null) &amp;&amp;
+					(logger.equals("TRACE")
+					|| logger.equals("SLOW") ||
+					logger.equals("ERROR")) &amp;&amp;
 					(mdc.get("className") == null ||
-					!((String) mdc.get("className")).contains("prometheus"));
-               	</expression>
+					!((String)
+					mdc.get("className")).contains("prometheus"));
+				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
 			<onMismatch>DENY</onMismatch>
@@ -54,12 +68,16 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<!-- <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};%X{className}; 
+				%X{methodName}; %X{requestId}; %X{userId};%X{clientIp}; %X{userAgent}; %X{executeResult}; 
+				%X{queryLog};%X{requestUri} %n</pattern> 로그의 날짜 및 메시지 포맷 -->
+			<pattern>${FILE_LOG_PATTERN}</pattern>
 		</encoder>
 	</appender>
-	
+
 	<!-- SQL 로그를 저장하는 파일 어펜더 -->
-	<appender name="FILE_PERFROM_SQL" class="ch.qos.logback.core.FileAppender">
+	<appender name="FILE_PERFROM_SQL"
+		class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/gateway-perform-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
@@ -68,10 +86,11 @@
 			<evaluator>
 				<expression>
 					return mdc.get("requestId") != null &amp;&amp;
-						mdc.get("className") != null &amp;&amp;
-						((String) mdc.get("className")).equals("SQL") &amp;&amp;
-						(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
-						mdc.get("executeResult") != null;
+					mdc.get("className") != null &amp;&amp;
+					((String)
+					mdc.get("className")).equals("SQL") &amp;&amp;
+					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
+					mdc.get("executeResult") != null;
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -80,24 +99,30 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
 		</encoder>
 	</appender>
-	
+
 	<!-- SQL ERROR 로그를 저장하는 파일 어펜더 -->
-	<appender name="FILE_ERROR_SQL" class="ch.qos.logback.core.FileAppender">
+	<appender name="FILE_ERROR_SQL"
+		class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/gateway-error-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
-		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 저장되도록 설정 -->
+		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 
+			저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
 					return mdc.get("requestId") != null &amp;&amp;
-						mdc.get("className") != null &amp;&amp;
-						((String) mdc.get("className")).equals("SQL") &amp;&amp;
-						logger.equals("ERROR") &amp;&amp;
-						mdc.get("executeResult") != null;
+					mdc.get("className") != null &amp;&amp;
+					((String)
+					mdc.get("className")).equals("SQL") &amp;&amp;
+					logger.equals("ERROR") &amp;&amp;
+					mdc.get("executeResult") != null;
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -106,26 +131,34 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
 		</encoder>
 	</appender>
-	
+
 	<!-- SQL Dynamic ERROR 로그를 저장하는 파일 어펜더 -->
-	<appender name="FILE_ERROR_DYNAMIC_SQL" class="ch.qos.logback.core.FileAppender">
+	<appender name="FILE_ERROR_DYNAMIC_SQL"
+		class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/gateway-error-dynamic-sql.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
-		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 저장되도록 설정 -->
+		<!-- MDC의 callerClass가 SQL이고 callerMethod에 ${ 패턴이 포함되어 있으면 error-dynamic-sql.log에 
+			저장되도록 설정 -->
 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
 			<evaluator>
 				<expression>
 					return mdc.get("requestId") != null &amp;&amp;
-						mdc.get("className") != null &amp;&amp;
-						((String) mdc.get("className")).equals("SQL") &amp;&amp;
-						logger.equals("ERROR") &amp;&amp;
-						mdc.get("executeResult") != null &amp;&amp;
-						mdc.get("methodName") != null &amp;&amp;
-						((String) mdc.get("methodName")).contains("$");
+					mdc.get("className") != null &amp;&amp;
+					((String)
+					mdc.get("className")).equals("SQL") &amp;&amp;
+					logger.equals("ERROR") &amp;&amp;
+					mdc.get("executeResult") != null
+					&amp;&amp;
+					mdc.get("methodName") != null &amp;&amp;
+					((String)
+					mdc.get("methodName")).contains("$");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -134,12 +167,16 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
 		</encoder>
 	</appender>
-	
+
 	<!-- AOP ERROR 로그를 저장하는 파일 어펜더 -->
-	<appender name="FILE_ERROR_AOP" class="ch.qos.logback.core.FileAppender">
+	<appender name="FILE_ERROR_AOP"
+		class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/gateway-error-aop.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
@@ -148,10 +185,12 @@
 			<evaluator>
 				<expression>
 					return mdc.get("requestId") != null &amp;&amp;
-				       	logger.equals("ERROR") &amp;&amp;
-				       	mdc.get("className") != null &amp;&amp;
-				       	!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-				       	!((String) mdc.get("className")).equals("SQL");
+					logger.equals("ERROR") &amp;&amp;
+					mdc.get("className") != null
+					&amp;&amp;
+					!((String) mdc.get("className")).contains("prometheus")
+					&amp;&amp;
+					!((String) mdc.get("className")).equals("SQL");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -160,12 +199,16 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
 		</encoder>
 	</appender>
-	
+
 	<!-- 성능(소요시간) 로그를 저장하는 파일 어펜더 -->
-	<appender name="FILE_PERFORM_AOP" class="ch.qos.logback.core.FileAppender">
+	<appender name="FILE_PERFORM_AOP"
+		class="ch.qos.logback.core.FileAppender">
 		<!-- 로그를 저장할 파일 경로 -->
 		<file>../logs/gateway-perform-aop.log</file> <!-- 로그가 저장될 파일 경로 설정 -->
 
@@ -174,11 +217,14 @@
 			<evaluator>
 				<expression>
 					return mdc.get("requestId") != null &amp;&amp;
-						(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
-						mdc.get("executeResult") != null &amp;&amp;
-						mdc.get("className") != null &amp;&amp;
-						!((String) mdc.get("className")).contains("prometheus") &amp;&amp;
-						!((String) mdc.get("className")).equals("SQL");
+					(logger.equals("TRACE") || logger.equals("SLOW")) &amp;&amp;
+					mdc.get("executeResult") != null &amp;&amp;
+					mdc.get("className") !=
+					null &amp;&amp;
+					!((String)
+					mdc.get("className")).contains("prometheus") &amp;&amp;
+					!((String)
+					mdc.get("className")).equals("SQL");
 				</expression>
 			</evaluator>
 			<onMatch>ACCEPT</onMatch>
@@ -187,19 +233,20 @@
 
 		<!-- 로그 형식 설정 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{}; %X{className}; %X{methodName}; %X{requestId}; %X{userId}; %X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog}; %X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %level{};
+				%X{className}; %X{methodName}; %X{requestId}; %X{userId};
+				%X{clientIp}; %X{userAgent}; %X{executeResult}; %X{queryLog};
+				%X{requestUri} %n</pattern> <!-- 로그의 날짜 및 메시지 포맷 -->
 		</encoder>
 	</appender>
-	
+
 	<!-- 루트 로거 -->
 	<root level="INFO">
 <!-- 		<appender-ref ref="CONSOLE" /> -->
-<!-- 		<appender-ref ref="CUSTOM_DB" /> -->
+		<!-- <appender-ref ref="CUSTOM_DB" /> -->
 		<appender-ref ref="FILE" />
-<!-- 		<appender-ref ref="FILE_PERFROM_SQL" />
-		<appender-ref ref="FILE_ERROR_SQL" />
-		<appender-ref ref="FILE_ERROR_DYNAMIC_SQL" />
-		<appender-ref ref="FILE_ERROR_AOP" />
-		<appender-ref ref="FILE_PERFORM_AOP" /> -->
+		<!-- <appender-ref ref="FILE_PERFROM_SQL" /> <appender-ref ref="FILE_ERROR_SQL" 
+			/> <appender-ref ref="FILE_ERROR_DYNAMIC_SQL" /> <appender-ref ref="FILE_ERROR_AOP" 
+			/> <appender-ref ref="FILE_PERFORM_AOP" /> -->
 	</root>
 </configuration>

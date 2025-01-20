@@ -1,4 +1,4 @@
-package code_generator_plugin.views;
+package com.neobns.admin.codegen.views;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ViewPart;
 
-import code_generator_plugin.common.DatabaseConnector;
-import code_generator_plugin.common.MyBatisGeneratorProgrammatic;
+import com.neobns.admin.codegen.common.DatabaseConnector;
+import com.neobns.admin.codegen.common.MyBatisGeneratorProgrammatic;
+
 import jakarta.inject.Inject;
 
 /**
@@ -26,7 +27,7 @@ public class BrowserView extends ViewPart  {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "code_generator_plugin.views.BrowserView";
+	public static final String ID = "com.neobns.admin.codegen.views.BrowserView";
 
 	@Inject
 	Shell shell;

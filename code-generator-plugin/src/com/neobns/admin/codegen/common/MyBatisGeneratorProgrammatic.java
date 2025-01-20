@@ -1,4 +1,4 @@
-package code_generator_plugin.common;
+package com.neobns.admin.codegen.common;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -109,12 +109,12 @@ public class MyBatisGeneratorProgrammatic {
 			
 			// Additional Plugins (Optional)
 			PluginConfiguration virtualPKPlugin = new PluginConfiguration();
-			virtualPKPlugin.setConfigurationType("code_generator_plugin.plugins.ForceVirtualPrimaryKeyPlugin");
+			virtualPKPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ForceVirtualPrimaryKeyPlugin");
 			virtualPKPlugin.addProperty("primaryKeyColumns", primaryKey); // 기본 키로 사용할 컬럼 지정
 			context.addPluginConfiguration(virtualPKPlugin);
 			
 			PluginConfiguration paginationPlugin = new PluginConfiguration();
-			paginationPlugin.setConfigurationType("code_generator_plugin.plugins.PaginationPlugin");
+			paginationPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.PaginationPlugin");
 			context.addPluginConfiguration(paginationPlugin);
 			
 			PluginConfiguration toStringPlugin = new PluginConfiguration();

@@ -1,4 +1,4 @@
-package code_generator_plugin.plugins;
+package com.neobns.admin.codegen.plugins;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;

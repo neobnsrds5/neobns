@@ -1,4 +1,4 @@
-package code_generator_plugin.dto;
+package com.neobns.admin.codegen.dto;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,7 +1,5 @@
-package code_generator_plugin.plugins;
+package com.neobns.admin.codegen.plugins;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.generator.api.IntrospectedColumn;

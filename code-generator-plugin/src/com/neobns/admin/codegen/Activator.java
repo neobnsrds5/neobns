@@ -1,4 +1,4 @@
-package code_generator_plugin;
+package com.neobns.admin.codegen;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

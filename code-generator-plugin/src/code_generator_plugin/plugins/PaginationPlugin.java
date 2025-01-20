@@ -14,29 +14,29 @@ public class PaginationPlugin extends PluginAdapter {
 
 	@Override
     public boolean validate(List<String> warnings) {
-		// 플러그인이 유효한지 확인
-        String primaryKeyColumn = properties.getProperty("primaryKeyColumn");
-        if (primaryKeyColumn == null || primaryKeyColumn.trim().isEmpty()) {
-            warnings.add("PaginationPlugin: The 'primaryKeyColumn' property must be specified.");
-            return false;
-        }
         return true;
     }
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
+    	List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+		if (primaryKeyColumns.isEmpty()) {
+			throw new IllegalStateException("No primary key column found.");
+		}
+
+		IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(0); // 첫 번째 기본 키 사용
+		String columnName = primaryKeyColumn.getActualColumnName();
+    	
         XmlElement selectElement = new XmlElement("select");
         selectElement.addAttribute(new Attribute("id", "selectByPrimaryKeyWithPaging"));
         selectElement.addAttribute(new Attribute("resultType", introspectedTable.getBaseRecordType()));
         
-        // 설정에서 지정한 가상 기본 키 컬럼
-        IntrospectedColumn column = introspectedTable.getColumn(properties.getProperty("primaryKeyColumn").trim()).orElse(null);
-        String primaryKeyColumn = column.getActualColumnName();
+        
 
         selectElement.addElement(new TextElement(
             "SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime() +
-            " WHERE " + primaryKeyColumn + " = #{" + primaryKeyColumn + "}" +
-            " ORDER BY #{" + primaryKeyColumn + "} LIMIT #{offset}, #{limit}"
+            " WHERE " + columnName + " = #{" + columnName + "}" +
+            " ORDER BY #{" + columnName + "} LIMIT #{offset}, #{limit}"
         ));
 
         document.getRootElement().addElement(selectElement);
@@ -45,19 +45,22 @@ public class PaginationPlugin extends PluginAdapter {
 
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
-    	Method method = new Method("selectByPrimaryKeyWithPaging");
-        method.setVisibility(JavaVisibility.PUBLIC);
-        method.setReturnType(new FullyQualifiedJavaType("List<" + introspectedTable.getBaseRecordType() + ">"));
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"offset\") int"), "offset"));
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"limit\") int"), "limit"));
-        
-        // 설정에서 지정한 가상 기본 키 컬럼을 가져와서 parameter 설정
-        String primaryKeyColumn = properties.getProperty("primaryKeyColumn");
-        IntrospectedColumn column = introspectedTable.getColumn(primaryKeyColumn.trim()).orElse(null);
-        if (column != null) {
-        	method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"" + column.getActualColumnName() + "\") " + column.getFullyQualifiedJavaType()), column.getActualColumnName()));
-        }
-        
+		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+		if (primaryKeyColumns.isEmpty()) {
+			throw new IllegalStateException("No primary key column found.");
+		}
+
+		IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(0); // 첫 번째 기본 키 사용
+
+		// 기본 키를 기준으로 메서드 생성
+		Method method = new Method("selectByPrimaryKeyWithPaging");
+		method.setVisibility(JavaVisibility.PUBLIC);
+		method.setReturnType(new FullyQualifiedJavaType("List<" + introspectedTable.getBaseRecordType() + ">"));
+		method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"offset\") int"), "offset"));
+		method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"limit\") int"), "limit"));
+		method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"" + primaryKeyColumn.getJavaProperty()
+				+ "\") " + primaryKeyColumn.getFullyQualifiedJavaType()), primaryKeyColumn.getJavaProperty()));
+
         interfaze.addMethod(method);
 
         return super.clientGenerated(interfaze, introspectedTable);

@@ -9,10 +9,6 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +18,10 @@ public class MyBatisGeneratorProgrammatic {
 	public static boolean execute(Shell shell, String url, String userId, String password, String targetPath,
 			String tableName, String primaryKey) {
 		try {
+			// table을 조회할 schema
+			int lastSlashIndex = url.lastIndexOf('/'); // 마지막 '/' 위치를 찾음
+			String schemaName = url.substring(lastSlashIndex + 1); // '/' 이후 문자열 추출
+						
 			// Warnings list to capture any warnings during the generation process
 			List<String> warnings = new ArrayList<>();
 
@@ -31,8 +31,6 @@ public class MyBatisGeneratorProgrammatic {
 			// Create the MyBatis Generator Configuration
 			Configuration config = new Configuration();
 			
-//			setPrimaryKey(url, userId, password, tableName, primaryKey);
-
 			/*
 			 * Context 설정
 			 */
@@ -42,8 +40,7 @@ public class MyBatisGeneratorProgrammatic {
 			Context context = new Context(ModelType.CONDITIONAL);
 			context.setId("MyBatis3Context");
 			// MyBatis3: Example 클래스 (동적 쿼리를 위한 도우미 클래스)도 추가
-			// MyBatis3Simple: deleteByPrimaryKey, insert, selectByPrimaryKey,
-			// updateByPrimaryKey
+			// MyBatis3Simple: deleteByPrimaryKey, insert, selectByPrimaryKey, updateByPrimaryKey, ...
 			context.setTargetRuntime("MyBatis3"); // Use "MyBatis3Simple" if you want simpler output
 			config.addContext(context);
 
@@ -100,6 +97,7 @@ public class MyBatisGeneratorProgrammatic {
 			 * 코드 생성할 테이블 설정
 			 */
 			TableConfiguration tableConfig = new TableConfiguration(context);
+//			tableConfig.setSchema(schemaName); // Schema name in the database
 			tableConfig.setTableName(tableName); // Table name in the database
 			tableConfig.setDomainObjectName(toCamelCase(tableName)); // Java entity name
 			// dynamic query와 관련된 코드 생성 X
@@ -107,14 +105,9 @@ public class MyBatisGeneratorProgrammatic {
 			tableConfig.setDeleteByExampleStatementEnabled(false);
 			tableConfig.setCountByExampleStatementEnabled(false);
 			tableConfig.setUpdateByExampleStatementEnabled(false);
-
 			context.addTableConfiguration(tableConfig);
-
-			// Additional Plugins (Optional)
-			PluginConfiguration toStringPlugin = new PluginConfiguration();
-			toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
-			context.addPluginConfiguration(toStringPlugin);
 			
+			// Additional Plugins (Optional)
 			PluginConfiguration virtualPKPlugin = new PluginConfiguration();
 			virtualPKPlugin.setConfigurationType("code_generator_plugin.plugins.ForceVirtualPrimaryKeyPlugin");
 			virtualPKPlugin.addProperty("primaryKeyColumns", primaryKey); // 기본 키로 사용할 컬럼 지정
@@ -122,13 +115,17 @@ public class MyBatisGeneratorProgrammatic {
 			
 			PluginConfiguration paginationPlugin = new PluginConfiguration();
 			paginationPlugin.setConfigurationType("code_generator_plugin.plugins.PaginationPlugin");
-			paginationPlugin.addProperty("primaryKeyColumn", primaryKey); // 기본 키로 사용할 컬럼 지정
 			context.addPluginConfiguration(paginationPlugin);
+			
+			PluginConfiguration toStringPlugin = new PluginConfiguration();
+			toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+			context.addPluginConfiguration(toStringPlugin);
 
 			// Run the MyBatis Generator
 			DefaultShellCallback callback = new DefaultShellCallback(overwrite);
 			MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
 			myBatisGenerator.generate(null);
+			
 			// Run JavaPoet Generator
 			JUnitTestGenerator.generateJunitTest(toCamelCase(tableName), "com.example.mapper", targetPath);
 			ServiceCodeGenerator.generateServiceCode(toCamelCase(tableName), "com.example.service", targetPath);
@@ -138,8 +135,8 @@ public class MyBatisGeneratorProgrammatic {
 			for (String warning : warnings) {
 				System.out.println(warning);
 			}
-			MessageDialog.openInformation(shell, "Code Generated",
-					"Code generated successfully at: " + targetPath + " for table: " + tableName);
+			
+			MessageDialog.openInformation(shell, "Code Generated", "Code generated successfully at: " + targetPath + " for table: " + tableName);
 
 			return true;
 			
@@ -149,49 +146,6 @@ public class MyBatisGeneratorProgrammatic {
 		}
 	}
 	
-	public static void setPrimaryKey(String url, String username, String password, String tableName, String primaryKey) {
-		
-		// 스키마 이름
-		int lastSlashIndex = url.lastIndexOf('/'); // 마지막 '/' 위치를 찾음
-		String schemaName = url.substring(lastSlashIndex + 1); // '/' 이후 문자열 추출
-		
-		String selectPKSql ="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE"
-							+ " WHERE TABLE_SCHEMA = '" + schemaName
-							+ "' AND TABLE_NAME = '" + tableName
-							+ "' AND COLUMN_NAME = '" + primaryKey
-							+ "' AND CONSTRAINT_NAME = 'PRIMARY'";
-        String dropPKSql = "ALTER TABLE " + tableName + " DROP PRIMARY KEY";
-        String addPKSql = "ALTER TABLE " + tableName + " ADD PRIMARY KEY (" + primaryKey + ")";
-
-        try (Connection conn = DriverManager.getConnection(url, username, password);
-        	 Statement stmt = conn.createStatement();
-        	 ResultSet rs = stmt.executeQuery(selectPKSql)) {
-        	
-        	if(rs.next()) { // PK가 존재하는 경우
-        		// 기존 PK
-            	String curPrimaryKey = rs.getString(1);
-            	
-            	// 브라우저에서 선택한 컬럼이 기존 PK가 아닌 경우
-            	if(!curPrimaryKey.equals(primaryKey)) {
-            		// 기존 PK 제거
-                	stmt.executeUpdate(dropPKSql);
-                	// 새로운 PK 등록
-                    stmt.executeUpdate(addPKSql);
-//                    System.out.println("기본 키가 성공적으로 변경되었습니다.");
-            	}
-        	}else { // PK가 존재하지 않는 경우
-        		// 새로운 PK 등록
-                stmt.executeUpdate(addPKSql);
-//                System.out.println("기본 키가 성공적으로 설정되었습니다.");
-        	}
-        	
-        	
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-	}
-
 	public static String toCamelCase(String input) {
 		// Split the input string by underscores
 		String[] parts = input.split("_");

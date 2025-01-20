@@ -36,7 +36,8 @@ public class DatabaseConnector {
 			
 			// table을 조회할 schema
 			int lastSlashIndex = mysqlUrl.lastIndexOf('/'); // 마지막 '/' 위치를 찾음
-			String schemaName = mysqlUrl.substring(lastSlashIndex + 1); // '/' 이후 문자열 추출
+			int firstQuestionIndex = mysqlUrl.indexOf('?') > 0 ? mysqlUrl.indexOf('?') : mysqlUrl.length(); // 첫번째 '?' 위치를 찾음
+			String schemaName = mysqlUrl.substring(lastSlashIndex + 1, firstQuestionIndex); // '/' 이후 문자열 추출
 			String columnInfoSql = """
 				    SELECT COLUMN_NAME,
 				           IF(COLUMN_KEY = 'PRI', TRUE, FALSE) AS IS_PRIMARY_KEY

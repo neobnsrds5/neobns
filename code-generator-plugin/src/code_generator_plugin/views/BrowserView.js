@@ -84,16 +84,3 @@ function generateCode(url, username, password, tableName, targetPath) {
 
 	invokeGenerateCode(url, username, password, targetPath, tableName, primaryKey);
 }
-
-/*// Java 메소드를 호출하여 코드를 생성하는 함수
-function generateCode(url, username, password) {
-	const targetPath = document.getElementById("targetPath").value;
-
-	if (!targetPath) {
-		alert("targetPath를 입력해주세요.");
-		return;
-	}
-
-	invokeGenerateCode(url, username, password, targetPath); // Java의 GenerateCode 메소드 호출
-	invokeJUnitTestGenerator(targetPath); // Java의 jUnitTestGenerator 메소드 호출
-}*/

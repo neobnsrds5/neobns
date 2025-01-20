@@ -10,12 +10,12 @@ import java.util.List;
 
 public class ForceVirtualPrimaryKeyPlugin extends PluginAdapter {
 
-    @Override
+	@Override
     public boolean validate(List<String> warnings) {
         // 플러그인이 유효한지 확인
         String primaryKeyColumns = properties.getProperty("primaryKeyColumns");
         if (primaryKeyColumns == null || primaryKeyColumns.trim().isEmpty()) {
-            warnings.add("ForceVirtualPrimaryKeyPlugin: The 'primaryKeyColumns' property must be specified.");
+            warnings.add("ForceVirtualPrimaryKeyPlugin: The 'primaryKeyColumn' property must be specified.");
             return false;
         }
         return true;
@@ -24,25 +24,21 @@ public class ForceVirtualPrimaryKeyPlugin extends PluginAdapter {
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
         // 설정에서 지정한 가상 기본 키 컬럼을 가져옴
-        String primaryKeyColumns = properties.getProperty("primaryKeyColumns");
-        List<String> virtualPrimaryKeys = Arrays.asList(primaryKeyColumns.split(","));
-
-        // 기존 기본 키 컬럼 무시
-        List<IntrospectedColumn> newPrimaryKeyColumns = new ArrayList<>();
-        for (String columnName : virtualPrimaryKeys) {
-            IntrospectedColumn column = introspectedTable.getColumn(columnName.trim()).orElse(null);
-            if (column != null) {
-                newPrimaryKeyColumns.add(column);
-            }
+        List<String> newPrimaryKeyColumns = Arrays.asList(properties.getProperty("primaryKeyColumns").split(","));
+        
+        if(introspectedTable.hasPrimaryKeyColumns()) { // pk를 가지고 있는 경우 pk가 없는 상태로 만들기
+        	List<IntrospectedColumn> curPrimaryKeyColumns = new ArrayList<>();
+        	curPrimaryKeyColumns.addAll(introspectedTable.getPrimaryKeyColumns());
+        	introspectedTable.getPrimaryKeyColumns().clear();
+        	
+        	for(IntrospectedColumn curPKColumn : curPrimaryKeyColumns) {
+        		introspectedTable.addColumn(curPKColumn);
+        	}
         }
-
-        // 가상 기본 키 설정
-        if (!newPrimaryKeyColumns.isEmpty()) {
-            introspectedTable.getPrimaryKeyColumns().clear();
-            introspectedTable.getPrimaryKeyColumns().addAll(newPrimaryKeyColumns);
-            System.out.println("Virtual primary keys applied: " + virtualPrimaryKeys);
-        } else {
-            System.out.println("No valid virtual primary keys found for table: " + introspectedTable.getFullyQualifiedTable());
+        // pk 추가하기
+    	for(String pkColumnName : newPrimaryKeyColumns) {
+        	introspectedTable.addPrimaryKeyColumn(pkColumnName);
         }
     }
+    
 }

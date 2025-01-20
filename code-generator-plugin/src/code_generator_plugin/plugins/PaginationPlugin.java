@@ -19,51 +19,84 @@ public class PaginationPlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-    	List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
-		if (primaryKeyColumns.isEmpty()) {
-			throw new IllegalStateException("No primary key column found.");
-		}
-
-		IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(0); // 첫 번째 기본 키 사용
-		String columnName = primaryKeyColumn.getActualColumnName();
+    	FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
     	
-        XmlElement selectElement = new XmlElement("select");
-        selectElement.addAttribute(new Attribute("id", "selectByPrimaryKeyWithPaging"));
-        selectElement.addAttribute(new Attribute("resultType", introspectedTable.getBaseRecordType()));
+    	/*
+    	 * find
+    	 */
+        XmlElement findElement = new XmlElement("select");
+        findElement.addAttribute(new Attribute("id", "find" + baseRecordType.getShortName()));
+        findElement.addAttribute(new Attribute("resultType", introspectedTable.getBaseRecordType()));
+        // SQL 작성
+        findElement.addElement(new TextElement("SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        findElement.addElement(new TextElement("WHERE 1=1"));
+        // 모델 객체의 멤버 변수 조건 추가
+        introspectedTable.getAllColumns().forEach(column -> {
+            String fieldName = column.getJavaProperty();
+            findElement.addElement(new TextElement(
+                    "<if test=\"row." + fieldName + " != null\"> AND " + column.getActualColumnName() + " = #{row." + fieldName + "} </if>"
+            ));
+        });
+        // 정렬 처리
+        IntrospectedColumn primaryKey = introspectedTable.getPrimaryKeyColumns().get(0); // 첫번째 PK로 정렬
+        findElement.addElement(new TextElement("ORDER BY " + primaryKey.getActualColumnName()));
+        // 페이징 처리
+        findElement.addElement(new TextElement("LIMIT #{offset}, #{limit}"));
         
+        /*
+         * count
+         */
+        XmlElement countElement = new XmlElement("select");
+        countElement.addAttribute(new Attribute("id", "count" + baseRecordType.getShortName()));
+        countElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
+        // SQL 작성
+        countElement.addElement(new TextElement("SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        countElement.addElement(new TextElement("WHERE 1=1"));
+        // 모델 객체의 멤버 변수 조건 추가
+        introspectedTable.getAllColumns().forEach(column -> {
+            String fieldName = column.getJavaProperty();
+            countElement.addElement(new TextElement(
+                    "<if test=\"" + fieldName + " != null\"> AND " + column.getActualColumnName() + " = #{" + fieldName + "} </if>"
+            ));
+        });
         
-
-        selectElement.addElement(new TextElement(
-            "SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime() +
-            " WHERE " + columnName + " = #{" + columnName + "}" +
-            " ORDER BY #{" + columnName + "} LIMIT #{offset}, #{limit}"
-        ));
-
-        document.getRootElement().addElement(selectElement);
+        document.getRootElement().addElement(findElement);
+        document.getRootElement().addElement(countElement);
+        
         return super.sqlMapDocumentGenerated(document, introspectedTable);
     }
 
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
-		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
-		if (primaryKeyColumns.isEmpty()) {
-			throw new IllegalStateException("No primary key column found.");
-		}
+    	FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+    	
+		Method findMethod = new Method("find" + baseRecordType.getShortName());
+		findMethod.setVisibility(JavaVisibility.PUBLIC);
+		findMethod.setAbstract(true);
+		findMethod.setReturnType(new FullyQualifiedJavaType("List<" + introspectedTable.getBaseRecordType() + ">"));
+		findMethod.addParameter(createAnnotatedParameter("@Param(\"offset\")", FullyQualifiedJavaType.getIntInstance(), "offset"));
+	    findMethod.addParameter(createAnnotatedParameter("@Param(\"limit\")", FullyQualifiedJavaType.getIntInstance(), "limit"));
+	    findMethod.addParameter(createAnnotatedParameter("@Param(\"row\")", baseRecordType, "row"));
+	    
+	    Method countMethod = new Method("count" + baseRecordType.getShortName());
+	    countMethod.setVisibility(JavaVisibility.PUBLIC);
+	    countMethod.setAbstract(true);
+	    countMethod.setReturnType(FullyQualifiedJavaType.getIntInstance());
+	    countMethod.addParameter(new Parameter(baseRecordType, "row"));
 
-		IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(0); // 첫 번째 기본 키 사용
-
-		// 기본 키를 기준으로 메서드 생성
-		Method method = new Method("selectByPrimaryKeyWithPaging");
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.setReturnType(new FullyQualifiedJavaType("List<" + introspectedTable.getBaseRecordType() + ">"));
-		method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"offset\") int"), "offset"));
-		method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"limit\") int"), "limit"));
-		method.addParameter(new Parameter(new FullyQualifiedJavaType("@Param(\"" + primaryKeyColumn.getJavaProperty()
-				+ "\") " + primaryKeyColumn.getFullyQualifiedJavaType()), primaryKeyColumn.getJavaProperty()));
-
-        interfaze.addMethod(method);
+        interfaze.addMethod(findMethod);
+        interfaze.addMethod(countMethod);
 
         return super.clientGenerated(interfaze, introspectedTable);
+    }
+    
+    /**
+     * 어노테이션이 포함된 매개변수를 생성
+     */
+    private Parameter createAnnotatedParameter(String annotation, FullyQualifiedJavaType type, String name) {
+        Parameter parameter = new Parameter(type, name);
+        parameter.addAnnotation(annotation); // 어노테이션 추가
+        return parameter;
     }
 
 }

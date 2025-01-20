@@ -26,12 +26,13 @@
 	            	<input type="checkbox" id="select-all" class="form-check-input">
 				</th>
 	            <th>순번</th>
-	            <th>API 주소</th>
+	            <th>API 이름</th>
 	            <th>HealthCheck Button</th>
 	            <th>결과</th>
 	            <th>Mode Button</th>
 	            <th>상태</th>
 	            <th>실행</th>
+	            <th>수정</th>
 	            <th>삭제</th>
 	        </tr>
         </thead>
@@ -45,7 +46,7 @@
 	            <td th:text="${api.id}"></td>
 	            <!-- API 주소 -->
 	            <td class="text-start">
-	    			<a th:href="${api.apiUrl}" target="_blank" th:text="${api.apiUrl}"></a>
+	    			<a th:href="${api.apiName}" target="_blank" th:text="${api.apiName}"></a>
 				</td>
 	            <!-- HealthCheck Button -->
 	            <td>
@@ -76,6 +77,10 @@
 				    <button class="btn-execute" th:attr="data-id=${api.id}">
 				        <span class="triangle"></span>
 				    </button>
+				</td>
+				<!-- 수정 -->
+				<td>
+					<button class="btn-edit btn-sm btn-danger" th:attr="data-id=${api.id}">수정</button>
 				</td>
 				<!-- 삭제 -->
 				<td>

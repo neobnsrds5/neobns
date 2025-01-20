@@ -1,12 +1,13 @@
 package com.neobns.wiremock_service.api.service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -255,21 +256,17 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	private void saveFallbackStub(String apiName, int statusCode) {
-	    String stubUrl;
+		String stubUrl = "/mock/stub/" + nameEncoder(apiName.replace(" ", "")) + "/" + statusCode;
 	    String fallbackResponse;
-	    String encoderName = nameEncoder(apiName);
 
 	    switch (statusCode) {
 	        case 2: // 다운
-	            stubUrl = "/mock/stub/" + encoderName + "/" + statusCode;
 	            fallbackResponse = "{\"error\": \"Service is down.\"}";
 	            break;
 	        case 3: // 지연
-	            stubUrl = "/mock/stub/" + encoderName + "/" + statusCode;
 	            fallbackResponse = "{\"error\": \"Service is delayed.\"}";
 	            break;
 	        default: // 장애
-	            stubUrl = "/mock/stub/" + encoderName + "/" + statusCode;
 	            fallbackResponse = "{\"error\": \"An error occurred.\"}";
 	            break;
 	    }
@@ -284,7 +281,7 @@ public class ApiServiceImpl implements ApiService {
 	            "response": {
 	                "status": 500,
 	                "headers": {
-	                    "Content-Type": "application/json"
+	                    "Content-Type": "application/json; charset=UTF-8"
 	                },
 	                "body": \"%s\"
 	            }
@@ -318,7 +315,14 @@ public class ApiServiceImpl implements ApiService {
 	@Override
 	public ResponseEntity<String> getStubResponse(String stubUrl) {
 		RestTemplate restTemplate = new RestTemplate();
-	    return restTemplate.getForEntity(stubUrl, String.class);
+		URI uri = null;
+		try {
+			uri = new URI(stubUrl);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		System.out.println("URI : " + uri.toString());
+	    return restTemplate.getForEntity(uri, String.class);
 	}
 	
 	@Override

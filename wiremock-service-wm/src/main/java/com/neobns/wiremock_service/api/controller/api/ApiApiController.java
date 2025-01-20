@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.neobns.wiremock_service.api.dto.ChangeModeRequest;
@@ -87,7 +88,7 @@ public class ApiApiController {
 	            ResponseEntity<String> mockResponse = apiService.getStubResponse(mockApiUrl); // Stub 데이터를 가져옴
 	            
 	            response.setStatus(HttpServletResponse.SC_OK);
-	            response.setContentType("application/json");
+	            response.setContentType("application/json; charset=UTF-8");
 	            // Stub 데이터를 JSON 형태로 반환
 	            response.getWriter().write(mockResponse.getBody());
 	        } else {
@@ -95,31 +96,29 @@ public class ApiApiController {
 	        	response.sendRedirect(apiUrl);
 	        }														
 		} else {		//서버 장애 시 공통 Stub 처리
-			// 상태에 따른 Stub 반환
-	        String stubUrl = handleFailureStatus(apiVO.getLastCheckedStatus(), wireMockServer.port());
-	        if (stubUrl == null) {
-	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	            response.setContentType("application/json");
-	            response.getWriter().write("{\"error\": \"서버 장애 상태를 처리할 수 없습니다.\"}");
-	        } else {
-	        	ResponseEntity<String> stubResponse = apiService.getStubResponse(stubUrl); // 장애 Stub 데이터 가져오기
-	            response.setStatus(stubResponse.getStatusCode().value());
-	            response.setContentType(stubResponse.getHeaders().getContentType().toString());
-	            response.getWriter().write(stubResponse.getBody());
-	        }
+			if(isMockMode) {
+				// 상태에 따른 Stub 반환
+				String transApiName = apiVO.getApiName().replace(" ", "");
+		        String stubUrl = "http://localhost:" + wireMockServer.port() +"/mock/stub/" + transApiName+ "/" + apiVO.getLastCheckedStatus();
+		        try {
+		            System.out.println("Requesting Stub URL: {}"+ stubUrl);
+		            ResponseEntity<String> stubResponse = apiService.getStubResponse(stubUrl);
+		            response.setStatus(stubResponse.getStatusCode().value());
+		            response.setContentType("application/json; charset=UTF-8");
+		            response.getWriter().write(stubResponse.getBody());
+		        } catch (HttpClientErrorException e) {
+		        	System.out.println("HTTP Error while requesting Stub URL: "+stubUrl+", Status: " + e.getStatusCode()+ ", Body: " + e.getResponseBodyAsString());
+		            response.setStatus(e.getStatusCode().value());
+		            response.setContentType("application/json; charset=UTF-8");
+		            response.getWriter().write("{\"error\": \"Fallback Stub 요청 실패\"}");
+		        } catch (Exception e) {
+		        	System.out.println("Unexpected error while requesting Stub URL: " + stubUrl +" e :" + e);
+		            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		            response.setContentType("application/json; charset=UTF-8");
+		            response.getWriter().write("{\"error\": \"Fallback Stub 요청 실패\"}");
+		        }
+			}
 		}
-	}
-	
-	private String handleFailureStatus(int status, int wireMockPort) {
-	    switch (status) {
-	        case 1: // 장애
-	        case 2: // 다운
-	            return "http://localhost:" + wireMockPort + "/mock/stub/bad";
-	        case 3: // 지연
-	            return "http://localhost:" + wireMockPort + "/mock/stub/delay";
-	        default:
-	            return null; // 처리 불가
-	    }
 	}
 	
 	@PostMapping("/add")

@@ -18,10 +18,6 @@ public class MyBatisGeneratorProgrammatic {
 	public static boolean execute(Shell shell, String url, String userId, String password, String targetPath,
 			String tableName, String primaryKey) {
 		try {
-			// table을 조회할 schema
-			int lastSlashIndex = url.lastIndexOf('/'); // 마지막 '/' 위치를 찾음
-			String schemaName = url.substring(lastSlashIndex + 1); // '/' 이후 문자열 추출
-						
 			// Warnings list to capture any warnings during the generation process
 			List<String> warnings = new ArrayList<>();
 

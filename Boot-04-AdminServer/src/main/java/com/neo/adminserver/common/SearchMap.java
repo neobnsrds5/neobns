@@ -29,11 +29,6 @@ import com.neo.adminserver.util.PageUtil;
 @Alias("searchMap")
 public class SearchMap extends HashMap<String, Object> {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 603335565444529367L;
-
     public SearchMap() {
         super();
     }
@@ -66,23 +61,6 @@ public class SearchMap extends HashMap<String, Object> {
             super.put(key, value);
     }
     
-    
-/*
-    public boolean containsKey(String key) {
-        return super.containsKey(key.toLowerCase());
-    }
-
-
-
-    public Object get(String key) {
-        return super.get(key.toLowerCase());
-    }
-
-
-    public Object put(String key, Object value) {
-        return super.put(key.toLowerCase(), value);
-    }
-*/
     public Double getDouble(String key) {
     	
 		double d_value = 0.0;

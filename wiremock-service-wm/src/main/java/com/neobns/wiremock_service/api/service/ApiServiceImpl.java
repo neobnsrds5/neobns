@@ -1,9 +1,12 @@
 package com.neobns.wiremock_service.api.service;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -115,6 +118,7 @@ public class ApiServiceImpl implements ApiService {
 			
 		} catch(Exception e) {
 			statusCode = handleException(apiUrl, e);
+			saveFallbackStub(apiName, statusCode); // 비정상 응답에 대한 Stub 저장
 			System.out.println("statusCode : " + statusCode);
 		}
 		
@@ -248,6 +252,67 @@ public class ApiServiceImpl implements ApiService {
 	        """,
 	        apiUrl, statusCode, contentType, bodyFileName
 	    );
+	}
+	
+	private void saveFallbackStub(String apiName, int statusCode) {
+	    String stubUrl;
+	    String fallbackResponse;
+	    String encoderName = nameEncoder(apiName);
+
+	    switch (statusCode) {
+	        case 2: // 다운
+	            stubUrl = "/mock/stub/" + encoderName + "/" + statusCode;
+	            fallbackResponse = "{\"error\": \"Service is down.\"}";
+	            break;
+	        case 3: // 지연
+	            stubUrl = "/mock/stub/" + encoderName + "/" + statusCode;
+	            fallbackResponse = "{\"error\": \"Service is delayed.\"}";
+	            break;
+	        default: // 장애
+	            stubUrl = "/mock/stub/" + encoderName + "/" + statusCode;
+	            fallbackResponse = "{\"error\": \"An error occurred.\"}";
+	            break;
+	    }
+
+	    // Stub JSON 생성
+	    String stubJson = String.format("""
+	        {
+	            "request": {
+	                "method": "GET",
+	                "url": "%s"
+	            },
+	            "response": {
+	                "status": 500,
+	                "headers": {
+	                    "Content-Type": "application/json"
+	                },
+	                "body": \"%s\"
+	            }
+	        }
+	        """, stubUrl, escapeJsonString(fallbackResponse));
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.set("Content-Type", "application/json");
+	    HttpEntity<String> requestEntity = new HttpEntity<>(stubJson, headers);
+
+	    // WireMock에 Stub 등록
+	    restTemplate.postForEntity(WIREMOCK_ADMIN_URL, requestEntity, String.class);
+	}
+	
+	private String escapeJsonString(String json) {
+	    return json.replace("\"", "\\\"");
+	}
+	
+	private String nameEncoder(String input) {
+	    if (input == null || input.isEmpty()) {
+	        throw new IllegalArgumentException("Input cannot be null or empty");
+	    }
+
+	    try {
+	        return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
+	    } catch (Exception e) {
+	        throw new RuntimeException("Failed to encode URL", e);
+	    }
 	}
 	
 	@Override

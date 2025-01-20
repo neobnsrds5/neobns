@@ -11,13 +11,13 @@ import com.neo.adminserver.dto.BatchStepExecutionDTO;
 
 @Mapper
 public interface BatchMapper {
-	public int listCount(HashMap<String, Object> map);
+	public int countJobs(HashMap<String, Object> map);
 
-	public List<BatchJobInstanceDTO> list(HashMap<String, Object> map);
+	public List<BatchJobInstanceDTO> findJobs(HashMap<String, Object> map);
 
-	public BatchJobInstanceDTO selectJobDetail(int id);
+	public BatchJobInstanceDTO findJobById(int id);
 
-	public BatchJobExecutionDTO selectStepDetail(int id);
+	public BatchJobExecutionDTO findStepById(int id);
 
-	public List<BatchStepExecutionDTO> listStepDetail(int id);
+	public List<BatchStepExecutionDTO> findStepsByJobId(int id);
 }

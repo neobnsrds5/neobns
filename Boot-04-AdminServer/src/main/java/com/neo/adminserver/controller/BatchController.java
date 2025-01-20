@@ -50,11 +50,11 @@ public class BatchController {
 		// ------------------------------------------------------------------------
 		// pageLink init
 		// ------------------------------------------------------------------------
-		int total = batchService.listCount(searchMap);
+		int total = batchService.countJobs(searchMap);
 		pgtl.init(total, "/batch/jobList", searchMap.getParams());
 		searchMap.setPgtl(pgtl);
 
-		List<BatchJobInstanceDTO> list = batchService.list(searchMap);
+		List<BatchJobInstanceDTO> list = batchService.findJobs(searchMap);
 
 		String[] status = { "COMPLETED", "STARTING", "STARTED", "STOPPING", "STOPPED", "FAILED", "UNKNOWN" };
 
@@ -70,12 +70,12 @@ public class BatchController {
 		BatchJobInstanceDTO job = null;
 		List<BatchStepExecutionDTO> steps = null;
 
-		job = batchService.selectJobDetail(paramVo.getInstanceId());
+		job = batchService.findJobById(paramVo.getInstanceId());
 
 		logger.info("BatchJobInstanceEntity : " + job.toString());
 
 		if (job.getExec() != null) {
-			steps = batchService.listStepDetail(job.getExec().getExecutionId());
+			steps = batchService.findStepsByJobId(job.getExec().getExecutionId());
 		}
 
 		model.addAttribute("job", job);
@@ -87,7 +87,7 @@ public class BatchController {
 	@GetMapping("/stepDetail")
 	public String stepDetail(Model model, BatchJobExecutionDTO paramVo) {
 
-		BatchJobExecutionDTO job = batchService.selectStepDetail(paramVo.getExecutionId());
+		BatchJobExecutionDTO job = batchService.findStepById(paramVo.getExecutionId());
 
 		logger.info("BatchJobExecutionEntity : " + job.toString());
 

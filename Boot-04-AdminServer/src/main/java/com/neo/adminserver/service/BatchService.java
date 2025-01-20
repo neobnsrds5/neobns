@@ -18,23 +18,23 @@ public class BatchService {
 	
 	private final BatchMapper batchMapper;
 
-	public int listCount(HashMap<String, Object> map) {
-		return batchMapper.listCount(map);
+	public int countJobs(HashMap<String, Object> map) {
+		return batchMapper.countJobs(map);
 	}
 
-	public List<BatchJobInstanceDTO> list(HashMap<String, Object> map) {
-		return batchMapper.list(map);
+	public List<BatchJobInstanceDTO> findJobs(HashMap<String, Object> map) {
+		return batchMapper.findJobs(map);
 	}
 
-	public BatchJobInstanceDTO selectJobDetail(int id) {
-		return batchMapper.selectJobDetail(id);
+	public BatchJobInstanceDTO findJobById(int id) {
+		return batchMapper.findJobById(id);
 	}
 
-	public BatchJobExecutionDTO selectStepDetail(int id) {
-		return batchMapper.selectStepDetail(id);
+	public BatchJobExecutionDTO findStepById(int id) {
+		return batchMapper.findStepById(id);
 	}
 
-	public List<BatchStepExecutionDTO> listStepDetail(int id) {
-		return batchMapper.listStepDetail(id);
+	public List<BatchStepExecutionDTO> findStepsByJobId(int id) {
+		return batchMapper.findStepsByJobId(id);
 	}
 }

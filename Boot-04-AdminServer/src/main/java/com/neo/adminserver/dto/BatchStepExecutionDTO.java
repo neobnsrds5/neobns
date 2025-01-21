@@ -35,7 +35,6 @@ public class BatchStepExecutionDTO {
     private boolean isStatusComplete;
     private boolean isExitComplete;
 	
-	
     public void setStatus(String status) {
         this.status = status;
         setStatusComplete("COMPLETED".equals(status));  

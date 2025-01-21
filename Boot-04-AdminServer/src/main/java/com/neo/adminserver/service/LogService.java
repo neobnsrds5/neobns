@@ -16,76 +16,31 @@ public class LogService {
 
 	private final LogMapper logMapper;
 
-	public List<LogDTO> findSlowByPage(int page, int size) {
-        int offset = (page - 1) * size;
-        return logMapper.findSlowByPage(size, offset);
-	}
-
-	public List<LogDTO> findErrorByPage(int page, int size) {
-        int offset = (page - 1) * size;
-        return logMapper.findErrorByPage(size, offset);
-	}
-
 	public List<LogDTO> findByTraceId(String traceId) {
 		return logMapper.findByTraceId(traceId);
 	}
 	
-	public int countSlowLogs() {
-        return logMapper.countSlowLogs();
+	public int countSlowLogs(LogDTO paramDto) {
+        return logMapper.countSlowLogs(paramDto);
     }
 
-    public int countErrorLogs() {
-        return logMapper.countErrorLogs();
+    public List<LogDTO> findSlowLogs(LogDTO paramDto, int page, int size) {
+        int offset = (page - 1) * size;
+        return logMapper.findSlowLogs(paramDto, size, offset);
+    }
+
+    public int countErrorLogs(LogDTO paramDto) {
+        // 초 단위를 밀리초 단위로 변경
+        String executeResult = paramDto.getExecuteResult();
+        if(executeResult != null && !executeResult.isEmpty()){
+            paramDto.setExecuteResult(String.valueOf(Integer.parseInt(executeResult) * 1000));
+        }
+        return logMapper.countErrorLogs(paramDto);
     }
     
-    public List<LogDTO> findSlowLogs(
-            int page,
-            int size,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            String traceId,
-            String userId,
-            String ipAddress,
-            String uri,
-            String executeResult) {
+    public List<LogDTO> findErrorLogs(LogDTO paramDto, int page, int size) {
         int offset = (page - 1) * size;
-        return logMapper.findSlowLogs(startTime, endTime, traceId, userId, ipAddress, uri, executeResult, size, offset);
-    }
-
-    public int countSlowSearchLogs(
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            String traceId,
-            String userId,
-            String ipAddress,
-            String uri,
-            String executeResult) {
-        return logMapper.countSlowSearchLogs(startTime, endTime, traceId, userId, ipAddress, uri, executeResult);
-    }
-    
-    public List<LogDTO> findErrorLogs(
-            int page,
-            int size,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            String traceId,
-            String userId,
-            String ipAddress,
-            String query,
-            String uri) {
-        int offset = (page - 1) * size;
-        return logMapper.findErrorLogs(startTime, endTime, traceId, userId, ipAddress, query, uri, size, offset);
-    }
-
-    public int countErrorSearchLogs(
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            String traceId,
-            String userId,
-            String ipAddress,
-            String query,
-            String uri) {
-        return logMapper.countErrorSearchLogs(startTime, endTime, traceId, userId, ipAddress, query, uri);
+        return logMapper.findErrorLogs(paramDto, size, offset);
     }
     
 	public List<LogDTO> findByTable(int page, int size, String searchType, String searchKeyword) {

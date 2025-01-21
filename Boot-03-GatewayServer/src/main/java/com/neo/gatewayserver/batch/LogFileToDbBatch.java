@@ -80,8 +80,8 @@ public class LogFileToDbBatch {
 	@Bean
 	public Job logToDBJob() {
 		return new JobBuilder("logToDBJob", jobRepository)
-				/* .start(logToDBStep()) */
-				.start(masterStep()).build();
+				 .start(logToDBStep()) 
+				/* .start(masterStep()) */.build();
 	}
 
 	// 파티션 스텝

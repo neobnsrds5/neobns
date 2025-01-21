@@ -11,11 +11,15 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 
 @WebFilter("/*")
-@RequiredArgsConstructor
 public class FlowControlFilter implements Filter {
 
     private final BulkheadRegistry bulkheadRegistry;
     private final RateLimiterRegistry rateLimiterRegistry;
+
+    public FlowControlFilter(BulkheadRegistry bulkheadRegistry, RateLimiterRegistry rateLimiterRegistry) {
+        this.bulkheadRegistry = bulkheadRegistry;
+        this.rateLimiterRegistry = rateLimiterRegistry;
+    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

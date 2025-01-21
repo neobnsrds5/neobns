@@ -11,58 +11,15 @@ import com.neo.adminserver.dto.LogDTO;
 @Mapper
 public interface LogMapper {
 	
-	List<LogDTO> findSlowByPage(@Param("limit") int limit, @Param("offset") int offset);
-	
-	List<LogDTO> findErrorByPage(@Param("limit") int limit, @Param("offset") int offset);
-	
 	List<LogDTO> findByTraceId(String traceId);
 	
-	int countSlowLogs();
-    int countErrorLogs();
-	
-    List<LogDTO> findSlowLogs(
-    		@Param("startTime") LocalDateTime startTime,
-            @Param("endTime") LocalDateTime endTime,
-            @Param("traceId") String traceId,
-            @Param("userId") String userId,
-            @Param("ipAddress") String ipAddress,
-            @Param("uri") String uri,
-            @Param("executeResult") String executeResult,
-            @Param("limit") int limit,
-            @Param("offset") int offset
-        );
-    
-    int countSlowSearchLogs(
-    		@Param("startTime") LocalDateTime startTime,
-            @Param("endTime") LocalDateTime endTime,
-            @Param("traceId") String traceId,
-            @Param("userId") String userId,
-            @Param("ipAddress") String ipAddress,
-            @Param("uri") String uri,
-            @Param("executeResult") String executeResult
-        );
-    
-    List<LogDTO> findErrorLogs(
-    		@Param("startTime") LocalDateTime startTime,
-            @Param("endTime") LocalDateTime endTime,
-            @Param("traceId") String traceId,
-            @Param("userId") String userId,
-            @Param("ipAddress") String ipAddress,
-            @Param("query") String query,
-            @Param("uri") String uri,
-            @Param("limit") int limit,
-            @Param("offset") int offset
-        );
-    
-    int countErrorSearchLogs(
-    		@Param("startTime") LocalDateTime startTime,
-            @Param("endTime") LocalDateTime endTime,
-            @Param("traceId") String traceId,
-            @Param("userId") String userId,
-            @Param("ipAddress") String ipAddress,
-            @Param("query") String query,
-            @Param("uri") String uri
-        );
+	int countSlowLogs(LogDTO paramDto);
+
+	List<LogDTO> findSlowLogs(@Param("paramDto") LogDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
+
+    int countErrorLogs(LogDTO paramDto);
+
+	List<LogDTO> findErrorLogs(@Param("paramDto") LogDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
 
 	List<LogDTO> findByTable(@Param("limit") int limit, @Param("offset") int offset, @Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword);
 	

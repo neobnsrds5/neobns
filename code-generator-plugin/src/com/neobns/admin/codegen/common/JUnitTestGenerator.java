@@ -1,4 +1,4 @@
-package code_generator_plugin.common;
+package com.neobns.admin.codegen.common;
 
 import com.squareup.javapoet.*;
 import org.junit.jupiter.api.Test;

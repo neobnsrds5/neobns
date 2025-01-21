@@ -1,13 +1,9 @@
-package codegeneratorplugin.views;
+package com.neobns.admin.codegen.views;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -15,9 +11,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ViewPart;
 
-import code_generator_plugin.common.DatabaseConnector;
-import code_generator_plugin.common.GenerateCodeHandler;
-import code_generator_plugin.common.MyBatisGeneratorProgrammatic;
+import com.neobns.admin.codegen.common.DatabaseConnector;
+import com.neobns.admin.codegen.common.MyBatisGeneratorProgrammatic;
+
 import jakarta.inject.Inject;
 
 /**
@@ -31,7 +27,7 @@ public class BrowserView extends ViewPart  {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "codegeneratorplugin.views.BrowserView";
+	public static final String ID = "com.neobns.admin.codegen.views.BrowserView";
 
 	@Inject
 	Shell shell;
@@ -41,7 +37,6 @@ public class BrowserView extends ViewPart  {
 
 	@Override
 	public void createPartControl(Composite parent) {
-//		fBrowser = new Browser(parent, SWT.WEBKIT); // webkit 으로 실행 시 동작 X
 		fBrowser = new Browser(parent, SWT.EDGE);
 		fBrowser.setText(getContent());
 		BrowserFunction prefs = new ListTables(fBrowser, "invokeListTables"); // js에서 invokeListTables를 호출하면 ListTables 메소드라 호출됨
@@ -64,8 +59,7 @@ public class BrowserView extends ViewPart  {
 		@Override
 		public Object function(Object[] arguments) {
 			try {
-				return DatabaseConnector.getTables(arguments[0].toString(), arguments[1].toString(), arguments[2].toString())
-						.stream().collect(Collectors.joining(",")); // js로 결과를 반환하기 위해 콤마로 구분
+				return DatabaseConnector.getTablesInfo(arguments[0].toString(), arguments[1].toString(), arguments[2].toString()).toString();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
@@ -81,7 +75,7 @@ public class BrowserView extends ViewPart  {
 		@Override
 		public Object function(Object[] arguments) {
 			return MyBatisGeneratorProgrammatic.execute(shell, arguments[0].toString(), arguments[1].toString(),
-					arguments[2].toString(), arguments[3].toString());
+					arguments[2].toString(), arguments[3].toString(), arguments[4].toString(), arguments[5].toString());
 		}
 	}
 	
@@ -97,23 +91,22 @@ public class BrowserView extends ViewPart  {
 		buffer.append("<head>");
 		buffer.append("<meta charset=\"utf-8\">");
 		buffer.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-		buffer.append("<title>Sample View</title>");
+		buffer.append("<title>Code Generator</title>");
 		buffer.append("<script>" + js + "</script>"); // 자바스크립트 내용을 추가
 		buffer.append("</script>");
 		buffer.append("</head>");
 		buffer.append("<body>");
 		buffer.append("<form>");
-		buffer.append("<label>Data Source URL:</label><br>");
+		buffer.append("<label>데이터베이스 URL:</label><br>");
 		buffer.append("<input type=\"text\" id=\"dbUrl\" name=\"dbUrl\" value=\"jdbc:mysql://localhost:3306/db2\"><br>");
-		buffer.append("<label>User Name:</label><br>");
-		buffer.append("<input type=\"text\" id=\"username\" name=\"username\"><br>");
-		buffer.append("<label>Password:</label><br>");
-		buffer.append("<input type=\"password\" id=\"password\" name=\"password\"><br>");
-		buffer.append("<label>Target Path:</label><br>");
-		buffer.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\"><br>");
+		buffer.append("<label>사용자명:</label><br>");
+		buffer.append("<input type=\"text\" id=\"username\" name=\"username\" value=\"root\"><br>");
+		buffer.append("<label>비밀번호:</label><br>");
+		buffer.append("<input type=\"password\" id=\"password\" name=\"password\" value=\"1234\"><br>");
+		buffer.append("<label>저장할 폴더명:</label><br>");
+		buffer.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\" value=\"example\"><br>");
 		buffer.append("</form>");
-		buffer.append("<input id=button type=\"button\" value=\"Show Tables\" onclick=\"listTables();\">");
-		buffer.append("<h3>Table List</h3>");
+		buffer.append("<input id=button type=\"button\" value=\"전체 테이블 조회\" onclick=\"listTables();\">");
 		buffer.append("<div id=\"tables\"></div>");
 		buffer.append("</body>");
 		buffer.append("</html>");

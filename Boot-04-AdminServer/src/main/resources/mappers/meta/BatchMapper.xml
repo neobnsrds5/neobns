@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neo.adminserver.mapper.meta.BatchMapper">
 
-    <!--BatchJobInstance : BATCH_JOB_INSTANCE table -->
+  <!--BatchJobInstance : BATCH_JOB_INSTANCE table -->
   <resultMap id="instanceResultMap" type="com.neo.adminserver.dto.BatchJobInstanceDTO">
     <id property="instanceId" column="JOB_INSTANCE_ID" />
     <result property="version" column="VERSION"/>          
@@ -63,7 +63,7 @@
   <sql id="commonPagingHeader"> SELECT R1.* FROM ( </sql>        
   <sql id="commonPagingFooter"> ) R1 LIMIT #{pgtl.startNo}, #{pgtl.listPerPage} </sql>
 
-  <select id="listCount" parameterType="hashmap"  resultType="int">
+  <select id="countJobs" parameterType="hashmap" resultType="int">
       SELECT count(j.JOB_INSTANCE_ID) as cnt
       FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e left join BATCH_JOB_EXECUTION_PARAMS p
       ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
@@ -74,7 +74,7 @@
       <if test="status != null and status != ''"> and STATUS = #{status} </if>
   </select>
           
-  <select id="list" parameterType="hashmap"  resultMap="instanceResultMap">
+  <select id="findJobs" parameterType="hashmap" resultMap="instanceResultMap">
     <if test="pgtl != null"><include refid="commonPagingHeader" /></if>
       SELECT
         j.JOB_INSTANCE_ID, j.JOB_NAME,
@@ -91,7 +91,7 @@
     <if test="pgtl != null"><include refid="commonPagingFooter" /></if>
   </select>
       
-  <select id="selectJobDetail" parameterType="int"  resultMap="instanceResultMap">              
+  <select id="findJobById" parameterType="int" resultMap="instanceResultMap">
       SELECT 
         j.JOB_INSTANCE_ID, j.JOB_NAME, j.JOB_KEY, 
         e.JOB_EXECUTION_ID, e.VERSION, e.CREATE_TIME, e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE, e.LAST_UPDATED,
@@ -102,7 +102,7 @@
       order by JOB_INSTANCE_ID desc, e.JOB_EXECUTION_ID desc  
   </select>
   
-  <select id="selectStepDetail" parameterType="int"  resultMap="executionResultMap">              
+  <select id="findStepById" parameterType="int" resultMap="executionResultMap">
       SELECT 
         j.JOB_INSTANCE_ID, j.JOB_NAME, 
         e.JOB_EXECUTION_ID, e.VERSION, e.CREATE_TIME, e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE, e.LAST_UPDATED,
@@ -112,7 +112,7 @@
       WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID and e.JOB_EXECUTION_ID = #{executionId}
   </select> 
   
-  <select id="listStepDetail" parameterType="int" resultMap="stepResultMap">              
+  <select id="findStepsByJobId" parameterType="int" resultMap="stepResultMap">
       SELECT 
         s.*
       FROM BATCH_STEP_EXECUTION s

@@ -35,7 +35,7 @@ public class PageUtil {
 	private String nextButton = " 다음 &raquo; ";
 
 	/** 페이지번호 파라메터 */
-	private String pageNoParam = "currPage";
+	private String pageNoParam = "page";
 	
 	
 	public String getPageNoParam() {

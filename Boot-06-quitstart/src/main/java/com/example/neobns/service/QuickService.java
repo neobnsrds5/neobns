@@ -32,7 +32,7 @@ public class QuickService {
 	private final QuickMapper mapper;
 	private final AccountRepository accountRepository;
 	private final TransferRepository transferRepository;
-	private final CacheManager cacheManager;
+//	private final CacheManager cacheManager;
 
 	// transfer를 부르기 위함
 	private final RestTemplate restTemplate;

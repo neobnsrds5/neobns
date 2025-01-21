@@ -49,18 +49,26 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final FileMaintenanceService fileService;
-	private String path = "../logs/accounts-application.log";
-	private int gridSize = 20;
+	private String path = "../logs/gateway-application.log";
+	private int gridSize = 2; // 초기 설정 그리드 사이즈
 	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager,
-			FileMaintenanceService fileMaintenanceService) {
+			PlatformTransactionManager transactionManager, FileMaintenanceService fileMaintenanceService) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
 		this.fileService = fileMaintenanceService;
+	}
+
+	// 데이터의 양에 따라 실제로 가능한 그리드 사이즈 계산
+	public long[] getRealGridSize() {
+		long totalLines = fileService.findFileLinesCount(path);
+		int partitionSize = (int) Math.ceil((double) totalLines / gridSize);
+		int realGridSize = (int) Math.ceil((double) totalLines / partitionSize);
+		long[] realSize = { totalLines, partitionSize, realGridSize };
+		return realSize;
 	}
 
 	// Partition Size (Grid Size): 데이터를 논리적 파티션(Partition)으로 나누는 단위.
@@ -73,8 +81,8 @@ public class LogFileToDbBatch {
 	@Bean
 	public Job logToDBJob() {
 		return new JobBuilder("logToDBJob", jobRepository)
-				 .start(logToDBStep()) 
-				/* .start(masterStep()) */.build();
+				/* .start(logToDBStep()) */
+				.start(masterStep()).build();
 	}
 
 	// 파티션 스텝
@@ -93,15 +101,32 @@ public class LogFileToDbBatch {
 	public Partitioner partitioner() {
 		return gridSize -> {
 
-			Map<String, ExecutionContext> partitionMap = new HashMap<>();
-			long totalLines = fileService.findFileLinesCount(path);
-			long partitionSize = (int) totalLines / gridSize;
+			long[] realSize = getRealGridSize();
 
-			for (int i = 0; i < gridSize; i++) {
+			long totalLines = realSize[0];
+			int partitionSize = (int) realSize[1];
+			int realGridSize = (int) realSize[2];
+
+			Map<String, ExecutionContext> partitionMap = new HashMap<>();
+			System.out.println("total line : " + totalLines);
+			System.out.println("partition size : " + partitionSize);
+			System.out.println("real grid size : " + realGridSize);
+
+			for (int i = 0; i < realGridSize; i++) {
 				ExecutionContext executionContext = new ExecutionContext();
 
 				long start = 1 + i * partitionSize;
 				long end = (start > totalLines) ? 0 : Math.min((i + 1) * partitionSize, totalLines);
+
+				System.out.println("start : " + start + " end : " + end + " total line : " + totalLines);
+
+				if (start > totalLines) {
+					continue;
+				}
+//
+//				System.out.println("total : " + totalLines);
+//				System.out.println("start : " + start);
+//				System.out.println("end : " + end);
 
 				executionContext.putLong("start", start);
 				executionContext.putLong("end", end);
@@ -118,8 +143,11 @@ public class LogFileToDbBatch {
 	@Bean
 	public PartitionHandler partitionerHandler() {
 
+		long[] realSize = getRealGridSize();
+		int realGridSize = (int) realSize[2];
+
 		TaskExecutorPartitionHandler handler = new TaskExecutorPartitionHandler();
-		handler.setGridSize(gridSize); // 변경 변수
+		handler.setGridSize(realGridSize); // 실제 그리드 사이즈
 		handler.setStep(logToDBStep());
 		handler.setTaskExecutor(logToDBTaskExecutor());
 
@@ -176,16 +204,16 @@ public class LogFileToDbBatch {
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		// 저장된 값 가져옴
-//		long start = getExecutionContext().getLong("start");
-//		long end = getExecutionContext().getLong("end");
+		long start = getExecutionContext().getLong("start");
+		long end = getExecutionContext().getLong("end");
 
-//		System.out.println("reader start : " + start + ", reader end : " + end);
+		System.out.println("reader start : " + start + ", reader end : " + end);
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
 
 		reader.setResource(new FileSystemResource(path));
-//		reader.setLinesToSkip((int) (start - 1));
-//		reader.setMaxItemCount((int) (end - start + 1));
+		reader.setLinesToSkip((int) (start - 1));
+		reader.setMaxItemCount((int) (end - start + 1));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함

@@ -1,11 +1,15 @@
 package com.example.neobns.batch;
 
+import java.nio.channels.NonReadableChannelException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.sql.DataSource;
+
+import org.bouncycastle.crypto.signers.ISOTrailers;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -32,6 +36,7 @@ import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -46,22 +51,30 @@ public class LogFileToDbBatch {
 	private final DataSource datasource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	private final CustomBatchJobListener listener;
+//	private final CustomBatchJobListener listener;
 	private final FileMaintenanceService fileService;
 	private String path = "../logs/application.log";
 	private int gridSize = 2;
-	private int realGrid = 0;
 	private int chunkSize = 50;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager, CustomBatchJobListener listener,
-			FileMaintenanceService fileMaintenanceService) {
+			PlatformTransactionManager transactionManager,
+			FileMaintenanceService fileMaintenanceService /* , CustomBatchJobListener listener */) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
-		this.listener = listener;
+//		this.listener = listener;
 		this.fileService = fileMaintenanceService;
+	}
+
+	// 데이터의 양에 따라 실제로 가능한 그리드 사이즈 계산
+	public long[] getRealGridSize() {
+		long totalLines = fileService.findFileLinesCount(path);
+		int partitionSize = (int) Math.ceil((double) totalLines / gridSize);
+		int realGridSize = (int) Math.ceil((double) totalLines / partitionSize);
+		long[] realSize = { totalLines, partitionSize, realGridSize };
+		return realSize;
 	}
 
 	// Partition Size (Grid Size): 데이터를 논리적 파티션(Partition)으로 나누는 단위.
@@ -73,9 +86,10 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public Job logToDBJob() {
+
 		return new JobBuilder("logToDBJob", jobRepository)
-				 .start(logToDBStep()) 
-				/* .start(masterStep()) */.listener(listener).build();
+				/* .start(logToDBStep()) */
+				.start(masterStep())/* .listener(listener) */.build();
 	}
 
 	// 파티션 스텝
@@ -94,25 +108,28 @@ public class LogFileToDbBatch {
 	public Partitioner partitioner() {
 		return gridSize -> {
 
-			Map<String, ExecutionContext> partitionMap = new HashMap<>();
-			long totalLines = fileService.findFileLinesCount(path);
-			long partitionSize = ((int) totalLines / gridSize) < 1 ? 1 : ((int) totalLines / gridSize);
+			long[] realSize = getRealGridSize();
 
-			for (int i = 0; i < gridSize; i++) {
+			long totalLines = realSize[0];
+			int partitionSize = (int) realSize[1];
+			int realGridSize = (int) realSize[2];
+
+			Map<String, ExecutionContext> partitionMap = new HashMap<>();
+			System.out.println("total line : " + totalLines);
+			System.out.println("partition size : " + partitionSize);
+			System.out.println("real grid size : " + realGridSize);
+
+			for (int i = 0; i < realGridSize; i++) {
 				ExecutionContext executionContext = new ExecutionContext();
 
 				long start = 1 + i * partitionSize;
 				long end = (start > totalLines) ? 0 : Math.min((i + 1) * partitionSize, totalLines);
 
+				System.out.println("start : " + start + " end : " + end + " total line : " + totalLines);
+
 				if (start > totalLines) {
 					continue;
 				}
-				
-				realGrid++;
-
-				System.out.println("total : " + totalLines);
-				System.out.println("start : " + start);
-				System.out.println("end : " + end);
 
 				executionContext.putLong("start", start);
 				executionContext.putLong("end", end);
@@ -128,18 +145,24 @@ public class LogFileToDbBatch {
 	// 파티셔닝 핸들러 설정
 	@Bean
 	public PartitionHandler partitionerHandler() {
+		
+		long[] realSize = getRealGridSize();
+		int realGridSize = (int) realSize[2];
 
 		TaskExecutorPartitionHandler handler = new TaskExecutorPartitionHandler();
-		handler.setGridSize(realGrid); // 실제 그리드 사이즈
+		handler.setGridSize(realGridSize); // 실제 그리드 사이즈
 		handler.setStep(logToDBStep());
 		handler.setTaskExecutor(logToDBTaskExecutor());
 
+		System.out.println("partitionerHandler()");
 		return handler;
 	}
 
 	// 마스터의 슬레이브 스텝 설정
 	@Bean
 	public Step logToDBStep() {
+		
+		System.out.println("logToDBStep()");
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader())
@@ -173,6 +196,9 @@ public class LogFileToDbBatch {
 		executor.setQueueCapacity(queueSize);
 		executor.setThreadNamePrefix("logToDBTask");
 		executor.initialize();
+		
+		System.out.println("logToDBTaskExecutor()");
+		
 		return executor;
 	}
 
@@ -183,19 +209,20 @@ public class LogFileToDbBatch {
 
 	// 파티셔닝 컨텍스트에서 startline, endline을 읽어와 해당하는 것만 읽기 진행.
 	@Bean
+	@StepScope
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		// 저장된 값 가져옴
-//		long start = getExecutionContext().getLong("start");
-//		long end = getExecutionContext().getLong("end");
-//
-//		System.out.println("reader start : " + start + ", reader end : " + end);
+		long start = getExecutionContext().getLong("start");
+		long end = getExecutionContext().getLong("end");
+
+		System.out.println("reader start : " + start + ", reader end : " + end);
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
 
 		reader.setResource(new FileSystemResource(path));
-//		reader.setLinesToSkip((int) (start - 1));
-//		reader.setMaxItemCount((int) (end - start + 1));
+		reader.setLinesToSkip((int) (start - 1));
+		reader.setMaxItemCount((int) (end - start + 1));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함
@@ -218,6 +245,7 @@ public class LogFileToDbBatch {
 		fieldSetMapper.setTargetType(LogDTO.class);
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		reader.setLineMapper(lineMapper);
+		System.out.println("return reader; start : end >>" + start + " : " + end);
 		return reader;
 	}
 
@@ -231,6 +259,8 @@ public class LogFileToDbBatch {
 		// 성능 개선을 위해 ps 방식으로 변경
 		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
 				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+		
+		System.out.println("loggingEventWriter()");
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new eventWriterItemPSSetter()).build();
@@ -270,6 +300,8 @@ public class LogFileToDbBatch {
 		String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
 				+ "VALUES(?,?,?,?,?,?,?,?, "
 				+ "CASE WHEN ? = 'SQL' THEN ? ELSE NULL END, CASE WHEN ? != 'SQL' THEN ? ELSE NULL END)";
+		
+		System.out.println("loggingSlowWriter() ");
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new slowWriterItemPSSetter()).build();
@@ -308,6 +340,8 @@ public class LogFileToDbBatch {
 		// 성능 개선을 위해 ps 방식으로 변경
 		String sql = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
 				+ "VALUES(?,?,?,?,?,?,?,?,?,?)";
+		
+		System.out.println("loggingErrorWriter()");
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new errorWriterItemPSSetter()).build();
@@ -336,11 +370,13 @@ public class LogFileToDbBatch {
 	public CompositeItemWriter<LogDTO> compositeWriter() {
 		CompositeItemWriter<LogDTO> writer = new CompositeItemWriter<>();
 		writer.setDelegates(List.of(conditionalEventWriter(), conditionalErrorWriter(), conditionalSlowWriter()));
+		System.out.println("compositeWriter()");
 		return writer;
 	}
 
 	@Bean
 	public ItemWriter<LogDTO> conditionalEventWriter() {
+		System.out.println("conditionalEventWriter()");
 		return items -> {
 			for (LogDTO log : items) {
 				if ("trace".equalsIgnoreCase(log.getLoggerName()) || "slow".equalsIgnoreCase(log.getLoggerName())
@@ -353,6 +389,7 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public ItemWriter<LogDTO> conditionalSlowWriter() {
+		System.out.println("conditionalSlowWriter() ");
 		return items -> {
 			for (LogDTO log : items) {
 				if ("slow".equalsIgnoreCase(log.getLoggerName())) {
@@ -364,6 +401,7 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public ItemWriter<LogDTO> conditionalErrorWriter() {
+		System.out.println("conditionalErrorWriter()");
 		return items -> {
 			for (LogDTO log : items) {
 				if ("error".equalsIgnoreCase(log.getLoggerName())) {

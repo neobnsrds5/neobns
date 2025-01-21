@@ -18,7 +18,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 
-public class ControllerPlugin extends PluginAdapter {
+public class ControllerGeneratorPlugin extends PluginAdapter {
 
 	@Override
 	public boolean validate(List<String> warnings) {

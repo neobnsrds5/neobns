@@ -93,10 +93,9 @@ public class MyBatisGeneratorProgrammatic {
 			 * 코드 생성할 테이블 설정
 			 */
 			TableConfiguration tableConfig = new TableConfiguration(context);
-//			tableConfig.setSchema(schemaName); // Schema name in the database
 			tableConfig.setTableName(tableName); // Table name in the database
 			tableConfig.setDomainObjectName(toCamelCase(tableName)); // Java entity name
-			// dynamic query와 관련된 코드 생성 X
+			// dynamic query와 관련된 코드 생성 X -> true 설정 시 exampel Model 클래스 생성
 			tableConfig.setSelectByExampleStatementEnabled(false);
 			tableConfig.setDeleteByExampleStatementEnabled(false);
 			tableConfig.setCountByExampleStatementEnabled(false);
@@ -107,14 +106,15 @@ public class MyBatisGeneratorProgrammatic {
 			PluginConfiguration virtualPKPlugin = new PluginConfiguration();
 			virtualPKPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ForceVirtualPrimaryKeyPlugin");
 			virtualPKPlugin.addProperty("primaryKeyColumns", primaryKey); // 기본 키로 사용할 컬럼 지정
-			context.addPluginConfiguration(virtualPKPlugin);
 			
 			PluginConfiguration paginationPlugin = new PluginConfiguration();
 			paginationPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.PaginationPlugin");
-			context.addPluginConfiguration(paginationPlugin);
 			
 			PluginConfiguration toStringPlugin = new PluginConfiguration();
 			toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+
+			context.addPluginConfiguration(virtualPKPlugin);
+			context.addPluginConfiguration(paginationPlugin);
 			context.addPluginConfiguration(toStringPlugin);
 
 			// Run the MyBatis Generator

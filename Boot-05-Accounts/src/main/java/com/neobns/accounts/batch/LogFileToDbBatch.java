@@ -1,5 +1,6 @@
 package com.neobns.accounts.batch;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,7 +11,6 @@ import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.partition.PartitionHandler;
 import org.springframework.batch.core.partition.support.Partitioner;
@@ -27,6 +27,7 @@ import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -35,6 +36,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -80,9 +84,7 @@ public class LogFileToDbBatch {
 
 	@Bean
 	public Job logToDBJob() {
-		return new JobBuilder("logToDBJob", jobRepository)
-				 .start(logToDBStep()) 
-				/* .start(masterStep()) */.build();
+		return new JobBuilder("logToDBJob", jobRepository).start(logToDBStep())/* .start(masterStep()) */.build();
 	}
 
 	// 파티션 스텝
@@ -160,9 +162,11 @@ public class LogFileToDbBatch {
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader())
+				/* 멀티 리소스 리더로 지정 */
+				/* .reader(multiResourceItemReader()) */
 				// 배치 성능 개선을 위해 dummy processor 주석처리
 				/* .processor(dummyProcessor3()) */
-				.writer(compositeWriter()).taskExecutor(logToDBTaskExecutor()).build();
+				/* .writer(compositeWriter()) */.writer(dummyWriter()).taskExecutor(logToDBTaskExecutor()).build();
 	}
 
 	@Bean
@@ -198,22 +202,52 @@ public class LogFileToDbBatch {
 		return StepSynchronizationManager.getContext().getStepExecution().getExecutionContext();
 	}
 
+	// 멀티 리소스 리더를 통해 롤링된 파일을 멀티 리소스로 지정
+	@Bean
+	public MultiResourceItemReader<LogDTO> multiResourceItemReader() {
+
+		MultiResourceItemReader<LogDTO> multiReader = new MultiResourceItemReader<>();
+		ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+
+		// 롤링된 분단위 리소스 지정
+		Resource[] resource;
+		try {
+			// 프로젝트 폴더 경로 구한 후 \를 /로 바꿈
+			String rootPath = System.getProperty("user.dir");
+			int lastIndex = rootPath.lastIndexOf("\\");
+			String rolledPath = "file:" + rootPath.substring(0, lastIndex)
+					+ "\\logs\\application\\rolling\\application-*.log";
+			rolledPath = rolledPath.replace("\\", "/");
+			resource = patternResolver.getResources(rolledPath);
+//				System.out.println("resource len : " + resource.length);
+			multiReader.setResources(resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// 개별 파일을 담당할 리더 지정
+		multiReader.setDelegate(logReader());
+
+		return multiReader;
+
+	}
+
 	// 파티셔닝 컨텍스트에서 startline, endline을 읽어와 해당하는 것만 읽기 진행.
 	@Bean
-	@StepScope
+//	@StepScope
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		// 저장된 값 가져옴
-		long start = getExecutionContext().getLong("start");
-		long end = getExecutionContext().getLong("end");
+//		long start = getExecutionContext().getLong("start");
+//		long end = getExecutionContext().getLong("end");
 
-		System.out.println("reader start : " + start + ", reader end : " + end);
+//		System.out.println("reader start : " + start + ", reader end : " + end);
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
 
 		reader.setResource(new FileSystemResource(path));
-		reader.setLinesToSkip((int) (start - 1));
-		reader.setMaxItemCount((int) (end - start + 1));
+//		reader.setLinesToSkip((int) (start - 1));
+//		reader.setMaxItemCount((int) (end - start + 1));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함
@@ -237,6 +271,19 @@ public class LogFileToDbBatch {
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		reader.setLineMapper(lineMapper);
 		return reader;
+	}
+
+	// 아무 역할도 하지 않는 writer
+	public class DummyItemWriter implements ItemWriter<Object> {
+		@Override
+		public void write(Chunk<? extends Object> chunk) throws Exception {
+//				System.out.println("dummy activated");
+		}
+	}
+
+	@Bean
+	public DummyItemWriter dummyWriter() {
+		return new DummyItemWriter();
 	}
 
 	@Bean

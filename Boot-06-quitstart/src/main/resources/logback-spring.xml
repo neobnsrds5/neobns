@@ -311,7 +311,7 @@
 
 	<!-- 루트 로거 -->
 	<root level="INFO">
-		<!-- <appender-ref ref="CONSOLE" /> -->
+<!-- 		<appender-ref ref="CONSOLE" /> -->
 		<!-- sync db appender -->
 		<!-- <appender-ref ref="CUSTOM_DB" /> -->
 

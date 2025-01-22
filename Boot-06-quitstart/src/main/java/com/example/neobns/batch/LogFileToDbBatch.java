@@ -1,6 +1,6 @@
 package com.example.neobns.batch;
 
-import java.nio.channels.NonReadableChannelException;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -9,10 +9,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.bouncycastle.crypto.signers.ISOTrailers;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.partition.PartitionHandler;
 import org.springframework.batch.core.partition.support.Partitioner;
@@ -29,6 +27,7 @@ import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -36,8 +35,10 @@ import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -54,8 +55,8 @@ public class LogFileToDbBatch {
 //	private final CustomBatchJobListener listener;
 	private final FileMaintenanceService fileService;
 	private String path = "../logs/application.log";
-	private int gridSize = 2; // 파티셔닝 처리 안함
-	private int chunkSize = 50;
+	private int gridSize = 2; // 현재는 파티셔닝 처리 안함
+	private int chunkSize = 100;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager,
@@ -160,13 +161,13 @@ public class LogFileToDbBatch {
 	@Bean
 	public Step logToDBStep() {
 
-		System.out.println("logToDBStep()");
-
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
 				.reader(logReader())
+				/* 멀티 리소스 리더로 지정 */
+				/* .reader(multiResourceItemReader()) */
 				// 배치 성능 개선을 위해 dummy processor 주석처리
 				/* .processor(dummyProcessor3()) */
-				.writer(compositeWriter()).taskExecutor(logToDBTaskExecutor()).build();
+				 .writer(compositeWriter())  /* .writer(dummyWriter()) */.taskExecutor(logToDBTaskExecutor()).build();
 	}
 
 	@Bean
@@ -202,17 +203,40 @@ public class LogFileToDbBatch {
 	public ExecutionContext getExecutionContext() {
 		return StepSynchronizationManager.getContext().getStepExecution().getExecutionContext();
 	}
-	
+
 	// 멀티 리소스 리더를 통해 롤링된 파일을 멀티 리소스로 지정
-	
-	
-	
-	
-	
+	@Bean
+	public MultiResourceItemReader<LogDTO> multiResourceItemReader() {
+
+		MultiResourceItemReader<LogDTO> multiReader = new MultiResourceItemReader<>();
+		ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+
+		// 롤링된 분단위 리소스 지정
+		Resource[] resource;
+		try {
+			// 프로젝트 폴더 경로 구한 후 \를 /로 바꿈
+			String rootPath = System.getProperty("user.dir");
+			int lastIndex = rootPath.lastIndexOf("\\");
+			String rolledPath = "file:" + rootPath.substring(0, lastIndex)
+					+ "\\logs\\application\\rolling\\application-*.log";
+			rolledPath = rolledPath.replace("\\", "/");
+			resource = patternResolver.getResources(rolledPath);
+//			System.out.println("resource len : " + resource.length);
+			multiReader.setResources(resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// 개별 파일을 담당할 리더 지정
+		multiReader.setDelegate(logReader());
+
+		return multiReader;
+
+	}
 
 	// 파티셔닝 컨텍스트에서 startline, endline을 읽어와 해당하는 것만 읽기 진행.
 	@Bean
-	@StepScope
+	/* @StepScope */
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		// 파티셔닝 적용을 위해 저장된 값 가져옴
@@ -224,7 +248,7 @@ public class LogFileToDbBatch {
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
 
 		// 멀티 리소스를 사용하기 위해 주석처리 함
-//		reader.setResource(new FileSystemResource(path));
+		reader.setResource(new FileSystemResource(path));
 //		reader.setLinesToSkip((int) (start - 1));
 //		reader.setMaxItemCount((int) (end - start + 1));
 
@@ -253,6 +277,19 @@ public class LogFileToDbBatch {
 		return reader;
 	}
 
+	// 아무 역할도 하지 않는 writer
+	public class DummyItemWriter implements ItemWriter<Object> {
+		@Override
+		public void write(Chunk<? extends Object> chunk) throws Exception {
+//			System.out.println("dummy activated");
+		}
+	}
+
+	@Bean
+	public DummyItemWriter dummyWriter() {
+		return new DummyItemWriter();
+	}
+
 	@Bean
 	public JdbcBatchItemWriter<LogDTO> loggingEventWriter() {
 //		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
@@ -263,8 +300,6 @@ public class LogFileToDbBatch {
 		// 성능 개선을 위해 ps 방식으로 변경
 		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
 				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-
-		System.out.println("loggingEventWriter()");
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new eventWriterItemPSSetter()).build();

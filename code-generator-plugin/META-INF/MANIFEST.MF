@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Code-generator-plugin
+Bundle-Name: code-generator-plugin
 Bundle-SymbolicName: code-generator-plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: code_generator_plugin.Activator
+Bundle-Activator: com.neobns.admin.codegen.Activator
 Bundle-ClassPath: .,
  lib/mysql-connector-j-9.1.0.jar,
  lib/mybatis-generator-core-1.4.2.jar,

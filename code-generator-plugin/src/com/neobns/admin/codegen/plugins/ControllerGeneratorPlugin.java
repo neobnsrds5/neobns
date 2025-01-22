@@ -1,18 +1,45 @@
-package code_generator_plugin.common;
+package com.neobns.admin.codegen.plugins;
 
-import com.squareup.javapoet.*;
-import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 
-//JavaPoet 라이브러리: Java 코드를 프로그래밍 방식으로 생성
-public class ControllerCodeGenerator {
+import javax.lang.model.element.Modifier;
 
-    public static void generateControllerCode(String className, String packageName, String targetPath) throws IOException {
+import org.mybatis.generator.api.GeneratedJavaFile;
+import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.PluginAdapter;
+
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeSpec;
+
+public class ControllerGeneratorPlugin extends PluginAdapter {
+
+	@Override
+	public boolean validate(List<String> warnings) {
+		return true;
+	}
+	
+	
+
+	@Override
+	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
+		// TODO Auto-generated method stub
+		return super.contextGenerateAdditionalJavaFiles(introspectedTable);
+	}
+
+
+
+	public static void generateControllerCode(IntrospectedTable introspectedTable, String className, String packageName, String targetPath) throws IOException {
         // 클래스 이름
         String controllerName = className + "Controller";
         String serviceName = className + "Service";
-        String modelName = className;
+        String dtoName = className;
         String requestMapping = "/" + className.toLowerCase();
 
         // 필드 생성
@@ -43,7 +70,7 @@ public class ControllerCodeGenerator {
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("org.springframework.web.bind.annotation", "PostMapping"))
 		                .addMember("value", "$S", "/insert")
 		                .build())
-                .addParameter(ParameterSpec.builder(ClassName.get("com.example.model", modelName), "dto")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.example.dto", dtoName), "dto")
                         .addAnnotation(ClassName.get("org.springframework.web.bind.annotation", "RequestBody"))
                         .build())
                 .addStatement("service.insert(dto)")
@@ -56,7 +83,7 @@ public class ControllerCodeGenerator {
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("org.springframework.web.bind.annotation", "PostMapping"))
                 		.addMember("value", "$S", "/insert-selective")
 		                .build())
-                .addParameter(ParameterSpec.builder(ClassName.get("com.example.model", modelName), "dto")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.example.dto", dtoName), "dto")
                         .addAnnotation(ClassName.get("org.springframework.web.bind.annotation", "RequestBody"))
                         .build())
                 .addStatement("service.insertSelective(dto)")
@@ -65,7 +92,7 @@ public class ControllerCodeGenerator {
         // findById 메서드 생성
         MethodSpec findByIdMethod = MethodSpec.methodBuilder("findById")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get("com.example.model", modelName))
+                .returns(ClassName.get("com.example.dto", dtoName))
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("org.springframework.web.bind.annotation", "GetMapping"))
                         .addMember("value", "$S", "/{id}")
                         .build())
@@ -89,7 +116,7 @@ public class ControllerCodeGenerator {
                                 .addMember("value", "$S", "id")
                                 .build())
                         .build())
-                .addParameter(ParameterSpec.builder(ClassName.get("com.example.model", modelName), "dto")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.example.dto", dtoName), "dto")
                         .addAnnotation(ClassName.get("org.springframework.web.bind.annotation", "RequestBody"))
                         .build())
                 .addStatement("service.updateSelective(dto)")
@@ -107,7 +134,7 @@ public class ControllerCodeGenerator {
                                 .addMember("value", "$S", "id")
                                 .build())
                         .build())
-                .addParameter(ParameterSpec.builder(ClassName.get("com.example.model", modelName), "dto")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.example.dto", dtoName), "dto")
                         .addAnnotation(ClassName.get("org.springframework.web.bind.annotation", "RequestBody"))
                         .build())
                 .addStatement("service.update(dto)")

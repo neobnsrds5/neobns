@@ -75,7 +75,7 @@ public class BrowserView extends ViewPart  {
 		@Override
 		public Object function(Object[] arguments) {
 			return MyBatisGeneratorProgrammatic.execute(shell, arguments[0].toString(), arguments[1].toString(),
-					arguments[2].toString(), arguments[3].toString(), arguments[4].toString(), arguments[5].toString());
+					arguments[2].toString(), arguments[3].toString(), arguments[4].toString());
 		}
 	}
 	

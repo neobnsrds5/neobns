@@ -6,6 +6,8 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
+import com.neobns.admin.codegen.util.StringUtil;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,8 +17,7 @@ import java.util.List;
 // mybatis-generator-core 라이브러리: MyBatis에서 제공하는 코드 생성기
 public class MyBatisGeneratorProgrammatic {
 
-	public static boolean execute(Shell shell, String url, String userId, String password, String targetPath,
-			String tableName, String primaryKey) {
+	public static boolean execute(Shell shell, String url, String userId, String password, String targetPath, String tableName) {
 		try {
 			// Warnings list to capture any warnings during the generation process
 			List<String> warnings = new ArrayList<>();
@@ -36,7 +37,7 @@ public class MyBatisGeneratorProgrammatic {
 			Context context = new Context(ModelType.CONDITIONAL);
 			context.setId("MyBatis3Context");
 			// MyBatis3: Example 클래스 (동적 쿼리를 위한 도우미 클래스)도 추가
-			// MyBatis3Simple: deleteByPrimaryKey, insert, selectByPrimaryKey, updateByPrimaryKey, ...
+			// MyBatis3Simple: deleteByPrimaryKey, insert, insertSelective, selectByPrimaryKey, updateByPrimaryKey, updateByPrimaryKeySelective ...
 			context.setTargetRuntime("MyBatis3"); // Use "MyBatis3Simple" if you want simpler output
 			config.addContext(context);
 
@@ -94,7 +95,7 @@ public class MyBatisGeneratorProgrammatic {
 			 */
 			TableConfiguration tableConfig = new TableConfiguration(context);
 			tableConfig.setTableName(tableName); // Table name in the database
-			tableConfig.setDomainObjectName(toCamelCase(tableName)); // Java entity name
+			tableConfig.setDomainObjectName(StringUtil.toPascalCase(tableName) + "DTO"); // DTO 클래스 이름 설정 -> customFileNamePlugin으로 mapper 이름 설정 필요
 			// dynamic query와 관련된 코드 생성 X -> true 설정 시 exampel Model 클래스 생성
 			tableConfig.setSelectByExampleStatementEnabled(false);
 			tableConfig.setDeleteByExampleStatementEnabled(false);
@@ -103,30 +104,43 @@ public class MyBatisGeneratorProgrammatic {
 			context.addTableConfiguration(tableConfig);
 			
 			// Additional Plugins (Optional)
-			PluginConfiguration virtualPKPlugin = new PluginConfiguration();
-			virtualPKPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ForceVirtualPrimaryKeyPlugin");
-			virtualPKPlugin.addProperty("primaryKeyColumns", primaryKey); // 기본 키로 사용할 컬럼 지정
-			
+			// 페이징처리가 가능한 find 메소드와 count 메소드가 생성되도록 하는 플러그인
 			PluginConfiguration paginationPlugin = new PluginConfiguration();
 			paginationPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.PaginationPlugin");
+			context.addPluginConfiguration(paginationPlugin);
 			
+			// DTO 클래스에 toString 메소드가 생성되도록 하는 플러그인
 			PluginConfiguration toStringPlugin = new PluginConfiguration();
 			toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
-
-			context.addPluginConfiguration(virtualPKPlugin);
-			context.addPluginConfiguration(paginationPlugin);
 			context.addPluginConfiguration(toStringPlugin);
+			
+			// 웹 표준에 맞춰 파일명이 생성되도록 하는 플러그인
+			PluginConfiguration fileNamePlugin = new PluginConfiguration();
+			fileNamePlugin.setConfigurationType("com.neobns.admin.codegen.plugins.CustomFileNamePlugin");
+			context.addPluginConfiguration(fileNamePlugin);
+			
+			// Service 코드가 생성되도록 하는 플러그인
+			PluginConfiguration servicePlugin = new PluginConfiguration();
+			servicePlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ServiceGeneratorPlugin");
+			servicePlugin.addProperty("targetProject", javaPath.toString());
+			context.addPluginConfiguration(servicePlugin);
+			
+			// Controller 코드가 생성되도록 하는 플러그인
+			PluginConfiguration controllerPlugin = new PluginConfiguration();
+			controllerPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ControllerGeneratorPlugin");
+			controllerPlugin.addProperty("targetProject", javaPath.toString());
+			context.addPluginConfiguration(controllerPlugin);
+			
+			// 자동으로 생성되는 주석을 생기지 않도록 설정
+			CommentGeneratorConfiguration commentGeneratorConfiguration = new CommentGeneratorConfiguration();
+			commentGeneratorConfiguration.addProperty("suppressAllComments", "true"); // 모든 주석 비활성화
+			context.setCommentGeneratorConfiguration(commentGeneratorConfiguration);
 
 			// Run the MyBatis Generator
 			DefaultShellCallback callback = new DefaultShellCallback(overwrite);
 			MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
 			myBatisGenerator.generate(null);
 			
-			// Run JavaPoet Generator
-			JUnitTestGenerator.generateJunitTest(toCamelCase(tableName), "com.example.mapper", targetPath);
-			ServiceCodeGenerator.generateServiceCode(toCamelCase(tableName), "com.example.service", targetPath);
-			ControllerCodeGenerator.generateControllerCode(toCamelCase(tableName), "com.example.controller", targetPath);
-
 			// Print warnings, if any
 			for (String warning : warnings) {
 				System.out.println(warning);
@@ -142,21 +156,4 @@ public class MyBatisGeneratorProgrammatic {
 		}
 	}
 	
-	public static String toCamelCase(String input) {
-		// Split the input string by underscores
-		String[] parts = input.split("_");
-
-		// Initialize a StringBuilder for the result
-		StringBuilder camelCaseString = new StringBuilder();
-
-		// Iterate through the parts
-		for (int i = 0; i < parts.length; i++) {
-			String part = parts[i];
-			// Capitalize the first letter of the subsequent parts
-			camelCaseString.append(part.substring(0, 1).toUpperCase());
-			camelCaseString.append(part.substring(1).toLowerCase());
-		}
-
-		return camelCaseString.toString();
-	}
 }

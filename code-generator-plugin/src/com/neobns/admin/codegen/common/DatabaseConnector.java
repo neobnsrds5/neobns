@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.neobns.admin.codegen.dto.ColumnDTO;
 import com.neobns.admin.codegen.dto.TableDTO;
 
 public class DatabaseConnector {
@@ -39,7 +40,7 @@ public class DatabaseConnector {
 			int firstQuestionIndex = mysqlUrl.indexOf('?') > 0 ? mysqlUrl.indexOf('?') : mysqlUrl.length(); // 첫번째 '?' 위치를 찾음
 			String schemaName = mysqlUrl.substring(lastSlashIndex + 1, firstQuestionIndex); // '/' 이후 문자열 추출
 			String columnInfoSql = """
-				    SELECT COLUMN_NAME,
+				    SELECT COLUMN_NAME, DATA_TYPE,
 				           IF(COLUMN_KEY = 'PRI', TRUE, FALSE) AS IS_PRIMARY_KEY
 				    FROM INFORMATION_SCHEMA.COLUMNS
 				    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
@@ -53,16 +54,17 @@ public class DatabaseConnector {
                     stmt.setString(2, tableName);
 
                     try (ResultSet rs = stmt.executeQuery()) {
-                    	TableDTO tableDto = new TableDTO();
-                        HashMap<String, Boolean> columns = new LinkedHashMap<String, Boolean>();
+                    	TableDTO table = new TableDTO();
+                    	List<ColumnDTO> columnList = new ArrayList<ColumnDTO>();
                         
                         while (rs.next()) {
-                            columns.put(rs.getString("COLUMN_NAME"), rs.getBoolean("IS_PRIMARY_KEY"));
+                        	ColumnDTO column = new ColumnDTO(rs.getString("COLUMN_NAME"), rs.getString("DATA_TYPE"), rs.getBoolean("IS_PRIMARY_KEY"));
+                        	columnList.add(column);
                         }
                         
-                        tableDto.setTableName(tableName);
-                        tableDto.setColumns(columns);
-                        tableList.add(tableDto);
+                        table.setTableName(tableName);
+                        table.setColumns(columnList);
+                        tableList.add(table);
                         
                     }
                 }

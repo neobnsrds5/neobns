@@ -43,20 +43,33 @@ function listTables() {
 
 		if (tableList && Array.isArray(tableList)) {
 			tableList.forEach(table => {
-				const columnsArray = Object.entries(table.columns); // 객체를 배열로 변환하여 인덱스 기반 접근
+				const tableTitle = document.createElement('h3');
+		        tableTitle.textContent = table.tableName; // 테이블 이름 설정
+		        tablesContainer.appendChild(tableTitle);
 
-				const columnName = columnsArray.map(([key]) => `<td>${key}</td>`).join("");
-				const columnInfo = columnsArray.map(([key, value]) => `<td><input type='radio' name='pk_${table.tableName}' value='${key}' ${value ? 'checked' : ''}></td>`).join("");
-
-				const tableHTML = `
-                    <div>${table.tableName}</div>
-                    <table border='1'>
-                        <tr><th>컬럼명</th>${columnName}</tr>
-                        <tr><th>기본키</th>${columnInfo}</tr>
-                    </table>
+		        // HTML 표 생성
+		        const tableHTML = `
+		            <table border="1" style="border-collapse: collapse;">
+		                <thead>
+		                    <tr>
+		                        <th>컬럼명</th>
+		                        <th>데이터타입</th>
+		                        <th>기본키</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                    ${table.columns.map(column => `
+		                        <tr>
+		                            <td>${column.columnName}</td>
+		                            <td>${column.dataType}</td>
+		                            <td><input type="radio" name="${table.tableName}_pk" value="${column.columnName}" ${column.isPrimaryKey ? "checked" : ""} style="pointer-events: none;"/></td>
+		                        </tr>
+		                    `).join('')}
+		                </tbody>
+		            </table>
 					<button type="button" class="btn btn-secondary" onClick='generateCode("${url}", "${username}", "${password}", "${table.tableName}", "${targetPath}")'>${table.tableName} 생성</button>
-			   	`;
-
+		        `;
+				
 				const tableElement = createElementWithHTML('div', tableHTML);
 				tablesContainer.appendChild(tableElement);
 			});
@@ -71,16 +84,5 @@ function listTables() {
 
 // 기본키를 확인하고 generateCode 호출
 function generateCode(url, username, password, tableName, targetPath) {
-	
-    // 해당 테이블의 선택된 기본키 찾기
-    const selectedPK = document.querySelector(`input[name='pk_${tableName}']:checked`);
-    
-    if (!selectedPK) {
-        alert(`테이블 ${tableName}에 대해 기본키를 선택해주세요.`);
-        return;
-    }
-
-    const primaryKey = selectedPK.value; // 선택된 컬럼명 가져오기
-
-	invokeGenerateCode(url, username, password, targetPath, tableName, primaryKey);
+	invokeGenerateCode(url, username, password, targetPath, tableName);
 }

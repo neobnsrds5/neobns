@@ -44,6 +44,9 @@ public class LogFileToDbBatch {
 
 			@Override
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+
+				path = chunkContext.getStepContext().getJobParameters().get("filePath").toString();
+
 				logFileToDbService.executeLogFileToDb(path);
 				return RepeatStatus.FINISHED;
 			}

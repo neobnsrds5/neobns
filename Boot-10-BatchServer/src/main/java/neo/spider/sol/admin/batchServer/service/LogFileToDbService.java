@@ -91,15 +91,13 @@ public class LogFileToDbService {
 		return errorPs;
 	}
 
-	// ps 연결 닫기
-	private void closeConnection(PreparedStatement... statements) {
+	// ps, 커넥션 닫기
+	private void closeConnection(Connection connection, PreparedStatement... statements) throws SQLException {
+
 		for (PreparedStatement ps : statements) {
-			try {
-				ps.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			ps.close();
 		}
+		connection.close();
 	}
 
 	// 스트링 토큰 정리
@@ -109,18 +107,15 @@ public class LogFileToDbService {
 	}
 
 	// 배치에서 호출할 메서드
-	public void executeLogFileToDb(String filePath) {
+	public void executeLogFileToDb(String filePath) throws SQLException {
 
 		long start = System.currentTimeMillis();
 		System.out.println("시작 : " + start);
-		PreparedStatement eventPs = null;
-		PreparedStatement slowPs = null;
-		PreparedStatement errorPs = null;
-		try (LineNumberReader lineReader = new LineNumberReader(new FileReader(filePath));
-				Connection connection = DriverManager.getConnection(databaseUrl, user, password);) {
-			eventPs = preparedStatement(connection, eventSql);
-			slowPs = preparedStatement(connection, slowSql);
-			errorPs = preparedStatement(connection, errorSql);
+		Connection connection = DriverManager.getConnection(databaseUrl, user, password);
+		PreparedStatement eventPs = preparedStatement(connection, eventSql);
+		PreparedStatement slowPs = preparedStatement(connection, slowSql);
+		PreparedStatement errorPs = preparedStatement(connection, errorSql);
+		try (LineNumberReader lineReader = new LineNumberReader(new FileReader(filePath));) {
 			connection.setAutoCommit(false);
 			String line;
 			int eventCount = 0, slowCount = 0, errorCount = 0;
@@ -129,9 +124,9 @@ public class LogFileToDbService {
 
 				String[] tokens = getTokens(line);
 
-				System.out.println("tokens.toString() : " + Arrays.toString(tokens));
-
-				System.out.println("tokens[1] : " + tokens[1] + tokens[1].equals("TRACE"));
+//				System.out.println("tokens.toString() : " + Arrays.toString(tokens));
+//
+//				System.out.println("tokens[1] : " + tokens[1] + tokens[1].equals("TRACE"));
 
 				// 로거 네임으로 분류
 				switch (tokens[1]) {
@@ -139,11 +134,11 @@ public class LogFileToDbService {
 
 					// logging event
 					eventPs = setEventPs(eventPs, tokens);
-					System.out.println("lineReader.getLineNumber() : " + lineReader.getLineNumber());
+//					System.out.println("lineReader.getLineNumber() : " + lineReader.getLineNumber());
 					// query
 					eventPs.setInt(11, lineReader.getLineNumber());
 					eventCount++;
-					System.out.println("eventCount++; " + eventCount);
+//					System.out.println("eventCount++; " + eventCount);
 					eventPs.addBatch();
 					break;
 
@@ -152,7 +147,7 @@ public class LogFileToDbService {
 					// logging slow
 					slowPs = setSlowPs(slowPs, tokens);
 					slowCount++;
-					System.out.println("slowcount : " + slowCount);
+//					System.out.println("slowcount : " + slowCount);
 					slowPs.addBatch();
 					break;
 
@@ -171,7 +166,7 @@ public class LogFileToDbService {
 				// 100개 도달 시 배치 실행
 				executeBatches(eventCount, slowCount, errorCount, eventPs, slowPs, errorPs, connection);
 
-				System.out.println("counts : " + eventCount + " : " + slowCount + " : " + errorCount);
+//				System.out.println("counts : " + eventCount + " : " + slowCount + " : " + errorCount);
 
 			}
 
@@ -181,7 +176,7 @@ public class LogFileToDbService {
 			e.printStackTrace();
 		} finally {
 			// 연결 닫기
-			closeConnection(eventPs, slowPs, errorPs);
+			closeConnection(connection, eventPs, slowPs, errorPs);
 		}
 
 		long end = System.currentTimeMillis();

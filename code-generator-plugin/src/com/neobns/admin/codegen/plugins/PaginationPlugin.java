@@ -8,22 +8,25 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.*;
 
+import com.neobns.admin.codegen.util.StringUtil;
+
 public class PaginationPlugin extends PluginAdapter {
 
 	@Override
     public boolean validate(List<String> warnings) {
-        return true;
+        return true; // 플러그인 유효성 검증
     }
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-    	FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+    	// 원래 테이블 이름 가져오기
+        String tableName = StringUtil.toPascalCase(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
     	
     	/*
     	 * find
     	 */
         XmlElement findElement = new XmlElement("select");
-        findElement.addAttribute(new Attribute("id", "find" + baseRecordType.getShortName()));
+        findElement.addAttribute(new Attribute("id", "find" + tableName));
         findElement.addAttribute(new Attribute("resultType", introspectedTable.getBaseRecordType()));
         // SQL 작성
         findElement.addElement(new TextElement("SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
@@ -36,8 +39,13 @@ public class PaginationPlugin extends PluginAdapter {
             ));
         });
         // 정렬 처리
-        IntrospectedColumn primaryKey = introspectedTable.getPrimaryKeyColumns().get(0); // 첫번째 PK로 정렬
-        findElement.addElement(new TextElement("ORDER BY " + primaryKey.getActualColumnName()));
+        IntrospectedColumn orderByColumn = null;
+        if(introspectedTable.hasPrimaryKeyColumns()) {
+        	orderByColumn = introspectedTable.getPrimaryKeyColumns().get(0); // 기본키가 있는 경우 첫번째 기본키로 정렬
+        }else {
+        	orderByColumn = introspectedTable.getAllColumns().getFirst(); // 기본키가 없는 경우 모든 컬럼 중 첫번째 컬럼으로 정렬
+        }
+        findElement.addElement(new TextElement("ORDER BY " + orderByColumn.getActualColumnName()));
         // 페이징 처리
         findElement.addElement(new TextElement("LIMIT #{offset}, #{limit}"));
         
@@ -45,7 +53,7 @@ public class PaginationPlugin extends PluginAdapter {
          * count
          */
         XmlElement countElement = new XmlElement("select");
-        countElement.addAttribute(new Attribute("id", "count" + baseRecordType.getShortName()));
+        countElement.addAttribute(new Attribute("id", "count" + tableName));
         countElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
         // SQL 작성
         countElement.addElement(new TextElement("SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
@@ -66,24 +74,30 @@ public class PaginationPlugin extends PluginAdapter {
 
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
-    	FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+    	// 원래 테이블 이름 가져오기
+        String tableName = StringUtil.toPascalCase(introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
+    	// DTO 타입 가져오기
+    	FullyQualifiedJavaType dtoType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
     	
-		Method findMethod = new Method("find" + baseRecordType.getShortName());
+		Method findMethod = new Method("find" + tableName);
 		findMethod.setVisibility(JavaVisibility.PUBLIC);
 		findMethod.setAbstract(true);
 		findMethod.setReturnType(new FullyQualifiedJavaType("List<" + introspectedTable.getBaseRecordType() + ">"));
 		findMethod.addParameter(createAnnotatedParameter("@Param(\"offset\")", FullyQualifiedJavaType.getIntInstance(), "offset"));
 	    findMethod.addParameter(createAnnotatedParameter("@Param(\"limit\")", FullyQualifiedJavaType.getIntInstance(), "limit"));
-	    findMethod.addParameter(createAnnotatedParameter("@Param(\"row\")", baseRecordType, "row"));
+	    findMethod.addParameter(createAnnotatedParameter("@Param(\"row\")", dtoType, "row"));
 	    
-	    Method countMethod = new Method("count" + baseRecordType.getShortName());
+	    Method countMethod = new Method("count" + tableName);
 	    countMethod.setVisibility(JavaVisibility.PUBLIC);
 	    countMethod.setAbstract(true);
 	    countMethod.setReturnType(FullyQualifiedJavaType.getIntInstance());
-	    countMethod.addParameter(new Parameter(baseRecordType, "row"));
+	    countMethod.addParameter(new Parameter(dtoType, "row"));
 
         interfaze.addMethod(findMethod);
         interfaze.addMethod(countMethod);
+        
+        interfaze.addImportedType(FullyQualifiedJavaType.getNewListInstance());
+        interfaze.addImportedType(new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param"));
 
         return super.clientGenerated(interfaze, introspectedTable);
     }

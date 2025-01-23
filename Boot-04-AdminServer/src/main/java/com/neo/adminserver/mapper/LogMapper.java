@@ -1,4 +1,4 @@
-package com.neo.adminserver.mapper.data;
+package com.neo.adminserver.mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;

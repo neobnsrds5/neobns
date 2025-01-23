@@ -1,4 +1,4 @@
-package com.neo.adminserver.controller; // 패키지명 com.neobns.admin.batch.controller
+package com.neobns.admin.batch.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neo.adminserver.common.SearchMap;
-import com.neo.adminserver.dto.BatchJobExecutionDTO;
-import com.neo.adminserver.dto.BatchJobInstanceDTO;
-import com.neo.adminserver.dto.BatchStepExecutionDTO;
-import com.neo.adminserver.service.BatchService;
-import com.neo.adminserver.util.DateUtil;
+import com.neobns.admin.batch.dto.BatchJobExecutionDTO;
+import com.neobns.admin.batch.dto.BatchJobInstanceDTO;
+import com.neobns.admin.batch.dto.BatchStepExecutionDTO;
+import com.neobns.admin.batch.service.BatchService;
 import com.neo.adminserver.util.PageUtil;
 
 import lombok.RequiredArgsConstructor;

@@ -1,13 +1,13 @@
-package com.neo.adminserver.mapper.meta;
+package com.neobns.admin.batch.mapper;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.neo.adminserver.dto.BatchJobExecutionDTO;
-import com.neo.adminserver.dto.BatchJobInstanceDTO;
-import com.neo.adminserver.dto.BatchStepExecutionDTO;
+import com.neobns.admin.batch.dto.BatchJobExecutionDTO;
+import com.neobns.admin.batch.dto.BatchJobInstanceDTO;
+import com.neobns.admin.batch.dto.BatchStepExecutionDTO;
 
 @Mapper
 public interface BatchMapper {

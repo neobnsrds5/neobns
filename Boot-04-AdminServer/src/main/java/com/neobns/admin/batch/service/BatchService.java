@@ -1,14 +1,14 @@
-package com.neo.adminserver.service;
+package com.neobns.admin.batch.service;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.neo.adminserver.dto.BatchJobExecutionDTO;
-import com.neo.adminserver.dto.BatchJobInstanceDTO;
-import com.neo.adminserver.dto.BatchStepExecutionDTO;
-import com.neo.adminserver.mapper.meta.BatchMapper;
+import com.neobns.admin.batch.dto.BatchJobExecutionDTO;
+import com.neobns.admin.batch.dto.BatchJobInstanceDTO;
+import com.neobns.admin.batch.dto.BatchStepExecutionDTO;
+import com.neobns.admin.batch.mapper.BatchMapper;
 
 import lombok.RequiredArgsConstructor;
 

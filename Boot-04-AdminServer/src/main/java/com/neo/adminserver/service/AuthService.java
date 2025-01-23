@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.neo.adminserver.dto.FwkUserDTO;
-import com.neo.adminserver.mapper.data.AuthMapper;
+import com.neo.adminserver.mapper.AuthMapper;
 
 import lombok.RequiredArgsConstructor;
 

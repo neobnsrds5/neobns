@@ -1,4 +1,4 @@
-package com.neo.adminserver.dto;
+package com.neobns.admin.batch.dto;
 
 import lombok.Getter;
 import lombok.Setter;

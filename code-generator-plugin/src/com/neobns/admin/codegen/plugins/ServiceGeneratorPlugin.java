@@ -99,10 +99,11 @@ public class ServiceGeneratorPlugin extends PluginAdapter {
         FullyQualifiedJavaType returnType = new FullyQualifiedJavaType("List");
         returnType.addTypeArgument(new FullyQualifiedJavaType(dtoType));
         findMethod.setReturnType(returnType);
-        findMethod.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(), "offset"));
-        findMethod.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(), "limit"));
+        findMethod.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(), "page"));
+        findMethod.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(), "size"));
         findMethod.addParameter(new Parameter(new FullyQualifiedJavaType(dtoType), "dto"));
-        findMethod.addBodyLine("return mapper.find" + className + "(offset, limit, dto);");
+        findMethod.addBodyLine("int offset = (page - 1) * size;");
+        findMethod.addBodyLine("return mapper.find" + className + "(offset, size, dto);");
         serviceClass.addMethod(findMethod);
         
         // 메서드 추가: count

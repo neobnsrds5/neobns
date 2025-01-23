@@ -56,7 +56,7 @@ public class PaginationPlugin extends PluginAdapter {
         countElement.addAttribute(new Attribute("id", "count" + tableName));
         countElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
         // SQL 작성
-        countElement.addElement(new TextElement("SELECT * FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
+        countElement.addElement(new TextElement("SELECT count(*) FROM " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
         countElement.addElement(new TextElement("WHERE 1=1"));
         // 모델 객체의 멤버 변수 조건 추가
         introspectedTable.getAllColumns().forEach(column -> {

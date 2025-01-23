@@ -64,9 +64,9 @@ List<GeneratedJavaFile> fileList = new ArrayList<GeneratedJavaFile>();
         controllerClass.addImportedType(dtoType);
         controllerClass.addImportedType(serviceType);
         controllerClass.addImportedType("java.util.*");
-        controllerClass.addImportedType("org.springframework.stereotype.Controller");
         controllerClass.addImportedType("org.springframework.http.ResponseEntity");
         controllerClass.addImportedType("org.springframework.beans.factory.annotation.*");
+        controllerClass.addImportedType("org.springframework.web.bind.annotation.*");
         
         // @Controller 어노테이션 추가
         controllerClass.addAnnotation("@RestController");
@@ -109,7 +109,7 @@ List<GeneratedJavaFile> fileList = new ArrayList<GeneratedJavaFile>();
 		findMethod.addParameter(createAnnotatedParameter("@RequestParam(defaultValue = \"1\")", FullyQualifiedJavaType.getIntInstance(), "page"));
 		findMethod.addParameter(createAnnotatedParameter("@RequestParam(defaultValue = \"10\")", FullyQualifiedJavaType.getIntInstance(), "size"));
 		findMethod.addParameter(createAnnotatedParameter("@ModelAttribute", new FullyQualifiedJavaType(dtoType), "dto"));
-		findMethod.addBodyLine("List<" + dtoType + ">" + "list = service.find" + className + "(dto, page, size);");
+		findMethod.addBodyLine("List<" + dtoType + ">" + "list = service.find" + className + "(page, size, dto);");
 		findMethod.addBodyLine("int totalDtos = service.count" + className + "(dto);");
 		findMethod.addBodyLine("int totalPages = totalDtos == 0 ? 0 : (int) Math.ceil((double) totalDtos / size);");
 		findMethod.addBodyLine("Map<String, Object> response = new HashMap<>();");

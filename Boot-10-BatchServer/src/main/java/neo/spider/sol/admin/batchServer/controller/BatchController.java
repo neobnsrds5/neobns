@@ -1,6 +1,5 @@
-package com.example.neobns.controller;
+package neo.spider.sol.admin.batchServer.controller;
 
-import org.bouncycastle.jcajce.provider.asymmetric.ec.SignatureSpi.ecCVCDSA;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -9,9 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.neobns.service.FileMaintenanceService;
-
 import lombok.RequiredArgsConstructor;
+import neo.spider.sol.admin.batchServer.service.FileMaintenanceService;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +17,9 @@ public class BatchController {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 	private final FileMaintenanceService fileMaintenanceService;
-	private String filePath = "../logs/application.log";
-	private String rolledFilesPath = "../logs/application/rolling";
+	private final String quickPath = "../logs/application.log";
+	private final String gatewayPath = "../logs/gateway-application.log";
+	private final String accountsPath = "../logs/accounts-application.log";
 
 	@GetMapping("/batch/dbtoapi/{value}")
 	public String firstApi(@PathVariable("value") String value) throws Exception {
@@ -63,17 +62,27 @@ public class BatchController {
 	public String logToDbTest(@PathVariable("value") String value) {
 
 		String uniqVal = value + System.currentTimeMillis();
+		String filePath;
 
-		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal).toJobParameters();
+		if (value.equalsIgnoreCase("quick")) {
+			filePath = quickPath;
+		} else if (value.equalsIgnoreCase("gate")) {
+			filePath = gatewayPath;
+		} else if (value.equalsIgnoreCase("accounts")) {
+			filePath = accountsPath;
+		} else {
+			return "FAIL";
+		}
+
+		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal)
+				.addString("filePath", filePath).toJobParameters();
 
 		try {
+
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
 //			fileMaintenanceService.cleanupLogFile(filePath);
-			// 폴더 하위 전체 파일 삭제
-//			fileMaintenanceService.cleanupLogFolder(rolledFilesPath);
 			return "OK";
 		} catch (Exception e) {
-			e.printStackTrace();
 			return "FAIL";
 		}
 	}
@@ -87,21 +96,6 @@ public class BatchController {
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("parentBatchJob"), jobParameters);
-			return "OK";
-		} catch (Exception e) {
-			return "FAIL";
-		}
-	}
-
-	@GetMapping("/batch/spiderDb/{value}")
-	public String spiderBatchTest(@PathVariable("value") String value) {
-
-		String uniqVal = value + System.currentTimeMillis();
-
-		JobParameters jobParameters = new JobParametersBuilder().addString("spiderBatch", uniqVal).toJobParameters();
-
-		try {
-			jobLauncher.run(jobRegistry.getJob("dbToSpiderErrorJob"), jobParameters);
 			return "OK";
 		} catch (Exception e) {
 			return "FAIL";

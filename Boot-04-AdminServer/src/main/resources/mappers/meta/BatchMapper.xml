@@ -3,6 +3,7 @@
 
     <!--BatchJobInstance : BATCH_JOB_INSTANCE table -->
     <resultMap id="instanceResultMap" type="com.neobns.admin.batch.dto.BatchJobInstanceDTO">
+        <id property="executionId" column="JOB_EXECUTION_ID"/>
         <id property="instanceId" column="JOB_INSTANCE_ID"/>
         <result property="version" column="VERSION"/>
         <result property="jobName" column="JOB_NAME"/>
@@ -67,19 +68,23 @@
 
     <select id="countJobs" parameterType="com.neobns.admin.batch.dto.BatchJobInstanceDTO" resultType="int">
         SELECT count(j.JOB_INSTANCE_ID) as cnt
-        FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e left join BATCH_JOB_EXECUTION_PARAMS p
-             ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
+        FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e
         WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
+        <if test="executionId != null and executionId > 0"> and e.JOB_EXECUTION_ID = #{executionId}</if>
+        <if test="jobName != null and jobName != ''"> and j.JOB_NAME like concat('%', #{jobName}, '%')</if>
+        <if test="startDate != null"> and DATE(CREATE_TIME) between #{startDate} and #{endDate}</if>
+        <if test="status != null and status != ''"> and STATUS = #{status}</if>
     </select>
 
     <select id="findJobs" resultMap="instanceResultMap">
-        SELECT DISTINCT j.JOB_INSTANCE_ID, j.JOB_NAME, e.JOB_EXECUTION_ID, e.VERSION, e.CREATE_TIME,
-               e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE, e.LAST_UPDATED,
-               p.PARAMETER_NAME, p.PARAMETER_TYPE, p.PARAMETER_VALUE, p.IDENTIFYING
-        FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e left join BATCH_JOB_EXECUTION_PARAMS p
-             ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
+        SELECT j.JOB_INSTANCE_ID, j.JOB_NAME, e.JOB_EXECUTION_ID, e.VERSION, e.CREATE_TIME,
+               e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE, e.LAST_UPDATED
+        FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e
         WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
-        order by j.JOB_INSTANCE_ID desc, e.JOB_EXECUTION_ID desc
+        <if test="paramDto.executionId != null and paramDto.executionId > 0">and e.JOB_EXECUTION_ID = #{paramDto.executionId}</if>
+        <if test="paramDto.jobName != null and paramDto.jobName != ''">and j.JOB_NAME like concat('%', #{paramDto.jobName}, '%')</if>
+        <if test="paramDto.startDate != null"> and DATE(CREATE_TIME) between #{paramDto.startDate} and #{paramDto.endDate}</if>
+        <if test="paramDto.status != null and paramDto.status != ''">and STATUS = #{paramDto.status}</if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -93,6 +98,7 @@
                            ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
         WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
           and e.JOB_INSTANCE_ID = #{instanceId}
+          and e.JOB_EXECUTION_ID = #{executionId}
         order by JOB_INSTANCE_ID desc, e.JOB_EXECUTION_ID desc
     </select>
 

@@ -53,17 +53,17 @@ public class BatchController {
 	}
 
 	@GetMapping("/jobDetail")
-	public String jobDetail(Model model, BatchJobInstanceDTO paramVo) {
+	public String jobDetail(Model model, BatchJobInstanceDTO paramDto) {
 
 		BatchJobInstanceDTO job = null;
 		List<BatchStepExecutionDTO> steps = null;
 
-		job = batchService.findJobById(paramVo.getInstanceId());
+		job = batchService.findJobById(paramDto.getInstanceId(), paramDto.getExecutionId());
 
 		logger.info("BatchJobInstanceEntity : " + job.toString());
 
 		if (job.getExec() != null) {
-			steps = batchService.findStepsByJobId(job.getExec().getExecutionId());
+			steps = batchService.findStepsByJobId(job.getExecutionId());
 		}
 
 		model.addAttribute("job", job);
@@ -73,9 +73,9 @@ public class BatchController {
 	}
 
 	@GetMapping("/stepDetail")
-	public String stepDetail(Model model, BatchJobExecutionDTO paramVo) {
+	public String stepDetail(Model model, BatchJobExecutionDTO paramDto) {
 
-		BatchJobExecutionDTO job = batchService.findStepById(paramVo.getExecutionId());
+		BatchJobExecutionDTO job = batchService.findStepById(paramDto.getExecutionId());
 
 		logger.info("BatchJobExecutionEntity : " + job.toString());
 

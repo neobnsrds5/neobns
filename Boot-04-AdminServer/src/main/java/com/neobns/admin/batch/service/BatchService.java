@@ -27,8 +27,8 @@ public class BatchService {
 		return batchMapper.findJobs(paramDto, size, offset);
 	}
 
-	public BatchJobInstanceDTO findJobById(int id) {
-		return batchMapper.findJobById(id);
+	public BatchJobInstanceDTO findJobById(int instanceId, int executionId) {
+		return batchMapper.findJobById(instanceId, executionId);
 	}
 
 	public BatchJobExecutionDTO findStepById(int id) {

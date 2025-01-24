@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>배치 JOB 목록</title>
+	<title>배치 JOB 실행 목록</title>
 
 	<!-- 요청 파라미터 저장 Js -->
 	<script src="/assets/js/parameterSave.js"></script>
@@ -11,7 +11,7 @@
 <div class="page-content" layout:fragment="main">
 
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
-		<h2 class="mb-4 text-center"><a href="/batch/jobList">배치 JOB 목록</a></h2>
+		<h2 class="mb-4 text-center"><a href="/batch/jobList">배치 JOB 실행 목록</a></h2>
 
 		<form action="/batch/jobList" method="get" id="searchForm" name="frm">
 
@@ -40,9 +40,10 @@
 			</div>
 			<div class="table-responsive">
 				<!-- 검색 결과 없을 때 메시지 -->
-				<div th:if="${jobList.size() == 0}">
-					<p>검색 결과가 없습니다.</p>
+				<div class="m-lg-5 p-lg-5 text-center" th:if="${jobList.size() == 0}">
+					<h4>검색 결과가 없습니다.</h4>
 				</div>
+
 				<table th:unless="${jobList.size() == 0}" class="table table-sm table-hover">
 					<thead>
 					<tr class="text-center">
@@ -59,7 +60,7 @@
 					<tbody class="list" id="table-orders-body">
 					<tr class="btn-reveal-trigger align-middle text-center" th:each="job : ${jobList}">
 						<td class="instanceId"><a class="prd-link"
-												  th:href="@{/batch/jobDetail(instanceId=${job.instanceId})}"
+												  th:href="@{/batch/jobDetail(instanceId=${job.instanceId}, executionId=${job.exec.executionId})}"
 												  th:text="${job.instanceId}"></a></td>
 						<td class="excutionId" th:text="${job.exec.executionId}"></td>
 						<td class="ver" th:text="${job.version}"></td>
@@ -81,32 +82,39 @@
 				</table>
 			</div>
 
-			<div class="pagination" th:if="${jobList.size() > 0}">
+			<div class="row" th:if="${jobList.size() > 0}">
+				<ul class="pagination">
 				<!-- 이전 페이지 그룹 -->
-				<span class="page-item">
-				<a class="page-link"
-				   th:href="@{/batch/jobList(page=${(currentPage - 1)/10 * 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
-				   th:if="${currentPage > 10}">
-					« 이전
-				</a>
-			</span>
+				<li  class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
+					<a class="page-link" th:if="${currentPage > 10}"
+					   th:href="@{/batch/jobList(page=${(currentPage - 1)/10 * 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
+						« 이전
+					</a>
+					<a class="page-link" th:unless="${currentPage > 10}" href="#">
+						« 이전
+					</a>
+				</li>
 				<!-- 페이지 번호 그룹 -->
-				<span class="page-item"
-					  th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
-		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-				   th:href="@{/batch/jobList(page=${pageNum}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
-		            <span th:text="${pageNum}"></span>
-		        </a>
-		    </span>
+				<li class="page-item"
+				    th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
+			        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
+					   th:href="@{/batch/jobList(page=${pageNum}, size=${size}, status=${param.status}, jobName=${param.jobName}, startDate=${param.startDate}, endDate=${param.endDate})}"
+					   th:text="${pageNum}">
+			        </a>
+		        </li>
 
 				<!-- 다음 페이지 그룹 -->
-				<span class="page-item">
-				<a class="page-link"
-				   th:href="@{/batch/jobList(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
-				   th:if="${currentPage + 10 <= totalPages}">
-		       	    다음 »
-				</a>
-			</span>
+				<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/batch/jobList(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, status=${param.status}, jobName=${param.jobName}, startDate=${param.startDate}, endDate=${param.endDate})}"
+					   th:if="${currentPage + 10 <= totalPages}">
+			            다음 »
+					</a>
+					<a class="page-link" th:unless="${currentPage + 10 <= totalPages}" href="#">
+						다음 »
+					</a>
+				</li>
+				</ul>
 			</div>
 
 		</form>

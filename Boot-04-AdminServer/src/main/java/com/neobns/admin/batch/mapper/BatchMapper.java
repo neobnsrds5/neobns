@@ -16,7 +16,7 @@ public interface BatchMapper {
 
 	List<BatchJobInstanceDTO> findJobs(@Param("paramDto") BatchJobInstanceDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
 
-	BatchJobInstanceDTO findJobById(int id);
+	BatchJobInstanceDTO findJobById(int instanceId, int executionId);
 
 	BatchJobExecutionDTO findStepById(int id);
 

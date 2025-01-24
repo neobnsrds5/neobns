@@ -28,7 +28,12 @@ public class BatchController {
 
 		JobParameters jobParameters = new JobParametersBuilder().addString("dbtoapi", uniqVal).toJobParameters();
 
-		jobLauncher.run(jobRegistry.getJob("dbToApiJob"), jobParameters);
+		try {
+			jobLauncher.run(jobRegistry.getJob("dbToApiJob"), jobParameters);
+		} catch (Exception e) {
+			return "FAIL";
+		}
+
 		return "OK";
 	}
 
@@ -38,7 +43,13 @@ public class BatchController {
 		String uniqVal = value + System.currentTimeMillis();
 
 		JobParameters jobParameters = new JobParametersBuilder().addString("dbtodb", uniqVal).toJobParameters();
-		jobLauncher.run(jobRegistry.getJob("dbCopyJob"), jobParameters);
+
+		try {
+			jobLauncher.run(jobRegistry.getJob("dbCopyJob"), jobParameters);
+		} catch (Exception e) {
+			return "FAIL";
+		}
+
 		return "OK";
 	}
 
@@ -78,9 +89,8 @@ public class BatchController {
 				.addString("filePath", filePath).toJobParameters();
 
 		try {
-
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
-			fileMaintenanceService.cleanupLogFile(filePath);
+//			fileMaintenanceService.cleanupLogFile(filePath);
 			return "OK";
 		} catch (Exception e) {
 			e.printStackTrace();

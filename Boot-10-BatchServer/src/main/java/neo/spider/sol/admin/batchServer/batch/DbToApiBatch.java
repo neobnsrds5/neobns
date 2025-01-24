@@ -32,21 +32,21 @@ public class DbToApiBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final RestTemplate restTemplate;
-	
-	public DbToApiBatch(@Qualifier("dataDataSource") DataSource datasource, PlatformTransactionManager transactionManager,
-			JobRepository jobRepository, RestTemplate restTemplate) {
+
+	public DbToApiBatch(@Qualifier("dataDataSource") DataSource datasource,
+			PlatformTransactionManager transactionManager, JobRepository jobRepository, RestTemplate restTemplate) {
 		this.datasource = datasource;
 		this.transactionManager = transactionManager;
 		this.jobRepository = jobRepository;
 		this.restTemplate = restTemplate;
 	}
-	
+
 	@Bean
 	public TaskExecutor toApiTaskExecutor() {
 
 		int corePoolSize = 4; // 4~8
 		int maxPoolSize = 8; // 8~16
-		int queueSize = 50; //50~100
+		int queueSize = 50; // 50~100
 
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
@@ -104,7 +104,7 @@ public class DbToApiBatch {
 
 			@Override
 			public AccountDTO process(Map<String, Object> item) throws Exception {
-				
+
 				String threadName = Thread.currentThread().getName();
 
 				AccountDTO result = new AccountDTO();
@@ -124,6 +124,9 @@ public class DbToApiBatch {
 
 	private void sendToApi(AccountDTO data) {
 		String result = restTemplate.postForObject("http://localhost:8084/test", data, String.class);
+		if ("FAIL".equalsIgnoreCase(result)) {
+			throw new RuntimeException("api 호출 결과 : 실패 반환");
+		}
 	}
 
 }

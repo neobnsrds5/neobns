@@ -80,9 +80,10 @@ public class BatchController {
 		try {
 
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
-//			fileMaintenanceService.cleanupLogFile(filePath);
+			fileMaintenanceService.cleanupLogFile(filePath);
 			return "OK";
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "FAIL";
 		}
 	}

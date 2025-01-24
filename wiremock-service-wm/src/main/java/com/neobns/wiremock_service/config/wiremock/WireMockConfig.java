@@ -8,7 +8,6 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 @Configuration
 public class WireMockConfig {
@@ -19,18 +18,11 @@ public class WireMockConfig {
 	            WireMockConfiguration.wireMockConfig()
                 .port(56789)
                 .usingFilesUnderClasspath("wiremock")
+                .extensions(new TransformStub())
         );
 		
-		 // 모든 요청에 대해 Fallback 처리
-		server.stubFor(any(urlMatching(".*"))
-				.willReturn(WireMock.aResponse()
-		                .withStatus(503) // HTTP 503 상태 반환
-		                .withHeader("Content-Type", "application/json")
-		                .withBody("{ \"error\": \"Service Unavailable\", \"message\": \"Fallback response wiremock\" }")
-	                ));
+		server.start();
 
-
-		
 		//파비콘 No Content 처리
 		server.stubFor(WireMock.request("GET", new UrlPattern(WireMock.equalTo("/favicon.ico"), false))
 			    .willReturn(WireMock.aResponse()
@@ -38,32 +30,22 @@ public class WireMockConfig {
 			            .withHeader("Content-Type", "text/plain")
 			    	));
 		
-		server.addMockServiceRequestListener((request, response) -> {
-		    // 요청 정보를 Stub으로 저장
-		    saveStubMapping(
-		        server,
-		        request.getUrl(),
-		        request.getMethod().getName(),
-		        response.getStatus(),
-		        response.getBodyAsString()
-		    );
-		});
-
+		server.stubFor(any(urlPathMatching("/register"))
+                .willReturn(aResponse()
+                        .withTransformers("trans") // TransformStub에서 등록된 이름 사용
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(201)
+                        .withBody("{\"message\": \"Register endpoint ready!\"}")));
 		
+		
+		DefaultStub.errorStub(server);
+		DefaultStub.delayStub(server);
+		DefaultStub.downStub(server);
+				
 		return server;
     }
 	
-	private void saveStubMapping(WireMockServer wireMockServer, String url, String method, int status, String body) {
-		// 요청-응답 Stub 생성
-		StubMapping stubMapping = WireMock.stubFor(WireMock.request(method, WireMock.urlEqualTo(url))
-	        .willReturn(WireMock.aResponse()
-	            .withStatus(status)
-	            .withBody(body)));
-		
-		// Stub 저장
-        wireMockServer.addStubMapping(stubMapping);
-	
-	}
+
 	
 	
 }

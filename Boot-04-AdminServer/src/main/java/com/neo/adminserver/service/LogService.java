@@ -29,11 +29,6 @@ public class LogService {
     }
 
     public int countErrorLogs(LogDTO paramDto) {
-        // 초 단위를 밀리초 단위로 변경
-        String executeResult = paramDto.getExecuteResult();
-        if(executeResult != null && !executeResult.isEmpty()){
-            paramDto.setExecuteResult(String.valueOf(Integer.parseInt(executeResult) * 1000));
-        }
         return logMapper.countErrorLogs(paramDto);
     }
     

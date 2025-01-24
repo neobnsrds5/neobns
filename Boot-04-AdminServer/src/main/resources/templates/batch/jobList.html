@@ -10,7 +10,7 @@
 </head>
 <div class="page-content" layout:fragment="main">
 
-	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
 		<h2 class="mb-4 text-center"><a href="/batch/jobList">배치 JOB 목록</a></h2>
 
 		<form action="/batch/jobList" method="get" id="searchForm" name="frm">
@@ -23,26 +23,29 @@
 						<select class="form-select" name="status">
 							<option selected value="">---상태---</option>
 							<option th:each="status : ${statusList}"
-							        th:selected="${#strings.equals(status, searchMap.status)}" th:text="${status}"
+							        th:selected="${#strings.equals(status, param.status)}" th:text="${status}"
 							        th:value="${status}"></option>
 						</select>
 						<input aria-label="jobName" class="form-control mx-2" name="jobName"
-						       placeholder="Job 이름" th:value="${searchMap.jobName}" type="text"/>
-						<input class="form-control " name="startDate" th:value="${searchMap.startDate}"
+						       placeholder="Job 이름" th:value="${param.jobName}" type="text"/>
+						<input class="form-control " name="startDate" th:value="${param.startDate}"
 						       placeholder="시작날짜" type="date"/>
 						<span class="px-2">~</span>
-						<input class="form-control " name="endDate" th:value="${searchMap.endDate}"
+						<input class="form-control " name="endDate" th:value="${param.endDate}"
 						       placeholder="종료날짜" type="date"/>
 						<button class="btn btn-sm btn-primary" type="submit">
 							<i class="ri-search-line fs-5"></i></button>
 					</div>
 				</div>
 			</div>
-			<div class="">
-				<table class="table table-sm table-hover">
+			<div class="table-responsive">
+				<!-- 검색 결과 없을 때 메시지 -->
+				<div th:if="${jobList.size() == 0}">
+					<p>검색 결과가 없습니다.</p>
+				</div>
+				<table th:unless="${jobList.size() == 0}" class="table table-sm table-hover">
 					<thead>
 					<tr class="text-center">
-						<th class="sort white-space-nowrap" data-sort="no">No.</th>
 						<th class="sort white-space-nowrap" data-sort="instanceId">인스턴스ID</th>
 						<th class="sort white-space-nowrap" data-sort="executionId">실행ID</th>
 						<th class="sort white-space-nowrap" data-sort="ver">버전</th>
@@ -54,33 +57,56 @@
 					</tr>
 					</thead>
 					<tbody class="list" id="table-orders-body">
-					<th:block th:if="${!#lists.isEmpty(list)}">
-						<tr class="btn-reveal-trigger align-middle text-center" th:each="job, i : ${list}">
-							<td class="no" style="width: 28px;" th:text="${searchMap.pgtl.getSeqNo(i.count)}">0</td>
-							<td class="instanceId"><a class="prd-link"
-							                          th:href="@{/batch/jobDetail(instanceId=${job.instanceId})}"
-							                          th:text="${job.instanceId}"></a></td>
-							<td class="excutionId" th:text="${job.exec.executionId}"></td>
-							<td class="ver" th:text="${job.version}"></td>
-							<td class="jobName" th:text="${job.jobName}"></td>
-							<td class="status">
-								<span th:attr="class=${job.exec.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-                                    <span th:text="${job.exec.status}"></span>
-                                </span>
-							</td>
-							<td class="exitCode">
-								<span th:attr="class=${job.exec.isExitComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-					                <span th:text="${job.exec.exitCode}"></span>
-					            </span>
-							</td>
-							<td class="createTime" th:text="${@DateUtil.getDateTimeFormat(job.exec.createTime)}"></td>
-							<td class="updateTime" th:text="${@DateUtil.getDateTimeFormat(job.exec.updateTime)}"></td>
-						</tr>
-					</th:block>
+					<tr class="btn-reveal-trigger align-middle text-center" th:each="job : ${jobList}">
+						<td class="instanceId"><a class="prd-link"
+												  th:href="@{/batch/jobDetail(instanceId=${job.instanceId})}"
+												  th:text="${job.instanceId}"></a></td>
+						<td class="excutionId" th:text="${job.exec.executionId}"></td>
+						<td class="ver" th:text="${job.version}"></td>
+						<td class="jobName" th:text="${job.jobName}"></td>
+						<td class="status">
+							<span th:attr="class=${job.exec.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
+								<span th:text="${job.exec.status}"></span>
+							</span>
+						</td>
+						<td class="exitCode">
+							<span th:attr="class=${job.exec.isExitComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
+								<span th:text="${job.exec.exitCode}"></span>
+							</span>
+						</td>
+						<td class="createTime" th:text="${job.exec.createTime}"></td>
+						<td class="updateTime" th:text="${job.exec.updateTime}"></td>
+					</tr>
 					</tbody>
 				</table>
+			</div>
 
-				<th:block th:utext="${searchMap.pgtl.printPageList}"></th:block>
+			<div class="pagination" th:if="${jobList.size() > 0}">
+				<!-- 이전 페이지 그룹 -->
+				<span class="page-item">
+				<a class="page-link"
+				   th:href="@{/batch/jobList(page=${(currentPage - 1)/10 * 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
+				   th:if="${currentPage > 10}">
+					« 이전
+				</a>
+			</span>
+				<!-- 페이지 번호 그룹 -->
+				<span class="page-item"
+					  th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
+		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
+				   th:href="@{/batch/jobList(page=${pageNum}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
+		            <span th:text="${pageNum}"></span>
+		        </a>
+		    </span>
+
+				<!-- 다음 페이지 그룹 -->
+				<span class="page-item">
+				<a class="page-link"
+				   th:href="@{/batch/jobList(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
+				   th:if="${currentPage + 10 <= totalPages}">
+		       	    다음 »
+				</a>
+			</span>
 			</div>
 
 		</form>

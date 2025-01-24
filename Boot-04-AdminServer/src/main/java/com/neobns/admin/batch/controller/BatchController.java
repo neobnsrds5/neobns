@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -30,36 +31,24 @@ public class BatchController {
 	private final BatchService batchService;
 
 	@GetMapping("/jobList")
-	public String list(Model model, @RequestParam HashMap<String, Object> paramMap, PageUtil pgtl) {
-
-		logger.info("----------------------------------------------------");
-		logger.info("/batch/jobList");
-		logger.info("paramMap : " + paramMap);
-		logger.info("----------------------------------------------------");
-
-		// ------------------------------------------------------------------------
-		// SearchMap Init
-		// ------------------------------------------------------------------------
-		SearchMap searchMap = new SearchMap(paramMap);
-		searchMap.initParam("status", "");
-		searchMap.initParam("jobName", "");
-		searchMap.initParam("startDate", "");
-		searchMap.initParam("endDate", "");
-
-		// ------------------------------------------------------------------------
-		// pageLink init
-		// ------------------------------------------------------------------------
-		int total = batchService.countJobs(searchMap);
-		pgtl.init(total, "/batch/jobList", searchMap.getParams());
-		searchMap.setPgtl(pgtl);
-
-		List<BatchJobInstanceDTO> list = batchService.findJobs(searchMap);
-
+	public String list(Model model,
+					   @RequestParam(defaultValue = "1") int page,
+					   @RequestParam(defaultValue = "10") int size,
+					   @ModelAttribute BatchJobInstanceDTO paramDto) {
+		logger.info("{}", size);
+		List<BatchJobInstanceDTO> jobList = batchService.findJobs(paramDto, page, size);
+		logger.info("jobList size : {}", jobList.size());
+		int totalJobs = batchService.countJobs(paramDto);
+		logger.info("totalJobs : {}", totalJobs);
+		int totalPages = totalJobs == 0 ? 0 : (int) Math.ceil((double) totalJobs / size);
 		String[] status = { "COMPLETED", "STARTING", "STARTED", "STOPPING", "STOPPED", "FAILED", "UNKNOWN" };
 
-		model.addAttribute("list", list);
-		model.addAttribute("searchMap", searchMap);
+		model.addAttribute("jobList", jobList);
+		model.addAttribute("param", paramDto);
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("statusList", status);
+
 		return "batch/jobList";
 	}
 

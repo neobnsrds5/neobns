@@ -1,5 +1,6 @@
 package com.neobns.admin.batch.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -19,5 +20,9 @@ public class BatchJobInstanceDTO {
 	private BatchJobExecutionDTO exec;
 	
 	private List<BatchJobExecutionParamsDTO> execParams;
-	
+
+	// 검색을 위한 멤버변수
+	private Date startDate;
+	private Date endDate;
+	private String status;
 }

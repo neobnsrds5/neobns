@@ -8,16 +8,17 @@ import org.apache.ibatis.annotations.Mapper;
 import com.neobns.admin.batch.dto.BatchJobExecutionDTO;
 import com.neobns.admin.batch.dto.BatchJobInstanceDTO;
 import com.neobns.admin.batch.dto.BatchStepExecutionDTO;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface BatchMapper {
-	public int countJobs(HashMap<String, Object> map);
+	int countJobs(BatchJobInstanceDTO paramDto);
 
-	public List<BatchJobInstanceDTO> findJobs(HashMap<String, Object> map);
+	List<BatchJobInstanceDTO> findJobs(@Param("paramDto") BatchJobInstanceDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
 
-	public BatchJobInstanceDTO findJobById(int id);
+	BatchJobInstanceDTO findJobById(int id);
 
-	public BatchJobExecutionDTO findStepById(int id);
+	BatchJobExecutionDTO findStepById(int id);
 
-	public List<BatchStepExecutionDTO> findStepsByJobId(int id);
+	List<BatchStepExecutionDTO> findStepsByJobId(int id);
 }

@@ -18,12 +18,13 @@ public class BatchService {
 	
 	private final BatchMapper batchMapper;
 
-	public int countJobs(HashMap<String, Object> map) {
-		return batchMapper.countJobs(map);
+	public int countJobs(BatchJobInstanceDTO paramDto) {
+		return batchMapper.countJobs(paramDto);
 	}
 
-	public List<BatchJobInstanceDTO> findJobs(HashMap<String, Object> map) {
-		return batchMapper.findJobs(map);
+	public List<BatchJobInstanceDTO> findJobs(BatchJobInstanceDTO paramDto, int page, int size) {
+		int offset = (page - 1) * size;
+		return batchMapper.findJobs(paramDto, size, offset);
 	}
 
 	public BatchJobInstanceDTO findJobById(int id) {

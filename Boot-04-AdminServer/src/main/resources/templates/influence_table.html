@@ -80,7 +80,7 @@
 		<div class="row" th:if="${logList.size() > 0}">
 			<ul class="pagination">
 			<!-- 이전 페이지 그룹 -->
-			<li class="page-item">
+			<li class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
 				<a class="page-link" th:href="@{/admin/table(page=${(currentPage - 1)/10 * 10}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
 				   th:if="${currentPage > 10}">
 					 « 이전

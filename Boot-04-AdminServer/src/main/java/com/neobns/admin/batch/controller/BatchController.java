@@ -1,6 +1,5 @@
 package com.neobns.admin.batch.controller;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,12 +11,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.neo.adminserver.common.SearchMap;
 import com.neobns.admin.batch.dto.BatchJobExecutionDTO;
 import com.neobns.admin.batch.dto.BatchJobInstanceDTO;
 import com.neobns.admin.batch.dto.BatchStepExecutionDTO;
 import com.neobns.admin.batch.service.BatchService;
-import com.neo.adminserver.util.PageUtil;
 
 import lombok.RequiredArgsConstructor;
 

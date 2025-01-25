@@ -99,7 +99,7 @@
 			<!-- 이전 페이지 그룹 -->
 			<li  class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
 				<a class="page-link"
-				   th:href="@{/admin/slow(page=${(currentPage - 1)/10 * 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
+				   th:href="@{/admin/slow(page=${(currentPage - 1)/10 * 10}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
 				   th:if="${currentPage > 10}">
 					« 이전
 				</a>
@@ -111,14 +111,14 @@
 			<li class="page-item"
 			      th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
 		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-		           th:href="@{/admin/slow(page=${pageNum}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
+		           th:href="@{/admin/slow(page=${pageNum}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
 		            <span th:text="${pageNum}"></span>
 		        </a>
 			</li>
 			<!-- 다음 페이지 그룹 -->
 			<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
 				<a class="page-link"
-				   th:href="@{/admin/slow(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
+				   th:href="@{/admin/slow(page=${((currentPage - 1)/10 + 1) * 10 + 1}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
 				   th:if="${currentPage + 10 <= totalPages}">
 		       	    다음 »
 				</a>

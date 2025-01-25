@@ -87,7 +87,7 @@
 				<!-- 이전 페이지 그룹 -->
 				<li  class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
 					<a class="page-link" th:if="${currentPage > 10}"
-					   th:href="@{/batch/jobList(page=${(currentPage - 1)/10 * 10}, size=${size}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
+					   th:href="@{/batch/jobList(page=${(currentPage - 1)/10 * 10}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
 						« 이전
 					</a>
 					<a class="page-link" th:unless="${currentPage > 10}" href="#">
@@ -98,7 +98,7 @@
 				<li class="page-item"
 				    th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
 			        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-					   th:href="@{/batch/jobList(page=${pageNum}, size=${size}, status=${param.status}, jobName=${param.jobName}, startDate=${param.startDate}, endDate=${param.endDate})}"
+					   th:href="@{/batch/jobList(page=${pageNum}, status=${param.status}, jobName=${param.jobName}, startDate=${param.startDate}, endDate=${param.endDate})}"
 					   th:text="${pageNum}">
 			        </a>
 		        </li>
@@ -106,7 +106,7 @@
 				<!-- 다음 페이지 그룹 -->
 				<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
 					<a class="page-link"
-					   th:href="@{/batch/jobList(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, status=${param.status}, jobName=${param.jobName}, startDate=${param.startDate}, endDate=${param.endDate})}"
+					   th:href="@{/batch/jobList(page=${((currentPage - 1)/10 + 1) * 10 + 1}, status=${param.status}, jobName=${param.jobName}, startDate=${param.startDate}, endDate=${param.endDate})}"
 					   th:if="${currentPage + 10 <= totalPages}">
 			            다음 »
 					</a>

@@ -81,7 +81,7 @@
 			<ul class="pagination">
 			<!-- 이전 페이지 그룹 -->
 			<li class="page-item">
-				<a class="page-link" th:href="@{/admin/table(page=${(currentPage - 1)/10 * 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+				<a class="page-link" th:href="@{/admin/table(page=${(currentPage - 1)/10 * 10}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
 				   th:if="${currentPage > 10}">
 					 « 이전
 				</a>
@@ -92,14 +92,14 @@
 			<!-- 페이지 번호 그룹 -->
 			<li class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
 		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-		           th:href="@{/admin/table(page=${pageNum}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
+		           th:href="@{/admin/table(page=${pageNum}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
 		            <span th:text="${pageNum}"></span>
 		        </a>
 		    </li>
 
 			<!-- 다음 페이지 그룹 -->
 			<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
-				<a class="page-link" th:href="@{/admin/table(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+				<a class="page-link" th:href="@{/admin/table(page=${((currentPage - 1)/10 + 1) * 10 + 1}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
 				   th:if="${currentPage + 10 <= totalPages}">
 					 다음 »
 				</a>

@@ -40,13 +40,13 @@
 							<div class="col-4 ">
 								<p class="fw-semi-bold mb-1">Create Time</p>
 							</div>
-							<div class="col" th:text="${@DateUtil.getDateTimeFormat(job.createTime)}"></div>
+							<div class="col" th:text="${#dates.format(job.createTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
 								<p class="fw-semi-bold mb-1">Start Time</p>
 							</div>
-							<div class="col" th:text="${@DateUtil.getDateTimeFormat(job.startTime)}"></div>
+							<div class="col" th:text="${#dates.format(job.startTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
@@ -72,14 +72,14 @@
 								<p class="fw-semi-bold mb-1">Update Time</p>
 							</div>
 							<div class="col">
-								<p class="mb-1" th:text="${@DateUtil.getDateTimeFormat(job.updateTime)}"></p>
+								<p class="mb-1" th:text="${#dates.format(job.updateTime, 'yyyy-MM-dd hh:mm:ss')}"></p>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
 								<p class="fw-semi-bold mb-1">End Time</p>
 							</div>
-							<div class="col" th:text="${@DateUtil.getDateTimeFormat(job.endTime)}"></div>
+							<div class="col" th:text="${#dates.format(job.endTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
@@ -163,8 +163,8 @@
 								<div class="col-1 " th:text="${step.readCount }"></div>
 								<div class="col-1 " th:text="${step.filterCount }"></div>
 								<div class="col-1 " th:text="${step.writeCount }"></div>
-								<div class="col-2" th:text="${@DateUtil.getDateTimeFormat(step.startTime)}"></div>
-								<div class="col-md-auto" th:text="${@DateUtil.getDateTimeFormat(step.endTime)}"></div>
+								<div class="col-2" th:text="${#dates.format(step.startTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
+								<div class="col-md-auto" th:text="${#dates.format(step.endTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 							</div>
 							<div class="row g-0 align-items-center py-1">
 								<div class="col-2">&nbsp;</div>
@@ -177,7 +177,7 @@
 								<div class="col-1 " th:text="${step.processSkipCount }"></div>
 								<div class="col-1 " th:text="${step.rollbackCount }"></div>
 								<div class="col-md-auto"
-								     th:text="${@DateUtil.getDateTimeFormat(step.updateTime)}"></div>
+								     th:text="${#dates.format(step.updateTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 							</div>
 							<div class="row g-0 align-items-center py-1">
 								<div class="col-2">&nbsp;</div>

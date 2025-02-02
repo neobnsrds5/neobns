@@ -12,7 +12,7 @@ import neo.spider.sol.admin.batchServer.service.FileMaintenanceService;
 
 @Component
 @RequiredArgsConstructor
-public class BatchScheduller {
+public class BatchScheduler {
 
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;

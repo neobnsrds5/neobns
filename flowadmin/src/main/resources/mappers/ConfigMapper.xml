@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neobns.admin.flowadmin.mapper.ConfigMapper">
+    <select id="findSelective" resultType="com.neobns.admin.flowadmin.dto.SearchResultDto">
+        SELECT f.*, c.count as resultCount
+        FROM FLOW_CONFIG f,
+            (SELECT count(*) as count
+            FROM FLOW_CONFIG
+            WHERE 1=1
+            <if test="param.appName != null and param.appName!=''">AND appName like concat('%', #{param.appName}, '%')</if>
+            <if test="param.name != null and param.name != ''">AND name like concat('%', #{param.name},'%')</if>) c
+        WHERE 1=1
+        <if test="param.appName != null and param.appName!=''">AND appName like concat('%', #{param.appName}, '%')</if>
+        <if test="param.name != null and param.name != ''">AND name like concat('%', #{param.name},'%')</if>
+        LIMIT #{limit} offset #{offset}
+    </select>
+
+    <insert id="create" parameterType="com.neobns.admin.flowadmin.dto.ConfigDto">
+        INSERT INTO FLOW_CONFIG(appName, name, maxConcurrentCalls, limitForPeriod, limitRefreshPeriod, timeoutDuration)
+        VALUES (#{appName}, #{name}, #{maxConcurrentCalls}, #{limitForPeriod}, #{limitRefreshPeriod}, #{timeoutDuration})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM FLOW_CONFIG
+        WHERE ID = #{id}
+    </delete>
+
+    <select id="findById" resultType="com.neobns.admin.flowadmin.dto.ConfigDto">
+        SELECT *
+        FROM FLOW_CONFIG
+        WHERE ID=#{id}
+    </select>
+
+    <update id="update" parameterType="com.neobns.admin.flowadmin.dto.ConfigDto">
+        UPDATE FLOW_CONFIG
+        SET maxConcurrentCalls = #{maxConcurrentCalls},
+            limitForPeriod = #{limitForPeriod},
+            limitRefreshPeriod = #{limitRefreshPeriod},
+            timeoutDuration = #{timeoutDuration}
+        WHERE ID = #{id}
+    </update>
+</mapper>

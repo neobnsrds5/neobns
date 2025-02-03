@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>유량제어 메인 페이지</title>
+    <script src="/parameterSave.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+      const goCreate = () => {
+        location.href = "/new";
+      };
+      const deleteAll = () => {
+        const checkboxes = document.querySelectorAll('input[name=deleteIds]');
+        const isChecked = Array.from(checkboxes).some((checkbox) => checkbox.checked);
+        if (isChecked) {
+          const deleteForm = document.getElementById('delete-all');
+          deleteForm.submit();
+        } else {
+          alert('삭제할 대상을 선택해 주십시오');
+        }
+      };
+      const goUpdate = (id) => {
+        location.href = "/edit?id=" + id;
+      }
+      const movePage = (destination) => {
+        const searchState = JSON.parse(sessionStorage.getItem('searchState'));
+        const {paramPath, ...params} = searchState;
+        params["page"] = destination;
+        location.href = "/?" + new URLSearchParams(params).toString();
+      }
+
+      $(document).ready(function(){
+        $('.current-page-button')
+                .mouseover(function(){
+                  $(this).css('background-color', '#009dff');
+                })
+                .mouseout(function(){
+                  $(this).css('background-color', '#00c4ff');
+                })
+      })
+    </script>
+  <style>
+    .current-page-button {
+      background-color: #00c4ff;
+    }
+  </style>
+</head>
+<body>
+  <h1><a href="/">유량제어 메인 페이지</a></h1>
+  <div class="searchForm">
+    <form method="get" action="/">
+      <label>
+        <input type="text" placeholder="어플리케이션 이름" name="appName" th:value="${param.appName}"/>
+      </label>
+      <label>
+        <input type="text" placeholder="그룹명" name="name" th:value="${param.name}"/>
+      </label>
+      <button type="submit">검색</button>
+    </form>
+  </div>
+  <div class="delete-all-button">
+    <button onclick="deleteAll()">일괄삭제 버튼</button>
+  </div>
+  <form id="delete-all" method="post" action="deleteAll">
+    <div class="searchResult">
+      <h4 th:unless="${not #lists.isEmpty(results)}">검색 결과가 없습니다.</h4>
+      <table border="1" th:if="${not #lists.isEmpty(results)}">
+        <tr>
+          <td></td>
+          <td>id</td>
+          <td>어플리케이션 이름</td>
+          <td>그룹명</td>
+          <td>최대 동시 요청</td>
+          <td>단위 시간당 처리허용량</td>
+          <td>단위 시간(ms)</td>
+          <td>허용량 초과시 타임아웃(ms)</td>
+          <td>수정</td>
+        </tr>
+        <tr th:each="config : ${results}">
+          <td><label><input type="checkbox" name="deleteIds" th:value="${config.id}"/></label></td>
+          <td th:text="${config.id}"></td>
+          <td th:text="${config.appName}"></td>
+          <td th:text="${config.name}"></td>
+          <td th:text="${config.maxConcurrentCalls}"></td>
+          <td th:text="${config.limitForPeriod}"></td>
+          <td th:text="${config.limitRefreshPeriod}"></td>
+          <td th:text="${config.timeoutDuration}"></td>
+          <td><button type="button" th:onclick="|goUpdate(${config.id})|">수정</button></td>
+        </tr>
+      </table>
+    </div>
+  </form>
+  <br/>
+  <div class="page-button" style="display: flex;">
+    <button th:if="${page > 1}" th:onclick="|movePage(${page}-1)|">이전</button>
+    <div th:each="num : ${range}">
+      <button type="button" th:text="${num}" th:onclick="|movePage(${num})|" th:if="${num!=page}"></button>
+      <button class="current-page-button" type="button" th:text="${num}" th:onclick="|movePage(${num})|" th:if="${num==page}"></button>
+    </div>
+    <button type="button" th:if="${page < totalPage}" th:onclick="|movePage(${page}+1)|">다음</button>
+  </div>
+  <br/>
+  <div class="create-button">
+    <button onclick="goCreate()">새 설정 등록 버튼</button>
+  </div>
+</body>
+</html>

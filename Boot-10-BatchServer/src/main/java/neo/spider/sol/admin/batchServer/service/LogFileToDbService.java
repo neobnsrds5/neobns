@@ -124,9 +124,9 @@ public class LogFileToDbService {
 
 				String[] tokens = getTokens(line);
 
-//				System.out.println("tokens.toString() : " + Arrays.toString(tokens));
-//
-//				System.out.println("tokens[1] : " + tokens[1] + tokens[1].equals("TRACE"));
+				System.out.println("tokens.toString() : " + Arrays.toString(tokens));
+
+				System.out.println("tokens[1] : " + tokens[1] + tokens[1].equals("TRACE"));
 
 				// 로거 네임으로 분류
 				switch (tokens[1]) {
@@ -134,11 +134,11 @@ public class LogFileToDbService {
 
 					// logging event
 					eventPs = setEventPs(eventPs, tokens);
-//					System.out.println("lineReader.getLineNumber() : " + lineReader.getLineNumber());
+					System.out.println("lineReader.getLineNumber() : " + lineReader.getLineNumber());
 					// query
 					eventPs.setInt(11, lineReader.getLineNumber());
 					eventCount++;
-//					System.out.println("eventCount++; " + eventCount);
+					System.out.println("eventCount++; " + eventCount);
 					eventPs.addBatch();
 					break;
 
@@ -147,7 +147,7 @@ public class LogFileToDbService {
 					// logging slow
 					slowPs = setSlowPs(slowPs, tokens);
 					slowCount++;
-//					System.out.println("slowcount : " + slowCount);
+					System.out.println("slowcount : " + slowCount);
 					slowPs.addBatch();
 					break;
 
@@ -166,7 +166,7 @@ public class LogFileToDbService {
 				// 100개 도달 시 배치 실행
 				executeBatches(eventCount, slowCount, errorCount, eventPs, slowPs, errorPs, connection);
 
-//				System.out.println("counts : " + eventCount + " : " + slowCount + " : " + errorCount);
+				System.out.println("counts : " + eventCount + " : " + slowCount + " : " + errorCount);
 
 			}
 

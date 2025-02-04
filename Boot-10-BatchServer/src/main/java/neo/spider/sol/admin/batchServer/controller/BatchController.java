@@ -17,9 +17,9 @@ public class BatchController {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 	private final FileMaintenanceService fileMaintenanceService;
-	private final String quickPath = "../logs/application.log";
-	private final String gatewayPath = "../logs/gateway-application.log";
-	private final String accountsPath = "../logs/accounts-application.log";
+//	private final String quickPath = "../logs/application.log";
+//	private final String gatewayPath = "../logs/gateway-application.log";
+//	private final String accountsPath = "../logs/accounts-application.log";
 
 	@GetMapping("/batch/dbtoapi/{value}")
 	public String firstApi(@PathVariable("value") String value) throws Exception {
@@ -73,20 +73,9 @@ public class BatchController {
 	public String logToDbTest(@PathVariable("value") String value) {
 
 		String uniqVal = value + System.currentTimeMillis();
-		String filePath;
 
-		if (value.equalsIgnoreCase("quick")) {
-			filePath = quickPath;
-		} else if (value.equalsIgnoreCase("gate")) {
-			filePath = gatewayPath;
-		} else if (value.equalsIgnoreCase("accounts")) {
-			filePath = accountsPath;
-		} else {
-			return "FAIL";
-		}
-
-		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal)
-				.addString("filePath", filePath).toJobParameters();
+		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal).addString("app", value)
+				.toJobParameters();
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);

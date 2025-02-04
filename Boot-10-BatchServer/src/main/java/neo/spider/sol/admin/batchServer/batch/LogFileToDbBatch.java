@@ -1,5 +1,7 @@
 package neo.spider.sol.admin.batchServer.batch;
 
+import java.io.File;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
@@ -21,7 +23,7 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private LogFileToDbService logFileToDbService;
-	private String path = "../logs/application.log";
+//	private String path = "../logs/application.log";
 
 	public LogFileToDbBatch(JobRepository jobRepository, PlatformTransactionManager transactionManager,
 			LogFileToDbService logFileToDbService) {
@@ -45,9 +47,26 @@ public class LogFileToDbBatch {
 			@Override
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
-				path = chunkContext.getStepContext().getJobParameters().get("filePath").toString();
+				// 전달받은 파일의 이름
+				String app = chunkContext.getStepContext().getJobParameters().get("app").toString();
 
-				logFileToDbService.executeLogFileToDb(path);
+				// 롤링된 파일로 변경. application으로 요청할 것
+				String path = "../logs/" + app + "/rolling";
+				File folder = new File(path);
+				File[] files = folder.listFiles();
+
+				int count = 0;
+
+				if (files != null) {
+					for (File file : files) {
+						if (file.isFile()) {
+							count ++;
+							System.out.println("file reading-" + count + " :" + file.getAbsolutePath());
+							logFileToDbService.executeLogFileToDb(file.getAbsolutePath());
+						}
+					}
+				}
+
 				return RepeatStatus.FINISHED;
 			}
 		}).transactionManager(transactionManager).build();

@@ -78,23 +78,12 @@ public class BatchScheduler {
 	@Scheduled(cron = "0 0 0 * * * ", zone = "Asia/Seoul")
 	public String runLogFilejobSchedule() throws Exception {
 
-		String value = "" + (int) Math.random() * 10;
+		String value = "application"; //  각 어플리케이션 별 이름
 
 		String uniqVal = value + System.currentTimeMillis();
-		String filePath;
-
-		if (value.equalsIgnoreCase("quick")) {
-			filePath = quickPath;
-		} else if (value.equalsIgnoreCase("gate")) {
-			filePath = gatewayPath;
-		} else if (value.equalsIgnoreCase("accounts")) {
-			filePath = accountsPath;
-		} else {
-			return "FAIL";
-		}
-
+		
 		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal)
-				.addString("filePath", filePath).toJobParameters();
+				.addString("app", value).toJobParameters();
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);

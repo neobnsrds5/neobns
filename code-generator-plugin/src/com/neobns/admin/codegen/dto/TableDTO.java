@@ -3,27 +3,25 @@ package com.neobns.admin.codegen.dto;
 import java.util.List;
 
 public class TableDTO {
-	private String tableName; // 테이블명
-	private List<ColumnDTO> columns; // <컬럼명, 기본키 여부>
+	private String tableName;
+	private List<ColumnDTO> columns;
 
 	public String getTableName() {
 		return tableName;
 	}
-
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-
 	public List<ColumnDTO> getColumns() {
 		return columns;
 	}
-
 	public void setColumns(List<ColumnDTO> columns) {
 		this.columns = columns;
 	}
 
+	// javascript 에서 parsing 하기 편하도록 json 형식으로 반환
 	@Override
-	public String toString() { // javascript 에서 사용하기 위해 json 형식으로 toString()
+	public String toString() {
 		StringBuilder columnsJson = new StringBuilder("[");
         for (int i = 0; i < columns.size(); i++) {
             columnsJson.append(columns.get(i).toString());

@@ -31,6 +31,7 @@ public class ColumnDTO {
 		this.isPrimaryKey = isPrimaryKey;
 	}
 	
+	// javascript 에서 parsing 하기 편하도록 json 형식으로 반환
 	@Override
 	public String toString() {
 		return String.format("{\"columnName\": \"%s\", \"dataType\": \"%s\", \"isPrimaryKey\": %s}",

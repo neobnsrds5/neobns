@@ -5,22 +5,6 @@ function createElementWithHTML(tag, html) {
 	return element;
 }
 
-// 랜덤 배경색을 생성하는 함수
-function changeColor() {
-	const x = Math.floor(Math.random() * 256);
-	const y = Math.floor(Math.random() * 256);
-	const z = Math.floor(Math.random() * 256);
-	const bgColor = `rgb(${x}, ${y}, ${z})`;
-	document.body.style.background = bgColor;
-	document.getElementById("lastAction").innerText = `배경색이 ${bgColor}로 설정되었습니다.`;
-}
-
-// 현재 선택된 텍스트를 설정하는 함수
-function setSelection(text) {
-	document.getElementById("selection").innerText = text;
-	document.getElementById("lastAction").innerText = `선택된 텍스트가 ${text}로 설정되었습니다.`;
-}
-
 // Java에서 테이블 정보를 가져와 목록으로 표시하는 함수
 function listTables() {
 	try {
@@ -31,7 +15,7 @@ function listTables() {
 		const url = document.getElementById("dbUrl").value;
 		const username = document.getElementById("username").value;
 		const password = document.getElementById("password").value;
-		// 저장할 파일명
+		// 저장할 폴더명
 		const targetPath = document.getElementById("targetPath").value;
 		
 		if (!url || !username || !password || !targetPath) {
@@ -49,7 +33,7 @@ function listTables() {
 
 		        // HTML 표 생성
 		        const tableHTML = `
-		            <table border="1" style="border-collapse: collapse;">
+		            <table>
 		                <thead>
 		                    <tr>
 		                        <th>컬럼명</th>
@@ -86,3 +70,4 @@ function listTables() {
 function generateCode(url, username, password, tableName, targetPath) {
 	invokeGenerateCode(url, username, password, targetPath, tableName);
 }
+

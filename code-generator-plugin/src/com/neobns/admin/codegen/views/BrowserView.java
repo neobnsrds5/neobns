@@ -39,7 +39,7 @@ public class BrowserView extends ViewPart  {
 	public void createPartControl(Composite parent) {
 		fBrowser = new Browser(parent, SWT.EDGE);
 		fBrowser.setText(getContent());
-		BrowserFunction prefs = new ListTables(fBrowser, "invokeListTables"); // js에서 invokeListTables를 호출하면 ListTables 메소드라 호출됨
+		BrowserFunction prefs = new ListTables(fBrowser, "invokeListTables"); // js에서 invokeListTables를 호출하면 ListTables 메소드가 호출됨
 		fBrowser.addDisposeListener(e -> prefs.dispose());
 		BrowserFunction codeGen = new GenerateCode(fBrowser, "invokeGenerateCode"); // js에서 invokeGenerateCode를 호출하면 GenerateCode 메소드가 호출됨
 		fBrowser.addDisposeListener(e -> codeGen.dispose());
@@ -85,32 +85,38 @@ public class BrowserView extends ViewPart  {
 			js = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 		}
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("<!doctype html>");
-		buffer.append("<html lang=\"en\">");
-		buffer.append("<head>");
-		buffer.append("<meta charset=\"utf-8\">");
-		buffer.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-		buffer.append("<title>Code Generator</title>");
-		buffer.append("<script>" + js + "</script>"); // 자바스크립트 내용을 추가
-		buffer.append("</script>");
-		buffer.append("</head>");
-		buffer.append("<body>");
-		buffer.append("<form>");
-		buffer.append("<label>데이터베이스 URL:</label><br>");
-		buffer.append("<input type=\"text\" id=\"dbUrl\" name=\"dbUrl\" value=\"jdbc:mysql://localhost:3306/db2\"><br>");
-		buffer.append("<label>사용자명:</label><br>");
-		buffer.append("<input type=\"text\" id=\"username\" name=\"username\" value=\"root\"><br>");
-		buffer.append("<label>비밀번호:</label><br>");
-		buffer.append("<input type=\"password\" id=\"password\" name=\"password\" value=\"1234\"><br>");
-		buffer.append("<label>저장할 폴더명:</label><br>");
-		buffer.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\" value=\"example\"><br>");
-		buffer.append("</form>");
-		buffer.append("<input id=button type=\"button\" value=\"전체 테이블 조회\" onclick=\"listTables();\">");
-		buffer.append("<div id=\"tables\"></div>");
-		buffer.append("</body>");
-		buffer.append("</html>");
-		return buffer.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("<!doctype html>")
+			.append("<html lang=\"en\">")
+			.append("<head>")
+			.append("<meta charset=\"utf-8\">")
+			.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
+			.append("<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\"")
+			.append(" rel=\"stylesheet\" crossorigin=\"anonymous\"")
+			.append(" integrity=\"sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH\">")
+			.append("<title>Code Generator</title>")
+			.append("<script>" + js + "</script>") // 자바스크립트 내용을 추가
+			.append("</script>")
+			.append("</head>")
+			.append("<body>")
+			.append("<form>")
+			.append("<label>데이터베이스 URL:</label><br>")
+			.append("<input type=\"text\" id=\"dbUrl\" name=\"dbUrl\" value=\"jdbc:mysql://localhost:3306/db2\"><br>")
+			.append("<label>사용자명:</label><br>")
+			.append("<input type=\"text\" id=\"username\" name=\"username\" value=\"root\"><br>")
+			.append("<label>비밀번호:</label><br>")
+			.append("<input type=\"password\" id=\"password\" name=\"password\" value=\"1234\"><br>")
+			.append("<label>저장할 폴더명:</label><br>")
+			.append("<input type=\"text\" id=\"targetPath\" name=\"targetPath\" value=\"example\"><br>")
+			.append("</form>")
+			.append("<input class=\"btn btn-primary\" type=\"button\" value=\"전체 테이블 조회\" onclick=\"listTables();\">")
+			.append("<div id=\"tables\"></div>")
+			.append("</body>")
+			.append("<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\" crossorigin=\"anonymous\"")
+			.append(" integrity=\"sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz\"></script>")
+			.append("</html>");
+		
+		return sb.toString();
 	}
 
 }

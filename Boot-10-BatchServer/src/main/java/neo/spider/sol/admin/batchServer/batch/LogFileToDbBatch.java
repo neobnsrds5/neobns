@@ -23,7 +23,6 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private LogFileToDbService logFileToDbService;
-//	private String path = "../logs/application.log";
 
 	public LogFileToDbBatch(JobRepository jobRepository, PlatformTransactionManager transactionManager,
 			LogFileToDbService logFileToDbService) {
@@ -60,10 +59,12 @@ public class LogFileToDbBatch {
 				if (files != null) {
 					for (File file : files) {
 						if (file.isFile()) {
-							count ++;
-							System.out.println("file reading-" + count + " :" + file.getAbsolutePath());
+							count++;
+//							System.out.println("file reading-" + count + " :" + file.getAbsolutePath());
 							logFileToDbService.executeLogFileToDb(file.getAbsolutePath());
 						}
+						// 적재 후 파일 삭제
+						file.delete();
 					}
 				}
 

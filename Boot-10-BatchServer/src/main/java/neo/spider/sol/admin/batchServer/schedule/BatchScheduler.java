@@ -87,7 +87,6 @@ public class BatchScheduler {
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
-//			fileMaintenanceService.cleanupLogFile(filePath);
 			return "OK";
 		} catch (Exception e) {
 			e.printStackTrace();

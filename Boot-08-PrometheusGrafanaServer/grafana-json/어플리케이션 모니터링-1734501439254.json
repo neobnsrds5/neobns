@@ -2666,7 +2666,7 @@
             "x": {
               "matcher": {
                 "id": "byName",
-                "options": "시간(yyyyMMddhhmmss)"
+                "options": "시(H)"
               }
             },
             "y": {
@@ -2693,7 +2693,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select\r\n  cast(timestmp as unsigned) as \"시간(yyyyMMddhhmmss)\",\r\n  trace_id as \"추적ID\",\r\n  (execute_result*1) as \"소요시간(ms)\",\r\n  caller_class as \"호출\",\r\n  caller_method as \"호출상세\"\r\nfrom db2.logging_event\r\nwhere\r\n  logger_name = \"TRACE\"\r\n  and execute_result is not null\r\n  and timestmp > DATE_SUB(NOW(), INTERVAL 2 DAY)\r\n  and caller_method IN (\"GET\", \"POST\", \"PUT\", \"DELETE\")\r\norder by timestmp desc;",
+          "rawSql": "select\r\n  cast(DATE_FORMAT(timestmp, '%H') AS UNSIGNED ) AS \"시(H)\",\r\n  trace_id as \"추적ID\",\r\n  (execute_result*1) as \"소요시간(ms)\",\r\n  timestmp as  \"타임스탬프\",\r\n  caller_class as \"호출\",\r\n  caller_method as \"호출상세\"\r\nfrom db2.logging_event\r\nwhere\r\n  logger_name = \"TRACE\"\r\n  and execute_result is not null\r\n  and timestmp > DATE_SUB(NOW(), INTERVAL 1 DAY)\r\n  and caller_method IN (\"GET\", \"POST\", \"PUT\", \"DELETE\")\r\norder by timestmp desc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2799,7 +2799,7 @@
             "x": {
               "matcher": {
                 "id": "byName",
-                "options": "시간(yyyyMMddhhmmss)"
+                "options": "시(H)"
               }
             },
             "y": {
@@ -2826,7 +2826,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select\r\n  cast(timestmp as unsigned) as \"시간(yyyyMMddhhmmss)\",\r\n  trace_id as \"추적ID\",\r\n  (execute_result*1) as \"소요시간(ms)\",\r\n  caller_class as \"호출\",\r\n  caller_method as \"호출상세\"\r\nfrom db2.logging_event\r\nwhere\r\n  logger_name = \"TRACE\"\r\n  and execute_result is not null\r\n  and timestmp > DATE_SUB(NOW(), INTERVAL 2 DAY)\r\n  and caller_class = \"SQL\"\r\norder by timestmp desc;",
+          "rawSql": "select\r\n  cast(DATE_FORMAT(timestmp, '%H') AS UNSIGNED ) AS \"시(H)\",\r\n  trace_id as \"추적ID\",\r\n  (execute_result*1) as \"소요시간(ms)\",\r\n  timestmp as  \"타임스탬프\",\r\n  caller_class as \"호출\",\r\n  caller_method as \"호출상세\"\r\nfrom db2.logging_event\r\nwhere\r\n  logger_name = \"TRACE\"\r\n  and execute_result is not null\r\n  and timestmp > DATE_SUB(NOW(), INTERVAL 1 DAY)\r\n  and caller_class = \"SQL\"\r\norder by timestmp desc;",
           "refId": "SQL 소요시간 조회",
           "sql": {
             "columns": [],
@@ -3420,13 +3420,13 @@
     ]
   },
   "time": {
-    "from": "now-21h",
-    "to": "now-20h"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "어플리케이션 모니터링",
   "uid": "de4ztvthp95a8b1",
-  "version": 20,
+  "version": 27,
   "weekStart": ""
 }

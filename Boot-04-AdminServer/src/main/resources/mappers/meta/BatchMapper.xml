@@ -63,9 +63,6 @@
         <result property="updateTime" column="LAST_UPDATED"/>
     </resultMap>
 
-    <sql id="commonPagingHeader"> SELECT R1.* FROM ( </sql>
-    <sql id="commonPagingFooter"> ) R1 LIMIT #{pgtl.startNo}, #{pgtl.listPerPage} </sql>
-
     <select id="countJobs" parameterType="com.neobns.admin.batch.dto.BatchJobInstanceDTO" resultType="int">
         SELECT count(j.JOB_INSTANCE_ID) as cnt
         FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e

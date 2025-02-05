@@ -29,7 +29,7 @@ public class ControllerGeneratorPlugin extends PluginAdapter {
 
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
-List<GeneratedJavaFile> fileList = new ArrayList<GeneratedJavaFile>();
+		List<GeneratedJavaFile> fileList = new ArrayList<GeneratedJavaFile>();
 		
 		// 원래 테이블 이름 가져오기
         String tableName = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
@@ -42,7 +42,7 @@ List<GeneratedJavaFile> fileList = new ArrayList<GeneratedJavaFile>();
     		primaryKeyColumn = introspectedTable.getPrimaryKeyColumns().getFirst();
     	}
     	
-    	// Service 클래스 생성
+    	// Controller 클래스 생성
     	TopLevelClass controllerClass = generateControllerClass(tableName, dtoType, primaryKeyColumn);
     	
     	// Java 파일 생성

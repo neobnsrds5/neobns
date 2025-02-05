@@ -33,7 +33,7 @@ function listTables() {
 
 		        // HTML 표 생성
 		        const tableHTML = `
-		            <table>
+		            <table class="table w-auto">
 		                <thead>
 		                    <tr>
 		                        <th>컬럼명</th>
@@ -45,8 +45,8 @@ function listTables() {
 		                    ${table.columns.map(column => `
 		                        <tr>
 		                            <td>${column.columnName}</td>
-		                            <td>${column.dataType}</td>
-		                            <td><input type="radio" name="${table.tableName}_pk" value="${column.columnName}" ${column.isPrimaryKey ? "checked" : ""} style="pointer-events: none;"/></td>
+		                            <td class="text-center">${column.dataType}</td>
+		                            <td class="text-center"><input type="radio" name="${table.tableName}_pk" value="${column.columnName}" ${column.isPrimaryKey ? "checked" : ""} style="pointer-events: none;"/></td>
 		                        </tr>
 		                    `).join('')}
 		                </tbody>

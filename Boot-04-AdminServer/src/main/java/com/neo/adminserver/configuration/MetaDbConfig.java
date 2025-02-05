@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(
-    basePackages = "com.neo.adminserver.mapper.meta", // 공통 Mapper 패키지
+    basePackages = "com.neobns.admin.batch.mapper",
     sqlSessionFactoryRef = "metaSqlSessionFactory"
 )
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class MetaDbConfig {
             @Qualifier("metaDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        factoryBean.setTypeAliasesPackage("com.neo.adminserver.dto"); // 공통 엔티티 경로
+        factoryBean.setTypeAliasesPackage("com.neobns.admin.batch.dto");
         factoryBean.setMapperLocations(
             new PathMatchingResourcePatternResolver().getResources("classpath:mappers/meta/*.xml")
         );

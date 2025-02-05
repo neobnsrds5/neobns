@@ -10,7 +10,7 @@
 </head>
 <div class="page-content" layout:fragment="main">
 
-	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0px;">
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
 		<h2 class="mb-4 text-center"><a href="/admin/table">영향도 분석 관리</a></h2>
 
 		<form action="/admin/table" class="row justify-content-end" id="searchForm" method="get">
@@ -18,8 +18,8 @@
 				<div class="input-group">
 					<!-- 검색 조건 선택 -->
 					<select class="form-select" name="searchType">
-						<option th:selected="${param.searchType == 'callerMethod'}" value="callerMethod">테이블 명</option>
-						<option th:selected="${param.searchType == 'callerClass'}" value="callerClass">클래스 명</option>
+						<option th:selected="${searchType == 'table'}" value="table">테이블 명</option>
+						<option th:selected="${searchType == 'class'}" value="class">클래스 명</option>
 					</select>
 
 					<!-- 검색 키워드 입력 -->
@@ -35,11 +35,12 @@
 
 		<br/>
 		<div class="table-responsive">
-			<div th:if="${!hasResults}">
-				<p>검색 결과가 없습니다.</p>
+			<!-- 검색 결과 없을 때 메시지 -->
+			<div class="m-lg-5 p-lg-5 text-center" th:if="${logList.size() == 0}">
+				<h4>검색 결과가 없습니다.</h4>
 			</div>
 
-			<table class="table table-striped table-centered" th:if="${hasResults}">
+			<table class="table table-striped table-centered" th:unless="${logList.size() == 0}">
 				<thead>
 				<tr class="text-center">
 					<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
@@ -50,27 +51,21 @@
 				</thead>
 				<tbody>
 				<tr th:each="log : ${logList}">
-					<!-- 선택 체크박스 -->
-					<!-- 
-					<td>
-						<input type="checkbox" class="form-check-input row-checkbox" th:attr="trace-id=${log.traceId}">
-					</td>
-					 -->
 					<!-- 타임스탬프 -->
 					<td th:text="${log.timestmp}"></td>
 					<!-- 추적 아이디 -->
 					<td class="text-start">
-						<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
-						<span th:unless="${log.traceId != null}">N/A</span>
+						<a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}">
+							<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
+							<span th:unless="${log.traceId != null}">N/A</span>
+						</a>
 					</td>
 					<!-- 호출상세 -->
 					<td class="text-start trace-id">
-		            	<span th:if="${log.traceId != null}">
-	                        <a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}"
-	                           th:text="${log.callerClass == 'SQL' ? log.callerMethod : log.callerClass}">
-					        </a>
-	                    </span>
-						<span th:unless="${log.callerMethod != null}">N/A</span>
+						<span th:if="${log.traceId != null}">
+							<a th:text="${log.query != null ? log.query : log.calledBy}"></a>
+						</span>
+						<span th:unless="${log.current != null}">N/A</span>
 					</td>
 					<!-- 사용자 ID -->
 					<td class="text-start user-id">
@@ -82,29 +77,37 @@
 			</table>
 		</div>
 
-		<div class="pagination" th:if="${hasResults}">
+		<div class="row" th:if="${logList.size() > 0}">
+			<ul class="pagination">
 			<!-- 이전 페이지 그룹 -->
-			<span class="page-item">
-				<a class="page-link" th:href="@{/admin/table(page=${(currentPage - 1)/10 * 10}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+			<li class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
+				<a class="page-link" th:href="@{/admin/table(page=${(currentPage - 1)/10 * 10}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
 				   th:if="${currentPage > 10}">
 					 « 이전
 				</a>
-			</span>
+				<a class="page-link" th:unless="${currentPage > 10}" href="#">
+					« 이전
+				</a>
+			</li>
 			<!-- 페이지 번호 그룹 -->
-			<span class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
+			<li class="page-item" th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
 		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-		           th:href="@{/admin/table(page=${pageNum}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
+		           th:href="@{/admin/table(page=${pageNum}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
 		            <span th:text="${pageNum}"></span>
 		        </a>
-		    </span>
+		    </li>
 
 			<!-- 다음 페이지 그룹 -->
-			<span class="page-item">
-				<a class="page-link" th:href="@{/admin/table(page=${((currentPage - 1)/10 + 1) * 10 + 1}, size=${size}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+			<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
+				<a class="page-link" th:href="@{/admin/table(page=${((currentPage - 1)/10 + 1) * 10 + 1}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
 				   th:if="${currentPage + 10 <= totalPages}">
 					 다음 »
 				</a>
-			</span>
+				<a class="page-link" th:unless="${currentPage + 10 <= totalPages}" href="#">
+					다음 »
+				</a>
+			</li>
+			</ul>
 		</div>
 
 	</div>

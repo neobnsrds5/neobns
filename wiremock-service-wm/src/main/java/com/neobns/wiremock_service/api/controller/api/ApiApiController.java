@@ -1,23 +1,18 @@
 package com.neobns.wiremock_service.api.controller.api;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.neobns.wiremock_service.api.dto.ApiDTO;
 import com.neobns.wiremock_service.api.dto.ChangeModeRequest;
 import com.neobns.wiremock_service.api.service.ApiService;
-import com.neobns.wiremock_service.api.vo.ApiVO;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class ApiApiController {
 	
 	private final ApiService apiService;
-	
 	private final WireMockServer wireMockServer;
 	
 	@PostMapping("/toggle-mode")
@@ -65,76 +59,64 @@ public class ApiApiController {
 	}
 	
 	@GetMapping("/execute/{id}")
-	public void executeApi(@PathVariable int id, HttpServletResponse response) throws IOException {
-		ApiVO apiVO = apiService.getApi(id);
-		if(apiVO == null) {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-	        response.setContentType("application/json");
-	        response.getWriter().write("{\"error\": \"API 정보가 없습니다.\"}");
-	        return;
+	public void executeApi(@PathVariable int id, HttpServletResponse response) throws IOException, URISyntaxException {
+		ApiDTO apiDTO = apiService.getApi(id);
+		URI uri = new URI(apiDTO.getApiUrl());
+		String apiUri = uri.getPath();
+		if(uri.getQuery() != null) {
+			apiUri = apiUri + "?" + uri.getQuery();
 		}
 		
-		apiVO = apiService.performHealthCheck(id);
-		String apiUrl = apiVO.getApiUrl();
-		boolean isHealthy = apiVO.getLastCheckedStatus() == 0;
-		boolean isMockMode = !apiVO.getResponseStatus();
-				
-		if(isHealthy) {	//서버 정상 시 실서버/대응답 DB 상태에 따라 처리
-			if (isMockMode) {
-	            // 대응답 처리 - WireMock Stub 요청
-				String stubUUID = apiService.isStubExists(apiUrl); // UUID로 Stub 조회
-				String mockApiUrl = "http://localhost:" + wireMockServer.port() + "/__admin/mappings/" + stubUUID;
-				System.out.println("MOCK : " + mockApiUrl);
-	            ResponseEntity<String> mockResponse = apiService.getStubResponse(mockApiUrl); // Stub 데이터를 가져옴
-	            
-	            response.setStatus(HttpServletResponse.SC_OK);
-	            response.setContentType("application/json; charset=UTF-8");
-	            // Stub 데이터를 JSON 형태로 반환
-	            response.getWriter().write(mockResponse.getBody());
-	        } else {
-	        	// 실서버로 리다이렉트
-	        	response.sendRedirect(apiUrl);
-	        }														
-		} else {		//서버 장애 시 공통 Stub 처리
-			if(isMockMode) {
-				// 상태에 따른 Stub 반환
-				String transApiName = apiVO.getApiName().replace(" ", "");
-		        String stubUrl = "http://localhost:" + wireMockServer.port() +"/mock/stub/" + transApiName+ "/" + apiVO.getLastCheckedStatus();
-		        try {
-		            System.out.println("Requesting Stub URL: {}"+ stubUrl);
-		            ResponseEntity<String> stubResponse = apiService.getStubResponse(stubUrl);
-		            response.setStatus(stubResponse.getStatusCode().value());
-		            response.setContentType("application/json; charset=UTF-8");
-		            response.getWriter().write(stubResponse.getBody());
-		        } catch (HttpClientErrorException e) {
-		        	System.out.println("HTTP Error while requesting Stub URL: "+stubUrl+", Status: " + e.getStatusCode()+ ", Body: " + e.getResponseBodyAsString());
-		            response.setStatus(e.getStatusCode().value());
-		            response.setContentType("application/json; charset=UTF-8");
-		            response.getWriter().write("{\"error\": \"Fallback Stub 요청 실패\"}");
-		        } catch (Exception e) {
-		        	System.out.println("Unexpected error while requesting Stub URL: " + stubUrl +" e :" + e);
-		            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		            response.setContentType("application/json; charset=UTF-8");
-		            response.getWriter().write("{\"error\": \"Fallback Stub 요청 실패\"}");
-		        }
-			}
+		apiDTO = apiService.performHealthCheck(id);
+		String apiUrl = apiDTO.getApiUrl();
+		boolean isHealthy = apiDTO.getLastCheckedStatus() == 0; // 0 이면 서버 정상 1 이면 비정상
+		boolean isMockMode = !apiDTO.getResponseStatus();
+		
+		String redirectUrl;
+		
+//		if(isHealthy) {	//서버 정상 시 실서버/대응답 DB 상태에 따라 처리
+//			// 서버 정상
+//			if(isMockMode) { // 실서버,대응답 설정 값
+//				//apiService.getBodyFileName(apiUrl);
+//				redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;	//대응답
+//			}
+//			else redirectUrl = apiUrl;															//실서버
+//		} else {		//서버 장애 시 공통 Stub 처리
+//			switch(apiDTO.getLastCheckedStatus()) {
+//				case 1:	//장애
+//				case 2:	//다운
+//					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/bad";
+//					break;
+//				case 3:	//지연
+//					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/delay";
+//					break;
+//				default:
+//					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//	                response.setContentType("application/json");
+//	                response.getWriter().write("{\"error\": \"서버 장애 상태를 처리할 수 없습니다.\"}");
+//	                return;
+//			}
+//		}
+		
+		if(isMockMode) { // 실서버,대응답 설정 값
+			redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;	//대응답
+		}else {
+			redirectUrl = apiUrl;												//실서버
 		}
+		
+		response.sendRedirect(redirectUrl);
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<String> addApi(@RequestBody Map<String, String> apiData) {
-	    try {
-	    	String apiName = apiData.get("apiName");
-	        String apiUrl = apiData.get("apiUrl");
-	       
-	        apiService.saveNewApi(apiName, apiUrl);
-	        return ResponseEntity.status(HttpStatus.CREATED).body("API successfully added.");
-	    }catch(IllegalArgumentException e) {
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add API.");
+	public ResponseEntity<String> addApi(@RequestBody ApiDTO apiDTO) {
+	   try {
+		   apiService.saveNewApi(apiDTO);
+	        return ResponseEntity.status(HttpStatus.CREATED).body("{\"ok\" : \"API 등록 성공\"}");
+	   } catch (Exception e) {
+	    	e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\" : \"API 등록 실패\"}");
 	    }
+        	
 	}
 	
 	@DeleteMapping("/delete/{id}")
@@ -142,12 +124,36 @@ public class ApiApiController {
 		
 		try {
 			apiService.deleteApi(id);
-	        return ResponseEntity.status(HttpStatus.OK).body("API successfully deleted.");
+	        return ResponseEntity.status(HttpStatus.OK).body("{\"ok\" : \"API 삭제 성공\"}");
 	    } catch (Exception e) {
 	    	e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete API");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\" : \"API 삭제 실패\"}");
 	    }
 		
 	}
+	
+	@PutMapping("/update/{id}")
+	public ResponseEntity<String> updateMockApi(@PathVariable int id, @RequestBody ApiDTO apiDto) {
+        try {
+        	apiService.updateApi(id, apiDto);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"ok\" : \"API 수정 성공\"}");
+		} catch (Exception e) {
+			e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\" : \"API 수정 실패\"}");
+		}
+		
+    }
+	
+	@GetMapping("/get/{id}")
+	 public ResponseEntity<Map<String, Object>> getMockApiById(@PathVariable int id) {
+        ApiDTO apiDto = apiService.getApi(id); 
+        Map<String, Object> response = apiService.getMockData(id);
+        if (apiDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(response);
+    }
+	
 	
 }

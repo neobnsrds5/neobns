@@ -1,0 +1,24 @@
+{
+  "id" : "412c75b7-f42e-47f3-9600-9656e785c914",
+  "request" : {
+    "urlPathPattern" : "/api/users/9",
+    "method" : "POST",
+    "queryParameters" : { },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\n  \"test\": \"asdadasdasd\",\n  \"test:\": \"qwe\",\n\"asd\":\"asd\"\n}"
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"Q\":\"Q\"}",
+    "headers" : {
+      "Access-Control-Allow-Headers" : "Content-Type, Authorization",
+      "Access-Control-Allow-Origin" : "*",
+      "Access-Control-Allow-Methods" : "GET, POST, PUT, DELETE, OPTIONS",
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "412c75b7-f42e-47f3-9600-9656e785c914",
+  "persistent" : true,
+  "insertionIndex" : 28
+}

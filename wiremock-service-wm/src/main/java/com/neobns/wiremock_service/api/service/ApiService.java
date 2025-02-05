@@ -2,24 +2,25 @@ package com.neobns.wiremock_service.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
-
-import com.neobns.wiremock_service.api.vo.ApiVO;
+import com.neobns.wiremock_service.api.dto.ApiDTO;
 
 public interface ApiService {
-	List<ApiVO> getAllApis();
-	ApiVO getApi(int id);
-	List<ApiVO> getApis(List<Integer> ids);
-	void saveNewApi(String apiName, String apiUrl);
+	List<ApiDTO> getAllApis();
+	ApiDTO getApi(int id);
+	List<ApiDTO> getApis(List<Integer> ids);
+	void saveNewApi(ApiDTO apiDto);
 	void updateCheckedApiInfo(int id, LocalDateTime checkedTime, Integer checkedStatus);
 	void toggleResponseStatusById(int id);
 	void changeModeById(int id, boolean targetMode/*1:대응답ON,0:대응답OFF(실서버)*/);
 	void changeModeByIds(List<Integer> ids, boolean targetMode/*1:대응답ON,0:대응답OFF(실서버)*/);
-	ApiVO performHealthCheck(int id);
+	ApiDTO performHealthCheck(int id);
 	void checkAllApiHealthCheck();
 	void deleteApi(int id);
 	
-	ResponseEntity<String> getStubResponse(String stubUrl);
-	String isStubExists(String apiUrl);
+	void updateApi(int id, ApiDTO apiDto);
+	Map<String, Object> getMockData(int id);
+	
+
 }

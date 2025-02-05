@@ -1,20 +1,21 @@
 {
-  "id" : "2d5727d1-c10b-4123-83b6-2beefc76c00f",
+  "id" : "f8681f94-c76a-4b9d-ba13-00433c14a05a",
   "request" : {
-    "url" : "/mock/api/1",
-    "method" : "GET"
+    "urlPathPattern" : "/api/users/100",
+    "method" : "GET",
+    "queryParameters" : { }
   },
   "response" : {
     "status" : 200,
-    "bodyFileName" : "api-1-response.json",
+    "body" : "{\"dd\":\"dd\"}",
     "headers" : {
       "Content-Type" : "application/json",
-      "Access-Control-Allow-Origin" : "*",
       "Access-Control-Allow-Methods" : "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Origin" : "*",
       "Access-Control-Allow-Headers" : "Content-Type, Authorization"
     }
   },
-  "uuid" : "2d5727d1-c10b-4123-83b6-2beefc76c00f",
+  "uuid" : "f8681f94-c76a-4b9d-ba13-00433c14a05a",
   "persistent" : true,
-  "insertionIndex" : 0
+  "insertionIndex" : 4
 }

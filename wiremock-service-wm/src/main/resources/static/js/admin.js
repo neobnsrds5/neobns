@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const apiAddButton = document.querySelector(".btn-api-add");
     apiAddButton.addEventListener("click", function () {
         const apiAddModal = new bootstrap.Modal(document.getElementById("apiAddModal"));
+		toggleRequestBody("httpMethod", "requestBodyContainer");
         apiAddModal.show();
     });
 	
@@ -81,6 +82,26 @@ document.addEventListener("DOMContentLoaded", function () {
         button.addEventListener("click", function () {
             deleteApi(button);
         });
+    });
+	
+	// 수정 버튼 이벤트
+	document.querySelectorAll(".btn-edit").forEach(button => {
+        button.addEventListener("click", () => loadApiDetail(button));
+    });
+	
+	// 추가 모달: HTTP 메서드 변경 시 이벤트 적용
+    document.getElementById("httpMethod").addEventListener("change", () => {
+        toggleRequestBody("httpMethod", "requestBodyContainer");
+    });
+
+    // 수정 모달: HTTP 메서드 변경 시 이벤트 적용
+    document.getElementById("editHttpMethod").addEventListener("change", () => {
+        toggleRequestBody("editHttpMethod", "editRequestBodyContainer");
+    });
+	
+	// 수정 모달: 완료 버튼
+	document.getElementById("saveEditButton").addEventListener("click", () => {
+        updateApi();
     });
 	
 });
@@ -217,66 +238,256 @@ const getSelectedIdsFromCheckbox = (checkboxes) => {
 	return selectedIds;
 }
 
-// API 추가 함수
-const addNewApi = () => {
+const toggleRequestBody = (methodId, containerId) => {
+    const method = document.getElementById(methodId).value;
+    const requestBodyContainer = document.getElementById(containerId);
+
+    if (method === "GET" || method === "DELETE") {
+        requestBodyContainer.style.display = "none"; // GET, DELETE는 Request Body 숨김
+    } else {
+        requestBodyContainer.style.display = "block"; // POST, PUT은 Request Body 보임
+    }
+};
+
+
+document.getElementById("saveApiButton").addEventListener("click", function () {
+    // 1. 입력값 가져오기
+    const apiName = document.getElementById("apiName").value.trim();
+    const apiUrl = document.getElementById("apiUrl").value.trim();
+    const httpMethod = document.getElementById("httpMethod").value;
+    //const requestHeaders = document.getElementById("requestHeaders").value.trim();
+    const requestBody = document.getElementById("requestBody").value.trim();
+    const responseStatusCode = parseInt(document.getElementById("responseStatusCode").value);
+    const responseBody = document.getElementById("responseBody").value.trim();
+
+    // 2. 필수 입력값 검증
+    if (!apiName || !apiUrl) {
+        alert("API 이름과 URL을 입력해주세요.");
+        return;
+    }
 	
-	const apiName = document.getElementById("apiName").value;
-    const apiUrl = document.getElementById("apiUrl").value;
-	
-	if (!apiName || !apiUrl) {
-	        alert("API 이름과 주소를 입력해주세요.");
-	        return;
-	}
-	
-    // 모든 상태 데이터를 전송
-    const payload = {
-        apiName,
-        apiUrl,
+	// JSON 유효성 검사
+    if (!validateJsonFields(httpMethod, "requestBody", "responseBody")) {
+       return; // JSON 오류 발생 시 저장하지 않음
+    }
+
+    // 3. 요청 데이터 객체 생성
+    const requestData = {
+        apiName: apiName,
+        apiUrl: apiUrl,
+        httpMethod: httpMethod,
+        //requestHeaders: requestHeaders || null,
+        responseStatusCode: responseStatusCode,
+        responseBody: responseBody || null
     };
 
-    fetch('/api/add', {
+    // 4. GET, DELETE 요청일 경우 requestBody 제거
+    if (httpMethod !== "GET" && httpMethod !== "DELETE") {
+        requestData.requestBody = requestBody || null;
+    }
+
+    // 5. 백엔드로 요청 보내기 (POST /api/add)
+    fetch("/api/add", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(requestData)
     })
-	.then(response => {
-	    if (response.status === 201) {
-	        alert("API가 성공적으로 추가되었습니다.");
-	        window.location.reload();  
-	    } else {
-	        alert("Json Validation 에러가 발생했습니다.");
-	    }
-	})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("API 등록에 실패했습니다.");
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert("API 등록 완료!");
+        location.reload(); // 페이지 새로고침하여 업데이트된 목록 반영
+    })
     .catch(error => {
         console.error("Error:", error);
-        alert("네트워크 오류가 발생했습니다.");
+        alert("API 등록 중 오류 발생!");
     });
-};
+});
 
-// API 삭제
+// API 삭제 함수 
 const deleteApi = (button) => {
-    const id = button.getAttribute("data-id");
+    const apiId = button.getAttribute("data-id");
 
-    if (!confirm(`${id}번 API를 삭제하시겠습니까?`)) {
+    if (!apiId) {
+        alert("API ID를 찾을 수 없습니다.");
         return;
     }
 
-    fetch(`/api/delete/${id}`, {
-        method: "DELETE"
-    })
-    .then(response => {
-        if (response.status === 200) {
-            alert("API가 성공적으로 삭제되었습니다.");
-            window.location.reload();
-        } else {
-            alert("API 삭제 중 오류가 발생했습니다.");
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("네트워크 오류가 발생했습니다.");
-    });
+    if (confirm("정말 삭제하시겠습니까?")) {
+        fetch(`/api/delete/${apiId}`, {
+            method: "DELETE",
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("삭제 실패");
+            }
+            return response.text();
+        })
+        .then(() => {
+            alert("API 삭제 완료!");
+            location.reload(); // 페이지 새로고침하여 목록 반영
+        })
+        .catch(error => {
+            console.error("삭제 오류:", error);
+            alert("API 삭제 중 오류 발생!");
+        });
+    }
 };
 
+// API 상세 정보 불러오기
+const loadApiDetail = (button) => {
+    const apiId = button.getAttribute("data-id");
+    if (!apiId) {
+        alert("API ID를 찾을 수 없습니다.");
+        return;
+    }
+
+    fetch(`/api/get/${apiId}`)
+        .then(response => response.json())
+		
+        .then(data => {
+            if (!data.api || !data.wiremock) {
+                alert("API 정보를 불러올 수 없습니다.");
+                return;
+            }
+			document.getElementById("editApiId").value = apiId;
+            // 1. DB에서 가져온 데이터 (메타데이터)
+            document.getElementById("editApiName").value = data.api.apiName;
+            document.getElementById("editApiUrl").value = data.api.apiUrl;
+
+            // 2. WireMock에서 가져온 Request/Response 데이터
+			document.getElementById("editHttpMethod").value = data.wiremock.body.request.method;
+            //document.getElementById("editRequestHeaders").value = JSON.stringify(data.wiremock.body.request.headers || {}, null, 2);
+			// Request Body - equalToJson 제거
+            let requestBody = "";
+            if (data.wiremock.body.request.bodyPatterns && data.wiremock.body.request.bodyPatterns.length > 0) {
+                const bodyPattern = data.wiremock.body.request.bodyPatterns[0]; // 첫 번째 패턴만 사용
+                if (bodyPattern.equalToJson) {
+                    try {
+                        requestBody = JSON.stringify(JSON.parse(bodyPattern.equalToJson), null, 2); // JSON 변환
+                    } catch (e) {
+                        requestBody = bodyPattern.equalToJson; // 변환 실패 시 원본 그대로 유지
+                    }
+                }
+            }
+			document.getElementById("editRequestBody").value = requestBody;
+            document.getElementById("editResponseStatus").value = data.wiremock.body.response.status;
+
+			// JSON을 파싱하여 \가 붙지 않도록 처리
+            try {
+                document.getElementById("editResponseBody").value = JSON.stringify(JSON.parse(data.wiremock.body.response.body), null, 2);
+            } catch (e) {
+                document.getElementById("editResponseBody").value = data.wiremock.body.response.body; // JSON이 아니면 그대로 출력
+            }
+
+			toggleRequestBody("editHttpMethod", "editRequestBodyContainer");
+            // 3. 수정 모달창 띄우기
+            const editApiModal = new bootstrap.Modal(document.getElementById("editApiModal"));
+            editApiModal.show();
+        })
+        .catch(error => {
+            console.error("API 상세 정보 불러오기 실패:", error);
+            alert("API 정보를 불러오는 중 오류가 발생했습니다.");
+        });
+};
+
+// API 수정 요청 함수
+const updateApi = () => {
+    const apiId = document.getElementById("editApiId").value;
+    if (!apiId) {
+        alert("API ID를 찾을 수 없습니다.");
+        return;
+    }
+	const httpMethod = document.getElementById("editHttpMethod").value;
+	// JSON 유효성 검사 (요청 본문, 응답 본문)
+    if (!validateJsonFields(httpMethod, "editRequestBody", "editResponseBody")) {
+        return; // JSON 오류 발생 시 저장하지 않음
+    }
+	
+	// 응답 본문을 JSON 문자열로 변환하여 저장
+    let responseBody = document.getElementById("editResponseBody").value.trim();
+    try {
+        responseBody = JSON.stringify(JSON.parse(responseBody)); // JSON 형식 유지
+    } catch (e) {
+        // JSON이 아닐 경우 변환하지 않고 그대로 저장
+    }
+    // 1. 수정된 데이터 가져오기
+    const requestData = {
+        apiName: document.getElementById("editApiName").value.trim(),
+        apiUrl: document.getElementById("editApiUrl").value.trim(),
+        httpMethod: document.getElementById("editHttpMethod").value,
+        //requestHeaders: document.getElementById("editRequestHeaders").value.trim(),
+        requestBody: document.getElementById("editRequestBody").value.trim(),
+        responseStatusCode: parseInt(document.getElementById("editResponseStatus").value, 10),
+        responseBody: responseBody
+    };
+
+    // 2. GET, DELETE 요청일 경우 requestBody 제외
+    if (requestData.httpMethod === "GET" || requestData.httpMethod === "DELETE") {
+        delete requestData.requestBody;
+    }
+
+    // 3. 백엔드로 수정 요청 보내기
+    fetch(`/api/update/${apiId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("API 수정 실패");
+        }
+        return response.text();
+    })
+    .then(() => {
+        alert("API 수정 완료!");
+        location.reload(); // 페이지 새로고침하여 변경된 목록 반영
+    })
+    .catch(error => {
+        console.error("API 수정 오류:", error);
+        alert("API 수정 중 오류 발생!");
+    });
+};
+const validateJsonFields = (httpMethod, requestBodyId, responseBodyId) => {
+    let invalidFields = [];
+
+    // 1. 요청 본문(JSON) 검사 (POST, PUT일 때만)
+    if (httpMethod === "POST" || httpMethod === "PUT") {
+        const requestBody = document.getElementById(requestBodyId).value.trim();
+        if (requestBody && !isValidJson(requestBody)) {
+            invalidFields.push("요청 본문");
+        }
+    }
+
+    // 2. 응답 본문(JSON) 검사
+    const responseBody = document.getElementById(responseBodyId).value.trim();
+    if (responseBody && !isValidJson(responseBody)) {
+        invalidFields.push("응답 본문");
+    }
+
+    // 3. 오류 메시지 출력 (유효하지 않은 필드가 있을 경우)
+    if (invalidFields.length > 0) {
+        alert(`${invalidFields.join(", ")} 필드의 JSON 형식이 올바르지 않습니다.`);
+        return false;
+    }
+
+    return true;
+};
+
+// **JSON 유효성 검사 함수**
+const isValidJson = (jsonString) => {
+    try {
+        JSON.parse(jsonString);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};

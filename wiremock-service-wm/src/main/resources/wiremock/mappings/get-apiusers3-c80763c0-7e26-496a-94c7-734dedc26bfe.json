@@ -1,0 +1,21 @@
+{
+  "id" : "c80763c0-7e26-496a-94c7-734dedc26bfe",
+  "request" : {
+    "urlPathPattern" : "/api/users/3",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"kkk\":\"KKdK\"}",
+    "headers" : {
+      "Access-Control-Allow-Headers" : "Content-Type, Authorization",
+      "Access-Control-Allow-Origin" : "*",
+      "Access-Control-Allow-Methods" : "GET, POST, PUT, DELETE, OPTIONS",
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "c80763c0-7e26-496a-94c7-734dedc26bfe",
+  "persistent" : true,
+  "insertionIndex" : 5
+}

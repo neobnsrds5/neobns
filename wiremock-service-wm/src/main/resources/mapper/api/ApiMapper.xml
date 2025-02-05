@@ -2,33 +2,33 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.neobns.wiremock_service.api.dao.ApiDao">
+<mapper namespace="com.neobns.wiremock_service.api.mapper.ApiMapper">
 
     <!-- API 조회 -->
     <!-- 1. 전체 -->
-    <select id="findAll" parameterType="ApiVO" resultType="ApiVO">
+    <select id="findAll" parameterType="ApiDTO" resultType="ApiDTO">
         SELECT 
-        	id, api_name, api_url, last_checked_time, last_checked_status, response_status
+        	id, wiremock_id, api_name, api_url, last_checked_time, last_checked_status, response_status
         FROM
-        	tb_api_list_m
+        	fwk_mock_rest_api
     </select>
     
     <!-- 2. 단일 -->
-    <select id="findById" parameterType="Integer" resultType="ApiVO">
+    <select id="findById" parameterType="Integer" resultType="ApiDTO">
     	SELECT
-    		id, api_name, api_url, last_checked_time, last_checked_status, response_status
+    		id, wiremock_id, api_name, api_url, last_checked_time, last_checked_status, response_status
     	FROM
-    		tb_api_list_m
+    		fwk_mock_rest_api
     	WHERE
     		id = #{id} 
     </select>
     
     <!-- 3. 멀티 -->
-    <select id="findByIds" parameterType="Integer" resultType="ApiVO">
+    <select id="findByIds" parameterType="Integer" resultType="ApiDTO">
     	SELECT
-    		id, api_name, api_url, last_checked_time, last_checked_status, response_status 
+    		id, wiremock_id, api_name, api_url, last_checked_time, last_checked_status, response_status 
     	FROM 
-    		tb_api_list_m 
+    		fwk_mock_rest_api 
     	WHERE 
     		id 
     	IN 
@@ -38,23 +38,25 @@
     </select>
 
     <!-- 신규 API 저장 -->
-    <insert id="saveApi" parameterType="ApiVO">
+    <insert id="saveApi" parameterType="ApiDTO">
         INSERT INTO 
-        	tb_api_list_m (
-        		api_name
+        	fwk_mock_rest_api (
+        		wiremock_id
+        		, api_name
         		, api_url
         		)
         VALUES (
-        		#{apiName}
+        		#{wiremockId}
+        		, #{apiName}
         		, #{apiUrl}
         		)
     </insert>
 
     <!-- API 업데이트 -->
     <!-- 1. 실서버 상태 -->
-    <update id="updateCheckedStatus" parameterType="ApiVO">
+    <update id="updateCheckedStatus" parameterType="ApiDTO">
         UPDATE 
-        	tb_api_list_m
+        	fwk_mock_rest_api
         SET
             last_checked_time = #{lastCheckedTime}
             , last_checked_status = #{lastCheckedStatus}
@@ -65,7 +67,7 @@
     <!-- 2.대응답 토글(단일) -->
     <update id="toggleResponseStatusById" parameterType="Integer">
     	UPDATE 
-    		tb_api_list_m 
+    		fwk_mock_rest_api 
     	SET 
     		response_status = NOT response_status 
     	WHERE 
@@ -75,7 +77,7 @@
     <!-- 3. 대응답 토글(멀티) -->
     <update id="toggleResponseStatusByIds" parameterType="Integer">
         UPDATE 
-        	tb_api_list_m
+        	fwk_mock_rest_api
 	    SET 
 	    	response_status = NOT response_status
 	    WHERE id IN
@@ -85,19 +87,33 @@
     </update>
     
     <!-- 4. 대응답 지정 -->
-    <update id="changeResponseStatusById" parameterType="ApiVO">
+    <update id="changeResponseStatusById" parameterType="ApiDTO">
     	UPDATE
-    		tb_api_list_m
+    		fwk_mock_rest_api
     	SET
     		response_status = #{responseStatus}
     	WHERE
     		id = #{id}
     </update>
     
+    <!-- wiremockId 조회 -->
+    <select id="findWiremockIdById" resultType="string">
+        SELECT wiremock_id FROM fwk_mock_rest_api WHERE id = #{id}
+    </select>
+    
     <!-- API 삭제 -->
     <delete id="deleteById" parameterType="int">
-        DELETE FROM tb_api_list_m
+        DELETE FROM fwk_mock_rest_api
         WHERE id = #{id}
     </delete>
+    
+    <!-- API 수정 -->
+    <update id="updateById" parameterType="ApiDTO">
+        UPDATE fwk_mock_rest_api
+        SET wiremock_id = #{wiremockId}, 
+            api_name = #{apiName}, 
+            api_url = #{apiUrl}
+        WHERE id = #{id};
+    </update>
     
 </mapper>

@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @Configuration
 public class WireMockConfig {
@@ -18,9 +17,9 @@ public class WireMockConfig {
 	            WireMockConfiguration.wireMockConfig()
                 .port(56789)
                 .usingFilesUnderClasspath("wiremock")
-                .extensions(new TransformStub())
+                .withRootDirectory("src/main/resources/wiremock")
+                .enableBrowserProxying(true) // proxy 사용 가능
         );
-		
 		server.start();
 
 		//파비콘 No Content 처리
@@ -28,24 +27,8 @@ public class WireMockConfig {
 			    .willReturn(WireMock.aResponse()
 			            .withStatus(204)
 			            .withHeader("Content-Type", "text/plain")
-			    	));
-		
-		server.stubFor(any(urlPathMatching("/register"))
-                .willReturn(aResponse()
-                        .withTransformers("trans") // TransformStub에서 등록된 이름 사용
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(201)
-                        .withBody("{\"message\": \"Register endpoint ready!\"}")));
-		
-		
-		DefaultStub.errorStub(server);
-		DefaultStub.delayStub(server);
-		DefaultStub.downStub(server);
+			    	));	
 				
 		return server;
     }
-	
-
-	
-	
 }

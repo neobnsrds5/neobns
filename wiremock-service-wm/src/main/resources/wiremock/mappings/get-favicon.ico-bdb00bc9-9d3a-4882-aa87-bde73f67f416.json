@@ -1,7 +1,7 @@
 {
-  "id" : "1ade08fa-7cd3-4739-9a62-6cab597a96f5",
+  "id" : "bdb00bc9-9d3a-4882-aa87-bde73f67f416",
   "request" : {
-    "urlPath" : "/favicon.ico",
+    "url" : "/favicon.ico",
     "method" : "GET"
   },
   "response" : {
@@ -10,7 +10,7 @@
       "Content-Type" : "text/plain"
     }
   },
-  "uuid" : "1ade08fa-7cd3-4739-9a62-6cab597a96f5",
+  "uuid" : "bdb00bc9-9d3a-4882-aa87-bde73f67f416",
   "persistent" : true,
-  "insertionIndex" : 31
+  "insertionIndex" : 20
 }

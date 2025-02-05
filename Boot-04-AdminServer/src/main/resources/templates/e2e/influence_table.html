@@ -18,13 +18,13 @@
 				<div class="input-group">
 					<!-- 검색 조건 선택 -->
 					<select class="form-select" name="searchType">
-						<option th:selected="${searchType == 'callerMethod'}" value="callerMethod">테이블 명</option>
-						<option th:selected="${searchType == 'callerClass'}" value="callerClass">클래스 명</option>
+						<option th:selected="${searchType == 'table'}" value="table">테이블 명</option>
+						<option th:selected="${searchType == 'class'}" value="class">클래스 명</option>
 					</select>
 
 					<!-- 검색 키워드 입력 -->
 					<input class="form-control ms-2" name="searchKeyword" placeholder="검색어를 입력하세요"
-					       th:value="${searchKeyword}" type="text"/>
+					       th:value="${param.searchKeyword}" type="text"/>
 
 					<!-- 검색 버튼 -->
 					<button class="btn btn-sm btn-primary" type="submit">
@@ -55,17 +55,17 @@
 					<td th:text="${log.timestmp}"></td>
 					<!-- 추적 아이디 -->
 					<td class="text-start">
-						<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
-						<span th:unless="${log.traceId != null}">N/A</span>
+						<a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}">
+							<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
+							<span th:unless="${log.traceId != null}">N/A</span>
+						</a>
 					</td>
 					<!-- 호출상세 -->
 					<td class="text-start trace-id">
-		            	<span th:if="${log.traceId != null}">
-	                        <a th:href="@{'/admin/trace?traceId=' + ${log.traceId}}"
-	                           th:text="${log.callerClass == 'SQL' ? log.callerMethod : log.callerClass}">
-					        </a>
-	                    </span>
-						<span th:unless="${log.callerMethod != null}">N/A</span>
+						<span th:if="${log.traceId != null}">
+							<a th:text="${log.query != null ? log.query : log.calledBy}"></a>
+						</span>
+						<span th:unless="${log.current != null}">N/A</span>
 					</td>
 					<!-- 사용자 ID -->
 					<td class="text-start user-id">

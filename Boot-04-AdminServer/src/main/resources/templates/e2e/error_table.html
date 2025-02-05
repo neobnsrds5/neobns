@@ -3,18 +3,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>지연 어플리케이션</title>
+	<title>오류 어플리케이션</title>
 
 	<!-- 요청 파라미터 저장 Js -->
 	<script src="/assets/js/parameterSave.js"></script>
-</head>
 
+</head>
 <div class="page-content" layout:fragment="main">
 
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
-		<h2 class="mb-4 text-center"><a href="/admin/slow">지연 어플리케이션 관리</a></h2>
+		<h2 class="mb-4 text-center"><a href="/admin/errors">오류 어플리케이션 관리</a></h2>
 
-		<form action="/admin/slow" class="row justify-content-end" id="searchForm" method="get">
+		<form action="/admin/errors" class="row justify-content-end" id="searchForm" method="get">
 			<div class="col-12 p-0">
 				<div class="input-group">
 					<input class="form-control" name="startTime" placeholder="시작 시간"
@@ -28,10 +28,10 @@
 					<input class="form-control ms-2" name="userId" placeholder="사용자 ID"
 					       th:value="${param.userId}"
 					       type="text"/>
-					<input class="form-control ms-2" name="ipAddress" placeholder="IP 주소"
-					       th:value="${param.ipAddress}"
+					<input class="form-control ms-2" name="userIp" placeholder="IP 주소"
+					       th:value="${param.userIp}"
 					       type="text"/>
-					<input class="form-control ms-2" name="uri" placeholder="URI/포트" th:value="${param.uri}"
+					<input class="form-control ms-2" name="port" placeholder="URI/포트" th:value="${param.port}"
 					       type="text"/>
 					<input class="form-control ms-2" name="executeResult" placeholder="소요시간(s)"
 					       th:value="${param.executeResult}" type="text"/>
@@ -40,6 +40,7 @@
 				</div>
 			</div>
 		</form>
+
 		<div class="table-responsive">
 			<!-- 검색 결과 없을 때 메시지 -->
 			<div class="m-lg-5 p-lg-5 text-center" th:if="${logList.size() == 0}">
@@ -72,21 +73,23 @@
 					</td>
 					<!-- IP주소 -->
 					<td class="text-start ip-address">
-						<span th:if="${log.ipAddress != null}" th:text="${log.ipAddress}"></span>
-						<span th:unless="${log.ipAddress != null}">N/A</span>
+						<span th:if="${log.userIp != null}" th:text="${log.userIp}"></span>
+						<span th:unless="${log.userIp != null}">N/A</span>
 					</td>
 					<!-- 종류 -->
 					<td>
-						<span th:if="${log.callerClass == 'SQL'}" th:text="${log.callerClass}"></span>
-						<span th:text="${log.callerMethod}" th:unless="${log.callerClass == 'SQL'}"></span>
+						<span th:if="${log.query != null}" th:text="SQL"></span>
+						<br>
+						<span th:unless="${log.query != null}" th:text="${log.calledBy}"></span>
 					</td>
 					<!-- URI/쿼리 -->
 					<td>
-						<span th:if="${log.uri != null}" th:text="${log.uri}"></span>
-						<span th:if="${log.query != null}" th:text="${log.query}"></span>
+						<span th:if="${log.requestURL != null}" th:utext="'<b>url : </b>' + ${log.requestURL}"></span>
+						<br>
+						<span th:if="${log.query != null}" th:utext="'<b>query: </b>' + ${log.query}"></span>
 					</td>
 					<!-- 소요시간 -->
-					<td th:text="${log.executeResult}"></td>
+					<td th:text="${log.executionTime}"></td>
 					<!-- 사용자 ID -->
 					<td th:text="${log.userId}"></td>
 				</tr>
@@ -94,12 +97,12 @@
 			</table>
 		</div>
 
-		<div class="row" th:if="${logList.size() > 0}">
+		<div class="pagination" th:if="${logList.size() > 0}">
 			<ul class="pagination">
 			<!-- 이전 페이지 그룹 -->
-			<li  class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
+			<li class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
 				<a class="page-link"
-				   th:href="@{/admin/slow(page=${(currentPage - 1)/10 * 10}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
+				   th:href="@{/admin/errors(page=${(currentPage - 1)/10 * 10}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, query=${param.query}, uri=${param.uri})}"
 				   th:if="${currentPage > 10}">
 					« 이전
 				</a>
@@ -111,14 +114,14 @@
 			<li class="page-item"
 			      th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
 		        <a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
-		           th:href="@{/admin/slow(page=${pageNum}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}">
-		            <span th:text="${pageNum}"></span>
+				   th:href="@{/admin/errors(page=${pageNum}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, userIp=${param.userIp}, port=${param.port}, executeResult=${param.executeResult})}">
+					<span th:text="${pageNum}"></span>
 		        </a>
-			</li>
+		    </li>
 			<!-- 다음 페이지 그룹 -->
 			<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
 				<a class="page-link"
-				   th:href="@{/admin/slow(page=${((currentPage - 1)/10 + 1) * 10 + 1}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, ipAddress=${param.ipAddress}, uri=${param.uri}, executeResult=${param.executeResult})}"
+				   th:href="@{/admin/errors(page=${((currentPage - 1)/10 + 1) * 10 + 1}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId}, userIp=${param.userIp}, port=${param.port}, executeResult=${param.executeResult})}"
 				   th:if="${currentPage + 10 <= totalPages}">
 		       	    다음 »
 				</a>

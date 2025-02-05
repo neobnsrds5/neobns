@@ -19,13 +19,13 @@ public class LogService {
 		return logMapper.findByTraceId(traceId);
 	}
 	
-	public int countSlowLogs(LogDTO paramDto) {
-        return logMapper.countSlowLogs(paramDto);
+	public int countDelayLogs(LogDTO paramDto) {
+        return logMapper.countDelayLogs(paramDto);
     }
 
-    public List<LogDTO> findSlowLogs(LogDTO paramDto, int page, int size) {
+    public List<LogDTO> findDelayLogs(LogDTO paramDto, int page, int size) {
         int offset = (page - 1) * size;
-        return logMapper.findSlowLogs(paramDto, size, offset);
+        return logMapper.findDelayLogs(paramDto, size, offset);
     }
 
     public int countErrorLogs(LogDTO paramDto) {
@@ -37,13 +37,13 @@ public class LogService {
         return logMapper.findErrorLogs(paramDto, size, offset);
     }
     
-	public List<LogDTO> findByTable(int page, int size, String searchType, String searchKeyword) {
+	public List<LogDTO> findInfluenceLogs(int page, int size, String searchType, String searchKeyword) {
 		int offset = (page - 1) * size;
-	    return logMapper.findByTable(size, offset, searchType, searchKeyword);
+	    return logMapper.findInfluenceLogs(size, offset, searchType, searchKeyword);
 	}
 	
-    public int countSQLTable(String searchType, String searchKeyword) {
-        return logMapper.countSQLTable(searchType, searchKeyword);
+    public int countInfluenceLogs(String searchType, String searchKeyword) {
+        return logMapper.countInfluenceLogs(searchType, searchKeyword);
     }
 
 }

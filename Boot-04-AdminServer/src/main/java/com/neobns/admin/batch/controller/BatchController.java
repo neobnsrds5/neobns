@@ -46,7 +46,7 @@ public class BatchController {
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("statusList", status);
 
-		return "batch/jobList";
+		return "job_list";
 	}
 
 	@GetMapping("/jobDetail")
@@ -66,7 +66,7 @@ public class BatchController {
 		model.addAttribute("job", job);
 		model.addAttribute("steps", steps);
 
-		return "batch/jobDetail";
+		return "job_detail";
 	}
 
 	@GetMapping("/stepDetail")
@@ -77,7 +77,7 @@ public class BatchController {
 		logger.info("BatchJobExecutionEntity : " + job.toString());
 
 		model.addAttribute("job", job);
-		return "batch/stepDetail";
+		return "step_detail";
 	}
 
 }

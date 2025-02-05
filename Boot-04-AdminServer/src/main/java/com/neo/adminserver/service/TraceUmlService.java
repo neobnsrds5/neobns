@@ -1,9 +1,9 @@
 package com.neo.adminserver.service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.neo.adminserver.dto.LogDTO;
 
@@ -15,200 +15,93 @@ import lombok.Setter;
 public class TraceUmlService {
 
 	public static String buildUmlList(List<LogDTO> logList) {
-
-		List<LogDTO> traceList = new ArrayList<LogDTO>();
-		List<LogDTO> errorList = new ArrayList<LogDTO>();
-		List<LogDTO> slowList = new ArrayList<LogDTO>();
-		List<UmlDTO> umlList = new ArrayList<>();
-		umlList.add(new UmlDTO("User", "", "black"));
-
+		StringBuilder sb = new StringBuilder();
+		List<UmlDTO> uList = new ArrayList<UmlDTO>();
 		for (LogDTO log : logList) {
-			switch (log.getLoggerName()) {
-			case "TRACE":
-				traceList.add(log);
-				break;
-			case "ERROR":
-				errorList.add(log);
-				break;
-			case "SLOW":
-				slowList.add(log);
-				break;
-			}
-		}
-
-		for (int i = 0; i < traceList.size(); i++) {
-			LogDTO log = traceList.get(i);
-			LogDTO stateLog = null;
 			UmlDTO uml = new UmlDTO();
-			String callerClass = log.getCallerClass();
-			String callerMethod = log.getCallerMethod();
-			String executeResult = log.getExecuteResult();
 
-			// HTTP
-			if (callerClass.contains("http://")) {
-				String[] parts = callerClass.split("/");
+			uml.setBefore(formatUser(log.getCalledBy()));
+			uml.setTo(formatUser(log.getCurrent()));
+			uml.setContent(formatContent(log));
+			uml.setColor(formatColor(log));
 
-				// ip:port 간단하게 정리
-				String port = "\"" + parts[2] + "\"";
-				uml.setSource(port);
-
-				// -> 방향인 경우
-				if (executeResult == null || executeResult.trim().equals("")) {
-					// URI 간단하게 정리
-					String simpleUrl = "";
-					for (int j = 3; j < parts.length; j++) {
-						simpleUrl += ("/" + parts[j]);
-					}
-					uml.setContent(simpleUrl + " : " + callerMethod);
-				}
-				// <- 방향인 경우
-				else {
-					String content = "";
-
-					// error인 경우 에러 정보 출력
-					stateLog = checkError(log, errorList);
-					if (stateLog != null) {
-						content += (" [ " + stateLog.getExecuteResult() + " ] ");
-						uml.setColor("red");
-					}
-					// error가 아닌 경우 slow 확인
-					else {
-						stateLog = checkSlow(log, slowList);
-						if (stateLog != null) {
-							uml.setColor("orangered");
-						}
-					}
-
-					content += (" [ " + executeResult + "ms ] ");
-					uml.setContent(content);
-				}
-
-			}
-			// SQL
-			else if (callerClass.equals("SQL")) {
-				uml.setSource(callerClass);
-
-				String content = callerMethod;
-
-				stateLog = checkError(log, errorList);
-				if (stateLog != null) {
-					content += ("\\n<font color=red>[ " + stateLog.getExecuteResult() + " ] "); // 에러 정보 추가
-					uml.setColor("red");
-				} else {
-					stateLog = checkSlow(log, slowList);
-					if (stateLog != null) {
-						uml.setColor("orangered");
-						content += ("\\n<font color=orangered>[ " + executeResult + "ms ]"); // 소요 시간 추가
-					} else {
-						content += ("\\n<font color=black>[ " + executeResult + "ms ]"); // 소요 시간 추가
-					}
-				}
-				uml.setContent(content);
-			}
-			// AOP
-			else {
-				int index = callerClass.lastIndexOf(".");
-				uml.setSource(callerClass.substring(index + 1));
-
-				// -> 방향인 경우
-				if (executeResult == null || executeResult.trim().equals("")) {
-					uml.setContent(callerMethod);
-				}
-				// <- 방향인 경우
-				else {
-					String content = "";
-
-					// error인 경우 에러 정보 출력
-					stateLog = checkError(log, errorList);
-					if (stateLog != null) {
-						content += (" [ " + stateLog.getExecuteResult() + " ] ");
-						uml.setColor("red");
-					}
-					// error가 아닌 경우 slow 확인
-					else {
-						stateLog = checkSlow(log, slowList);
-						if (stateLog != null) {
-							uml.setColor("orangered");
-						}
-					}
-
-					content += (" [ " + executeResult + "ms ] ");
-					uml.setContent(content);
-				}
-			}
-			umlList.add(uml);
+			uList.add(uml);
 		}
-
-		umlList.add(new UmlDTO("User", "", "black"));
-
-		return buildUmlDiagram(umlList);
+		return buildUmlDiagram(uList);
 	}
 
-	public static String buildUmlDiagram(List<UmlDTO> umlList) {
-		Boolean isReturn = false; // 화살표 방향
+	public static String buildUmlDiagram(List<UmlDTO> umList) {
 		StringBuilder sb = new StringBuilder("autonumber\n");
-		sb.append("actor User\n").append("skinparam sequenceArrowThickness 2\n").append("skinparam roundcorner 20\n");
+		sb.append("actor USER\n").append("skinparam sequenceArrowThickness 2\n").append("skinparam roundcorner 20\n");
 
-		for (int i = 0; i < umlList.size() - 1; i++) {
-
-			isReturn = (umlList.size() / 2) <= i;
-			UmlDTO curUml = umlList.get(i);
-			UmlDTO nextUml = umlList.get(i + 1);
-
-			if (curUml.getSource().equals(nextUml.getSource())) {
-				continue;
-			}
-			if (nextUml.getSource().equals("SQL")) {
-				sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->", curUml.getSource(),
-						nextUml.getColor(), nextUml.getContent()));
-				nextUml.setSource(curUml.getSource());
-			} else {
-				if (isReturn) {
-					sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-							nextUml.getSource(), curUml.getColor(), curUml.getContent()));
-				} else { // -> 방향
-					if (i != 0 && nextUml.getSource().startsWith("\"")) { // rest call인 경우
-						// 가장 최근의 service를 rest service라 가정
-						int restCallServiceIndex = 0;
-						for (int j = i; j >= 0; j--) {
-							if (umlList.get(j).getSource().contains("Service")) {
-								restCallServiceIndex = j;
-								break;
-							}
-						}
-						UmlDTO restUml = umlList.get(restCallServiceIndex);
-						sb.append(String.format("%s %s %s : <font color=%s> %s\n", restUml.getSource(), "->",
-								nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
-					} else {
-						sb.append(String.format("%s %s %s : <font color=%s> %s\n", curUml.getSource(), "->",
-								nextUml.getSource(), nextUml.getColor(), nextUml.getContent()));
-					}
-				}
-			}
+		for (UmlDTO uml : umList) {
+			sb.append(String.format("%s %s %s : <font color=%s> %s\n", formatForAppend(uml.getBefore()), "->",
+					formatForAppend(uml.getTo()), uml.getColor(), uml.getContent()));
 		}
-
 		return sb.toString();
-
 	}
 
-	public static LogDTO checkError(LogDTO curLog, List<LogDTO> errorList) {
-		for (LogDTO errorLog : errorList) {
-			if (errorLog.getCallerClass().equals(curLog.getCallerClass())
-					&& errorLog.getCallerMethod().equals(curLog.getCallerMethod())) {
-				return errorLog;
+	// _---------------------------------- uml 그리기 메서드
+	// -------------------------------
+
+	private static String formatUser(String s) {
+		if (s.startsWith("http://") || s.startsWith("https://")) {
+			try {
+				URL url = new URL(s);
+				return url.getHost() + ":" + url.getPort();
+			} catch (MalformedURLException e) {
+				return s;
 			}
+		} else if (s.equals("USER")) {
+			return s;
+		} else {
+			String[] parts = s.split("\\.");
+			return parts[parts.length - 2];
 		}
-		return null;
 	}
 
-	public static LogDTO checkSlow(LogDTO curLog, List<LogDTO> slowList) {
-		for (LogDTO slowLog : slowList) {
-			if (slowLog.getCallerClass().equals(curLog.getCallerClass())
-					&& slowLog.getCallerMethod().equals(curLog.getCallerMethod())) {
-				return slowLog;
+	private static String formatContent(LogDTO log) {
+		if (log.getExecutionTime() != null) {
+			String res = "";
+			if (log.getQuery() != null) {
+				res += "[" + log.getQuery() + "]";
+			}
+			if(log.getDelay() != null) {
+				res += " [" + log.getDelay() + "]";
+			}
+			return res + " [" + log.getExecutionTime().toString() + "ms]";
+		} else {
+			String s = log.getCurrent();
+			if (s.startsWith("http://") || s.startsWith("https://")) {
+				try {
+					URL url = new URL(s);
+					return url.getPath();
+				} catch (MalformedURLException e) {
+					return s;
+				}
+			} else {
+				String[] parts = s.split("\\.");
+				return parts[parts.length - 1];
 			}
 		}
-		return null;
+	}
+
+	private static String formatColor(LogDTO log) {
+		if (log.getError() != null && !log.getError().isEmpty()) {
+			return "red";
+		}
+		// delay가 존재하면 orangered
+		if (log.getDelay() != null && !log.getDelay().isEmpty()) {
+			return "orangered";
+		}
+		// 기본 색상은 black
+		return "black";
+	}
+
+	private static String formatForAppend(String s) {
+		if (s.contains(":"))
+			return "\"" + s + "\"";
+		return s;
 	}
 }
 
@@ -217,7 +110,8 @@ public class TraceUmlService {
 @AllArgsConstructor
 @NoArgsConstructor
 class UmlDTO {
-	String source;
+	String before;
+	String to;
+	String color;
 	String content;
-	String color = "black";
 }

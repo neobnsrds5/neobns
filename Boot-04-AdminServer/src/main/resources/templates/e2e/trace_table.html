@@ -59,34 +59,30 @@
 				<th>종류</th> <!-- trace, slow, error -->
 				<th>추적ID</th> <!-- 추적 아이디 -->
 				<th>호출</th> <!-- caller_class 정보 -->
-				<th>호출상세</th> <!-- caller_method 정보 -->
+				<th>수행 위치</th> <!-- caller_method 정보 -->
 				<th>수행결과(ms)</th> <!-- 실행 시간 출력 -->
 			</tr>
 			</thead>
 			<tbody>
 			<tr th:each="log : ${logList}">
-				<!-- 선택 체크박스 -->
-				<!--
-				<td>
-					<input type="checkbox" class="form-check-input row-checkbox" th:attr="trace-id=${log.traceId}">
-				</td>
-				 -->
 				<!-- 타임스탬프 -->
 				<td th:text="${log.timestmp}"></td>
 				<td class="logger-name">
-					<span th:if="${log.loggerName != null}" th:text="${log.loggerName}"></span>
-					<span th:unless="${log.loggerName != null}">N/A</span>
+					<span th:if="${log.error != null and log.delay != null}" th:style="'color: red'" th:text="'ERROR, DELAY'"></span>
+					<span th:if="${log.error != null and log.delay == null}" th:style="'color: red'" th:text="'ERROR'">ERROR</span>
+					<span th:if="${log.error == null and log.delay != null}" th:style="'color: orange'" th:text="'DELAY'">DELAY</span>
+					<span th:if="${log.error == null and log.delay == null}">TRACE</span>
 				</td>
 				<td class="text-start">
 					<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
 					<span th:unless="${log.traceId != null}">N/A</span>
 				</td>
 				<!-- 호출 -->
-				<td th:text="${log.callerClass}"></td>
+				<td th:text="${log.current}"></td>
 				<!-- 호출상세 -->
-				<td th:text="${log.callerMethod}"></td>
+				<td th:text="${log.requestURL}"></td>
 				<!-- 수행결과 -->
-				<td th:text="${log.executeResult}"></td>
+				<td th:text="${log.executionTime}"></td>
 			</tr>
 			</tbody>
 		</table>

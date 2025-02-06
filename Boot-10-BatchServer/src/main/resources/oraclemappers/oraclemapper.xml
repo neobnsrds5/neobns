@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="neo.spider.sol.admin.mapper.OracleMapper">
+
+    <resultMap id="fwkErrorHisResultMap" type="neo.spider.solution.batch.dto.FwkErrorHisDto">
+        <result column="ERROR_CODE" property="errorCode"/>
+        <result column="ERROR_SER_NO" property="errorSerNo"/>
+        <result column="CUST_USER_ID" property="custUserId"/>
+        <result column="ERROR_MESSAGE" property="errorMessage"/>
+        <result column="ERROR_OCCUR_DTIME" property="errorOccurDtime"/>
+        <result column="ERROR_URL" property="errorUrl"/>
+        <result column="ERROR_TRACE" property="errorTrace"/>
+        <result column="ERROR_INSTANCE_ID" property="errorInstanceId"/>
+    </resultMap>
+    
+    <select id="getRecords" parameterType="long" resultMap="fwkErrorHisResultMap">
+        <![CDATA[
+            SELECT error_code, error_ser_no, cust_user_id, error_message, ERROR_OCCUR_DTIME, ERROR_URL, ERROR_TRACE, ERROR_INSTANCE_ID 
+            FROM SYSTEM.FWK_ERROR_HIS
+            WHERE TO_NUMBER(ERROR_OCCUR_DTIME) > #{startLine}
+        ]]>
+    </select>
+    
+    <select id="getCount">
+        <![CDATA[ 
+            SELECT COUNT(*)
+            FROM SYSTEM.FWK_ERROR_HIS
+        ]]>
+    </select>
+</mapper>

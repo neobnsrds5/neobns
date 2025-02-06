@@ -22,4 +22,8 @@ public class DBProperties {
 	public String getTargetUrl() {
 		return environment.getProperty("spider.batch.datasource-target.url");
 	}
+	
+	public String getSpiderUrl() {
+		return environment.getProperty("spider.batch.datasource-spiderdb.url");
+	}
 }

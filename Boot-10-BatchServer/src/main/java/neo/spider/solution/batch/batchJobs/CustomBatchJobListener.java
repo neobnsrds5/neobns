@@ -1,15 +1,15 @@
-package com.example.neobns.batch;
+package neo.spider.solution.batch.batchJobs;
 
 import org.slf4j.MDC;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.annotation.AfterJob;
 import org.springframework.stereotype.Component;
 
-import com.example.neobns.service.BatchHistoryService;
+import neo.spider.solution.batch.service.BatchHistoryService;
 
-@Component
+@Component // 현재 스파이더 FWK_ERROR_HIS 테이블 없어 배치 Job에 리스너 추가하지 않음
 public class CustomBatchJobListener{
-
+	
 	private final BatchHistoryService service;
 
 	public CustomBatchJobListener(BatchHistoryService service) {

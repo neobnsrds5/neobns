@@ -17,6 +17,8 @@ public class SubBatch1 {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
 	private static final Logger logger = LoggerFactory.getLogger(SubBatch1.class);
+	// 오라클 스파이더 배치 테이블로 통합 가능하게 하는 리스너로 현재 오라클 스파이더 배치 테이블 사용할 수 없어 주석처리
+//	private final CustomBatchJobListener listener;
 
 	public SubBatch1(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
 		this.jobRepository = jobRepository;
@@ -25,7 +27,7 @@ public class SubBatch1 {
 
 	@Bean
 	public Job subBatch1Job() {
-		return new JobBuilder("subBatch1", jobRepository).start(subBatch1Step()).build();
+		return new JobBuilder("subBatch1", jobRepository)/* .listener(listener) */.start(subBatch1Step()).build();
 
 	}
 

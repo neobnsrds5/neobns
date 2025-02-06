@@ -12,9 +12,13 @@ public interface LogMapper {
 	
 	List<LogDTO> findByTraceId(String traceId);
 	
-	int countDelayLogs(LogDTO paramDto);
+	int countDelayRequestLogs(LogDTO paramDto);
 
-	List<LogDTO> findDelayLogs(@Param("paramDto") LogDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
+	List<LogDTO> findDelayRequestLogs(@Param("paramDto") LogDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
+
+	int countDelayQueryLogs(LogDTO paramDto);
+
+	List<LogDTO> findDelayQueryLogs(@Param("paramDto") LogDTO paramDto, @Param("limit") int limit, @Param("offset") int offset);
 
     int countErrorLogs(LogDTO paramDto);
 

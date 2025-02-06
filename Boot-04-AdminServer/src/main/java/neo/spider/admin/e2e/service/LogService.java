@@ -19,13 +19,22 @@ public class LogService {
 		return logMapper.findByTraceId(traceId);
 	}
 	
-	public int countDelayLogs(LogDTO paramDto) {
-        return logMapper.countDelayLogs(paramDto);
+	public int countDelayRequestLogs(LogDTO paramDto) {
+        return logMapper.countDelayRequestLogs(paramDto);
     }
 
-    public List<LogDTO> findDelayLogs(LogDTO paramDto, int page, int size) {
+    public List<LogDTO> findDelayRequestLogs(LogDTO paramDto, int page, int size) {
         int offset = (page - 1) * size;
-        return logMapper.findDelayLogs(paramDto, size, offset);
+        return logMapper.findDelayRequestLogs(paramDto, size, offset);
+    }
+
+    public int countDelayQueryLogs(LogDTO paramDto) {
+        return logMapper.countDelayQueryLogs(paramDto);
+    }
+
+    public List<LogDTO> findDelayQueryLogs(LogDTO paramDto, int page, int size) {
+        int offset = (page - 1) * size;
+        return logMapper.findDelayQueryLogs(paramDto, size, offset);
     }
 
     public int countErrorLogs(LogDTO paramDto) {

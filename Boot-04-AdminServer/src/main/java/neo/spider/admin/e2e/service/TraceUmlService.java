@@ -20,8 +20,8 @@ public class TraceUmlService {
 		for (LogDTO log : logList) {
 			UmlDTO uml = new UmlDTO();
 
-			uml.setBefore(formatUser(log.getCalledBy()));
-			uml.setTo(formatUser(log.getCurrent()));
+			uml.setBefore(formatUser(log.getCallerComponentName()));
+			uml.setTo(formatUser(log.getTargetComponentName()));
 			uml.setContent(formatContent(log));
 			uml.setColor(formatColor(log));
 
@@ -66,12 +66,12 @@ public class TraceUmlService {
 			if (log.getQuery() != null) {
 				res += "[" + log.getQuery() + "]";
 			}
-			if(log.getDelay() != null) {
-				res += " [" + log.getDelay() + "]";
+			if(log.getDelayMessageText() != null) {
+				res += " [" + log.getDelayMessageText() + "]";
 			}
 			return res + " [" + log.getExecutionTime().toString() + "ms]";
 		} else {
-			String s = log.getCurrent();
+			String s = log.getTargetComponentName();
 			if (s.startsWith("http://") || s.startsWith("https://")) {
 				try {
 					URL url = new URL(s);
@@ -87,11 +87,11 @@ public class TraceUmlService {
 	}
 
 	private static String formatColor(LogDTO log) {
-		if (log.getError() != null && !log.getError().isEmpty()) {
+		if (log.getErrorMessageText() != null && !log.getErrorMessageText().isEmpty()) {
 			return "red";
 		}
 		// delay가 존재하면 orangered
-		if (log.getDelay() != null && !log.getDelay().isEmpty()) {
+		if (log.getDelayMessageText() != null && !log.getDelayMessageText().isEmpty()) {
 			return "orangered";
 		}
 		// 기본 색상은 black

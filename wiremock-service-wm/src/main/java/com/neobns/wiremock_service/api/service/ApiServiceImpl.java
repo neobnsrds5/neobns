@@ -76,13 +76,13 @@ public class ApiServiceImpl implements ApiService {
         requestBody.put("request", requestMap);
         requestBody.put("response", Map.of(
             "status", apiDto.getResponseStatusCode(),
-            "body", apiDto.getResponseBody(),
-            "headers", Map.of(
-                    "Content-Type", "application/json",
-                    "Access-Control-Allow-Origin", "*",
-                    "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers", "Content-Type, Authorization"
-                )
+            "body", apiDto.getResponseBody()
+//            ,"headers", Map.of(
+//                    "Content-Type", "application/json",
+//                    "Access-Control-Allow-Origin", "*",
+//                    "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS",
+//                    "Access-Control-Allow-Headers", "Content-Type, Authorization"
+//                )
         ));
         
         // WireMock에 API 등록 요청 보내기
@@ -119,6 +119,15 @@ public class ApiServiceImpl implements ApiService {
             }
         }
         return parsedParams;
+    }
+    // uri 제외 url
+    private String extractDomain(String fullUrl) {
+        try {
+            URI uri = new URI(fullUrl);
+            return uri.getScheme() + "://" + uri.getHost(); // 도메인만 반환
+        } catch (Exception e) {
+            throw new RuntimeException("잘못된 URL 형식: " + fullUrl);
+        }
     }
     
     // URL에서 URI 추출
@@ -300,13 +309,7 @@ public class ApiServiceImpl implements ApiService {
         requestBody.put("request", requestMap);
         requestBody.put("response", Map.of(
                 "status", apiDto.getResponseStatusCode(),
-                "body", apiDto.getResponseBody(),
-                "headers", Map.of(
-                        "Content-Type", "application/json",
-                        "Access-Control-Allow-Origin", "*",
-                        "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS",
-                        "Access-Control-Allow-Headers", "Content-Type, Authorization"
-                    )
+                "body", apiDto.getResponseBody()
             ));
         
         // WireMock에 API 등록 요청 보내기
@@ -354,6 +357,64 @@ public class ApiServiceImpl implements ApiService {
 		response.put("api", apiDTO);
 		response.put("wiremock", wiremockResponse);
 		return response;
+	}
+	
+	@Override
+	public void updateMockData(int id) {
+		ApiDTO apiDTO = apiMapper.findById(id);
+		
+		boolean isBypass = apiDTO.getMockResponseStatus();
+		String oldWiremockId = apiMapper.findWireMockIdById(id);
+		String wiremockUrl = WIREMOCK_ADMIN_URL + "/" +  oldWiremockId;
+		
+		// 기존 데이터 가져오기
+		 ResponseEntity<Map> wiremockResponse = restTemplate.exchange(
+			        wiremockUrl, HttpMethod.GET, null, Map.class
+			    );
+		// 기존 데이터 삭제
+        restTemplate.exchange(
+            wiremockUrl,
+            HttpMethod.DELETE,
+            null,
+            String.class
+        );
+		 
+		 Map<String, Object> stubData = wiremockResponse.getBody();
+		 Map<String, Object> responseBody = (Map<String, Object>) stubData.get("response");
+		 
+		 if(isBypass) {
+			 String apiUrl = apiDTO.getMockApiUrl();
+			 String proxyUrl = extractDomain(apiUrl);
+			 responseBody.put("proxyBaseUrl", proxyUrl);
+		 }else {
+			 responseBody.remove("proxyBaseUrl");
+		 }
+		 
+		 stubData.put("response", responseBody);
+		 
+		 
+		// WireMock에 API 등록 요청 보내기
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(stubData, headers); 
+        
+        ResponseEntity<Map> response = restTemplate.exchange(
+        		WIREMOCK_ADMIN_URL,
+                HttpMethod.POST,
+                requestEntity,
+                Map.class
+            );
+
+        String wiremockId = response.getBody().get("uuid").toString();
+        apiDTO.setMockWiremockId(wiremockId);
+        apiDTO.setId(id);
+        apiMapper.updateById(apiDTO);
+		
+        
+        // stub save
+        HttpEntity<String> saveRequest = new HttpEntity<>("{}", headers);
+        restTemplate.postForEntity(WIREMOCK_ADMIN_URL + "/save", saveRequest, String.class);
+		
 	}
 	
 

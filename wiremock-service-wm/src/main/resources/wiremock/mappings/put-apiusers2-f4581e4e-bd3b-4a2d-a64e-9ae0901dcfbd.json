@@ -9,17 +9,11 @@
     } ]
   },
   "response" : {
-  "proxyBaseUrl": "https://reqres.in/api/users/2",
     "status" : 200,
     "body" : "{\"test\":\"PUT\"}",
-    "headers" : {
-      "Access-Control-Allow-Headers" : "Content-Type, Authorization",
-      "Access-Control-Allow-Origin" : "*",
-      "Access-Control-Allow-Methods" : "GET, POST, PUT, DELETE, OPTIONS",
-      "Content-Type" : "application/json"
-    }
+    "proxyBaseUrl" : "https://reqres.in"
   },
   "uuid" : "f4581e4e-bd3b-4a2d-a64e-9ae0901dcfbd",
   "persistent" : true,
-  "insertionIndex" : 6
+  "insertionIndex" : 26
 }

@@ -29,6 +29,8 @@ public class ApiApiController {
 	public ResponseEntity<String> toggleApiMode(@RequestBody Integer id) {
 		try {
 			apiService.toggleResponseStatusById(id);
+			// wiremock stub update
+			apiService.updateMockData(id);
 	        return ResponseEntity.status(HttpStatus.OK).body("Successfully updated the response status.");
 	    } catch (Exception e) {
 	    	e.printStackTrace();
@@ -68,41 +70,10 @@ public class ApiApiController {
 		}
 		
 		apiDTO = apiService.performHealthCheck(id);
-		String apiUrl = apiDTO.getMockApiUrl();
-		boolean isHealthy = apiDTO.getMockLastCheckedStatus() == 0; // 0 이면 서버 정상 1 이면 비정상
-		boolean isMockMode = !apiDTO.getMockResponseStatus();
 		
-		String redirectUrl;
+		// apiDTO.getMockResponseStatus() 1이면 by-pass 0이면 stub
 		
-//		if(isHealthy) {	//서버 정상 시 실서버/대응답 DB 상태에 따라 처리
-//			// 서버 정상
-//			if(isMockMode) { // 실서버,대응답 설정 값
-//				//apiService.getBodyFileName(apiUrl);
-//				redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;	//대응답
-//			}
-//			else redirectUrl = apiUrl;															//실서버
-//		} else {		//서버 장애 시 공통 Stub 처리
-//			switch(apiDTO.getLastCheckedStatus()) {
-//				case 1:	//장애
-//				case 2:	//다운
-//					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/bad";
-//					break;
-//				case 3:	//지연
-//					redirectUrl = "http://localhost:" + wireMockServer.port() + "/mock/stub/delay";
-//					break;
-//				default:
-//					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//	                response.setContentType("application/json");
-//	                response.getWriter().write("{\"error\": \"서버 장애 상태를 처리할 수 없습니다.\"}");
-//	                return;
-//			}
-//		}
-		
-		if(isMockMode) { // 실서버,대응답 설정 값
-			redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;	//대응답
-		}else {
-			redirectUrl = apiUrl;												//실서버
-		}
+		String redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;
 		
 		response.sendRedirect(redirectUrl);
 	}

@@ -99,7 +99,7 @@
     </update>
     
     <!-- wiremockId 조회 -->
-    <select id="findWiremockIdById" resultType="string">
+    <select id="findWireMockIdById" resultType="string">
         SELECT mock_wiremock_id FROM fwk_mock_rest_api WHERE id = #{id}
     </select>
     

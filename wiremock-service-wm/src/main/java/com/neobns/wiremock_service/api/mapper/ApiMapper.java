@@ -20,4 +20,5 @@ public interface ApiMapper {
 	String findWireMockIdById(int id);
 	void deleteById(int id);
 	void updateById(ApiDTO apiDTO);
+	
 }

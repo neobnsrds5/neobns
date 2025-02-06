@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
@@ -19,6 +20,9 @@ public class WireMockConfig {
                 .usingFilesUnderClasspath("wiremock")
                 .withRootDirectory("src/main/resources/wiremock")
                 .enableBrowserProxying(true) // proxy 사용 가능
+                .proxyPassThrough(true)
+                .extensions(new ResponseTransform())
+                .notifier(new ConsoleNotifier(true))
         );
 		server.start();
 

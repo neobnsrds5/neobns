@@ -1,0 +1,15 @@
+{
+  "id" : "a06ddbca-a53d-484e-92dd-c3a075cde5b0",
+  "request" : {
+    "urlPathPattern" : "/api/users/9",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"cors\":\"ok?\"}"
+  },
+  "uuid" : "a06ddbca-a53d-484e-92dd-c3a075cde5b0",
+  "persistent" : true,
+  "insertionIndex" : 9
+}

@@ -1,0 +1,15 @@
+{
+  "id" : "981b6bf1-d9b0-45eb-b2b2-9430d83c6d91",
+  "request" : {
+    "urlPathPattern" : "/api/users/5",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"wwww\":\"ASdasd\"}"
+  },
+  "uuid" : "981b6bf1-d9b0-45eb-b2b2-9430d83c6d91",
+  "persistent" : true,
+  "insertionIndex" : 5
+}

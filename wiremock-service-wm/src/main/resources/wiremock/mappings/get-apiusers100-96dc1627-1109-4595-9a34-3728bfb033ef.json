@@ -1,0 +1,15 @@
+{
+  "id" : "96dc1627-1109-4595-9a34-3728bfb033ef",
+  "request" : {
+    "urlPathPattern" : "/api/users/100",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"true\":\"DD\"}"
+  },
+  "uuid" : "96dc1627-1109-4595-9a34-3728bfb033ef",
+  "persistent" : true,
+  "insertionIndex" : 1
+}

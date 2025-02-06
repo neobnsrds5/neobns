@@ -21,6 +21,6 @@ public interface ApiService {
 	
 	void updateApi(int id, ApiDTO apiDto);
 	Map<String, Object> getMockData(int id);
-	
+	void updateMockData(int id);
 
 }

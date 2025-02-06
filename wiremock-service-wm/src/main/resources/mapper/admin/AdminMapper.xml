@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neobns.wiremock_service.admin.mapper.AdminMapper">
+    
+	<!-- 검색 + 페이징 처리된 API 목록 가져오기 -->
+    <select id="findAll" resultType="com.neobns.wiremock_service.admin.dto.AdminApiDTO">
+        SELECT * FROM fwk_mock_rest_api
+        WHERE (#{mockApiName} IS NULL OR mock_api_name LIKE CONCAT('%', #{mockApiName}, '%'))
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <!-- 검색된 API 개수 가져오기 -->
+    <select id="countByApiName" resultType="int">
+        SELECT COUNT(*) FROM fwk_mock_rest_api
+        WHERE (#{mockApiName} IS NULL OR mock_api_name LIKE CONCAT('%', #{mockApiName}, '%'))
+    </select>
+    
+</mapper>

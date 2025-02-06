@@ -7,16 +7,27 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
 
 <div class="container my-5">
-    <h2 class="mb-4 text-center">API 관리</h2>
-
-    <div class="d-flex justify-content-end mb-3 gap-2">
-    	<button class="btn btn-primary btn-api-add">API 추가</button>
-	    <button class="btn-common btn-api-mock">선택한 API 대응답 전환</button>
-	    <button class="btn-common btn-api-real">선택한 API 실서버 전환</button>
+    <h2 class="mb-4 text-center">API 대응답 목록</h2>
+    
+	<div class="d-flex justify-content-between align-items-center mb-4">
+	    <!--  검색창  -->
+	    <form th:action="@{/admin}" method="get" class="d-flex align-items-center flex-grow-1">
+	        <input type="text" name="apiName" class="form-control flex-grow-1 me-3" 
+	               style="max-width: 400px;" placeholder="API 이름 검색" th:value="${param.apiName}" />
+	        <button type="submit" class="btn btn-primary" style="white-space: nowrap;">검색</button>
+	    </form>
+	
+	    <!--  버튼 그룹  -->
+	    <div class="d-flex gap-2">
+	        <button class="btn btn-primary btn-api-add">API 추가</button>
+	        <button class="btn-common btn-api-mock">선택한 API 대응답 전환</button>
+	        <button class="btn-common btn-api-real">선택한 API By-pass 전환</button>
+	    </div>
 	</div>
 
     <table class="table table-hover align-middle">
@@ -27,9 +38,8 @@
 				</th>
 	            <th>순번</th>
 	            <th>API 이름</th>
-	            <th>HealthCheck Button</th>
-	            <th>결과</th>
-	            <th>Mode Button</th>
+	            <th>URL </th>	     
+	            <th>결과 | Health Check</th>       
 	            <th>상태</th>
 	            <th>실행</th>
 	            <th>수정</th>
@@ -44,37 +54,36 @@
 	            </td>
 	            <!-- 순번 -->
 	            <td th:text="${api.id}"></td>
-	            <!-- API 주소 -->
+	            <!-- API 이름 -->
 	            <td class="text-start">
-	    			<span th:href="${api.apiName}" target="_blank" th:text="${api.apiName}"></span>
+	    			<span th:href="${api.mockApiName}" target="_blank" th:text="${api.mockApiName}"></span>
 				</td>
-	            <!-- HealthCheck Button -->
-	            <td>
-				   <button class="btn-common btn-healthcheck btn-sm" th:attr="data-id=${api.id}">서버 확인</button>
+				<!-- API 주소 -->
+	            <td class="text-start">
+	    			<span class="truncate" th:text="${api.mockApiUrl}" th:attr="data-bs-toggle='tooltip', title=${api.mockApiUrl}"></span>
 				</td>
 	            <!-- 결과 -->
 	            <td>
 	            	<span class="badge-result badge-result-on" 
-				          th:if="${api.lastCheckedStatus != null and api.lastCheckedStatus == 0}" 
-				          th:text="${#temporals.format(api.lastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | ON'"></span>
+				          th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus == 0}" 
+				          th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | ON'"></span>
 				    <span class="badge-result badge-result-off" 
-				          th:if="${api.lastCheckedStatus != null and api.lastCheckedStatus != 0}" 
-				          th:text="${#temporals.format(api.lastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
-				    <span th:if="${api.lastCheckedStatus == null}">-</span>
-				</td>
-	            <!-- Mode Button -->
-	            <td>
-				    <button class="btn-common btn-toggle-mode btn-sm"
-				    th:attr="data-id=${api.id}">대응답/실서버 전환</button>
+				          th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus != 0}" 
+				          th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
+				    <span th:if="${api.mockLastCheckedStatus == null}">-</span>
+				    <button class="btn-common btn-healthcheck btn-sm" th:attr="data-id=${api.id}">서버 확인</button>
 				</td>
 	            <!-- 상태 -->
 	            <td>
-				    <span class="badge-status badge-status-real" th:if="${api.responseStatus}" th:text="'실서버'"></span>
-				    <span class="badge-status badge-status-mock" th:if="!${api.responseStatus}" th:text="'대응답'"></span>
+				    <span class="badge-status badge-status-real" th:if="${api.mockResponseStatus}" th:text="'By-pass'"></span>
+				    <span class="badge-status badge-status-mock" th:if="!${api.mockResponseStatus}" th:text="'대응답'"></span>
+				    <button class="btn-common btn-toggle-mode btn-sm" th:attr="data-id=${api.id}"><i class="bi-arrow-repeat"></i></button>
 				</td>
 	            <!-- 실행 -->
 	            <td>
-				    <button class="btn-execute" th:attr="data-id=${api.id}">
+		            <button class="btn-execute"
+				            th:attr="data-id=${api.id}, data-method=${api.mockApiRequestMethod}"
+				            th:disabled="${api.mockApiRequestMethod == 'POST' or api.mockApiRequestMethod == 'PUT'}">
 				        <span class="triangle"></span>
 				    </button>
 				</td>

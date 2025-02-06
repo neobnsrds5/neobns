@@ -61,16 +61,16 @@ public class ApiApiController {
 	@GetMapping("/execute/{id}")
 	public void executeApi(@PathVariable int id, HttpServletResponse response) throws IOException, URISyntaxException {
 		ApiDTO apiDTO = apiService.getApi(id);
-		URI uri = new URI(apiDTO.getApiUrl());
+		URI uri = new URI(apiDTO.getMockApiUrl());
 		String apiUri = uri.getPath();
 		if(uri.getQuery() != null) {
 			apiUri = apiUri + "?" + uri.getQuery();
 		}
 		
 		apiDTO = apiService.performHealthCheck(id);
-		String apiUrl = apiDTO.getApiUrl();
-		boolean isHealthy = apiDTO.getLastCheckedStatus() == 0; // 0 이면 서버 정상 1 이면 비정상
-		boolean isMockMode = !apiDTO.getResponseStatus();
+		String apiUrl = apiDTO.getMockApiUrl();
+		boolean isHealthy = apiDTO.getMockLastCheckedStatus() == 0; // 0 이면 서버 정상 1 이면 비정상
+		boolean isMockMode = !apiDTO.getMockResponseStatus();
 		
 		String redirectUrl;
 		

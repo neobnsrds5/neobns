@@ -3,6 +3,12 @@ let isRequestInProgress = false;
 
 document.addEventListener("DOMContentLoaded", function () {
 
+	// Bootstrap 툴팁 활성화
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+			
 	/* 체크 박스 이벤트 부여 */
     const selectAllCheckbox = document.getElementById("select-all");	//전체
     const rowCheckboxes = document.querySelectorAll(".row-checkbox");	//개별
@@ -56,11 +62,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	//실행 이벤트 부여
 	const executeButtons = document.querySelectorAll(".btn-execute");
-	executeButtons.forEach(button => {
-		button.addEventListener("click", function() {
-			executeApi(button);
-		});
-	})
+		executeButtons.forEach(button => {
+			button.addEventListener("click", function() {
+				executeApi(button);
+			});
+		})
 	
 	// "API 추가" 버튼 클릭 시 팝업 열기
     const apiAddButton = document.querySelector(".btn-api-add");
@@ -198,11 +204,11 @@ const performHealthCheck = (button) => {
 
 const executeApi = (button) => {
 	const id = button.getAttribute("data-id");
-	
+	const method = button.getAttribute("data-method");
 	const newWindow = window.open("", "_blank");
 
     fetch(`/api/execute/${id}`, {
-        method: "GET"
+        method: method
     })
     .then(response => {
         // 리다이렉트 여부 확인
@@ -273,9 +279,9 @@ document.getElementById("saveApiButton").addEventListener("click", function () {
 
     // 3. 요청 데이터 객체 생성
     const requestData = {
-        apiName: apiName,
-        apiUrl: apiUrl,
-        httpMethod: httpMethod,
+        mockApiName: apiName,
+        mockApiUrl: apiUrl,
+        mockApiRequestMethod: httpMethod,
         //requestHeaders: requestHeaders || null,
         responseStatusCode: responseStatusCode,
         responseBody: responseBody || null
@@ -358,8 +364,8 @@ const loadApiDetail = (button) => {
             }
 			document.getElementById("editApiId").value = apiId;
             // 1. DB에서 가져온 데이터 (메타데이터)
-            document.getElementById("editApiName").value = data.api.apiName;
-            document.getElementById("editApiUrl").value = data.api.apiUrl;
+            document.getElementById("editApiName").value = data.api.mockApiName;
+            document.getElementById("editApiUrl").value = data.api.mockApiUrl;
 
             // 2. WireMock에서 가져온 Request/Response 데이터
 			document.getElementById("editHttpMethod").value = data.wiremock.body.request.method;
@@ -419,9 +425,9 @@ const updateApi = () => {
     }
     // 1. 수정된 데이터 가져오기
     const requestData = {
-        apiName: document.getElementById("editApiName").value.trim(),
-        apiUrl: document.getElementById("editApiUrl").value.trim(),
-        httpMethod: document.getElementById("editHttpMethod").value,
+        mockApiName: document.getElementById("editApiName").value.trim(),
+        mockApiUrl: document.getElementById("editApiUrl").value.trim(),
+        mockApiRequestMethod: document.getElementById("editHttpMethod").value,
         //requestHeaders: document.getElementById("editRequestHeaders").value.trim(),
         requestBody: document.getElementById("editRequestBody").value.trim(),
         responseStatusCode: parseInt(document.getElementById("editResponseStatus").value, 10),

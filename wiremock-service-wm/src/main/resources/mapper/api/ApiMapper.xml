@@ -8,7 +8,7 @@
     <!-- 1. 전체 -->
     <select id="findAll" parameterType="ApiDTO" resultType="ApiDTO">
         SELECT 
-        	id, wiremock_id, api_name, api_url, last_checked_time, last_checked_status, response_status
+        	*
         FROM
         	fwk_mock_rest_api
     </select>
@@ -16,7 +16,7 @@
     <!-- 2. 단일 -->
     <select id="findById" parameterType="Integer" resultType="ApiDTO">
     	SELECT
-    		id, wiremock_id, api_name, api_url, last_checked_time, last_checked_status, response_status
+    		*
     	FROM
     		fwk_mock_rest_api
     	WHERE
@@ -26,7 +26,7 @@
     <!-- 3. 멀티 -->
     <select id="findByIds" parameterType="Integer" resultType="ApiDTO">
     	SELECT
-    		id, wiremock_id, api_name, api_url, last_checked_time, last_checked_status, response_status 
+    		* 
     	FROM 
     		fwk_mock_rest_api 
     	WHERE 
@@ -41,14 +41,16 @@
     <insert id="saveApi" parameterType="ApiDTO">
         INSERT INTO 
         	fwk_mock_rest_api (
-        		wiremock_id
-        		, api_name
-        		, api_url
+        		mock_wiremock_id
+        		, mock_api_name
+        		, mock_api_url
+        		, mock_api_request_method
         		)
         VALUES (
-        		#{wiremockId}
-        		, #{apiName}
-        		, #{apiUrl}
+        		#{mockWiremockId}
+        		, #{mockApiName}
+        		, #{mockApiUrl}
+        		, #{mockApiRequestMethod}
         		)
     </insert>
 
@@ -58,8 +60,8 @@
         UPDATE 
         	fwk_mock_rest_api
         SET
-            last_checked_time = #{lastCheckedTime}
-            , last_checked_status = #{lastCheckedStatus}
+            mock_last_checked_time = #{mockLastCheckedTime}
+            , mock_last_checked_status = #{mockLastCheckedStatus}
         WHERE 
         	id = #{id}
     </update>
@@ -69,7 +71,7 @@
     	UPDATE 
     		fwk_mock_rest_api 
     	SET 
-    		response_status = NOT response_status 
+    		mock_response_status = NOT mock_response_status 
     	WHERE 
     		id = #{id}
     </update>
@@ -79,7 +81,7 @@
         UPDATE 
         	fwk_mock_rest_api
 	    SET 
-	    	response_status = NOT response_status
+	    	mock_response_status = NOT mock_response_status
 	    WHERE id IN
 	    <foreach collection="ids" item="id" open="(" separator="," close=")">
 	        #{id}
@@ -91,14 +93,14 @@
     	UPDATE
     		fwk_mock_rest_api
     	SET
-    		response_status = #{responseStatus}
+    		mock_response_status = #{mockResponseStatus}
     	WHERE
     		id = #{id}
     </update>
     
     <!-- wiremockId 조회 -->
     <select id="findWiremockIdById" resultType="string">
-        SELECT wiremock_id FROM fwk_mock_rest_api WHERE id = #{id}
+        SELECT mock_wiremock_id FROM fwk_mock_rest_api WHERE id = #{id}
     </select>
     
     <!-- API 삭제 -->
@@ -110,9 +112,10 @@
     <!-- API 수정 -->
     <update id="updateById" parameterType="ApiDTO">
         UPDATE fwk_mock_rest_api
-        SET wiremock_id = #{wiremockId}, 
-            api_name = #{apiName}, 
-            api_url = #{apiUrl}
+        SET mock_wiremock_id = #{mockWiremockId}, 
+            mock_api_name = #{mockApiName}, 
+            mock_api_url = #{mockApiUrl},
+            mock_api_request_method = #{mockApiRequestMethod}
         WHERE id = #{id};
     </update>
     

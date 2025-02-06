@@ -125,3 +125,17 @@ th {
 	text-align: center;
     white-space: nowrap;
 }
+.truncate {
+    max-width: 300px; /* 최대 너비 설정 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer; /* 마우스 올릴 때 클릭 가능한 것처럼 */
+}
+
+.btn-execute:disabled {
+    pointer-events: none; /* 클릭 이벤트 자체를 막음 */
+    opacity: 0.5; /* 비활성화 상태 표시 */
+}

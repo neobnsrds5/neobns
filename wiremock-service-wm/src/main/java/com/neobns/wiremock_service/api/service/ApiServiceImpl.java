@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neobns.wiremock_service.api.dto.ApiDTO;
 import com.neobns.wiremock_service.api.mapper.ApiMapper;
@@ -55,7 +54,7 @@ public class ApiServiceImpl implements ApiService {
 
 	@Override
 	public void saveNewApi(ApiDTO apiDto) { // 프론트에서 url 넘겨주면 uri로 잘라야함
-		String fullUrl = apiDto.getApiUrl();
+		String fullUrl = apiDto.getMockApiUrl();
 		String uri = extractUri(fullUrl);
 		
 		// WireMock에 등록할 JSON 데이터 생성
@@ -63,9 +62,9 @@ public class ApiServiceImpl implements ApiService {
 
         // 기본 request 설정
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("method", apiDto.getHttpMethod());
+        requestMap.put("method", apiDto.getMockApiRequestMethod());
         requestMap.put("urlPathPattern", uri);
-        requestMap.put("queryParameters", parseQueryParams(extractQuery(apiDto.getApiUrl())));
+        requestMap.put("queryParameters", parseQueryParams(extractQuery(apiDto.getMockApiUrl())));
 
         // `requestBody`가 존재하면 `bodyPatterns` 추가
         if (apiDto.getRequestBody() != null && !apiDto.getRequestBody().isEmpty()) {
@@ -99,7 +98,7 @@ public class ApiServiceImpl implements ApiService {
             );
         
         String wiremockId = response.getBody().get("uuid").toString();
-        apiDto.setWiremockId(wiremockId);
+        apiDto.setMockWiremockId(wiremockId);
         
         // stub save
         HttpEntity<String> saveRequest = new HttpEntity<>("{}", headers);
@@ -146,8 +145,8 @@ public class ApiServiceImpl implements ApiService {
 	public void updateCheckedApiInfo(int id, LocalDateTime checkedTime, Integer checkedStatus) {
 		ApiDTO apiDTO = new ApiDTO();
 		apiDTO.setId(id);
-		apiDTO.setLastCheckedTime(checkedTime);
-		apiDTO.setLastCheckedStatus(checkedStatus);
+		apiDTO.setMockLastCheckedTime(checkedTime);
+		apiDTO.setMockLastCheckedStatus(checkedStatus);
 		apiMapper.updateCheckedStatus(apiDTO);
 	}
 
@@ -159,14 +158,14 @@ public class ApiServiceImpl implements ApiService {
 	@Override
 	public void changeModeById(int id, boolean targetMode) {
 		ApiDTO apiDTO = getApi(id);
-		apiDTO.setResponseStatus(targetMode);
+		apiDTO.setMockResponseStatus(targetMode);
 		apiMapper.changeResponseStatusById(apiDTO);
 	}
 	
 	@Override
 	public void changeModeByIds(List<Integer> ids, boolean targetMode) {
 		List<Integer> idsToUpdate = getApis(ids).stream()
-				.filter(api -> api.getResponseStatus() != targetMode)
+				.filter(api -> api.getMockResponseStatus() != targetMode)
 				.map(ApiDTO::getId)
 				.collect(Collectors.toList());
 		if(idsToUpdate.isEmpty()) return;
@@ -183,7 +182,7 @@ public class ApiServiceImpl implements ApiService {
 		ApiDTO apiDTO = apiMapper.findById(id);
 		if(apiDTO == null) throw new IllegalArgumentException("해당 ID의 API가 존재하지 않습니다.");
 		
-		String apiUrl = apiDTO.getApiUrl();
+		String apiUrl = apiDTO.getMockApiUrl();
 		int statusCode = 0;	//0: 정상, 1-3: 비정상 
 		
 		try {
@@ -250,7 +249,7 @@ public class ApiServiceImpl implements ApiService {
 	public void deleteApi(int id) {
 		ApiDTO apiDTO = apiMapper.findById(id);
 		
-		String wiremockId = apiDTO.getWiremockId();
+		String wiremockId = apiDTO.getMockWiremockId();
 		
 		if (wiremockId == null) {
             throw new RuntimeException("해당 ID에 대한 Mock API를 찾을 수 없습니다.");
@@ -278,8 +277,8 @@ public class ApiServiceImpl implements ApiService {
 	public void updateApi(int id, ApiDTO apiDto) {
 		
 		ApiDTO apiDTO = apiMapper.findById(id);
-		String oldWiremockId = apiDTO.getWiremockId();
-		String uri = extractUri(apiDto.getApiUrl());
+		String oldWiremockId = apiDTO.getMockWiremockId();
+		String uri = extractUri(apiDto.getMockApiUrl());
 		
 		if (oldWiremockId == null) {
             throw new RuntimeException("해당 ID에 대한 Mock API를 찾을 수 없습니다.");
@@ -287,9 +286,9 @@ public class ApiServiceImpl implements ApiService {
 		
 		Map<String, Object> requestBody = new HashMap<>();
 		Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("method", apiDto.getHttpMethod());
+        requestMap.put("method", apiDto.getMockApiRequestMethod());
         requestMap.put("urlPathPattern", uri);
-        requestMap.put("queryParameters", parseQueryParams(extractQuery(apiDto.getApiUrl())));
+        requestMap.put("queryParameters", parseQueryParams(extractQuery(apiDto.getMockApiUrl())));
 
         // `requestBody`가 존재하면 `bodyPatterns` 추가
         if (apiDto.getRequestBody() != null && !apiDto.getRequestBody().isEmpty()) {
@@ -323,7 +322,7 @@ public class ApiServiceImpl implements ApiService {
             );
 
         String wiremockId = response.getBody().get("uuid").toString();
-        apiDto.setWiremockId(wiremockId);
+        apiDto.setMockWiremockId(wiremockId);
         apiDto.setId(id);
         apiMapper.updateById(apiDto);
 		
@@ -345,13 +344,12 @@ public class ApiServiceImpl implements ApiService {
 	@Override
 	public Map<String, Object> getMockData(int id) {
 		ApiDTO apiDTO = apiMapper.findById(id);
-		String wiremockId = apiDTO.getWiremockId();
+		String wiremockId = apiDTO.getMockWiremockId();
 		String wiremockUrl = WIREMOCK_ADMIN_URL + "/" +  wiremockId;
 		ResponseEntity<Map> wiremockResponse = restTemplate.exchange(
 	            wiremockUrl, HttpMethod.GET, null, Map.class
 	        );
 		
-		System.out.println("returnMock : " + wiremockResponse.getBody());
 		Map<String, Object> response = new HashMap<>();
 		response.put("api", apiDTO);
 		response.put("wiremock", wiremockResponse);

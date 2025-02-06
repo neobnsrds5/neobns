@@ -1,21 +1,21 @@
 {
-  "id" : "4dcbb57c-9730-46c0-a761-636ddbd46f17",
+  "id" : "1efe9b34-f44d-41b0-9a75-5fd202746570",
   "request" : {
-    "urlPathPattern" : "/api/users",
+    "urlPathPattern" : "/api/users/2",
     "method" : "GET",
     "queryParameters" : { }
   },
   "response" : {
     "status" : 200,
-    "body" : "{\"dd\":\"dd\"}",
+    "body" : "{\"qwe\":\"ASDASD\"}",
     "headers" : {
-      "Access-Control-Allow-Origin" : "*",
-      "Access-Control-Allow-Headers" : "Content-Type, Authorization",
       "Content-Type" : "application/json",
+      "Access-Control-Allow-Headers" : "Content-Type, Authorization",
+      "Access-Control-Allow-Origin" : "*",
       "Access-Control-Allow-Methods" : "GET, POST, PUT, DELETE, OPTIONS"
     }
   },
-  "uuid" : "4dcbb57c-9730-46c0-a761-636ddbd46f17",
+  "uuid" : "1efe9b34-f44d-41b0-9a75-5fd202746570",
   "persistent" : true,
   "insertionIndex" : 1
 }

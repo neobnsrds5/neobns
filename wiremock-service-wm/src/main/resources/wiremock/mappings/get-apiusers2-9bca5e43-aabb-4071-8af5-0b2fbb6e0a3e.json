@@ -1,13 +1,13 @@
 {
-  "id" : "c80763c0-7e26-496a-94c7-734dedc26bfe",
+  "id" : "9bca5e43-aabb-4071-8af5-0b2fbb6e0a3e",
   "request" : {
-    "urlPathPattern" : "/api/users/3",
+    "urlPathPattern" : "/api/users/2",
     "method" : "GET",
     "queryParameters" : { }
   },
   "response" : {
     "status" : 200,
-    "body" : "{\"kkk\":\"KKdK\"}",
+    "body" : "{\"ASDasd\":\"ASDASD\"}",
     "headers" : {
       "Access-Control-Allow-Headers" : "Content-Type, Authorization",
       "Access-Control-Allow-Origin" : "*",
@@ -15,7 +15,7 @@
       "Content-Type" : "application/json"
     }
   },
-  "uuid" : "c80763c0-7e26-496a-94c7-734dedc26bfe",
+  "uuid" : "9bca5e43-aabb-4071-8af5-0b2fbb6e0a3e",
   "persistent" : true,
-  "insertionIndex" : 5
+  "insertionIndex" : 2
 }

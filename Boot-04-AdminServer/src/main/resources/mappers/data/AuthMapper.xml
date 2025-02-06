@@ -1,7 +1,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.neo.adminserver.mapper.AuthMapper">
+<mapper namespace="neo.spider.admin.common.mapper.AuthMapper">
 
-    <select id="findById" parameterType="String" resultType="com.neo.adminserver.dto.FwkUserDTO">
+    <select id="findById" parameterType="String" resultType="neo.spider.admin.common.dto.FwkUserDTO">
         SELECT * FROM FWK_USER
     	WHERE USER_ID = #{username}
     </select>
@@ -15,7 +15,7 @@
             USER_ID = #{username}
     </update>
 
-	<insert id="insertUser" parameterType="com.neo.adminserver.dto.FwkUserDTO">
+	<insert id="insertUser" parameterType="neo.spider.admin.common.dto.FwkUserDTO">
 	    INSERT INTO FWK_USER (
 	        USER_ID,
 	        USER_NAME,

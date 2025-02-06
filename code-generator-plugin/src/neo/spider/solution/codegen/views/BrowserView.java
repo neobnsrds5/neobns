@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.views;
+package neo.spider.solution.codegen.views;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +11,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ViewPart;
 
-import com.neobns.admin.codegen.common.DatabaseConnector;
-import com.neobns.admin.codegen.common.MyBatisGeneratorProgrammatic;
-
 import jakarta.inject.Inject;
+import neo.spider.solution.codegen.common.DatabaseConnector;
+import neo.spider.solution.codegen.common.MyBatisGeneratorProgrammatic;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -27,7 +26,7 @@ public class BrowserView extends ViewPart  {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "com.neobns.admin.codegen.views.BrowserView";
+	public static final String ID = "neo.spider.solution.codegen.views.BrowserView";
 
 	@Inject
 	Shell shell;

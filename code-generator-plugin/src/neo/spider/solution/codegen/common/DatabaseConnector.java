@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.common;
+package neo.spider.solution.codegen.common;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,8 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neobns.admin.codegen.dto.ColumnDTO;
-import com.neobns.admin.codegen.dto.TableDTO;
+import neo.spider.solution.codegen.dto.ColumnDTO;
+import neo.spider.solution.codegen.dto.TableDTO;
 
 public class DatabaseConnector {
 

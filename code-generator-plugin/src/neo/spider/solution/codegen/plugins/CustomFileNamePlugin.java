@@ -1,9 +1,9 @@
-package com.neobns.admin.codegen.plugins;
+package neo.spider.solution.codegen.plugins;
 
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 
-import com.neobns.admin.codegen.util.StringUtil;
+import neo.spider.solution.codegen.util.StringUtil;
 
 import java.util.List;
 

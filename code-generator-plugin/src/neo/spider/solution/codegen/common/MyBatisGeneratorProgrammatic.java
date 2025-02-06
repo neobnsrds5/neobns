@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.common;
+package neo.spider.solution.codegen.common;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -6,7 +6,7 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
-import com.neobns.admin.codegen.util.StringUtil;
+import neo.spider.solution.codegen.util.StringUtil;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -106,7 +106,7 @@ public class MyBatisGeneratorProgrammatic {
 			// Additional Plugins (Optional)
 			// 페이징처리가 가능한 find 메소드와 count 메소드가 생성되도록 하는 플러그인
 			PluginConfiguration paginationPlugin = new PluginConfiguration();
-			paginationPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.PaginationPlugin");
+			paginationPlugin.setConfigurationType("neo.spider.solution.codegen.plugins.PaginationPlugin");
 			context.addPluginConfiguration(paginationPlugin);
 			
 			// DTO 클래스에 toString 메소드가 생성되도록 하는 플러그인
@@ -116,18 +116,18 @@ public class MyBatisGeneratorProgrammatic {
 			
 			// 웹 표준에 맞춰 파일명이 생성되도록 하는 플러그인
 			PluginConfiguration fileNamePlugin = new PluginConfiguration();
-			fileNamePlugin.setConfigurationType("com.neobns.admin.codegen.plugins.CustomFileNamePlugin");
+			fileNamePlugin.setConfigurationType("neo.spider.solution.codegen.plugins.CustomFileNamePlugin");
 			context.addPluginConfiguration(fileNamePlugin);
 			
 			// Service 코드가 생성되도록 하는 플러그인
 			PluginConfiguration servicePlugin = new PluginConfiguration();
-			servicePlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ServiceGeneratorPlugin");
+			servicePlugin.setConfigurationType("neo.spider.solution.codegen.plugins.ServiceGeneratorPlugin");
 			servicePlugin.addProperty("targetProject", javaPath.toString());
 			context.addPluginConfiguration(servicePlugin);
 			
 			// Controller 코드가 생성되도록 하는 플러그인
 			PluginConfiguration controllerPlugin = new PluginConfiguration();
-			controllerPlugin.setConfigurationType("com.neobns.admin.codegen.plugins.ControllerGeneratorPlugin");
+			controllerPlugin.setConfigurationType("neo.spider.solution.codegen.plugins.ControllerGeneratorPlugin");
 			controllerPlugin.addProperty("targetProject", javaPath.toString());
 			context.addPluginConfiguration(controllerPlugin);
 			

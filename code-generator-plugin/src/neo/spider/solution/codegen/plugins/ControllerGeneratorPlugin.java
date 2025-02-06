@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.plugins;
+package neo.spider.solution.codegen.plugins;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
-import com.neobns.admin.codegen.util.StringUtil;
+import neo.spider.solution.codegen.util.StringUtil;
 
 public class ControllerGeneratorPlugin extends PluginAdapter {
 
@@ -39,7 +39,7 @@ public class ControllerGeneratorPlugin extends PluginAdapter {
     	// primary Key column
     	IntrospectedColumn primaryKeyColumn = null;
     	if(introspectedTable.hasPrimaryKeyColumns()) {
-    		primaryKeyColumn = introspectedTable.getPrimaryKeyColumns().getFirst();
+    		primaryKeyColumn = introspectedTable.getPrimaryKeyColumns().get(0);
     	}
     	
     	// Controller 클래스 생성

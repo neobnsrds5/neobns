@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen;
+package neo.spider.solution.codegen;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

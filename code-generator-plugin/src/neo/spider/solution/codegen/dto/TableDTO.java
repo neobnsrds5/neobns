@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.dto;
+package neo.spider.solution.codegen.dto;
 
 import java.util.List;
 

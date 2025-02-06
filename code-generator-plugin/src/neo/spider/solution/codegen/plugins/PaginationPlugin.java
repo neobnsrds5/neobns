@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.plugins;
+package neo.spider.solution.codegen.plugins;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.*;
 
-import com.neobns.admin.codegen.util.StringUtil;
+import neo.spider.solution.codegen.util.StringUtil;
 
 public class PaginationPlugin extends PluginAdapter {
 
@@ -43,7 +43,7 @@ public class PaginationPlugin extends PluginAdapter {
         if(introspectedTable.hasPrimaryKeyColumns()) {
         	orderByColumn = introspectedTable.getPrimaryKeyColumns().get(0); // 기본키가 있는 경우 첫번째 기본키로 정렬
         }else {
-        	orderByColumn = introspectedTable.getAllColumns().getFirst(); // 기본키가 없는 경우 모든 컬럼 중 첫번째 컬럼으로 정렬
+        	orderByColumn = introspectedTable.getAllColumns().get(0); // 기본키가 없는 경우 모든 컬럼 중 첫번째 컬럼으로 정렬
         }
         findElement.addElement(new TextElement("ORDER BY " + orderByColumn.getActualColumnName()));
         // 페이징 처리

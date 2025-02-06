@@ -3,12 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: code-generator-plugin
 Bundle-SymbolicName: code-generator-plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.neobns.admin.codegen.Activator
+Bundle-Activator: neo.spider.solution.codegen.Activator
 Bundle-ClassPath: .,
  lib/mysql-connector-j-9.1.0.jar,
- lib/mybatis-generator-core-1.4.2.jar,
- lib/javapoet-1.13.0.jar,
- lib/junit-jupiter-api-5.11.3.jar
+ lib/mybatis-generator-core-1.4.2.jar
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.datatools.enablement.mysql

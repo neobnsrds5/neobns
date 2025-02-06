@@ -1,4 +1,4 @@
-package com.neobns.admin.codegen.util;
+package neo.spider.solution.codegen.util;
 
 public class StringUtil {
 	public static String toPascalCase(String input) {

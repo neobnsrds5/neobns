@@ -48,13 +48,26 @@
 				<div class="collapse" id="applicationMonitoring">
 					<ul class="nav sub-navbar-nav">
 						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin/slow">지연 어플리케이션</a>
+							<a aria-controls="delayApplication" aria-expanded="false" class="sub-nav-link  menu-arrow"
+							   data-bs-toggle="collapse" href="#delayApplication" role="button">
+								<span>지연 어플리케이션</span>
+							</a>
+							<div class="collapse" id="delayApplication">
+								<ul class="nav sub-navbar-nav">
+									<li class="sub-nav-item">
+										<a class="sub-nav-link" href="/admin/e2e/delay/request">요청 지연</a>
+									</li>
+									<li class="sub-nav-item">
+										<a class="sub-nav-link" href="/admin/e2e/delay/query">쿼리 지연</a>
+									</li>
+								</ul>
+							</div>
 						</li>
 						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin/errors">오류 어플리케이션</a>
+							<a class="sub-nav-link" href="/admin/e2e/errors">오류 어플리케이션</a>
 						</li>
 						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin/table">영향도 분석</a>
+							<a class="sub-nav-link" href="/admin/e2e/influence">영향도 분석</a>
 						</li>
 					</ul>
 				</div>

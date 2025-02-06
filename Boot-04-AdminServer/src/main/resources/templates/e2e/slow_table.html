@@ -118,13 +118,13 @@
 		        </a>
 			</li>
 			<!-- 다음 페이지 그룹 -->
-			<li class="page-item" th:classappend="${currentPage + 10 <= totalPages} ? '' : 'disabled'">
+			<li class="page-item" th:classappend="${((currentPage - 1)/10 + 1) * 10 < totalPages} ? '' : 'disabled'">
 				<a class="page-link"
 				   th:href="@{/admin/slow(page=${((currentPage - 1)/10 + 1) * 10 + 1}, startTime=${param.startTime}, endTime=${param.endTime}, traceId=${param.traceId}, userId=${param.userId},  userIp=${param.userIp}, port=${param.port}, executeResult=${param.executeResult})}"
-				   th:if="${currentPage + 10 <= totalPages}">
+				   th:if="${((currentPage - 1)/10 + 1) * 10 < totalPages}">
 		       	    다음 »
 				</a>
-				<a class="page-link" th:unless="${currentPage + 10 <= totalPages}" href="#">
+				<a class="page-link" th:unless="${((currentPage - 1)/10 + 1) * 10 < totalPages}" href="#">
 					다음 »
 				</a>
 			</li>

@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/batch")
+@RequestMapping("/admin/batch")
 public class BatchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchController.class);
@@ -46,7 +46,7 @@ public class BatchController {
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("statusList", status);
 
-		return "job_list";
+		return "batch/job_list";
 	}
 
 	@GetMapping("/jobDetail")
@@ -66,7 +66,7 @@ public class BatchController {
 		model.addAttribute("job", job);
 		model.addAttribute("steps", steps);
 
-		return "job_detail";
+		return "batch/job_detail";
 	}
 
 	@GetMapping("/stepDetail")
@@ -77,7 +77,7 @@ public class BatchController {
 		logger.info("BatchJobExecutionEntity : " + job.toString());
 
 		model.addAttribute("job", job);
-		return "step_detail";
+		return "batch/step_detail";
 	}
 
 }

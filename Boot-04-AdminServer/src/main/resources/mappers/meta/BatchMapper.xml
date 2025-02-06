@@ -82,6 +82,7 @@
         <if test="paramDto.jobName != null and paramDto.jobName != ''">and j.JOB_NAME like concat('%', #{paramDto.jobName}, '%')</if>
         <if test="paramDto.startDate != null"> and DATE(CREATE_TIME) between #{paramDto.startDate} and #{paramDto.endDate}</if>
         <if test="paramDto.status != null and paramDto.status != ''">and STATUS = #{paramDto.status}</if>
+        ORDER BY j.JOB_INSTANCE_ID DESC, e.JOB_EXECUTION_ID DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

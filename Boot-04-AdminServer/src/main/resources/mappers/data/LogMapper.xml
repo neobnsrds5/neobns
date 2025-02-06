@@ -2,9 +2,9 @@
 <mapper namespace="com.neo.adminserver.mapper.LogMapper">
 
     <select id="findByTraceId" parameterType="String" resultType="LogDTO">
-        SELECT * FROM logging_event
-        WHERE trace_id = #{traceId} AND logger_name IN ('TRACE', 'SLOW', 'ERROR')
-        ORDER BY timestmp ASC, seq ASC
+        SELECT * FROM log
+        WHERE trace_id = #{traceId}
+        ORDER BY call_timestmp
     </select>
 
     <!-- 지연 로그 개수 조회 -->

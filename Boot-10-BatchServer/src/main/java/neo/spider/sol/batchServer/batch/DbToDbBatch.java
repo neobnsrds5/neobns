@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer.batch;
+package neo.spider.sol.batchServer.batch;
 
 import java.util.HashMap;
 import java.util.Map;

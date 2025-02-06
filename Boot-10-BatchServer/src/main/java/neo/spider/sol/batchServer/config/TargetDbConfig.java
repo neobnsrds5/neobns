@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer.config;
+package neo.spider.sol.batchServer.config;
 
 import javax.sql.DataSource;
 

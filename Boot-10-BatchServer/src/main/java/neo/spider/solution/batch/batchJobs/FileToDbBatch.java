@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.batch;
+package neo.spider.solution.batch.batchJobs;
 
 import javax.sql.DataSource;
 
@@ -22,7 +22,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import neo.spider.sol.batchServer.dto.AccountDTO;
+import neo.spider.solution.batch.dto.AccountDTO;
 
 @Configuration
 public class FileToDbBatch {

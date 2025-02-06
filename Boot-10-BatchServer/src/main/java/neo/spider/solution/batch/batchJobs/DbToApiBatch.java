@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.batch;
+package neo.spider.solution.batch.batchJobs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.RestTemplate;
 
-import neo.spider.sol.batchServer.dto.AccountDTO;
+import neo.spider.solution.batch.dto.AccountDTO;
 
 @Configuration
 public class DbToApiBatch {

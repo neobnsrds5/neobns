@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.dto;
+package neo.spider.solution.batch.dto;
 
 
 import lombok.Data;

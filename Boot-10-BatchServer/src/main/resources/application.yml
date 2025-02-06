@@ -4,10 +4,6 @@ server:
 spring:  
   application:
     name: batchServer
-  profiles:
-    active: dev
-  config:
-    import: optional:configserver:http://config:1234@localhost:9393
 
   batch:
     job:
@@ -15,18 +11,21 @@ spring:
     jdbc:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-mariadb.sql
-  datasource-meta:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://neobns.com:13306/db1
-    username: POC_USER
-    password: neobns1!
-  datasource-data:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://neobns.com:13306/db2
-    username: POC_USER
-    password: neobns1!
-  datasource-target:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://neobns.com:13306/db3
-    username: POC_USER
-    password: neobns1!
+
+spider:
+  batch:
+    datasource-meta:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mariadb://neobns.com:13306/db1
+      username: POC_USER
+      password: neobns1!
+    datasource-data:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mariadb://neobns.com:13306/db2
+      username: POC_USER
+      password: neobns1!
+    datasource-target:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mariadb://neobns.com:13306/db3
+      username: POC_USER
+      password: neobns1!

@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.neobns.wiremock_service.admin.mapper.AdminMapper">
+<mapper namespace="neo.spider.admin.mapper.AdminMapper">
     
 	<!-- 검색 + 페이징 처리된 API 목록 가져오기 -->
-    <select id="findAll" resultType="com.neobns.wiremock_service.admin.dto.AdminApiDTO">
+    <select id="findAll" resultType="neo.spider.admin.dto.AdminApiDTO">
         SELECT * FROM fwk_mock_rest_api
         WHERE (#{mockApiName} IS NULL OR mock_api_name LIKE CONCAT('%', #{mockApiName}, '%'))
         LIMIT #{size} OFFSET #{offset}

@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.batch;
+package neo.spider.solution.batch.batchJobs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,35 +12,32 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class SubBatch1 {
+public class SubBatch2 {
 
-	private final JobRepository jobRepository;
+	private JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
-	private static final Logger logger = LoggerFactory.getLogger(SubBatch1.class);
+	private static final Logger logger = LoggerFactory.getLogger(SubBatch2.class);
 
-	public SubBatch1(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
+	public SubBatch2(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
 		this.jobRepository = jobRepository;
 		this.platformTransactionManager = platformTransactionManager;
 	}
 
 	@Bean
-	public Job subBatch1Job() {
-		return new JobBuilder("subBatch1", jobRepository).start(subBatch1Step()).build();
+	public Job subBatch2Job() {
+		return new JobBuilder("subBatch2", jobRepository).start(subBatch2Step()).build();
 
 	}
 
 	@Bean
-	public Step subBatch1Step() {
+	public Step subBatch2Step() {
 
-		return (Step) new StepBuilder("subBatch1Step", jobRepository).tasklet((stepContribution, chunkContext) -> {
-			logger.info("Sub Batch1 실행 중");
-			logger.debug("Sub Batch1 실행 중");
+		return (Step) new StepBuilder("subBatch2Step", jobRepository).tasklet((stepContribution, chunkContext) -> {
+			logger.info("Sub Batch2 실행 중");
 			Thread.sleep(1000);
-			logger.info("Sub Batch1 실행 완료");
-			logger.debug("Sub Batch1 실행 완료");
+			logger.info("Sub Batch2 실행 완료");
 			return null;
 		}, platformTransactionManager).build();
 
 	}
-
 }

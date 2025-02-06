@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.config;
+package neo.spider.solution.batch.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

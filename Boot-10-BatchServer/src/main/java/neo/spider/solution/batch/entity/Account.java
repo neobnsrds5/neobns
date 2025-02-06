@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.entity;
+package neo.spider.solution.batch.entity;
 
 import java.util.Objects;
 

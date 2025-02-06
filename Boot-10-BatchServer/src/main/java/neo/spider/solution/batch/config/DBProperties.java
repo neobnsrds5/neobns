@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.config;
+package neo.spider.solution.batch.config;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -9,17 +9,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DBProperties {
 	
-	private final Environment environement;
+	private final Environment environment;
 	
 	public String getMetaUrl() {
-		return environement.getProperty("spring.datasource-meta.url");
+		return environment.getProperty("spider.batch.datasource-meta.url");
 	}
 	
 	public String getDataUrl() {
-		return environement.getProperty("spring.datasource-data.url");
+		return environment.getProperty("spider.batch.datasource-data.url");
 	}
 	
 	public String getTargetUrl() {
-		return environement.getProperty("spring.datasource-target.url");
+		return environment.getProperty("spider.batch.datasource-target.url");
 	}
 }

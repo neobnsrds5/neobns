@@ -4,7 +4,7 @@
 <mapper namespace="neo.spider.sol.admin.mapper.AccountMapper">
 
 	<insert id="addAccount"
-		parameterType="neo.spider.sol.batchServer.dto.AccountDTO">
+		parameterType="neo.spider.solution.batch.dto.AccountDTO">
     	<![CDATA[
     		INSERT INTO ACCOUNT(accountNumber, money, name)
     		VALUES (#{accountNumber}, #{money}, #{name})
@@ -12,7 +12,7 @@
 	</insert>
 
 	<update id="updateAccount"
-		parameterType="neo.spider.sol.batchServer.dto.AccountDTO">
+		parameterType="neo.spider.solution.batch.dto.AccountDTO">
     	<![CDATA[
     		UPDATE ACCOUNT
     		SET accountNumber = #{accountNumber},
@@ -23,7 +23,7 @@
 	</update>
 
 	<select id="findAccountById"
-		resultType="neo.spider.sol.batchServer.dto.AccountDTO" parameterType="long">
+		resultType="neo.spider.solution.batch.dto.AccountDTO" parameterType="long">
         <![CDATA[
             SELECT *
             FROM account

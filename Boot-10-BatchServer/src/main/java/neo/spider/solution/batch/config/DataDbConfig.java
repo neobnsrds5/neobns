@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.config;
+package neo.spider.solution.batch.config;
 
 import java.util.HashMap;
 
@@ -23,15 +23,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "neo.spider.sol.admin.batchServer.repository", entityManagerFactoryRef = "dataEntityManager", transactionManagerRef = "dataTransactionsManager")
+@EnableJpaRepositories(basePackages = "neo.spider.solution.batch.repository", entityManagerFactoryRef = "dataEntityManager", transactionManagerRef = "dataTransactionsManager")
 @RequiredArgsConstructor
-@MapperScan(basePackages = "neo.spider.sol.admin.batchServer.mapper", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
+@MapperScan(basePackages = "neo.spider.solution.batch.mapper", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
 public class DataDbConfig {
 
 	private final DBProperties dbProperties;
 
 	@Bean(name = "dataDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource-data")
+	@ConfigurationProperties(prefix = "spider.batch.datasource-data")
 	public DataSource dataDataSource() {
 		return DataSourceBuilder.create().url(dbProperties.getDataUrl()).build();
 	}
@@ -41,7 +41,7 @@ public class DataDbConfig {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 
 		em.setDataSource(dataDataSource());
-		em.setPackagesToScan(new String[] { "neo.spider.sol.admin.batchServer.entity" });
+		em.setPackagesToScan(new String[] { "neo.spider.solution.batch.entity" });
 		em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
 		HashMap<String, Object> properties = new HashMap<>();

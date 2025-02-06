@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.controller;
+package neo.spider.solution.batch.controller;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -9,17 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import neo.spider.sol.batchServer.service.FileMaintenanceService;
 
 @RestController
 @RequiredArgsConstructor
 public class BatchController {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
-	private final FileMaintenanceService fileMaintenanceService;
-//	private final String quickPath = "../logs/application.log";
-//	private final String gatewayPath = "../logs/gateway-application.log";
-//	private final String accountsPath = "../logs/accounts-application.log";
 
 	@GetMapping("/batch/dbtoapi/{value}")
 	public String firstApi(@PathVariable("value") String value) throws Exception {
@@ -62,23 +57,6 @@ public class BatchController {
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("fileToDBJob"), jobParameters);
-			return "OK";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "FAIL";
-		}
-	}
-
-	@GetMapping("/batch/logtodb/{value}")
-	public String logToDbTest(@PathVariable("value") String value) {
-
-		String uniqVal = value + System.currentTimeMillis();
-
-		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal).addString("app", value)
-				.toJobParameters();
-
-		try {
-			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
 			return "OK";
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.config;
+package neo.spider.solution.batch.config;
 
 import javax.sql.DataSource;
 
@@ -20,7 +20,7 @@ public class MetaDbConfig {
 	
 	@Primary
 	@Bean(name = "metaDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource-meta")
+	@ConfigurationProperties(prefix = "spider.batch.datasource-meta")
 	public DataSource metaDataSource() {
 		return DataSourceBuilder.create().url(properties.getMetaUrl()).build();
 	}

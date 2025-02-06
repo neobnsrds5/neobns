@@ -1,4 +1,4 @@
-package neo.spider.sol.batchServer.config;
+package neo.spider.solution.batch.config;
 
 import javax.sql.DataSource;
 
@@ -16,7 +16,7 @@ public class TargetDbConfig {
 	private final DBProperties dbProperties;
 	
 	@Bean(name = "targetDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource-target")
+	@ConfigurationProperties(prefix = "spider.batch.datasource-target")
 	public DataSource targetDataSource() {
 		return DataSourceBuilder.create().url(dbProperties.getTargetUrl()).build();
 	}

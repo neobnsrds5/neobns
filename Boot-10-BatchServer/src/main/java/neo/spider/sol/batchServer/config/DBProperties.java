@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer.config;
+package neo.spider.sol.batchServer.config;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

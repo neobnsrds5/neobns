@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer.controller;
+package neo.spider.sol.batchServer.controller;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import neo.spider.sol.admin.batchServer.service.FileMaintenanceService;
+import neo.spider.sol.batchServer.service.FileMaintenanceService;
 
 @RestController
 @RequiredArgsConstructor

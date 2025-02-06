@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer.schedule;
+package neo.spider.sol.batchServer.schedule;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import neo.spider.sol.admin.batchServer.service.FileMaintenanceService;
+import neo.spider.sol.batchServer.service.FileMaintenanceService;
 
 @Component
 @RequiredArgsConstructor

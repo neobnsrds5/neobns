@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer.service;
+package neo.spider.sol.batchServer.service;
 
 import java.io.FileReader;
 import java.io.IOException;

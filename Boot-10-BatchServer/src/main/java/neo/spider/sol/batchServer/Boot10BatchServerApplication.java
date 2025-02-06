@@ -1,4 +1,4 @@
-package neo.spider.sol.admin.batchServer;
+package neo.spider.sol.batchServer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

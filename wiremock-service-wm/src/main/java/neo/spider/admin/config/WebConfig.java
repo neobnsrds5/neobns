@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AdminInterceptor())
-                .addPathPatterns("/admin") // `/admin` 요청만 인터셉트
+                .addPathPatterns("/admin/**") // `/admin` 요청만 인터셉트
                 .excludePathPatterns("/login", "/logout"); // 로그인, 로그아웃은 제외
     }
 }

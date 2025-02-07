@@ -22,3 +22,7 @@ mybatis:
     
 server:
   port: 8889
+
+admin:
+  id: admin
+  password: '1234'

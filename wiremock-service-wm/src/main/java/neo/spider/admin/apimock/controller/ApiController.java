@@ -70,11 +70,16 @@ public class ApiController {
 		}
 		
 		apiDTO = apiService.performHealthCheck(id);
-		
+		String apiUrl = apiDTO.getMockApiUrl();
+		boolean isMockMode = !apiDTO.getMockResponseStatus();
+		String redirectUrl;
+		if(isMockMode) {
+			redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;
+		}else {
+			redirectUrl = apiUrl;
+		}
 		// apiDTO.getMockResponseStatus() 1이면 by-pass 0이면 stub
-		
-		String redirectUrl = "http://localhost:" + wireMockServer.port() + apiUri;
-		
+				
 		response.sendRedirect(redirectUrl);
 	}
 	

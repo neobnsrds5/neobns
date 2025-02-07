@@ -25,15 +25,11 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(listenerAdapter, new PatternTopic(prop.getName()));
-        container.addMessageListener(deleteListener, new PatternTopic("delete_"+prop.getName()));
         return container;
     }
     @Bean
     public MessageListenerAdapter listenerAdapter(FlowConfigUpdateService service) {
         return new MessageListenerAdapter(service, "updateConfig");
     }
-    @Bean
-    public MessageListenerAdapter deleteListener(FlowConfigUpdateService service) {
-        return new MessageListenerAdapter(service, "deleteConfig");
-    }
+
 }

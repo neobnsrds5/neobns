@@ -1,11 +1,10 @@
-package com.neobns.admin.flowcontrol.dto;
+package com.neobns.admin.flowadmin.dto.ratelimiter;
 
-public class RateLimiterConfigDto {
-
+public class RateLimiterDto {
     private long id;
     private long application_id;
 
-    // 0: global, 1: uri, 2: personal
+    // 0: global, 1: method, 2: personal
     private int type;
     private String url;
     private int limitForPeriod;
@@ -70,7 +69,7 @@ public class RateLimiterConfigDto {
 
     @Override
     public String toString() {
-        return "RateLimiterConfigDto{" +
+        return "RateLimiterDto{" +
                 "id=" + id +
                 ", application_id=" + application_id +
                 ", type=" + type +

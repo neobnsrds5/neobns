@@ -2,9 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.neobns.admin.flowcontrol.mapper.RateLimiterMapper">
-    <select id="findByApplication" resultType="com.neobns.admin.flowcontrol.dto.RateLimiterConfigDto">
+    <select id="findById" resultType="com.neobns.admin.flowcontrol.dto.RateLimiterConfigDto">
         SELECT *
-        FROM flow_ratelimiter
-        WHERE application=#{application}
+        FROM fwk_ratelimiter
+        WHERE id=#{id}
+    </select>
+
+    <select id="findAll" resultType="com.neobns.admin.flowcontrol.dto.RateLimiterConfigDto">
+        SELECT *
+        FROM fwk_ratelimiter
+        WHERE application_id = #{application_id}
     </select>
 </mapper>

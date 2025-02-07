@@ -7,12 +7,17 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class MethodRateLimiterFilter implements Filter {
+public class DetailRateLimiterFilter implements Filter {
 
     private final RateLimiterRegistry rateLimiterRegistry;
 
-    public MethodRateLimiterFilter(RateLimiterRegistry rateLimiterRegistry) {
+    public DetailRateLimiterFilter(RateLimiterRegistry rateLimiterRegistry) {
         this.rateLimiterRegistry = rateLimiterRegistry;
     }
 
@@ -20,9 +25,26 @@ public class MethodRateLimiterFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String uri = request.getRequestURI();
-        boolean isPresent = rateLimiterRegistry.find(uri).isPresent();
-        if (isPresent) {
-            RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter(uri);
+        if(!uri.endsWith("/")){
+            uri += "/";
+        }
+
+        List<String> names = new ArrayList<>();
+        for (RateLimiter rateLimiter : rateLimiterRegistry.getAllRateLimiters()) {
+            String name = rateLimiter.getName();
+            String pattern = name.replace("*", ".*");
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(uri);
+            if (m.find()) {
+                names.add(name);
+            }
+        }
+
+        if (names.isEmpty()){
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            String name = names.stream().min(Comparator.comparingInt(String::length)).get();
+            RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter(name);
 
             Runnable task = () -> {
                 try{
@@ -42,8 +64,6 @@ public class MethodRateLimiterFilter implements Filter {
                 servletResponse.getWriter().write("{ \"error\": \"Request not permitted. Please try again later.\" }");
                 servletResponse.getWriter().flush();
             }
-        } else {
-            filterChain.doFilter(request, servletResponse);
         }
     }
 }

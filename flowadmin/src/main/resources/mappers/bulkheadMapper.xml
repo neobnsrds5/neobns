@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neobns.admin.flowadmin.mapper.BulkheadMapper">
+    <select id="findByApplication" resultType="com.neobns.admin.flowadmin.dto.bulkhead.BulkheadSearchDto">
+        SELECT b.id, a.application_name, b.url, b.maxConcurrentCalls, b.maxWaitDuration
+        FROM fwk_bulkhead b, fwk_application a
+        WHERE b.application_id = a.ID and application_id = #{id}
+    </select>
+    <insert id="create" useGeneratedKeys="true" parameterType="com.neobns.admin.flowadmin.dto.bulkhead.BulkheadDto" keyProperty="id">
+        INSERT INTO fwk_bulkhead(application_id, url, maxconcurrentcalls, maxWaitDuration)
+        VALUE (#{application_id}, #{url}, #{maxConcurrentCalls}, #{maxWaitDuration})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM fwk_bulkhead
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.neobns.admin.flowadmin.dto.bulkhead.BulkheadDto">
+        UPDATE fwk_bulkhead
+        SET url = #{url} , maxConcurrentCalls = #{maxConcurrentCalls}, maxWaitDuration= #{maxWaitDuration}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findById" resultType="com.neobns.admin.flowadmin.dto.bulkhead.BulkheadDto">
+        SELECT *
+        FROM fwk_bulkhead
+        WHERE id=${id}
+    </select>
+</mapper>

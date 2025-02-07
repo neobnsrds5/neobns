@@ -5,7 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+
 @Mapper
 public interface RateLimiterMapper {
-    List<RateLimiterConfigDto> findByApplication(String application);
+    RateLimiterConfigDto findById(long id);
+    List<RateLimiterConfigDto> findAll(long application_id);
 }

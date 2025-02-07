@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neobns.admin.flowadmin.mapper.ApplicationMapper">
+    <select id="findSelective" parameterType="com.neobns.admin.flowadmin.dto.SearchDto" resultType="com.neobns.admin.flowadmin.dto.SearchApplicationResultDto">
+        SELECT *
+        FROM fwk_application
+        WHERE 1=1
+        <if test="param.id != null">AND ID=#{param.id}</if>
+        <if test="param.application_name != null and param.application_name != ''">AND application_name like concat("%", #{param.application_name}, "%")</if>
+        <if test="param.created_date != null">AND created_date = #{param.created_date}</if>
+        <if test="param.modified_date != null">AND modified_date = #{param.modified_date}</if>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countSelective" parameterType="com.neobns.admin.flowadmin.dto.SearchDto">
+        SELECT COUNT(*)
+        FROM fwk_application
+        WHERE 1=1
+        <if test="id != null">AND ID=#{id}</if>
+        <if test="application_name != null and application_name != ''">AND application_name like concat("%", #{application_name}, "%")</if>
+        <if test="created_date != null">AND created_date = #{created_date}</if>
+        <if test="modified_date != null">AND modified_date = #{modified_date}</if>
+    </select>
+
+    <insert id="create" parameterType="com.neobns.admin.flowadmin.dto.CreateApplicationDto">
+        INSERT INTO fwk_application(application_name, created_date, modified_date)
+        VALUE (#{application_name}, sysdate(), sysdate())
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM fwk_application
+        WHERE ID=#{id}
+    </delete>
+
+    <select id="findById" resultType="com.neobns.admin.flowadmin.dto.SearchApplicationResultDto">
+        SELECT *
+        FROM fwk_application
+        WHERE ID=#{id}
+    </select>
+
+    <select id="findByApplicationCategory">
+        SELECT ID
+        FROM fwk_application
+        where application_name = #{application_name}
+    </select>
+
+    <update id="update">
+        UPDATE fwk_application
+        SET application_name=#{application_name}, modified_date = sysdate()
+        WHERE ID = #{id}
+    </update>
+
+    <update id="updateModified_date">
+        UPDATE  fwk_application
+        SET modified_date= sysdate()
+        WHERE ID=#{id}
+    </update>
+</mapper>

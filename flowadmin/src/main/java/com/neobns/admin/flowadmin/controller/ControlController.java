@@ -1,20 +1,21 @@
 package com.neobns.admin.flowadmin.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neobns.admin.flowadmin.dto.ConfigDto;
+import com.neobns.admin.flowadmin.dto.CreateApplicationDto;
+import com.neobns.admin.flowadmin.dto.SearchApplicationResultDto;
 import com.neobns.admin.flowadmin.dto.SearchDto;
-import com.neobns.admin.flowadmin.dto.SearchResultDto;
+import com.neobns.admin.flowadmin.dto.UpdateApplicationDto;
+import com.neobns.admin.flowadmin.dto.bulkhead.BulkheadSearchDto;
+import com.neobns.admin.flowadmin.dto.ratelimiter.RateLimiterSearchDto;
+import com.neobns.admin.flowadmin.service.BulkheadService;
 import com.neobns.admin.flowadmin.service.ControlService;
 import com.neobns.admin.flowadmin.service.MessagePublisher;
+import com.neobns.admin.flowadmin.service.RateLimiterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -22,13 +23,18 @@ import java.util.stream.IntStream;
 public class ControlController {
 
     private final ControlService controlService;
+    private final RateLimiterService rateLimiterService;
+    private final BulkheadService bulkheadService;
     private final MessagePublisher messagePublisher;
     private final ObjectMapper objectMapper;
 
-    public ControlController(ControlService controlService, MessagePublisher messagePublisher, ObjectMapper objectMapper) {
+    public ControlController(ControlService controlService, MessagePublisher messagePublisher, ObjectMapper objectMapper,
+                             BulkheadService bulkheadService, RateLimiterService rateLimiterService) {
         this.controlService = controlService;
         this.messagePublisher = messagePublisher;
         this.objectMapper = objectMapper;
+        this.bulkheadService = bulkheadService;
+        this.rateLimiterService = rateLimiterService;
     }
 
     @GetMapping("/")
@@ -37,8 +43,22 @@ public class ControlController {
                            @RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "10") int size){
 
-        List<SearchResultDto> results = controlService.find(dto, page, size);
-        int total = (results.isEmpty())? 0 : results.get(0).getResultCount();
+        try {
+            if (dto.getId() != null){
+                int id = Integer.parseInt(dto.getId());
+            }
+        } catch (Exception e) {
+            int totalPage = 0;
+            dto.setId(null);
+            model.addAttribute("results", new ArrayList<SearchApplicationResultDto>());
+            model.addAttribute("page", page);
+            model.addAttribute("totalPage", totalPage);
+            model.addAttribute("size", size);
+            model.addAttribute("param", dto);
+            model.addAttribute("range", new int[]{});
+        }
+        int total = controlService.count(dto);
+        List<SearchApplicationResultDto> results = controlService.find(dto, page, size);
         int totalPage = (total / size) + (total % size == 0 ? 0 : 1);
         int dix = (page/10)*10;
         int start = dix+1;
@@ -56,60 +76,44 @@ public class ControlController {
         return "main";
     }
 
-    @GetMapping("/r")
-    public String r(){
-        return "r";
+    @PostMapping("/createApplication")
+    public String create(@ModelAttribute CreateApplicationDto dto){
+        long id = controlService.create(dto);
+        return "redirect:/detail/"+id;
     }
 
-    @GetMapping("/new")
-    public String newPage(){
-        return "new";
-    }
-
-    @PostMapping("/create")
-    public String create(@ModelAttribute ConfigDto dto){
-        try {
-            int result = controlService.create(dto);
-        } catch (RuntimeException e){
-            System.out.println(e.getMessage());
+    @GetMapping("/delete")
+    public String delete(Model model,
+                         @ModelAttribute SearchDto dto){
+        int result = controlService.delete(Long.parseLong(dto.getId()));
+        if (result == 0){
+            System.out.println("delete failed");
+        } else {
+            System.out.println("delete success");
         }
         return "redirect:/";
     }
 
-    @PostMapping("/deleteAll")
-    public String deleteAll(@RequestParam List<Long> deleteIds){
-        if (deleteIds == null || deleteIds.isEmpty()){
-            return "redirect:/";
-        }
-        try {
-            int result = controlService.deleteByIds(deleteIds);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return "redirect:/";
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable("id") long id, Model model){
+        SearchApplicationResultDto application = controlService.findById(id);
+        List<BulkheadSearchDto> bulkheads = bulkheadService.findByApplication(application.getId());
+        List<RateLimiterSearchDto> rateLimiters = rateLimiterService.findByApplication(application.getId());
+        model.addAttribute("app", application);
+        model.addAttribute("bulkheads", bulkheads);
+        model.addAttribute("rateLimiters", rateLimiters);
+        return "detail";
     }
 
-    @GetMapping("/edit")
-    public String updatePage(@RequestParam Long id, Model model){
-        try{
-            ConfigDto result = controlService.findById(id);
-            model.addAttribute("id", id);
-            model.addAttribute("config", result);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            return "redirect:/";
+    @PostMapping("/updateApplication")
+    public String update(@ModelAttribute UpdateApplicationDto dto){
+        int result = controlService.update(dto);
+        if (result == 0){
+            System.out.println("update failed");
+        } else {
+            System.out.println("update success");
         }
-        return "update";
+        return "redirect:/detail/" + dto.getId();
     }
 
-    @PostMapping("/update")
-    public String update(@ModelAttribute ConfigDto dto){
-        try{
-            int result = controlService.update(dto);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            return "redirect:/edit?id="+ dto.getId();
-        }
-        return "redirect:/";
-    }
 }

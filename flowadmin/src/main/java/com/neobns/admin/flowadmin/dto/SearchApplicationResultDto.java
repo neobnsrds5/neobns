@@ -2,17 +2,17 @@ package com.neobns.admin.flowadmin.dto;
 
 import java.time.LocalDate;
 
-public class SearchDto {
-    private String id;
+public class SearchApplicationResultDto {
+    private long id;
     private String application_name;
     private LocalDate created_date;
     private LocalDate modified_date;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -40,10 +40,13 @@ public class SearchDto {
         this.modified_date = modified_date;
     }
 
-    public String toQueryString(){
-        return "id=" + id + "&" +
-                "application=" + application_name + "&" +
-                "created_date=" + created_date + "&" +
-                "modified_date=" + modified_date + "&";
+    @Override
+    public String toString() {
+        return "SearchApplicationResultDto{" +
+                "id=" + id +
+                ", application_name='" + application_name + '\'' +
+                ", created_date=" + created_date +
+                ", modified_date=" + modified_date +
+                '}';
     }
 }

@@ -1,9 +1,8 @@
-package com.neobns.admin.flowcontrol.dto;
+package com.neobns.admin.flowadmin.dto.bulkhead;
 
-public class BulkheadConfigDto {
-
+public class BulkheadDto {
     private long id;
-    private int application_id;
+    private long application_id;
     private String url;
     private int maxConcurrentCalls;
     private int maxWaitDuration;
@@ -24,11 +23,11 @@ public class BulkheadConfigDto {
         this.id = id;
     }
 
-    public int getApplication_id() {
+    public long getApplication_id() {
         return application_id;
     }
 
-    public void setApplication_id(int application_id) {
+    public void setApplication_id(long application_id) {
         this.application_id = application_id;
     }
 
@@ -50,12 +49,11 @@ public class BulkheadConfigDto {
 
     @Override
     public String toString() {
-        return "BulkheadConfigDto{" +
+        return "BulkheadDto{" +
                 "id=" + id +
                 ", application_id=" + application_id +
                 ", url='" + url + '\'' +
                 ", maxConcurrentCalls=" + maxConcurrentCalls +
-                ", maxWaitDuration=" + maxWaitDuration +
                 '}';
     }
 }

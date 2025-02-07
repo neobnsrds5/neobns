@@ -7,5 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface BulkheadMapper {
-    List<BulkheadConfigDto> findByApplication(String application);
+    BulkheadConfigDto findById(long id);
+    List<BulkheadConfigDto> findAll(long application_id);
 }

@@ -1,6 +1,6 @@
 # 실행 방법
 
-1. eclipse/STS에 code-generator-plugin 플러그인 프로젝트 import
+1. eclipse/STS에 spider-codegen-plugin 플러그인 프로젝트 import
 2. run as -> eclipse application
 3. 새로 열린 eclipse/STS 창의 window -> show view -> others -> code generator -> browser view
 4. browser view에 데이터베이스 정보 입력 후 show tables 버튼 클릭

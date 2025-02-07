@@ -153,7 +153,7 @@ public class ApiServiceImpl implements ApiService {
 	@Override
 	public void updateCheckedApiInfo(int id, LocalDateTime checkedTime, Integer checkedStatus) {
 		ApiDTO apiDTO = new ApiDTO();
-		apiDTO.setId(id);
+		apiDTO.setMockId(id);
 		apiDTO.setMockLastCheckedTime(checkedTime);
 		apiDTO.setMockLastCheckedStatus(checkedStatus);
 		apiMapper.updateCheckedStatus(apiDTO);
@@ -175,7 +175,7 @@ public class ApiServiceImpl implements ApiService {
 	public void changeModeByIds(List<Integer> ids, boolean targetMode) {
 		List<Integer> idsToUpdate = getApis(ids).stream()
 				.filter(api -> api.getMockResponseStatus() != targetMode)
-				.map(ApiDTO::getId)
+				.map(ApiDTO::getMockId)
 				.collect(Collectors.toList());
 		if(idsToUpdate.isEmpty()) return;
 		try {
@@ -230,9 +230,9 @@ public class ApiServiceImpl implements ApiService {
 	    ExecutorService executorService = Executors.newFixedThreadPool(10);
         apis.forEach(api -> executorService.submit(() -> {
         	try {
-        		performHealthCheck(api.getId());
+        		performHealthCheck(api.getMockId());
         	} catch(Exception e) {
-        		logger.error("HealthCheck 실패: ID = " + api.getId(), e);
+        		logger.error("HealthCheck 실패: ID = " + api.getMockId(), e);
         	}
         }));
         executorService.shutdown();
@@ -326,7 +326,7 @@ public class ApiServiceImpl implements ApiService {
 
         String wiremockId = response.getBody().get("uuid").toString();
         apiDto.setMockWiremockId(wiremockId);
-        apiDto.setId(id);
+        apiDto.setMockId(id);
         apiMapper.updateById(apiDto);
 		
         // 기존 데이터 삭제
@@ -407,7 +407,7 @@ public class ApiServiceImpl implements ApiService {
 
         String wiremockId = response.getBody().get("uuid").toString();
         apiDTO.setMockWiremockId(wiremockId);
-        apiDTO.setId(id);
+        apiDTO.setMockId(id);
         apiMapper.updateById(apiDTO);
 		
         

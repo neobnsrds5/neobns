@@ -50,10 +50,10 @@
 	        <tr th:each="api : ${apiList}">
 	            <!-- 선택 체크박스 -->
 	            <td>
-	                <input type="checkbox" class="form-check-input row-checkbox" th:attr="data-id=${api.id}">
+	                <input type="checkbox" class="form-check-input row-checkbox" th:attr="data-id=${api.mockId}">
 	            </td>
 	            <!-- 순번 -->
-	            <td th:text="${api.id}"></td>
+	            <td th:text="${api.mockId}"></td>
 	            <!-- API 이름 -->
 	            <td class="text-start">
 	    			<span th:href="${api.mockApiName}" target="_blank" th:text="${api.mockApiName}"></span>
@@ -71,29 +71,29 @@
 				          th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus != 0}" 
 				          th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
 				    <span th:if="${api.mockLastCheckedStatus == null}">-</span>
-				    <button class="btn-common btn-healthcheck btn-sm" th:attr="data-id=${api.id}">서버 확인</button>
+				    <button class="btn-common btn-healthcheck btn-sm" th:attr="data-id=${api.mockId}">서버 확인</button>
 				</td>
 	            <!-- 상태 -->
 	            <td>
 				    <span class="badge-status badge-status-real" th:if="${api.mockResponseStatus}" th:text="'By-pass'"></span>
 				    <span class="badge-status badge-status-mock" th:if="!${api.mockResponseStatus}" th:text="'대응답'"></span>
-				    <button class="btn-common btn-toggle-mode btn-sm" th:attr="data-id=${api.id}"><i class="bi-arrow-repeat"></i></button>
+				    <button class="btn-common btn-toggle-mode btn-sm" th:attr="data-id=${api.mockId}"><i class="bi-arrow-repeat"></i></button>
 				</td>
 	            <!-- 실행 -->
 	            <td>
 		            <button class="btn-execute"
-				            th:attr="data-id=${api.id}, data-method=${api.mockApiRequestMethod}"
+				            th:attr="data-id=${api.mockId}, data-method=${api.mockApiRequestMethod}"
 				            th:disabled="${api.mockApiRequestMethod == 'POST' or api.mockApiRequestMethod == 'PUT'}">
 				        <span class="triangle"></span>
 				    </button>
 				</td>
 				<!-- 수정 -->
 				<td>
-					<button class="btn-edit btn-sm btn-danger" th:attr="data-id=${api.id}">수정</button>
+					<button class="btn-edit btn-sm btn-danger" th:attr="data-id=${api.mockId}">수정</button>
 				</td>
 				<!-- 삭제 -->
 				<td>
-				    <button class="btn-delete btn-sm btn-danger" th:attr="data-id=${api.id}">삭제</button>
+				    <button class="btn-delete btn-sm btn-danger" th:attr="data-id=${api.mockId}">삭제</button>
 				</td>
 	        </tr>
         </tbody>

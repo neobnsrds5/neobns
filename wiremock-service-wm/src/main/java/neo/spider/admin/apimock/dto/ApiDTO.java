@@ -8,7 +8,7 @@ import lombok.Data;
 public class ApiDTO {
 	
 	/* id(순번) */
-	private int id;
+	private int mockId;
 	
 	// wiremock_uuid
 	private String mockWiremockId;

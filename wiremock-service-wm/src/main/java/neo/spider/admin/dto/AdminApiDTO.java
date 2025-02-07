@@ -8,7 +8,7 @@ import lombok.Data;
 public class AdminApiDTO {
 
 	/* id(순번) */
-	private int id;
+	private int mockId;
 	
 	/* API 이름 */
 	private String mockApiName;

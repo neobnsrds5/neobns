@@ -23,13 +23,14 @@ public class BatchController {
 	public String logToDbTest(@PathVariable("value") String value) {
 
 		String uniqVal = value + System.currentTimeMillis();
-		String filePath = "../logs/gateway-application.log";
 
 		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal).toJobParameters();
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
-			fileMaintenanceService.cleanupLogFile(filePath);
+//			fileMaintenanceService.cleanupLogFile(filePath);
+			// 폴더 하위 전체 파일 삭제
+//			fileMaintenanceService.cleanupLogFolder(rolledFilesPath);
 			return "OK";
 		} catch (Exception e) {
 			return "FAIL";

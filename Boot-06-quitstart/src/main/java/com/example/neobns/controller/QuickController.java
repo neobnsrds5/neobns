@@ -51,7 +51,7 @@ public class QuickController {
 	}
 
 	@GetMapping("/dummy")
-	@Timed(value = "quick.dummyone", longTask = true)
+//	@Timed(value = "quick.dummyone", longTask = true)
 	public String dummy() throws InterruptedException {
 		Thread.sleep(300);
 		log.info("dummy");
@@ -59,7 +59,7 @@ public class QuickController {
 	}
 
 	@GetMapping("/dummy2")
-	@Timed(value = "quick.dummytwo", longTask = true)
+//	@Timed(value = "quick.dummytwo", longTask = true)
 	public String dummy2() {
 		log.info("dummy2");
 		return "quitstart의 dummy2";

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>유량제어 수정 페이지</title>
+  <script>
+    const goBack = () => {
+      const searchState = JSON.parse(sessionStorage.getItem('searchState'));
+      if (searchState == null){
+        location.href = "http://localhost:8080/";
+      }
+      const {paramPath, ...params} = searchState;
+      location.href =  `${paramPath}?` + new URLSearchParams(params).toString();
+    };
+  </script>
+</head>
+<body>
+  <button onclick="goBack()">뒤로가기</button>
+  <form method="post" action="update">
+    <input type="hidden" name="id" th:value="${id}">
+    <h5>등록 어플리케이션</h5>
+    <label>
+      <input type="text" name="appName" th:value="${config.appName}" required>
+    </label><br>
+    <h5>설정 이름</h5>
+    <label>
+      <input type="text" name="name" th:value="${config.name}" required>
+    </label>
+    <h5>Bulkhead 설정</h5>
+    <label>
+      최대 동시 요청 수: <input type="number" name="maxConcurrentCalls" th:value="${config.maxConcurrentCalls}" required>
+    </label>
+    <h5>RateLimiter 설정</h5>
+    <label>
+      단위 시간 당 요청 허용 수 : <input type="number" name="limitForPeriod" required th:value="${config.limitForPeriod}">
+    </label>
+    <br>
+    <label>
+      기준 단위 시간(ms): <input type="number" name="limitRefreshPeriod" required th:value="${config.limitRefreshPeriod}">
+    </label>
+    <br>
+    <label>
+      허용 요청 초과 시 타임아웃 시간(ms): <input type="number" name="timeoutDuration" required th:value="${config.timeoutDuration}">
+    </label>
+    <br>
+    <button type="submit">수정</button>
+  </form>
+</body>
+</html>

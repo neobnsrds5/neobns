@@ -29,7 +29,9 @@ public class BatchController {
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
-			fileMaintenanceService.cleanupLogFile(filePath);
+//			fileMaintenanceService.cleanupLogFile(filePath);
+			// 폴더 하위 전체 파일 삭제
+//			fileMaintenanceService.cleanupLogFolder(rolledFilesPath);
 			return "OK";
 		} catch (Exception e) {
 			return "FAIL";

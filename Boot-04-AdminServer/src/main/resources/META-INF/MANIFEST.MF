@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: com.neo.adminserver.AdminServerApplication
+Main-Class: neo.spider.admin.AdminServerApplication

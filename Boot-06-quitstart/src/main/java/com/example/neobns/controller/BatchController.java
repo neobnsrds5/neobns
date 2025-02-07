@@ -1,5 +1,6 @@
 package com.example.neobns.controller;
 
+import org.bouncycastle.jcajce.provider.asymmetric.ec.SignatureSpi.ecCVCDSA;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -18,6 +19,8 @@ public class BatchController {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
 	private final FileMaintenanceService fileMaintenanceService;
+	private String filePath = "../logs/application.log";
+	private String rolledFilesPath = "../logs/application/rolling";
 
 	@GetMapping("/batch/dbtoapi/{value}")
 	public String firstApi(@PathVariable("value") String value) throws Exception {
@@ -60,15 +63,17 @@ public class BatchController {
 	public String logToDbTest(@PathVariable("value") String value) {
 
 		String uniqVal = value + System.currentTimeMillis();
-		String filePath = "../logs/application.log";
 
 		JobParameters jobParameters = new JobParametersBuilder().addString("logtodb", uniqVal).toJobParameters();
 
 		try {
 			jobLauncher.run(jobRegistry.getJob("logToDBJob"), jobParameters);
-			fileMaintenanceService.cleanupLogFile(filePath);
+//			fileMaintenanceService.cleanupLogFile(filePath);
+			// 폴더 하위 전체 파일 삭제
+//			fileMaintenanceService.cleanupLogFolder(rolledFilesPath);
 			return "OK";
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "FAIL";
 		}
 	}

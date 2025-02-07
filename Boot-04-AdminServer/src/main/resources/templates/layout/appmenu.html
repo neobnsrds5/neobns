@@ -36,48 +36,60 @@
 				</a>
 			</li>
 
-			<li class="menu-title">E2E모니터링</li>
+			<li class="menu-title">모니터링</li>
 			<li class="nav-item">
 				<a aria-controls="applicationMonitoring" aria-expanded="false" class="nav-link menu-arrow" data-bs-toggle="collapse"
 				   href="#applicationMonitoring" role="button">
 					<span class="nav-icon">
 						<i class="ri-terminal-window-line"></i>
 					</span>
-					<span class="nav-text"> 어플리케이션 모니터링 </span>
+					<span class="nav-text">E2E 모니터링</span>
 				</a>
 				<div class="collapse" id="applicationMonitoring">
 					<ul class="nav sub-navbar-nav">
 						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin" target="_blank">어플리케이션 대시보드</a>
+							<a aria-controls="delayApplication" aria-expanded="false" class="sub-nav-link  menu-arrow"
+							   data-bs-toggle="collapse" href="#delayApplication" role="button">
+								<span>지연 어플리케이션</span>
+							</a>
+							<div class="collapse" id="delayApplication">
+								<ul class="nav sub-navbar-nav">
+									<li class="sub-nav-item">
+										<a class="sub-nav-link" href="/admin/e2e/delay/request">요청 지연</a>
+									</li>
+									<li class="sub-nav-item">
+										<a class="sub-nav-link" href="/admin/e2e/delay/query">쿼리 지연</a>
+									</li>
+								</ul>
+							</div>
 						</li>
 						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin/slow">지연 어플리케이션</a>
+							<a class="sub-nav-link" href="/admin/e2e/errors">오류 어플리케이션</a>
 						</li>
 						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin/errors">오류 어플리케이션</a>
-						</li>
-						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/admin/table">영향도 분석</a>
+							<a class="sub-nav-link" href="/admin/e2e/influence">영향도 분석</a>
 						</li>
 					</ul>
 				</div>
 			</li>
 
 			<li class="nav-item">
-				<a aria-controls="batchMonitoring" aria-expanded="false" class="nav-link menu-arrow" data-bs-toggle="collapse"
-				   href="#batchMonitoring" role="button">
+				<a class="nav-link" href="/admin/batch/jobList">
 					<span class="nav-icon">
 						<i class="ri-survey-line"></i>
 					</span>
-					<span class="nav-text"> 배치 모니터링 </span>
+					<span class="nav-text">배치 모니터링</span>
 				</a>
-				<div class="collapse" id="batchMonitoring">
-					<ul class="nav sub-navbar-nav">
-						<li class="sub-nav-item">
-							<a class="sub-nav-link" href="/batch/jobList">배치 JOB</a>
-						</li>
-					</ul>
-				</div>
+			</li>
+
+			<li class="menu-title">관리</li>
+			<li class="nav-item">
+				<a class="nav-link" href="http://localhost:8889/admin">
+					<span class="nav-icon">
+						<i class="ri-swap-box-line"></i>
+					</span>
+					<span class="nav-text">API 대응답 관리</span>
+				</a>
 			</li>
 
 			<li class="menu-title">---- UI 데모 ----</li>

@@ -9,7 +9,7 @@
 		<version>3.3.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.neo.adminserver</groupId>
+	<groupId>neo.spider.admin</groupId>
 	<artifactId>Boot-04-AdminServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>AdminServer</name>
@@ -33,19 +33,6 @@
 	</properties>
 
 	<dependencies>
-	
-<!--		 config client 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>
-		
-		 eureka client 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>-->
-	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -124,18 +111,6 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-
-<!--	    <dependency>-->
-<!--	        <groupId>org.springframework.boot</groupId>-->
-<!--	        <artifactId>spring-boot-starter-security</artifactId>-->
-<!--	    </dependency>-->
-    
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
-		<!--		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
-		    <version>2.6.2</version>
-		</dependency>-->
 
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>

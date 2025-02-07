@@ -1,22 +1,13 @@
 package com.neobns.admin.flowadmin.dto;
 
 public class CreateApplicationDto {
-    String application;
-    String category;
+    String application_name;
 
-    public String getApplication() {
-        return application;
+    public String getApplication_name() {
+        return application_name;
     }
 
-    public void setApplication(String application) {
-        this.application = application;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
+    public void setApplication_name(String application_name) {
+        this.application_name = application_name;
     }
 }

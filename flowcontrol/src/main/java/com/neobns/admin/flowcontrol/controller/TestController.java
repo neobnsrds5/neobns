@@ -28,4 +28,10 @@ public class TestController {
     public ResponseEntity<String> testInside() {
         return ResponseEntity.ok("inside");
     }
+
+    @GetMapping("/plus")
+    public ResponseEntity<String> testPlus() {
+
+        return ResponseEntity.ok("plus");
+    }
 }

@@ -2,15 +2,15 @@ package com.neobns.admin.flowadmin.dto;
 
 public class UpdateApplicationDto {
     String id;
-    String application;
+    String application_name;
     String category;
 
-    public String getApplication() {
-        return application;
+    public String getApplication_name() {
+        return application_name;
     }
 
-    public void setApplication(String application) {
-        this.application = application;
+    public void setApplication_name(String application_name) {
+        this.application_name = application_name;
     }
 
     public String getCategory() {

@@ -31,7 +31,7 @@ public class LoginController {
                         HttpSession session, Model model) {
         if (adminId.equals(id) && adminPassword.equals(password)) {
             session.setAttribute("adminUser", true); // 세션에 관리자 인증 정보 저장
-            return "redirect:/admin"; 
+            return "redirect:/admin/mock";
         } else {
             model.addAttribute("error", "아이디 또는 비밀번호가 잘못되었습니다.");
             return "login"; 

@@ -1,0 +1,16 @@
+{
+  "id" : "df85cc0e-e069-43d5-bdbc-563621937ab2",
+  "request" : {
+    "urlPathPattern" : "asdf",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"aasdf\":\"asdf\"}",
+    "proxyBaseUrl" : "null://null"
+  },
+  "uuid" : "df85cc0e-e069-43d5-bdbc-563621937ab2",
+  "persistent" : true,
+  "insertionIndex" : 27
+}

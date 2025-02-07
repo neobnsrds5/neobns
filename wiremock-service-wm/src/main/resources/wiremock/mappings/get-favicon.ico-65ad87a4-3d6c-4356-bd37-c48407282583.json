@@ -1,0 +1,16 @@
+{
+  "id" : "65ad87a4-3d6c-4356-bd37-c48407282583",
+  "request" : {
+    "url" : "/favicon.ico",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 204,
+    "headers" : {
+      "Content-Type" : "text/plain"
+    }
+  },
+  "uuid" : "65ad87a4-3d6c-4356-bd37-c48407282583",
+  "persistent" : true,
+  "insertionIndex" : 5
+}

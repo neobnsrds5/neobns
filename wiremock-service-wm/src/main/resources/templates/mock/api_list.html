@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout/layout}"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>API 관리</title>
+	<link href="/assets/css/mockapi.css" rel="stylesheet">
+</head>
+<body>
+<div class="page-content" layout:fragment="main">
+
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
+		<h2 class="mb-4 text-center"><a href="/admin/mock">API 대응답 목록</a></h2>
+
+		<div class="row justify-content-between align-items-center mb-2">
+			<!--  버튼 그룹  -->
+			<div class="justify-content-start col-6 p-0 gap-2">
+				<button class="btn btn-soft-success btn-api-mock">선택한 API 대응답 전환</button>
+				<button class="btn btn-soft-danger btn-api-real">선택한 API By-pass 전환</button>
+				<button class="btn btn-soft-primary btn-api-add">API 추가</button>
+			</div>
+
+			<!--  검색창  -->
+			<form action="/admin/mock" class="col-6 p-0 align-items-center flex-grow-1" method="get">
+				<div class="justify-content-end input-group">
+					<input class="form-control ms-2" name="mockApiName" placeholder="API 이름 검색"
+					       style="max-width: 400px;" th:value="${searchKeyword}" type="text"/>
+					<button class="btn btn-sm btn-primary" type="submit">
+						<i class="ri-search-line fs-5"></i></button>
+				</div>
+			</form>
+		</div>
+		<div class="table-responsive">
+			<!-- 검색 결과 없을 때 메시지 -->
+			<div class="m-lg-5 p-lg-5 text-center" th:if="${apiList.size() == 0}">
+				<h4>조회 결과가 없습니다.</h4>
+			</div>
+
+			<table class="table table-hover table-centered" th:unless="${apiList.size() == 0}">
+				<thead>
+				<tr class="text-center">
+					<th>
+						<input class="form-check-input" id="select-all" type="checkbox">
+					</th>
+					<th>순번</th>
+					<th>API 이름</th>
+					<th>URL</th>
+					<th>결과 | Health Check</th>
+					<th>상태</th>
+					<th>실행</th>
+					<th>수정</th>
+					<th>삭제</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="api : ${apiList}" class="text-center">
+					<!-- 선택 체크박스 -->
+					<td>
+						<input class="form-check-input row-checkbox" th:attr="data-id=${api.mockId}" type="checkbox">
+					</td>
+					<!-- 순번 -->
+					<td th:text="${api.mockId}"></td>
+					<!-- API 이름 -->
+					<td class="text-start">
+						<span target="_blank" th:href="${api.mockApiName}" th:text="${api.mockApiName}"></span>
+					</td>
+					<!-- API 주소 -->
+					<td class="text-start">
+					<span class="truncate" th:attr="data-bs-toggle='tooltip', title=${api.mockApiUrl}"
+					      th:text="${api.mockApiUrl}"></span>
+					</td>
+					<!-- 결과 -->
+					<td>
+						<div class="d-flex justify-content-center gap-1">
+					<span class="badge mock-badge bg-success"
+					      th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus == 0}"
+					      th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | ON'"></span>
+							<span class="badge mock-badge bg-danger"
+							      th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus != 0}"
+							      th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
+							<span th:if="${api.mockLastCheckedStatus == null}">-</span>
+							<button class="btn btn-dark btn-sm btn-healthcheck" th:attr="data-id=${api.mockId}">서버 확인
+							</button>
+						</div>
+					</td>
+					<!-- 상태 -->
+					<td>
+						<div class="d-flex justify-content-center gap-1">
+					<span class="badge mock-badge badge-soft-danger" th:if="${api.mockResponseStatus}"
+					      th:text="'By-pass'"></span>
+							<span class="badge mock-badge badge-soft-success" th:if="!${api.mockResponseStatus}"
+							      th:text="'대응답'"></span>
+							<button class="btn btn-dark btn-sm btn-toggle-mode" th:attr="data-id=${api.mockId}">
+								<i class="ri-repeat-line"></i></button>
+						</div>
+					</td>
+					<!-- 실행 -->
+					<td>
+						<button class="btn btn-primary btn-sm btn-execute"
+						        th:attr="data-id=${api.mockId}, data-method=${api.mockApiRequestMethod}"
+						        th:disabled="${api.mockApiRequestMethod == 'POST' or api.mockApiRequestMethod == 'PUT'}">
+							<i class="ri-play-large-fill"></i>
+						</button>
+					</td>
+					<!-- 수정 -->
+					<td>
+						<button class="btn btn-warning btn-sm btn-edit" th:attr="data-id=${api.mockId}">수정</button>
+					</td>
+					<!-- 삭제 -->
+					<td>
+						<button class="btn btn-danger btn-sm btn-delete" th:attr="data-id=${api.mockId}">삭제</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row" th:if="${apiList.size() > 0}">
+			<ul class="pagination">
+				<!-- 이전 페이지 그룹 -->
+				<li class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/mock(page=${(currentPage - 1)/10 * 10}, mockApiName=${searchKeyword})}"
+					   th:if="${currentPage > 10}">
+						« 이전
+					</a>
+					<a class="page-link" href="#" th:unless="${currentPage > 10}">
+						« 이전
+					</a>
+				</li>
+				<!-- 페이지 번호 그룹 -->
+				<li class="page-item"
+				    th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
+					<a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
+					   th:href="@{/admin/mock(page=${pageNum}, mockApiName=${searchKeyword})}">
+						<span th:text="${pageNum}"></span>
+					</a>
+				</li>
+				<!-- 다음 페이지 그룹 -->
+				<li class="page-item"
+				    th:classappend="${((currentPage - 1)/10 + 1) * 10 < totalPages} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/mock(page=${((currentPage - 1)/10 + 1) * 10 + 1}, mockApiName=${searchKeyword})}"
+					   th:if="${((currentPage - 1)/10 + 1) * 10 < totalPages}">
+						다음 »
+					</a>
+					<a class="page-link" href="#" th:unless="${((currentPage - 1)/10 + 1) * 10 < totalPages}">
+						다음 »
+					</a>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<!-- API 추가 팝업 -->
+	<div aria-hidden="true" aria-labelledby="apiAddModalLabel" class="modal" id="apiAddModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="apiAddModalLabel">새로운 API 추가</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form id="add-api-form">
+						<div class="mb-3">
+							<input id="statusSelector" type="hidden" value="normal">
+						</div>
+
+						<!-- API 기본 정보 -->
+						<div class="mb-3">
+							<label class="form-label" for="apiName">API 이름</label>
+							<input class="form-control" id="apiName" required type="text">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="apiUrl">실제 서버 URL</label>
+							<input class="form-control" id="apiUrl" placeholder="https://api.example.com/users"
+							       required type="url">
+						</div>
+
+
+						<!-- 요청(Request) 설정 -->
+						<h6 class="mt-3">요청(Request) 설정</h6>
+						<div class="mb-3">
+							<label class="form-label" for="httpMethod">HTTP 메서드</label>
+							<select class="form-control" id="httpMethod" onchange="toggleRequestBody()">
+								<option value="GET">GET</option>
+								<option value="POST">POST</option>
+								<option value="PUT">PUT</option>
+								<option value="DELETE">DELETE</option>
+							</select>
+						</div>
+						<div class="mb-3" id="requestBodyContainer">
+							<label class="form-label" for="requestBody">요청 본문 (JSON)</label>
+							<textarea class="form-control" id="requestBody" placeholder='{"id": 1, "name": "John"}'
+							          rows="4"></textarea>
+						</div>
+
+						<!-- 응답(Response) 설정 -->
+						<h6 class="mt-3">응답(Response) 설정</h6>
+						<div class="mb-3">
+							<label class="form-label" for="responseStatusCode">응답 상태 코드</label>
+							<select class="form-control" id="responseStatusCode">
+								<option value="200">200 OK</option>
+								<option value="400">400 Bad Request</option>
+								<option value="404">404 Not Found</option>
+								<option value="500">500 Internal Server Error</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="responseBody">응답 본문 (JSON)</label>
+							<textarea class="form-control" id="responseBody" placeholder='{"status": "success"}'
+							          rows="4"></textarea>
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" id="saveApiButton" type="button">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- API 수정 팝업 -->
+	<div aria-hidden="true" aria-labelledby="editApiModalLabel" class="modal" id="editApiModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editApiModalLabel">API 수정</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form id="edit-api-form">
+						<input id="editApiId" type="hidden"> <!-- 수정할 API의 ID 저장 -->
+
+						<!-- API 기본 정보 -->
+						<div class="mb-3">
+							<label class="form-label" for="editApiName">API 이름</label>
+							<input class="form-control" id="editApiName" required type="text">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="editApiUrl">실제 서버 URL</label>
+							<input class="form-control" id="editApiUrl" required type="url">
+						</div>
+
+						<!-- 요청(Request) 설정 -->
+						<h6 class="mt-3">요청(Request) 설정</h6>
+						<div class="mb-3">
+							<label class="form-label" for="editHttpMethod">HTTP 메서드</label>
+							<select class="form-control" id="editHttpMethod">
+								<option value="GET">GET</option>
+								<option value="POST">POST</option>
+								<option value="PUT">PUT</option>
+								<option value="DELETE">DELETE</option>
+							</select>
+						</div>
+						<div class="mb-3" id="editRequestBodyContainer">
+							<label class="form-label" for="editRequestBody">요청 본문 (JSON)</label>
+							<textarea class="form-control" id="editRequestBody" rows="4"></textarea>
+						</div>
+
+						<!-- 응답(Response) 설정 -->
+						<h6 class="mt-3">응답(Response) 설정</h6>
+						<div class="mb-3">
+							<label class="form-label" for="editResponseStatus">응답 상태 코드</label>
+							<select class="form-control" id="editResponseStatus">
+								<option value="200">200 OK</option>
+								<option value="400">400 Bad Request</option>
+								<option value="404">404 Not Found</option>
+								<option value="500">500 Internal Server Error</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="editResponseBody">응답 본문 (JSON)</label>
+							<textarea class="form-control" id="editResponseBody" rows="4"></textarea>
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" id="saveEditButton" type="button">완료</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/assets/js/mockapi.js"></script>
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
+</body>
+</html>

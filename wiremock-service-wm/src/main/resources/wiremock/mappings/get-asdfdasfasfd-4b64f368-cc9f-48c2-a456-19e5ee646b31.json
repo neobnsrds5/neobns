@@ -1,0 +1,15 @@
+{
+  "id" : "4b64f368-cc9f-48c2-a456-19e5ee646b31",
+  "request" : {
+    "urlPathPattern" : "asdfdasfasfd",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"\":\"\"}"
+  },
+  "uuid" : "4b64f368-cc9f-48c2-a456-19e5ee646b31",
+  "persistent" : true,
+  "insertionIndex" : 26
+}

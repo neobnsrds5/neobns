@@ -1,0 +1,18 @@
+{
+  "id" : "766e4045-a9fa-4331-b17b-1bcd09a3a244",
+  "request" : {
+    "urlPathPattern" : "/api/users/2",
+    "method" : "PUT",
+    "queryParameters" : { },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\n    \"name\": \"morpheus\",\n    \"job\": \"zion resident\"\n}"
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"reqres\":\"TEST\"}"
+  },
+  "uuid" : "766e4045-a9fa-4331-b17b-1bcd09a3a244",
+  "persistent" : true,
+  "insertionIndex" : 22
+}

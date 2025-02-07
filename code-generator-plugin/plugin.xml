@@ -9,10 +9,10 @@
             id="CodeGenerator">
       </category>
       <view
-            id="com.neobns.admin.codegen.views.BrowserView"
+            id="neo.spider.solution.codegen.views.BrowserView"
             name="Browser View"
             icon="icons/sample.png"
-            class="com.neobns.admin.codegen.views.BrowserView"
+            class="neo.spider.solution.codegen.views.BrowserView"
             category="CodeGenerator"
             inject="true">
       </view>
@@ -22,7 +22,7 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
-               id="com.neobns.admin.codegen.views.BrowserView"
+               id="neo.spider.solution.codegen.views.BrowserView"
                relative="org.eclipse.ui.views.ProblemView"
                relationship="stack">
          </view>

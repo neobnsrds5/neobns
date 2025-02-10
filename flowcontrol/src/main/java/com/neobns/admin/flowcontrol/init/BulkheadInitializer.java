@@ -45,10 +45,10 @@ public class BulkheadInitializer {
                     .build();
             bulkheadRegistry.bulkhead(bulkhead.getUrl(), bulkheadConfig);
             Bulkhead bh = bulkheadRegistry.bulkhead(bulkhead.getUrl());
-            System.out.println(bh.getName());
-            System.out.println("max calls: " + bh.getBulkheadConfig().getMaxConcurrentCalls());
-            System.out.println("wait: " + bh.getBulkheadConfig().getMaxWaitDuration().getSeconds());
-            System.out.println("===================================");
+//            System.out.println(bh.getName());
+//            System.out.println("max calls: " + bh.getBulkheadConfig().getMaxConcurrentCalls());
+//            System.out.println("wait: " + bh.getBulkheadConfig().getMaxWaitDuration().getSeconds());
+//            System.out.println("===================================");
         }
     }
 }

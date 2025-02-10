@@ -45,20 +45,9 @@ public class DetailRateLimiterFilter implements Filter {
         } else {
             String name = names.stream().min(Comparator.comparingInt(String::length)).get();
             RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter(name);
-
-            Runnable task = () -> {
-                try{
-                    filterChain.doFilter(servletRequest, servletResponse);
-
-                } catch(Exception e){
-                    throw new RuntimeException(e);
-                }
-            };
-
-            Runnable protectedTask = RateLimiter.decorateRunnable(rateLimiter, task);
-            try {
-                protectedTask.run();
-            } catch(RequestNotPermitted e){
+            if (rateLimiter.acquirePermission()){
+                filterChain.doFilter(servletRequest, servletResponse);
+            } else {
                 servletResponse.setContentType("application/json");
                 servletResponse.setCharacterEncoding("UTF-8");
                 servletResponse.getWriter().write("{ \"error\": \"Request not permitted. Please try again later.\" }");

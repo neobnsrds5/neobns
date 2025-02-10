@@ -48,18 +48,14 @@ public class DetailBulkheadFilter implements Filter {
         } else {
             String name = names.stream().min(Comparator.comparingInt(String::length)).get();
             Bulkhead bulkhead = bulkheadRegistry.bulkhead(name);
-            Runnable task = () -> {
-                try{
-                    filterChain.doFilter(servletRequest, servletResponse);
-                } catch(Exception e){
-                    throw new RuntimeException(e);
-                }
-            };
 
-            Runnable protectedTask = Bulkhead.decorateRunnable(bulkhead, task);
-            try {
-                protectedTask.run();
-            } catch (BulkheadFullException e){
+            if(bulkhead.tryAcquirePermission()){
+                try {
+                    filterChain.doFilter(servletRequest, servletResponse);
+                } finally {
+                    bulkhead.releasePermission();
+                }
+            } else {
                 HttpServletResponse resp = (HttpServletResponse) servletResponse;
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.setContentType("application/json");

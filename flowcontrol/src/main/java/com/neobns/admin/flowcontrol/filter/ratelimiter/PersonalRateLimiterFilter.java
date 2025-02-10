@@ -38,18 +38,10 @@ public class PersonalRateLimiterFilter implements Filter {
                     userRateLimiter = RateLimiter.of(id, config);
                     cache.put(id, userRateLimiter);
                 }
-                Runnable task = () -> {
-                    try{
-                        filterChain.doFilter(servletRequest, servletResponse);
 
-                    } catch(Exception e){
-                        throw new RuntimeException(e);
-                    }
-                };
-                Runnable protectedTask = RateLimiter.decorateRunnable(userRateLimiter, task);
-                try {
-                    protectedTask.run();
-                } catch(RequestNotPermitted e){
+                if (userRateLimiter.acquirePermission()){
+                    filterChain.doFilter(servletRequest, servletResponse);
+                } else {
                     servletResponse.setContentType("application/json");
                     servletResponse.setCharacterEncoding("UTF-8");
                     servletResponse.getWriter().write("{ \"error\": \"Request not permitted. Please try again later.\" }");

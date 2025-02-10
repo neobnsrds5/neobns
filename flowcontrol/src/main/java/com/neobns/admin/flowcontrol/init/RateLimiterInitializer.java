@@ -44,11 +44,11 @@ public class RateLimiterInitializer {
                     .build();
             rateLimiterRegistry.rateLimiter(rateLimiter.getUrl(), newConfig);
             RateLimiter rl = rateLimiterRegistry.rateLimiter(rateLimiter.getUrl());
-            System.out.println("name: " + rl.getName());
-            System.out.println("limit: " + rl.getRateLimiterConfig().getLimitForPeriod());
-            System.out.println("time: " + rl.getRateLimiterConfig().getLimitRefreshPeriod());
-            System.out.println("timeout: " + rl.getRateLimiterConfig().getTimeoutDuration());
-            System.out.println("===================================================");
+//            System.out.println("name: " + rl.getName());
+//            System.out.println("limit: " + rl.getRateLimiterConfig().getLimitForPeriod());
+//            System.out.println("time: " + rl.getRateLimiterConfig().getLimitRefreshPeriod());
+//            System.out.println("timeout: " + rl.getRateLimiterConfig().getTimeoutDuration());
+//            System.out.println("===================================================");
         }
     }
 }

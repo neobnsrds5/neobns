@@ -58,10 +58,10 @@ public class FlowConfigUpdateService {
                         bulkheadRegistry.bulkhead(url, newConfig);
                     }
                     Bulkhead bh = bulkheadRegistry.bulkhead(url);
-                    System.out.println("========Bulkhead=======");
-                    System.out.println(bh.getName());
-                    System.out.println(bh.getBulkheadConfig().getMaxConcurrentCalls());
-                    System.out.println(bh.getBulkheadConfig().getMaxWaitDuration());
+//                    System.out.println("========Bulkhead=======");
+//                    System.out.println(bh.getName());
+//                    System.out.println(bh.getBulkheadConfig().getMaxConcurrentCalls());
+//                    System.out.println(bh.getBulkheadConfig().getMaxWaitDuration());
                 } else {
                     //delete
                     if(bulkheadRegistry.find(url).isPresent()){
@@ -90,11 +90,11 @@ public class FlowConfigUpdateService {
                         rateLimiterRegistry.rateLimiter(url, newConfig);
                     }
                     RateLimiter rl = rateLimiterRegistry.rateLimiter(url);
-                    System.out.println("======rateLimiter=======");
-                    System.out.println(rl.getName());
-                    System.out.println(rl.getRateLimiterConfig().getLimitForPeriod());
-                    System.out.println(rl.getRateLimiterConfig().getLimitRefreshPeriod());
-                    System.out.println(rl.getRateLimiterConfig().getTimeoutDuration());
+//                    System.out.println("======rateLimiter=======");
+//                    System.out.println(rl.getName());
+//                    System.out.println(rl.getRateLimiterConfig().getLimitForPeriod());
+//                    System.out.println(rl.getRateLimiterConfig().getLimitRefreshPeriod());
+//                    System.out.println(rl.getRateLimiterConfig().getTimeoutDuration());
                 } else {
                     //delete
                     if (rateLimiterRegistry.find(url).isPresent()){

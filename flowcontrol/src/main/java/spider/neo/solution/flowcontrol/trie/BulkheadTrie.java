@@ -97,26 +97,26 @@ public class BulkheadTrie {
         return false;
     }
 
-
-    // insert 후 전체 Trie 구조를 출력하는 함수 추가
-    public void printTrie() {
-        printTrieHelper(root, new StringBuilder(), 0);
-    }
-
-    private void printTrieHelper(BulkheadNode node, StringBuilder path, int level) {
-        if (node.isEndOfPattern) {
-            System.out.println("✅ Stored Pattern: " + path.toString());
-        }
-        if (node.hasWildCard) {
-            System.out.println("⭐ Wildcard Pattern: " + path.toString() + "/*");
-        }
-        for (String key : node.children.keySet()) {
-            int prevLength = path.length();
-            if (prevLength > 0) path.append("/");
-            path.append(key);
-            printTrieHelper(node.children.get(key), path, level + 1);
-
-            path.setLength(prevLength);
-        }
-    }
+//
+//    // insert 후 전체 Trie 구조를 출력하는 함수 추가
+//    public void printTrie() {
+//        printTrieHelper(root, new StringBuilder(), 0);
+//    }
+//
+//    private void printTrieHelper(BulkheadNode node, StringBuilder path, int level) {
+//        if (node.isEndOfPattern) {
+//            System.out.println("✅ Stored Pattern: " + path.toString());
+//        }
+//        if (node.hasWildCard) {
+//            System.out.println("⭐ Wildcard Pattern: " + path.toString() + "/*");
+//        }
+//        for (String key : node.children.keySet()) {
+//            int prevLength = path.length();
+//            if (prevLength > 0) path.append("/");
+//            path.append(key);
+//            printTrieHelper(node.children.get(key), path, level + 1);
+//
+//            path.setLength(prevLength);
+//        }
+//    }
 }

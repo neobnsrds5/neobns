@@ -1,6 +1,5 @@
 package spider.neo.solution.flowcontrol.config;
 
-import spider.neo.solution.flowcontrol.ConfigNameRegistry;
 import spider.neo.solution.flowcontrol.filter.bulkhead.DetailBulkheadFilter;
 //import com.neobns.admin.flowcontrol.filter.bulkhead.GlobalBulkheadFilter;
 import spider.neo.solution.flowcontrol.filter.ratelimiter.GlobalRateLimiterFilter;
@@ -22,7 +21,6 @@ public class FilterConfiguration {
 
     public FilterConfiguration(BulkheadRegistry bulkheadRegistry,
                                RateLimiterRegistry rateLimiterRegistry,
-                               ConfigNameRegistry configNameRegistry,
                                TrieRegistry trieRegistry) {
         this.bulkheadRegistry = bulkheadRegistry;
         this.rateLimiterRegistry = rateLimiterRegistry;

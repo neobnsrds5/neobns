@@ -11,10 +11,6 @@ public class Test {
         trie.insert("/product/item/detail/more");
         trie.insert("/product/*");
 
-        System.out.println("📌 Initial Trie:");
-        trie.printTrie();
-        System.out.println();
-
         System.out.println("🔍 Searching for: /product/item/detail");
         System.out.println(trie.search("/product/item/detail"));
         System.out.println();
@@ -28,8 +24,15 @@ public class Test {
         System.out.println();
 
         System.out.println("🔍 Searching for: /human/number/detail");
-        String result = trie.search("/human/number/detail");
-        System.out.println(result == null ? "null" : result);
+        System.out.println(trie.search("/human/number/detail"));
+        System.out.println();
+
+        System.out.println("Deleting: /product/item/detail");
+        trie.delete("/product/item/detail");
+        System.out.println();
+
+        System.out.println("🔍 Searching for: /product/item/detail");
+        System.out.println(trie.search("/product/item/detail"));
         System.out.println();
     }
 }

@@ -1,21 +1,13 @@
 package spider.neo.solution.flowcontrol.filter.bulkhead;
 
 import io.github.resilience4j.bulkhead.Bulkhead;
-import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import spider.neo.solution.flowcontrol.ConfigNameRegistry;
 import spider.neo.solution.flowcontrol.trie.TrieRegistry;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DetailBulkheadFilter implements Filter {
 

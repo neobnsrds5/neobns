@@ -74,12 +74,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     })
 
-    // "API 추가" 버튼 클릭 시 팝업 열기
-    const apiAddButton = document.querySelector(".btn-api-add");
-    apiAddButton.addEventListener("click", function () {
-        const apiAddModal = new bootstrap.Modal(document.getElementById("apiAddModal"));
+    // 추가 버튼 클릭 시 팝업 열기
+    document.querySelector(".btn-api-add").addEventListener("click", function () {
+        // 모달 요소에 data-type 속성 추가
+        const modalElement = document.getElementById("apiModal");
+        modalElement.setAttribute("data-type", "add");
+        const apiModal = new bootstrap.Modal(modalElement);
         toggleRequestBody("httpMethod", "requestBodyContainer");
-        apiAddModal.show();
+        apiModal.show();
     });
 
     // 삭제 버튼 이벤트
@@ -90,24 +92,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // 수정 버튼 이벤트
+    // 수정, 복사 버튼 이벤트
     document.querySelectorAll(".btn-edit").forEach(button => {
         button.addEventListener("click", () => loadApiDetail(button));
     });
 
-    // 추가 모달: HTTP 메서드 변경 시 이벤트 적용
+    // HTTP 메서드 변경 시 이벤트 적용
     document.getElementById("httpMethod").addEventListener("change", () => {
         toggleRequestBody("httpMethod", "requestBodyContainer");
-    });
-
-    // 수정 모달: HTTP 메서드 변경 시 이벤트 적용
-    document.getElementById("editHttpMethod").addEventListener("change", () => {
-        toggleRequestBody("editHttpMethod", "editRequestBodyContainer");
-    });
-
-    // 수정 모달: 완료 버튼
-    document.getElementById("saveEditButton").addEventListener("click", () => {
-        updateApi();
     });
 
 });
@@ -255,8 +247,18 @@ const toggleRequestBody = (methodId, containerId) => {
     }
 };
 
-
 document.getElementById("saveApiButton").addEventListener("click", function () {
+    const dataType = document.getElementById("apiModal").getAttribute("data-type");
+    console.log(dataType);
+    if(dataType === "add" || dataType === "copy"){
+        addApi();
+    } else if(dataType === "edit"){
+        updateApi();
+    }
+});
+
+// API 등록 함수
+const addApi = () => {
     // 1. 입력값 가져오기
     const apiName = document.getElementById("apiName").value.trim();
     const apiUrl = document.getElementById("apiUrl").value.trim();
@@ -314,7 +316,7 @@ document.getElementById("saveApiButton").addEventListener("click", function () {
             console.error("Error:", error);
             alert("API 등록 중 오류 발생!");
         });
-});
+}
 
 // API 삭제 함수 
 const deleteApi = (button) => {
@@ -349,6 +351,9 @@ const deleteApi = (button) => {
 // API 상세 정보 불러오기
 const loadApiDetail = (button) => {
     const apiId = button.getAttribute("data-id");
+    const dataType = button.getAttribute("data-type");
+    console.log(apiId, dataType);
+
     if (!apiId) {
         alert("API ID를 찾을 수 없습니다.");
         return;
@@ -362,13 +367,13 @@ const loadApiDetail = (button) => {
                 alert("API 정보를 불러올 수 없습니다.");
                 return;
             }
-            document.getElementById("editApiId").value = apiId;
+            document.getElementById("apiId").value = apiId;
             // 1. DB에서 가져온 데이터 (메타데이터)
-            document.getElementById("editApiName").value = data.api.mockApiName;
-            document.getElementById("editApiUrl").value = data.api.mockApiUrl;
+            document.getElementById("apiName").value = dataType === "copy" ? data.api.mockApiName + "_copy" : data.api.mockApiName;
+            document.getElementById("apiUrl").value = data.api.mockApiUrl;
 
             // 2. WireMock에서 가져온 Request/Response 데이터
-            document.getElementById("editHttpMethod").value = data.wiremock.body.request.method;
+            document.getElementById("httpMethod").value = data.wiremock.body.request.method;
             //document.getElementById("editRequestHeaders").value = JSON.stringify(data.wiremock.body.request.headers || {}, null, 2);
             // Request Body - equalToJson 제거
             let requestBody = "";
@@ -382,20 +387,24 @@ const loadApiDetail = (button) => {
                     }
                 }
             }
-            document.getElementById("editRequestBody").value = requestBody;
-            document.getElementById("editResponseStatus").value = data.wiremock.body.response.status;
+            document.getElementById("requestBody").value = requestBody;
+            document.getElementById("responseStatusCode").value = data.wiremock.body.response.status;
 
             // JSON을 파싱하여 \가 붙지 않도록 처리
             try {
-                document.getElementById("editResponseBody").value = JSON.stringify(JSON.parse(data.wiremock.body.response.body), null, 2);
+                document.getElementById("responseBody").value = JSON.stringify(JSON.parse(data.wiremock.body.response.body), null, 2);
             } catch (e) {
-                document.getElementById("editResponseBody").value = data.wiremock.body.response.body; // JSON이 아니면 그대로 출력
+                document.getElementById("responseBody").value = data.wiremock.body.response.body; // JSON이 아니면 그대로 출력
             }
 
-            toggleRequestBody("editHttpMethod", "editRequestBodyContainer");
+            toggleRequestBody("httpMethod", "requestBodyContainer");
+
             // 3. 수정 모달창 띄우기
-            const editApiModal = new bootstrap.Modal(document.getElementById("editApiModal"));
-            editApiModal.show();
+            // 모달 요소에 data-type 속성 추가
+            const modalElement = document.getElementById("apiModal");
+            modalElement.setAttribute("data-type", dataType);
+            const apiModal = new bootstrap.Modal(modalElement);
+            apiModal.show();
         })
         .catch(error => {
             console.error("API 상세 정보 불러오기 실패:", error);
@@ -405,19 +414,19 @@ const loadApiDetail = (button) => {
 
 // API 수정 요청 함수
 const updateApi = () => {
-    const apiId = document.getElementById("editApiId").value;
+    const apiId = document.getElementById("apiId").value;
     if (!apiId) {
         alert("API ID를 찾을 수 없습니다.");
         return;
     }
-    const httpMethod = document.getElementById("editHttpMethod").value;
+    const httpMethod = document.getElementById("httpMethod").value;
     // JSON 유효성 검사 (요청 본문, 응답 본문)
-    if (!validateJsonFields(httpMethod, "editRequestBody", "editResponseBody")) {
+    if (!validateJsonFields(httpMethod, "requestBody", "responseBody")) {
         return; // JSON 오류 발생 시 저장하지 않음
     }
 
     // 응답 본문을 JSON 문자열로 변환하여 저장
-    let responseBody = document.getElementById("editResponseBody").value.trim();
+    let responseBody = document.getElementById("responseBody").value.trim();
     try {
         responseBody = JSON.stringify(JSON.parse(responseBody)); // JSON 형식 유지
     } catch (e) {
@@ -425,12 +434,12 @@ const updateApi = () => {
     }
     // 1. 수정된 데이터 가져오기
     const requestData = {
-        mockApiName: document.getElementById("editApiName").value.trim(),
-        mockApiUrl: document.getElementById("editApiUrl").value.trim(),
-        mockApiRequestMethod: document.getElementById("editHttpMethod").value,
+        mockApiName: document.getElementById("apiName").value.trim(),
+        mockApiUrl: document.getElementById("apiUrl").value.trim(),
+        mockApiRequestMethod: document.getElementById("httpMethod").value,
         //requestHeaders: document.getElementById("editRequestHeaders").value.trim(),
-        requestBody: document.getElementById("editRequestBody").value.trim(),
-        responseStatusCode: parseInt(document.getElementById("editResponseStatus").value, 10),
+        requestBody: document.getElementById("requestBody").value.trim(),
+        responseStatusCode: parseInt(document.getElementById("responseStatusCode").value, 10),
         responseBody: responseBody
     };
 
@@ -462,6 +471,7 @@ const updateApi = () => {
             alert("API 수정 중 오류 발생!");
         });
 };
+
 const validateJsonFields = (httpMethod, requestBodyId, responseBodyId) => {
     let invalidFields = [];
 

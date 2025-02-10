@@ -1,5 +1,6 @@
 package neo.spider.solution.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,10 +39,15 @@ public class LoginController {
         }
     }
 
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); 
         return "redirect:/login"; 
+    }
+
+    @GetMapping("/indexPage")
+    public String indexPage(@RequestParam(required = false) String username,
+                            @RequestParam(required = false) String password, Model model, HttpServletRequest request) {
+        return "index_page";
     }
 }

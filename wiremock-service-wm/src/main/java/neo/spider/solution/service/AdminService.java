@@ -16,13 +16,13 @@ public class AdminService {
 
 	
 	// 검색 + 페이징 처리된 API 목록 가져오기
-    public List<AdminApiDTO> findApisByPage(int page, int size, String apiName) {
+    public List<AdminApiDTO> findApisByPage(int page, int size, AdminApiDTO paramDto) {
         int offset = (page - 1) * size; // 페이지네이션을 위한 오프셋 계산
-        return adminMapper.findAll(apiName, size, offset);
+        return adminMapper.findAll(paramDto, size, offset);
     }
 
     // 검색된 API 개수 가져오기
-    public int countApis(String apiName) {
-        return adminMapper.countByApiName(apiName);
+    public int countApis(AdminApiDTO paramDto) {
+        return adminMapper.countByApiName(paramDto);
     }
 }

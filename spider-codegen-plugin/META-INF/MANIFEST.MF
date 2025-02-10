@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.datatools.enablement.mysql
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Automatic-Module-Name: code.generator.plugin
+Automatic-Module-Name: spider.codegen.plugin
 Import-Package: jakarta.inject
 Bundle-ActivationPolicy: lazy

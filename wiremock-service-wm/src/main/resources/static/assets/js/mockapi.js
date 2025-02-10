@@ -79,8 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // 모달 요소에 data-type 속성 추가
         const modalElement = document.getElementById("apiModal");
         modalElement.setAttribute("data-type", "add");
-        const apiModal = new bootstrap.Modal(modalElement);
+        document.getElementById("apiModalLabel").textContent = "API 추가";
+
         toggleRequestBody("httpMethod", "requestBodyContainer");
+
+        const apiModal = new bootstrap.Modal(modalElement);
         apiModal.show();
     });
 
@@ -403,6 +406,12 @@ const loadApiDetail = (button) => {
             // 모달 요소에 data-type 속성 추가
             const modalElement = document.getElementById("apiModal");
             modalElement.setAttribute("data-type", dataType);
+            if(dataType === "edit"){
+                document.getElementById("apiModalLabel").textContent = "API 수정";
+            }else if(dataType === "copy"){
+                document.getElementById("apiModalLabel").textContent = "API 복사";
+            }
+
             const apiModal = new bootstrap.Modal(modalElement);
             apiModal.show();
         })

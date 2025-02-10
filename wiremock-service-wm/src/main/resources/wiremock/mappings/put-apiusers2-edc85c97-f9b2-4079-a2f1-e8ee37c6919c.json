@@ -1,0 +1,19 @@
+{
+  "id" : "edc85c97-f9b2-4079-a2f1-e8ee37c6919c",
+  "request" : {
+    "urlPathPattern" : "/api/users/2",
+    "method" : "PUT",
+    "queryParameters" : { },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\n  \"name\": \"morpheus\",\n  \"job\": \"zion resident\"\n}"
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"reqres\":\"{{jsonPath request.body '$.name'}}\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "edc85c97-f9b2-4079-a2f1-e8ee37c6919c",
+  "persistent" : true,
+  "insertionIndex" : 10
+}

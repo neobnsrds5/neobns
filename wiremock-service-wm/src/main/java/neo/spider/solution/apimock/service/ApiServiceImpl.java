@@ -76,13 +76,8 @@ public class ApiServiceImpl implements ApiService {
         requestBody.put("request", requestMap);
         requestBody.put("response", Map.of(
             "status", apiDto.getResponseStatusCode(),
-            "body", apiDto.getResponseBody()
-//            ,"headers", Map.of(
-//                    "Content-Type", "application/json",
-//                    "Access-Control-Allow-Origin", "*",
-//                    "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS",
-//                    "Access-Control-Allow-Headers", "Content-Type, Authorization"
-//                )
+            "body", apiDto.getResponseBody(),
+            "transformers", List.of("response-template")
         ));
         
         // WireMock에 API 등록 요청 보내기
@@ -309,7 +304,8 @@ public class ApiServiceImpl implements ApiService {
         requestBody.put("request", requestMap);
         requestBody.put("response", Map.of(
                 "status", apiDto.getResponseStatusCode(),
-                "body", apiDto.getResponseBody()
+                "body", apiDto.getResponseBody(),
+                "transformers", List.of("response-template")
             ));
         
         // WireMock에 API 등록 요청 보내기

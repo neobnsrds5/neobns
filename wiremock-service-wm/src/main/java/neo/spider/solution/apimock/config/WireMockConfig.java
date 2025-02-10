@@ -32,6 +32,13 @@ public class WireMockConfig {
 			            .withStatus(204)
 			            .withHeader("Content-Type", "text/plain")
 			    	));	
+		
+		//파비콘 계속 생성 방지
+		server.removeStub(WireMock.get(WireMock.urlEqualTo("/favicon.ico"))
+			    .willReturn(WireMock.aResponse()
+			        .withStatus(204)
+			        .withHeader("Content-Type", "text/plain")
+			    ));
 				
 		return server;
     }

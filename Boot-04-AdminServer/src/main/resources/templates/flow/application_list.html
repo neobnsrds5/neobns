@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>유량제어 메인 페이지</title>
+    <style>
+      .modal{
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        width: 50%;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      }
+      .close{
+        float: right;
+        font-size: 24px;
+        cursor: pointer;
+      }
+    </style>
+    <!-- 요청 파라미터 저장 Js -->
+    <script src="/assets/js/parameterSave.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+      const goDelete = (id) => {
+        event.stopPropagation();
+        const select = confirm("삭제하시겠습니까?")
+        if (select) {
+          const searchState = JSON.parse(sessionStorage.getItem('searchState'));
+          const {paramPath,page, ...params} = searchState;
+          location.href = "/delete?id=" + id + "&" + new URLSearchParams(params).toString();
+        }
+      }
+
+      const goDetail = (id) => {
+        location.href = "/detail/" + id;
+      }
+      const movePage = (destination) => {
+        const searchState = JSON.parse(sessionStorage.getItem('searchState'));
+        const {paramPath, ...params} = searchState;
+        params["page"] = destination;
+        location.href = "/?" + new URLSearchParams(params).toString();
+      }
+
+      $(document).ready(function(){
+        $('.current-page-button')
+                .mouseover(function(){
+                  $(this).css('background-color', '#009dff');
+                })
+                .mouseout(function(){
+                  $(this).css('background-color', '#00c4ff');
+                })
+      })
+    </script>
+  <style>
+    .current-page-button {
+      background-color: #00c4ff;
+    }
+    .resultTable{
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+<!--등록창 모달-->
+  <div  id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h1>어플리케이션 등록</h1>
+      <form method="post" action="/createApplication">
+        <p>어플리케이션 이름</p>
+        <label>
+          <input type="text" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="application_name" required/>
+        </label>
+        <br><br>
+        <div>
+          <button type="submit">등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<!--여기까지 모달-->
+  <h1><a href="/">유량제어 메인 페이지</a></h1>
+  <div class="searchForm">
+    <form method="get" action="/">
+      <label>
+        <input type="number" placeholder="아이디" name="id" th:value="${param.id}">
+      </label>
+      <label>
+        <input type="text" placeholder="어플리케이션 이름" name="application_name" th:value="${param.application_name}"/>
+      </label>
+      <label>
+        생성일
+        <input type="date" placeholder="생성일" name="created_date" th:value="${param.created_date}"/>
+      </label>
+      <label>
+        수정일
+        <input type="date" placeholder="수정일" name="modified_date" th:value="${param.modified_date}"/>
+      </label>
+      <button type="submit">검색</button>
+    </form>
+  </div>
+    <div class="searchResult">
+      <table border="1" class="resultTable">
+        <tr>
+          <td>id</td>
+          <td>어플리케이션 이름</td>
+          <td>생성일</td>
+          <td>수정일</td>
+          <td><button id="openModal">등록</button></td>
+        </tr>
+        <tr th:unless="${not #lists.isEmpty(results)}">
+          <td colspan="5">검색 결과가 없습니다.</td>
+        </tr>
+        <tr th:if="${not #lists.isEmpty(results)}"  th:each="config : ${results}" th:onclick="|goDetail(${config.id})|">
+          <td th:text="${config.id}"></td>
+          <td th:text="${config.application_name}"></td>
+          <td th:text="${config.created_date}"></td>
+          <td th:text="${config.modified_date}"></td>
+          <td onclick="event.stopPropagation()"><button type="button" th:onclick="|goDelete(${config.id})|">삭제</button></td>
+        </tr>
+      </table>
+    </div>
+  <br/>
+  <div class="page-button" style="display: flex;">
+    <button th:if="${page > 1}" th:onclick="|movePage(${page}-1)|">이전</button>
+    <div th:each="num : ${range}">
+      <button type="button" th:text="${num}" th:onclick="|movePage(${num})|" th:if="${num!=page}"></button>
+      <button class="current-page-button" type="button" th:text="${num}" th:onclick="|movePage(${num})|" th:if="${num==page}"></button>
+    </div>
+    <button type="button" th:if="${page < totalPage}" th:onclick="|movePage(${page}+1)|">다음</button>
+  </div>
+  <br/>
+  <script>
+    const modal = document.getElementById('myModal');
+    const btn = document.getElementById('openModal');
+    const closeBtn = document.querySelector('.close');
+    btn.onclick = () => {modal.style.display='block'};
+    closeBtn.onclick = () => {modal.style.display='none'};
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

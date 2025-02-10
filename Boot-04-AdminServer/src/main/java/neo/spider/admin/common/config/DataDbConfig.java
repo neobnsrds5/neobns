@@ -1,4 +1,4 @@
-package neo.spider.admin.common.configuration;
+package neo.spider.admin.common.config;
 
 import javax.sql.DataSource;
 

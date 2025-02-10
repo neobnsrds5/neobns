@@ -15,7 +15,6 @@ import lombok.Setter;
 public class TraceUmlService {
 
 	public static String buildUmlList(List<LogDTO> logList) {
-		StringBuilder sb = new StringBuilder();
 		List<UmlDTO> uList = new ArrayList<UmlDTO>();
 		for (LogDTO log : logList) {
 			UmlDTO uml = new UmlDTO();

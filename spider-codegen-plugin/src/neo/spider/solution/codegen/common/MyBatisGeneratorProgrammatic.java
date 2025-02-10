@@ -146,7 +146,7 @@ public class MyBatisGeneratorProgrammatic {
 				System.out.println(warning);
 			}
 			
-			MessageDialog.openInformation(shell, "Code Generated", "Code generated successfully at: " + Paths.get(targetPath).toAbsolutePath() + "\n for table: " + tableName);
+			MessageDialog.openInformation(shell, "Code Generated", "Code generated successfully at: " + Paths.get(targetPath).toAbsolutePath() + "\nFor table: " + tableName);
 
 			return true;
 			

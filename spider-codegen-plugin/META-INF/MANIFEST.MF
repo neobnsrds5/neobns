@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: code-generator-plugin
-Bundle-SymbolicName: code-generator-plugin;singleton:=true
+Bundle-Name: spider-codegen-plugin
+Bundle-SymbolicName: spider-codegen-plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: neo.spider.solution.codegen.Activator
 Bundle-ClassPath: .,

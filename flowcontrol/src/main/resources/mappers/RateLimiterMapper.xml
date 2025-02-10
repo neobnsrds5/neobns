@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.neobns.admin.flowcontrol.mapper.RateLimiterMapper">
-    <select id="findById" resultType="com.neobns.admin.flowcontrol.dto.RateLimiterConfigDto">
+<mapper namespace="spider.neo.solution.flowcontrol.mapper.RateLimiterMapper">
+    <select id="findById" resultType="spider.neo.solution.flowcontrol.dto.RateLimiterConfigDto">
         SELECT *
         FROM fwk_ratelimiter
         WHERE id=#{id}
     </select>
 
-    <select id="findAll" resultType="com.neobns.admin.flowcontrol.dto.RateLimiterConfigDto">
+    <select id="findAll" resultType="spider.neo.solution.flowcontrol.dto.RateLimiterConfigDto">
         SELECT *
         FROM fwk_ratelimiter
         WHERE application_id = #{application_id}

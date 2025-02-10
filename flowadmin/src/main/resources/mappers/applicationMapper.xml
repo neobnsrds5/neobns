@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.neobns.admin.flowadmin.mapper.ApplicationMapper">
-    <select id="findSelective" parameterType="com.neobns.admin.flowadmin.dto.SearchDto" resultType="com.neobns.admin.flowadmin.dto.SearchApplicationResultDto">
+<mapper namespace="spider.neo.solution.flowadmin.mapper.ApplicationMapper">
+    <select id="findSelective" parameterType="spider.neo.solution.flowadmin.dto.SearchDto" resultType="spider.neo.solution.flowadmin.dto.SearchApplicationResultDto">
         SELECT *
         FROM fwk_application
         WHERE 1=1
@@ -13,7 +13,7 @@
         LIMIT #{size} OFFSET #{offset}
     </select>
 
-    <select id="countSelective" parameterType="com.neobns.admin.flowadmin.dto.SearchDto">
+    <select id="countSelective" parameterType="spider.neo.solution.flowadmin.dto.SearchDto">
         SELECT COUNT(*)
         FROM fwk_application
         WHERE 1=1
@@ -23,7 +23,7 @@
         <if test="modified_date != null">AND modified_date = #{modified_date}</if>
     </select>
 
-    <insert id="create" parameterType="com.neobns.admin.flowadmin.dto.CreateApplicationDto">
+    <insert id="create" parameterType="spider.neo.solution.flowadmin.dto.CreateApplicationDto">
         INSERT INTO fwk_application(application_name, created_date, modified_date)
         VALUE (#{application_name}, sysdate(), sysdate())
     </insert>
@@ -33,7 +33,7 @@
         WHERE ID=#{id}
     </delete>
 
-    <select id="findById" resultType="com.neobns.admin.flowadmin.dto.SearchApplicationResultDto">
+    <select id="findById" resultType="spider.neo.solution.flowadmin.dto.SearchApplicationResultDto">
         SELECT *
         FROM fwk_application
         WHERE ID=#{id}

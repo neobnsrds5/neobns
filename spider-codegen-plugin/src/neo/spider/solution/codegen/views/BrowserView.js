@@ -9,7 +9,7 @@ function createElementWithHTML(tag, html) {
 function listTables() {
 	try {
 		const tablesContainer = document.getElementById("tables");
-		tablesContainer.innerHTML = `<h3 class="my-3">테이블 목록</h3>`;
+		tablesContainer.innerHTML = `<h6 style="font-weight: bold">테이블 목록</h6>`;
 		
 		// DB 정보
 		const url = document.getElementById("dbUrl").value;
@@ -29,8 +29,13 @@ function listTables() {
 			tableList.forEach(table => {
 		        // HTML 표 생성
 		        const tableHTML = `
-					<h4 class="mb-2">${table.tableName}</h4>
-		            <table class="table w-auto mb-0">
+					<div class="row align-items-center">
+						<div class="col-auto" style="font-size: 0.875rem; font-weight: bold">
+							${table.tableName}</div>
+						<button type="button" class="btn btn-outline-secondary btn-sm col-auto"
+							onClick='generateCode("${url}", "${username}", "${password}", "${table.tableName}", "${targetPath}")'>
+							생성</button></div>
+		            <table class="table w-auto" style="font-size: 0.875rem">
 		                <thead>
 		                    <tr>
 		                        <th>컬럼명</th>
@@ -48,11 +53,10 @@ function listTables() {
 		                    `).join('')}
 		                </tbody>
 		            </table>
-					<button type="button" class="btn btn-secondary btn-sm my-2" onClick='generateCode("${url}", "${username}", "${password}", "${table.tableName}", "${targetPath}")'>${table.tableName} 생성</button>
 		        `;
 				
 				const tableElement = createElementWithHTML('div', tableHTML);
-				tableElement.classList.add("my-3");
+				/*tableElement.classList.add("my-3");*/
 				tablesContainer.appendChild(tableElement);
 			});
 		} else {

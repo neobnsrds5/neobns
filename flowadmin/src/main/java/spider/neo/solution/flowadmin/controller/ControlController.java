@@ -79,7 +79,7 @@ public class ControlController {
     @PostMapping("/createApplication")
     public String create(@ModelAttribute CreateApplicationDto dto){
         long id = controlService.create(dto);
-        return "redirect:/detail/"+id;
+        return "redirect:/";
     }
 
     @GetMapping("/delete")

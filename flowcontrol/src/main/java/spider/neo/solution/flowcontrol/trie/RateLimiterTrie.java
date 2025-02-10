@@ -53,8 +53,7 @@ public class RateLimiterTrie {
 
         // 다음 노드로 탐색 진행
         if (node.children.containsKey(part)) {
-
-            int prevLength = matched.length();
+            int prevLength = part.length();
             if (prevLength > 0) matched.append("/");
             matched.append(part);
 
@@ -90,7 +89,6 @@ public class RateLimiterTrie {
             return false;
         }
 
-        RateLimiterNode nextNode = node.children.get(part);
         boolean shouldDeleteChild = deleteHelper(node.children.get(part), parts, index + 1);
         if (shouldDeleteChild) {
             node.children.remove(part);

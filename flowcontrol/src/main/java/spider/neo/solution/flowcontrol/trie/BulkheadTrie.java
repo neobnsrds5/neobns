@@ -89,7 +89,6 @@ public class BulkheadTrie {
             return false;
         }
 
-        BulkheadNode nextNode = node.children.get(part);
         boolean shouldDeleteChild = deleteHelper(node.children.get(part), parts, index + 1);
         if (shouldDeleteChild) {
             node.children.remove(part);

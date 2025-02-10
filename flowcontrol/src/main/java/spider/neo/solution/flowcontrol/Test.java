@@ -1,10 +1,11 @@
 package spider.neo.solution.flowcontrol;
 
 import spider.neo.solution.flowcontrol.trie.BulkheadTrie;
+import spider.neo.solution.flowcontrol.trie.RateLimiterTrie;
 
 public class Test {
     public static void main(String[] args) {
-        BulkheadTrie trie = new BulkheadTrie();
+        RateLimiterTrie trie = new RateLimiterTrie();
 
         trie.insert("/product/item/detail");
         trie.insert("/product/item/detail/more");

@@ -30,20 +30,20 @@ public class FileToDbBatch {
 	private final DataSource datasource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	// 오라클 스파이더 배치 테이블로 통합 가능하게 하는 리스너로 현재 오라클 스파이더 배치 테이블 사용할 수 없어 주석처리
-//		private final CustomBatchJobListener listener;
+	private final CustomBatchJobListener listener;
 
 	public FileToDbBatch(@Qualifier("targetDataSource") DataSource datasource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		super();
 		this.datasource = datasource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
+		this.listener = listener;
 	}
 
 	@Bean
 	public Job fileToDBJob() {
-		return new JobBuilder("fileToDBJob", jobRepository)/* .listener(listener) */.start(fileToDBStep()).build();
+		return new JobBuilder("fileToDBJob", jobRepository).listener(listener).start(fileToDBStep()).build();
 	}
 
 	@Bean

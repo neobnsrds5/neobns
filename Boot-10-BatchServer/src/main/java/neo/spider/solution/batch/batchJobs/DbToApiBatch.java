@@ -32,15 +32,16 @@ public class DbToApiBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final RestTemplate restTemplate;
-	// 오라클 스파이더 배치 테이블로 통합 가능하게 하는 리스너로 현재 오라클 스파이더 배치 테이블 사용할 수 없어 주석처리
-//	private final CustomBatchJobListener listener;
+	private final CustomBatchJobListener listener;
 
 	public DbToApiBatch(@Qualifier("dataDataSource") DataSource datasource,
-			PlatformTransactionManager transactionManager, JobRepository jobRepository, RestTemplate restTemplate) {
+			PlatformTransactionManager transactionManager, JobRepository jobRepository, RestTemplate restTemplate,
+			CustomBatchJobListener listener) {
 		this.datasource = datasource;
 		this.transactionManager = transactionManager;
 		this.jobRepository = jobRepository;
 		this.restTemplate = restTemplate;
+		this.listener = listener;
 	}
 
 	@Bean
@@ -61,7 +62,7 @@ public class DbToApiBatch {
 
 	@Bean
 	public Job toApiJob() throws Exception {
-		return new JobBuilder("dbToApiJob", jobRepository)/* .listener(listener) */.start(toApiStep()).build();
+		return new JobBuilder("dbToApiJob", jobRepository).listener(listener).start(toApiStep()).build();
 	}
 
 	@Bean

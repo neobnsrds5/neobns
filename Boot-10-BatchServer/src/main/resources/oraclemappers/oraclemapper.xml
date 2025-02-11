@@ -17,7 +17,7 @@
     <select id="getRecords" parameterType="long" resultMap="fwkErrorHisResultMap">
         <![CDATA[
             SELECT error_code, error_ser_no, cust_user_id, error_message, ERROR_OCCUR_DTIME, ERROR_URL, ERROR_TRACE, ERROR_INSTANCE_ID 
-            FROM SYSTEM.FWK_ERROR_HIS
+            FROM R_SPIDERLINK.FWK_ERROR_HIS
             WHERE TO_NUMBER(ERROR_OCCUR_DTIME) > #{startLine}
         ]]>
     </select>
@@ -25,7 +25,7 @@
     <select id="getCount">
         <![CDATA[ 
             SELECT COUNT(*)
-            FROM SYSTEM.FWK_ERROR_HIS
+            FROM R_SPIDERLINK.FWK_ERROR_HIS
         ]]>
     </select>
 </mapper>

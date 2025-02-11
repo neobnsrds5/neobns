@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import neo.spider.solution.batch.service.BatchHistoryService;
 
-@Component // 현재 스파이더 FWK_ERROR_HIS 테이블 없어 배치 Job에 리스너 추가하지 않음
+@Component 
 public class CustomBatchJobListener{
 	
 	private final BatchHistoryService service;
@@ -20,9 +20,9 @@ public class CustomBatchJobListener{
 	// 배치 잡 이름, 아이디를 히스토리 내역 테이블에 저장
 	@AfterJob
 	public void afterJob(JobExecution jobExecution) {
-		String jobName = jobExecution.getJobInstance().getJobName();
-		MDC.put("batchAppId", "neo.spider.solution.batch." + jobName);
-        MDC.put("instanceId", jobExecution.getId().toString());
+		String jobName = jobExecution.getJobInstance().getJobName().toUpperCase();
+		MDC.put("batchAppId", "NEO.SPIDER.SOLUTION.BATCH." + jobName);
+        MDC.put("instanceId", String.valueOf("BH" + jobExecution.getJobInstance().getInstanceId()));
 		service.saveBatchHistory(jobExecution);
 		MDC.remove("batchAppId");
 		MDC.remove("instanceId");

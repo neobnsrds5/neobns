@@ -31,7 +31,7 @@ public class FilterConfiguration {
     public FilterRegistrationBean<DetailBulkheadFilter> detailBulkheadFilter() {
         FilterRegistrationBean<DetailBulkheadFilter> registrationBean = new FilterRegistrationBean<>(new DetailBulkheadFilter(bulkheadRegistry, trieRegistry));
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(4);
+        registrationBean.setOrder(104);
         return registrationBean;
     }
 
@@ -39,7 +39,7 @@ public class FilterConfiguration {
     public FilterRegistrationBean<GlobalRateLimiterFilter> globalRateLimiterFilter() {
         FilterRegistrationBean<GlobalRateLimiterFilter> registrationBean = new FilterRegistrationBean<>(new GlobalRateLimiterFilter(rateLimiterRegistry));
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(1);
+        registrationBean.setOrder(101);
         return registrationBean;
     }
 
@@ -47,7 +47,7 @@ public class FilterConfiguration {
     public FilterRegistrationBean<DetailRateLimiterFilter> methodRateLimiterFilter() {
         FilterRegistrationBean<DetailRateLimiterFilter> registrationBean = new FilterRegistrationBean<>(new DetailRateLimiterFilter(rateLimiterRegistry, trieRegistry));
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(2);
+        registrationBean.setOrder(102);
         return registrationBean;
     }
 
@@ -55,7 +55,7 @@ public class FilterConfiguration {
     public FilterRegistrationBean<PersonalRateLimiterFilter> personalRateLimiterFilter(){
         FilterRegistrationBean<PersonalRateLimiterFilter> registrationBean = new FilterRegistrationBean<>(new PersonalRateLimiterFilter(rateLimiterRegistry));
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(3);
+        registrationBean.setOrder(103);
         return registrationBean;
     }
 }

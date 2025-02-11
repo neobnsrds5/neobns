@@ -1,37 +1,80 @@
 package spider.neo.solution.flowcontrol.controller;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@RestController
+@Controller
 public class TestController {
 
     @GetMapping("/test")
-    public ResponseEntity<String> test(){
-        return ResponseEntity.ok("success");
+    public String test(Model model){
+        model.addAttribute("path", "/test");
+        return "test";
     }
 
     @GetMapping("/wait")
-    public ResponseEntity<String> testWait() throws InterruptedException {
+    public String testWait(Model model) throws InterruptedException {
         Thread.sleep(5000);
-        return ResponseEntity.ok("success");
+        model.addAttribute("path", "/wait");
+        return "test";
     }
 
     @GetMapping("/wait/deep")
-    public ResponseEntity<String> testWaitDeep() throws InterruptedException {
+    public String testWaitDeep(Model model) throws InterruptedException {
         Thread.sleep(5000);
-        return ResponseEntity.ok("success in deeper url");
+        model.addAttribute("path", "/wait/deep");
+        return "test";
     }
 
     @GetMapping("/test/inside")
-    public ResponseEntity<String> testInside() {
-        return ResponseEntity.ok("inside");
+    public String testInside(Model model) {
+        model.addAttribute("path", "/test/inside");
+        return "test";
     }
 
     @GetMapping("/plus")
-    public ResponseEntity<String> testPlus() {
+    public String testPlus(Model model) {
+        model.addAttribute("path", "/plus");
+        return "test";
+    }
 
-        return ResponseEntity.ok("plus");
+
+    @GetMapping("/product")
+    public String testProduct(Model model) {
+        model.addAttribute("path", "/product");
+        return "test";
+    }
+
+    @GetMapping("/product/detail")
+    public String testProductDetail(Model model, @RequestParam(name = "id", required = false, defaultValue = "6") String id) {
+        model.addAttribute("path", "/product/detail");
+        model.addAttribute("id", id);
+        return "product-detail";
+    }
+
+    @GetMapping("/product/detail/dp")
+    public String testProductDetailDP(Model model) {
+        model.addAttribute("path", "/product/detail/dp");
+        return "test";
+    }
+
+    @GetMapping("/product/add")
+    public String testProductAdd(Model model) {
+        model.addAttribute("path", "/product/add");
+        return "test";
+    }
+
+    @GetMapping("/product/remove")
+    public String testProductRemove(Model model) {
+        model.addAttribute("path", "/product/remove");
+        return "test";
+    }
+
+    @GetMapping("/product/update")
+    public String testProductUpdate(Model model) {
+        model.addAttribute("path", "/product/update");
+        return "test";
     }
 }

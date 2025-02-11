@@ -66,11 +66,13 @@
 					<td th:text="${api.mockId}"></td>
 					<!-- API 이름 -->
 					<td class="text-start">
-						<a class="btn-edit" href="#" th:attr="data-id=${api.mockId}, data-type='edit'"><span th:text="${api.mockApiName}"></span></a>
+						<a class="btn-edit" href="#" th:attr="data-id=${api.mockId}, data-type='edit'">
+							<span class="truncate-name" th:attr="data-bs-toggle='tooltip', title=${api.mockApiName}" th:text="${api.mockApiName}"></span>
+						</a>
 					</td>
 					<!-- API 주소 -->
 					<td class="text-start">
-					<span class="truncate" th:attr="data-bs-toggle='tooltip', title=${api.mockApiUrl}"
+					<span class="truncate-url" th:attr="data-bs-toggle='tooltip', title=${api.mockApiUrl}"
 					      th:text="${api.mockApiUrl}"></span>
 					</td>
 					<!-- 결과 -->

@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	*/
 	executeButtons.forEach(button => {
         // API URL 가져오기
-        const apiUrlElement = button.closest("tr").querySelector(".truncate");
+        const apiUrlElement = button.closest("tr").querySelector(".truncate-url");
         if (!apiUrlElement) return; // 요소가 없으면 무시
 
         const apiUrl = apiUrlElement.textContent.trim();

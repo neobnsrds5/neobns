@@ -56,7 +56,9 @@ public class ApiServiceImpl implements ApiService {
 	public void saveNewApi(ApiDTO apiDto) { // 프론트에서 url 넘겨주면 uri로 잘라야함
 		String fullUrl = apiDto.getMockApiUrl();
 		String uri = extractUri(fullUrl);
-		
+		if(uri == null || uri.equals("")) {
+			uri = "/";
+		}
 		// WireMock에 등록할 JSON 데이터 생성
         Map<String, Object> requestBody = new HashMap<>();
 
@@ -292,7 +294,9 @@ public class ApiServiceImpl implements ApiService {
 		ApiDTO apiDTO = apiMapper.findById(id);
 		String oldWiremockId = apiDTO.getMockWiremockId();
 		String uri = extractUri(apiDto.getMockApiUrl());
-		
+		if(uri == null || uri.equals("")) {
+			uri = "/";
+		}
 		if (oldWiremockId == null) {
             throw new RuntimeException("해당 ID에 대한 Mock API를 찾을 수 없습니다.");
         }

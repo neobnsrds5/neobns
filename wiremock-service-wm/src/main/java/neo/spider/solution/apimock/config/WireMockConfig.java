@@ -22,7 +22,7 @@ public class WireMockConfig {
                 .enableBrowserProxying(true) // proxy 사용 가능
                 .proxyPassThrough(true)
                 .extensions(new ResponseTransform())
-                .notifier(new ConsoleNotifier(true))
+                //.notifier(new ConsoleNotifier(true)) // console 로그
         );
 		server.start();
 

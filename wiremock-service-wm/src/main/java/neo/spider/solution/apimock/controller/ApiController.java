@@ -63,7 +63,7 @@ public class ApiController {
 	@GetMapping("/execute/{id}")
 	public void executeApi(@PathVariable int id, HttpServletResponse response) throws IOException, URISyntaxException {
 		ApiDTO apiDTO = apiService.getApi(id);
-		URI uri = new URI(apiDTO.getMockApiUrl());
+		URI uri = new URI(apiDTO.getMockApiUrl());		
 		String apiUri = uri.getPath();
 		if(uri.getQuery() != null) {
 			apiUri = apiUri + "?" + uri.getQuery();

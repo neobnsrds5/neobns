@@ -1,0 +1,16 @@
+{
+  "id" : "cd7a10dc-d190-4dcc-b3d4-2933f124e697",
+  "request" : {
+    "urlPathPattern" : "/posts/11/",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"qwe\":\"qwe\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "cd7a10dc-d190-4dcc-b3d4-2933f124e697",
+  "persistent" : true,
+  "insertionIndex" : 12
+}

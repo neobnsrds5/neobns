@@ -116,20 +116,27 @@ public class ApiServiceImpl implements ApiService {
         return parsedParams;
     }
     // uri 제외 url
-    private String extractDomain(String fullUrl) {
+    private String extractDomain(String url) {
         try {
-            URI uri = new URI(fullUrl);
+        	boolean hasRegex = url.contains("[0-9]+"); // 정규식 포함 여부 체크
+            String processedUrl = hasRegex ? url.replace("[0-9]+", "__TEMP_PLACEHOLDER__") : url; // 임시 플레이스홀더로 변환
+            URI uri = new URI(processedUrl);
             return uri.getScheme() + "://" + uri.getHost(); // 도메인만 반환
         } catch (Exception e) {
-            throw new RuntimeException("잘못된 URL 형식: " + fullUrl);
+            throw new RuntimeException("잘못된 URL 형식: " + url);
         }
     }
     
     // URL에서 URI 추출
     private String extractUri(String url) {
         try {
-            URI uri = new URI(url);
-            return uri.getPath(); // 도메인 제외한 경로 부분만 반환 (예: "/users")
+        	boolean hasRegex = url.contains("[0-9]+");
+        	String processedUrl = hasRegex ? url.replace("[0-9]+", "__TEMP_PLACEHOLDER__") : url;
+        	URI uri = new URI(processedUrl);
+        	String path = uri.getPath(); // 도메인 제외한 경로 부분만 반환 (예: "/users")
+        
+        	// 정규식이 포함된 경우, 원래 정규식을 복원해서 반환
+            return hasRegex ? path.replace("__TEMP_PLACEHOLDER__", "[0-9]+") : path;
         } catch (URISyntaxException e) {
             throw new RuntimeException("잘못된 URL 형식: " + url);
         }
@@ -138,7 +145,9 @@ public class ApiServiceImpl implements ApiService {
     // URL에서 Query Param 추출
     private String extractQuery(String url) {
     	 try {
-             URI uri = new URI(url);
+    		 boolean hasRegex = url.contains("[0-9]+"); // 정규식 포함 여부 체크
+	         String processedUrl = hasRegex ? url.replace("[0-9]+", "__TEMP_PLACEHOLDER__") : url; // 임시 플레이스홀더로 변환
+    	     URI uri = new URI(processedUrl);
              return uri.getQuery();
          } catch (URISyntaxException e) {
              throw new RuntimeException("잘못된 URL 형식: " + url);

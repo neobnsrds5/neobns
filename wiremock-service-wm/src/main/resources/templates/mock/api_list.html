@@ -98,7 +98,7 @@
 								<i class="ri-repeat-line"></i></button>
 						</div>
 					</td>
-					<!-- 실행 -->
+					<!-- 테스트 -->
 					<td>
 						<button class="btn btn-primary btn-sm btn-execute"
 						        th:attr="data-id=${api.mockId}, data-method=${api.mockApiRequestMethod}"
@@ -179,8 +179,12 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="apiUrl">실제 서버 URL</label>
-							<input class="form-control" id="apiUrl" placeholder="https://api.example.com/users"
+							<input class="form-control" id="apiUrl" placeholder="ex) https://spider.neo.com/users"
 							       required type="url">
+							       <div class="input-group-text">
+							            <input type="checkbox" id="enableRegex" title="URL을 정규식으로 변환">
+							            <label for="enableRegex" class="ms-2">정규식 활성화</label>
+							        </div>
 						</div>
 
 						<!-- 요청(Request) 설정 -->
@@ -196,7 +200,7 @@
 						</div>
 						<div class="mb-3" id="requestBodyContainer">
 							<label class="form-label" for="requestBody">요청 본문 (JSON)</label>
-							<textarea class="form-control" id="requestBody" placeholder='{"id": 1, "name": "John"}'
+							<textarea class="form-control" id="requestBody" placeholder='ex) {"id": spider, "name": "neo"}'
 							          rows="4"></textarea>
 						</div>
 

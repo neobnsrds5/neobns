@@ -1,10 +1,9 @@
 package spider.neo.solution.flowcontrol.init;
 
 import spider.neo.solution.flowcontrol.ConfigurationProp;
-import spider.neo.solution.flowcontrol.dto.RateLimiterConfigDto;
+import spider.neo.solution.flowcontrol.dto.RateLimiterDto;
 import spider.neo.solution.flowcontrol.mapper.ApplicationMapper;
 import spider.neo.solution.flowcontrol.mapper.RateLimiterMapper;
-import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterConfig;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import jakarta.annotation.PostConstruct;
@@ -42,8 +41,8 @@ public class RateLimiterInitializer {
             return;
         }
         long id = applicationMapper.findIdByName(prop.getName());
-        List<RateLimiterConfigDto> rateLimiters = rateLimiterMapper.findAll(id);
-        for (RateLimiterConfigDto rateLimiter : rateLimiters) {
+        List<RateLimiterDto> rateLimiters = rateLimiterMapper.findAll(id);
+        for (RateLimiterDto rateLimiter : rateLimiters) {
             RateLimiterConfig newConfig = RateLimiterConfig.custom()
                     .timeoutDuration(java.time.Duration.ofSeconds(rateLimiter.getTimeoutDuration()))
                     .limitRefreshPeriod(java.time.Duration.ofSeconds(rateLimiter.getLimitRefreshPeriod()))

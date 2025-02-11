@@ -1,8 +1,8 @@
 package spider.neo.solution.flowcontrol.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import spider.neo.solution.flowcontrol.dto.BulkheadConfigDto;
-import spider.neo.solution.flowcontrol.dto.RateLimiterConfigDto;
+import spider.neo.solution.flowcontrol.dto.BulkheadDto;
+import spider.neo.solution.flowcontrol.dto.RateLimiterDto;
 import spider.neo.solution.flowcontrol.dto.UpdateConfigDto;
 import spider.neo.solution.flowcontrol.mapper.BulkheadMapper;
 import spider.neo.solution.flowcontrol.mapper.RateLimiterMapper;
@@ -21,8 +21,6 @@ public class FlowConfigUpdateService {
     private final BulkheadRegistry bulkheadRegistry;
     private final RateLimiterRegistry rateLimiterRegistry;
     private final ObjectMapper objectMapper;
-    private final BulkheadMapper bulkheadMapper;
-    private final RateLimiterMapper rateLimiterMapper;
     private final TrieRegistry trieRegistry;
 
 
@@ -35,25 +33,22 @@ public class FlowConfigUpdateService {
         this.bulkheadRegistry = bulkheadRegistry;
         this.rateLimiterRegistry = rateLimiterRegistry;
         this.objectMapper = objectMapper;
-        this.bulkheadMapper = bulkheadMapper;
-        this.rateLimiterMapper = rateLimiterMapper;
         this.trieRegistry = trieRegistry;
     }
 
     public void updateConfig(String message) {
         try{
             UpdateConfigDto updateConfigDto = objectMapper.readValue(message, UpdateConfigDto.class);
-
-            long id = updateConfigDto.getId();
             int doing = updateConfigDto.getDoing();
             if (updateConfigDto.getType() == 0){
                 //bulkhead
                 String url = updateConfigDto.getName();
+                BulkheadDto bulkheadDto = updateConfigDto.getBulkhead();
                 if (doing == 0){
-                    BulkheadConfigDto configDto = bulkheadMapper.findById(id);
+//                    BulkheadDto configDto = bulkheadMapper.findById(id);
                     BulkheadConfig newConfig = BulkheadConfig.custom()
-                            .maxConcurrentCalls(configDto.getMaxConcurrentCalls())
-                            .maxWaitDuration(Duration.ofSeconds(configDto.getMaxWaitDuration()))
+                            .maxConcurrentCalls(bulkheadDto.getMaxConcurrentCalls())
+                            .maxWaitDuration(Duration.ofSeconds(bulkheadDto.getMaxWaitDuration()))
                             .build();
 
                     if (bulkheadRegistry.find(url).isPresent()){
@@ -74,13 +69,12 @@ public class FlowConfigUpdateService {
             } else if (updateConfigDto.getType() == 1){
                 //rateLimiter
                 String url = updateConfigDto.getName();
+                RateLimiterDto rateLimiterDto = updateConfigDto.getRateLimiter();
                 if (doing == 0){
-                    RateLimiterConfigDto configDto = rateLimiterMapper.findById(id);
-
                     RateLimiterConfig newConfig = RateLimiterConfig.custom()
-                            .limitForPeriod(configDto.getLimitForPeriod())
-                            .limitRefreshPeriod(java.time.Duration.ofSeconds(configDto.getLimitRefreshPeriod()))
-                            .timeoutDuration(java.time.Duration.ofSeconds(configDto.getTimeoutDuration()))
+                            .limitForPeriod(rateLimiterDto.getLimitForPeriod())
+                            .limitRefreshPeriod(java.time.Duration.ofSeconds(rateLimiterDto.getLimitRefreshPeriod()))
+                            .timeoutDuration(java.time.Duration.ofSeconds(rateLimiterDto.getTimeoutDuration()))
                             .build();
 
 

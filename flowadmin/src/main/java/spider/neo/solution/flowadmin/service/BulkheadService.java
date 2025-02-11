@@ -37,10 +37,10 @@ public class BulkheadService {
         if (result > 0) {
             applicationMapper.updateModified_date(newBulkhead.getApplication_id());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(newBulkhead.getId());
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(0); // create, update
             updateConfigDto.setName(newBulkhead.getUrl());
+            updateConfigDto.setBulkhead(newBulkhead);
             try{
                 String json = objectMapper.writeValueAsString(updateConfigDto);
                 String name = applicationMapper.findById(newBulkhead.getApplication_id()).getApplication_name();
@@ -60,7 +60,6 @@ public class BulkheadService {
         if (result > 0) {
             applicationMapper.updateModified_date(bh.getApplication_id());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(id);
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(1); // delete
             updateConfigDto.setName(bh.getUrl());
@@ -83,10 +82,10 @@ public class BulkheadService {
         if (result > 0) {
             applicationMapper.updateModified_date(dto.getApplication_id());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(dto.getId());
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(0);
             updateConfigDto.setName(dto.getUrl());
+            updateConfigDto.setBulkhead(dto);
             try {
                 String json = objectMapper.writeValueAsString(updateConfigDto);
                 String name = applicationMapper.findById(dto.getApplication_id()).getApplication_name();

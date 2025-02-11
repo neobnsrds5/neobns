@@ -1,6 +1,6 @@
 package spider.neo.solution.flowcontrol.mapper;
 
-import spider.neo.solution.flowcontrol.dto.RateLimiterConfigDto;
+import spider.neo.solution.flowcontrol.dto.RateLimiterDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,6 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface RateLimiterMapper {
-    RateLimiterConfigDto findById(long id);
-    List<RateLimiterConfigDto> findAll(long application_id);
+    RateLimiterDto findById(long id);
+    List<RateLimiterDto> findAll(long application_id);
 }

@@ -1,12 +1,12 @@
 package spider.neo.solution.flowcontrol.mapper;
 
-import spider.neo.solution.flowcontrol.dto.BulkheadConfigDto;
+import spider.neo.solution.flowcontrol.dto.BulkheadDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
 public interface BulkheadMapper {
-    BulkheadConfigDto findById(long id);
-    List<BulkheadConfigDto> findAll(long application_id);
+    BulkheadDto findById(long id);
+    List<BulkheadDto> findAll(long application_id);
 }

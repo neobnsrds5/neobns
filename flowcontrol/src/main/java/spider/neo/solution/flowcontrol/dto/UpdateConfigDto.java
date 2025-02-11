@@ -5,18 +5,9 @@ public class UpdateConfigDto {
     private int type;
     //0 : update/create, 1: delete
     private int doing;
-    private long id;
     private String name;
-
-    @Override
-    public String toString() {
-        return "UpdateConfigDto{" +
-                "type=" + type +
-                ", doing=" + doing +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    private BulkheadDto bulkhead;
+    private RateLimiterDto rateLimiter;
 
     public String getName() {
         return name;
@@ -34,19 +25,27 @@ public class UpdateConfigDto {
         this.type = type;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public int getDoing() {
         return doing;
     }
 
     public void setDoing(int doing) {
         this.doing = doing;
+    }
+
+    public BulkheadDto getBulkhead() {
+        return bulkhead;
+    }
+
+    public void setBulkhead(BulkheadDto bulkhead) {
+        this.bulkhead = bulkhead;
+    }
+
+    public RateLimiterDto getRateLimiter() {
+        return rateLimiter;
+    }
+
+    public void setRateLimiter(RateLimiterDto rateLimiter) {
+        this.rateLimiter = rateLimiter;
     }
 }

@@ -1,10 +1,9 @@
 package spider.neo.solution.flowcontrol.init;
 
 import spider.neo.solution.flowcontrol.ConfigurationProp;
-import spider.neo.solution.flowcontrol.dto.BulkheadConfigDto;
+import spider.neo.solution.flowcontrol.dto.BulkheadDto;
 import spider.neo.solution.flowcontrol.mapper.ApplicationMapper;
 import spider.neo.solution.flowcontrol.mapper.BulkheadMapper;
-import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.bulkhead.BulkheadConfig;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
 import jakarta.annotation.PostConstruct;
@@ -41,8 +40,8 @@ public class BulkheadInitializer {
             return;
         }
         long id = applicationMapper.findIdByName(prop.getName());
-        List<BulkheadConfigDto> bulkheads = mapper.findAll(id);
-        for (BulkheadConfigDto bulkhead : bulkheads) {
+        List<BulkheadDto> bulkheads = mapper.findAll(id);
+        for (BulkheadDto bulkhead : bulkheads) {
             BulkheadConfig bulkheadConfig = BulkheadConfig.custom()
                     .maxConcurrentCalls(bulkhead.getMaxConcurrentCalls())
                     .maxWaitDuration(Duration.ofSeconds(bulkhead.getMaxWaitDuration()))

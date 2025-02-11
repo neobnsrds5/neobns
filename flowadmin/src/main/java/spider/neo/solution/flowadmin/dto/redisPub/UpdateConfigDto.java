@@ -1,12 +1,32 @@
 package spider.neo.solution.flowadmin.dto.redisPub;
 
+import spider.neo.solution.flowadmin.dto.bulkhead.BulkheadDto;
+import spider.neo.solution.flowadmin.dto.ratelimiter.RateLimiterDto;
+
 public class UpdateConfigDto {
     //0 : bulkhead, 1: ratelimiter
     private int type;
     //0 : update/create, 1: delete
     private int doing;
-    private long id;
     private String name;
+    private BulkheadDto bulkhead;
+    private RateLimiterDto rateLimiter;
+
+    public BulkheadDto getBulkhead() {
+        return bulkhead;
+    }
+
+    public void setBulkhead(BulkheadDto bulkhead) {
+        this.bulkhead = bulkhead;
+    }
+
+    public RateLimiterDto getRateLimiter() {
+        return rateLimiter;
+    }
+
+    public void setRateLimiter(RateLimiterDto rateLimiter) {
+        this.rateLimiter = rateLimiter;
+    }
 
     public String getName() {
         return name;
@@ -22,14 +42,6 @@ public class UpdateConfigDto {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public int getDoing() {

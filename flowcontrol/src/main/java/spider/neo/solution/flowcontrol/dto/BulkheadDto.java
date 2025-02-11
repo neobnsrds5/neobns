@@ -1,6 +1,6 @@
 package spider.neo.solution.flowcontrol.dto;
 
-public class BulkheadConfigDto {
+public class BulkheadDto {
 
     private long id;
     private int application_id;

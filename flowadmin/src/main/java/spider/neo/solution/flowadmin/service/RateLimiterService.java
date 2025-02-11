@@ -43,9 +43,9 @@ public class RateLimiterService {
             applicationMapper.updateModified_date(newRateLimiter.getApplication_id());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
             updateConfigDto.setType(TYPE);
-            updateConfigDto.setId(newRateLimiter.getId());
             updateConfigDto.setDoing(0);
             updateConfigDto.setName(newRateLimiter.getUrl());
+            updateConfigDto.setRateLimiter(newRateLimiter);
             try{
                 String json = objectMapper.writeValueAsString(updateConfigDto);
                 String name = applicationMapper.findById(newRateLimiter.getApplication_id()).getApplication_name();
@@ -65,7 +65,6 @@ public class RateLimiterService {
         if (result > 0) {
             applicationMapper.updateModified_date(rl.getApplication_id());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(id);
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(1); // delete
             updateConfigDto.setName(rl.getUrl());
@@ -87,10 +86,10 @@ public class RateLimiterService {
         if (result > 0) {
             applicationMapper.updateModified_date(rl.getApplication_id());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(rl.getId());
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(0);
             updateConfigDto.setName(rl.getUrl());
+            updateConfigDto.setRateLimiter(rl);
             try {
                 String json = objectMapper.writeValueAsString(updateConfigDto);
                 messagePublisher.publish(applicationMapper.findById(rl.getApplication_id()).getApplication_name(), json);

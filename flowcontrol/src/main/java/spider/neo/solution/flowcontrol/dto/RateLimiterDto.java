@@ -1,6 +1,6 @@
 package spider.neo.solution.flowcontrol.dto;
 
-public class RateLimiterConfigDto {
+public class RateLimiterDto {
 
     private long id;
     private long application_id;

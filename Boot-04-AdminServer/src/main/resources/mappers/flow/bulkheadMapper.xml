@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="spider.neo.solution.flowadmin.mapper.BulkheadMapper">
-    <select id="findByApplication" resultType="spider.neo.solution.flowadmin.dto.bulkhead.BulkheadSearchDto">
-        SELECT b.id, a.application_name, b.url, b.maxConcurrentCalls, b.maxWaitDuration
-        FROM fwk_bulkhead b, fwk_application a
-        WHERE b.application_id = a.ID and application_id = #{id}
+<mapper namespace="neo.spider.admin.flow.mapper.BulkheadMapper">
+    <select id="findByApplication" resultType="neo.spider.admin.flow.dto.bulkhead.BulkheadSearchDto">
+        SELECT b.bulkhead_id, a.application_name, b.url, b.max_concurrent_calls, b.max_wait_duration
+        FROM FWK_BULKHEAD b, FWK_APPLICATION a
+        WHERE b.application_id = a.application_id and b.application_id = #{applicationId}
     </select>
-    <insert id="create" useGeneratedKeys="true" parameterType="spider.neo.solution.flowadmin.dto.bulkhead.BulkheadDto" keyProperty="id">
-        INSERT INTO fwk_bulkhead(application_id, url, maxconcurrentcalls, maxWaitDuration)
-        VALUE (#{application_id}, #{url}, #{maxConcurrentCalls}, #{maxWaitDuration})
+    <insert id="create" useGeneratedKeys="true" parameterType="neo.spider.admin.flow.dto.bulkhead.BulkheadDto" keyProperty="bulkheadId">
+        INSERT INTO FWK_BULKHEAD(application_id, url, max_concurrent_calls, max_wait_duration)
+        VALUE (#{applicationId}, #{url}, #{maxConcurrentCalls}, #{maxWaitDuration})
     </insert>
 
     <delete id="delete">
-        DELETE FROM fwk_bulkhead
-        WHERE id = #{id}
+        DELETE FROM FWK_BULKHEAD
+        WHERE bulkhead_id = #{bulkheadId}
     </delete>
 
-    <update id="update" parameterType="spider.neo.solution.flowadmin.dto.bulkhead.BulkheadDto">
-        UPDATE fwk_bulkhead
-        SET url = #{url} , maxConcurrentCalls = #{maxConcurrentCalls}, maxWaitDuration= #{maxWaitDuration}
-        WHERE id = #{id}
+    <update id="update" parameterType="neo.spider.admin.flow.dto.bulkhead.BulkheadDto">
+        UPDATE FWK_BULKHEAD
+        SET url = #{url} , max_concurrent_calls = #{maxConcurrentCalls}, max_wait_duration= #{maxWaitDuration}
+        WHERE bulkhead_id = #{bulkheadId}
     </update>
 
-    <select id="findById" resultType="spider.neo.solution.flowadmin.dto.bulkhead.BulkheadDto">
+    <select id="findById" resultType="neo.spider.admin.flow.dto.bulkhead.BulkheadDto">
         SELECT *
-        FROM fwk_bulkhead
-        WHERE id=${id}
+        FROM FWK_BULKHEAD
+        WHERE bulkhead_id = #{bulkheadId}
     </select>
 </mapper>

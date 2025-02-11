@@ -1,13 +1,10 @@
 package neo.spider.admin.flow.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CreateApplicationDto {
-    String application_name;
-
-    public String getApplication_name() {
-        return application_name;
-    }
-
-    public void setApplication_name(String application_name) {
-        this.application_name = application_name;
-    }
+    String applicationName;
 }

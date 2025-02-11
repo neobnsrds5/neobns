@@ -1,31 +1,13 @@
 package neo.spider.admin.flow.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class UpdateApplicationDto {
-    String id;
-    String application_name;
+    String applicationId;
+    String applicationName;
     String category;
 
-    public String getApplication_name() {
-        return application_name;
-    }
-
-    public void setApplication_name(String application_name) {
-        this.application_name = application_name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

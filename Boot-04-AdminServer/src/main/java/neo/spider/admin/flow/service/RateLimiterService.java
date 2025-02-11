@@ -2,12 +2,12 @@ package neo.spider.admin.flow.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
+import neo.spider.admin.flow.dto.ratelimiter.RateLimiterSearchDto;
+import neo.spider.admin.flow.dto.redisPub.UpdateConfigDto;
+import neo.spider.admin.flow.mapper.ApplicationMapper;
+import neo.spider.admin.flow.mapper.RateLimiterMapper;
 import org.springframework.stereotype.Service;
-import spider.neo.solution.flowadmin.dto.ratelimiter.RateLimiterDto;
-import spider.neo.solution.flowadmin.dto.ratelimiter.RateLimiterSearchDto;
-import spider.neo.solution.flowadmin.dto.redisPub.UpdateConfigDto;
-import spider.neo.solution.flowadmin.mapper.ApplicationMapper;
-import spider.neo.solution.flowadmin.mapper.RateLimiterMapper;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ public class RateLimiterService {
         this.messagePublisher = messagePublisher;
     }
 
-    public List<RateLimiterSearchDto> findByApplication(long id){
-        return rateLimiterMapper.findByApplication(id);
+    public List<RateLimiterSearchDto> findByApplication(long applicationId){
+        return rateLimiterMapper.findByApplication(applicationId);
     }
 
     public boolean create(RateLimiterDto newRateLimiter){
@@ -40,15 +40,15 @@ public class RateLimiterService {
         }
         int result = rateLimiterMapper.create(newRateLimiter);
         if (result > 0){
-            applicationMapper.updateModified_date(newRateLimiter.getApplication_id());
+            applicationMapper.updateModified_date(newRateLimiter.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
             updateConfigDto.setType(TYPE);
-            updateConfigDto.setId(newRateLimiter.getId());
+            updateConfigDto.setId(newRateLimiter.getRatelimiterId());
             updateConfigDto.setDoing(0);
             updateConfigDto.setName(newRateLimiter.getUrl());
             try{
                 String json = objectMapper.writeValueAsString(updateConfigDto);
-                String name = applicationMapper.findById(newRateLimiter.getApplication_id()).getApplication_name();
+                String name = applicationMapper.findById(newRateLimiter.getApplicationId()).getApplicationName();
                 messagePublisher.publish(name, json);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("전송 실패");
@@ -59,13 +59,13 @@ public class RateLimiterService {
         return true;
     }
 
-    public boolean delete(long id, String application_name){
-        RateLimiterDto rl = rateLimiterMapper.findById(id);
-        int result = rateLimiterMapper.delete(id);
+    public boolean delete(long ratelimiterId, String application_name){
+        RateLimiterDto rl = rateLimiterMapper.findById(ratelimiterId);
+        int result = rateLimiterMapper.delete(ratelimiterId);
         if (result > 0) {
-            applicationMapper.updateModified_date(rl.getApplication_id());
+            applicationMapper.updateModified_date(rl.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(id);
+            updateConfigDto.setId(ratelimiterId);
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(1); // delete
             updateConfigDto.setName(rl.getUrl());
@@ -85,15 +85,15 @@ public class RateLimiterService {
     public boolean update(RateLimiterDto rl){
         int result = rateLimiterMapper.update(rl);
         if (result > 0) {
-            applicationMapper.updateModified_date(rl.getApplication_id());
+            applicationMapper.updateModified_date(rl.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(rl.getId());
+            updateConfigDto.setId(rl.getRatelimiterId());
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(0);
             updateConfigDto.setName(rl.getUrl());
             try {
                 String json = objectMapper.writeValueAsString(updateConfigDto);
-                messagePublisher.publish(applicationMapper.findById(rl.getApplication_id()).getApplication_name(), json);
+                messagePublisher.publish(applicationMapper.findById(rl.getApplicationId()).getApplicationName(), json);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("전송 실패");
             }
@@ -104,7 +104,7 @@ public class RateLimiterService {
         return true;
     }
 
-    public RateLimiterDto findById(long id){
-        return rateLimiterMapper.findById(id);
+    public RateLimiterDto findById(long rateLimiterId){
+        return rateLimiterMapper.findById(rateLimiterId);
     }
 }

@@ -1,8 +1,13 @@
 package neo.spider.admin.flow.dto.ratelimiter;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class RateLimiterDto {
-    private long id;
-    private long application_id;
+    private long ratelimiterId;
+    private long applicationId;
 
     // 0: global, 1: method, 2: personal
     private int type;
@@ -11,67 +16,11 @@ public class RateLimiterDto {
     private long limitRefreshPeriod;
     private long timeoutDuration;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getApplication_id() {
-        return application_id;
-    }
-
-    public void setApplication_id(long application_id) {
-        this.application_id = application_id;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public int getLimitForPeriod() {
-        return limitForPeriod;
-    }
-
-    public void setLimitForPeriod(int limitForPeriod) {
-        this.limitForPeriod = limitForPeriod;
-    }
-
-    public long getLimitRefreshPeriod() {
-        return limitRefreshPeriod;
-    }
-
-    public void setLimitRefreshPeriod(long limitRefreshPeriod) {
-        this.limitRefreshPeriod = limitRefreshPeriod;
-    }
-
-    public long getTimeoutDuration() {
-        return timeoutDuration;
-    }
-
-    public void setTimeoutDuration(long timeoutDuration) {
-        this.timeoutDuration = timeoutDuration;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     @Override
     public String toString() {
         return "RateLimiterDto{" +
-                "id=" + id +
-                ", application_id=" + application_id +
+                "ratelimiterId=" + ratelimiterId +
+                ", applicationId=" + applicationId +
                 ", type=" + type +
                 ", url='" + url + '\'' +
                 ", limitForPeriod=" + limitForPeriod +

@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="spider.neo.solution.flowadmin.mapper.ApplicationMapper">
-    <select id="findSelective" parameterType="spider.neo.solution.flowadmin.dto.SearchDto" resultType="spider.neo.solution.flowadmin.dto.SearchApplicationResultDto">
+<mapper namespace="neo.spider.admin.flow.mapper.ApplicationMapper">
+    <select id="findSelective" parameterType="neo.spider.admin.flow.dto.SearchDto" resultType="neo.spider.admin.flow.dto.SearchApplicationResultDto">
         SELECT *
-        FROM fwk_application
+        FROM FWK_APPLICATION
         WHERE 1=1
-        <if test="param.id != null">AND ID=#{param.id}</if>
-        <if test="param.application_name != null and param.application_name != ''">AND application_name like concat("%", #{param.application_name}, "%")</if>
-        <if test="param.created_date != null">AND created_date = #{param.created_date}</if>
-        <if test="param.modified_date != null">AND modified_date = #{param.modified_date}</if>
+        <if test="param.applicationId != null">AND ID=#{param.applicationId}</if>
+        <if test="param.applicationName != null and param.applicationName != ''">AND application_name like concat("%", #{param.applicationName}, "%")</if>
+        <if test="param.createdDate != null">AND created_date = #{param.createdDate}</if>
+        <if test="param.modifiedDate != null">AND modified_date = #{param.modifiedDate}</if>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
-    <select id="countSelective" parameterType="spider.neo.solution.flowadmin.dto.SearchDto">
+    <select id="countSelective" parameterType="neo.spider.admin.flow.dto.SearchDto">
         SELECT COUNT(*)
-        FROM fwk_application
+        FROM FWK_APPLICATION
         WHERE 1=1
-        <if test="id != null">AND ID=#{id}</if>
-        <if test="application_name != null and application_name != ''">AND application_name like concat("%", #{application_name}, "%")</if>
-        <if test="created_date != null">AND created_date = #{created_date}</if>
-        <if test="modified_date != null">AND modified_date = #{modified_date}</if>
+        <if test="applicationId != null">AND ID=#{applicationId}</if>
+        <if test="applicationName != null and applicationName != ''">AND application_name like concat("%", #{applicationName}, "%")</if>
+        <if test="createdDate != null">AND created_date = #{createdDate}</if>
+        <if test="modifiedDate != null">AND modified_date = #{modifiedDate}</if>
     </select>
 
-    <insert id="create" parameterType="spider.neo.solution.flowadmin.dto.CreateApplicationDto">
-        INSERT INTO fwk_application(application_name, created_date, modified_date)
-        VALUE (#{application_name}, sysdate(), sysdate())
+    <insert id="create" parameterType="neo.spider.admin.flow.dto.CreateApplicationDto">
+        INSERT INTO FWK_APPLICATION(application_name, created_date, modified_date)
+        VALUE (#{applicationName}, sysdate(), sysdate())
     </insert>
 
     <delete id="delete">
-        DELETE FROM fwk_application
-        WHERE ID=#{id}
+        DELETE FROM FWK_APPLICATION
+        WHERE APPLICATION_ID=#{applicationId}
     </delete>
 
-    <select id="findById" resultType="spider.neo.solution.flowadmin.dto.SearchApplicationResultDto">
+    <select id="findById" resultType="neo.spider.admin.flow.dto.SearchApplicationResultDto">
         SELECT *
-        FROM fwk_application
-        WHERE ID=#{id}
+        FROM FWK_APPLICATION
+        WHERE APPLICATION_ID=#{applicationId}
     </select>
 
     <select id="findByApplicationCategory">
         SELECT ID
-        FROM fwk_application
-        where application_name = #{application_name}
+        FROM FWK_APPLICATION
+        where application_name = #{applicationName}
     </select>
 
     <update id="update">
-        UPDATE fwk_application
-        SET application_name=#{application_name}, modified_date = sysdate()
-        WHERE ID = #{id}
+        UPDATE FWK_APPLICATION
+        SET application_name=#{applicationName}, modified_date = sysdate()
+        WHERE APPLICATION_ID=#{applicationId}
     </update>
 
     <update id="updateModified_date">
-        UPDATE  fwk_application
+        UPDATE  FWK_APPLICATION
         SET modified_date= sysdate()
-        WHERE ID=#{id}
+        WHERE APPLICATION_ID=#{applicationId}
     </update>
 </mapper>

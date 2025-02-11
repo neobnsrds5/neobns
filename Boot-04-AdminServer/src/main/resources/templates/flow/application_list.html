@@ -1,158 +1,145 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en" layout:decorate="~{layout/layout}"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>유량제어 메인 페이지</title>
-    <style>
-      .modal{
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-      }
-
-      .modal-content {
-        background-color: white;
-        margin: 15% auto;
-        padding: 20px;
-        width: 50%;
-        border-radius: 8px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-      }
-      .close{
-        float: right;
-        font-size: 24px;
-        cursor: pointer;
-      }
-    </style>
-    <!-- 요청 파라미터 저장 Js -->
-    <script src="/assets/js/parameterSave.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script>
-      const goDelete = (id) => {
-        event.stopPropagation();
-        const select = confirm("삭제하시겠습니까?")
-        if (select) {
-          const searchState = JSON.parse(sessionStorage.getItem('searchState'));
-          const {paramPath,page, ...params} = searchState;
-          location.href = "/delete?id=" + id + "&" + new URLSearchParams(params).toString();
-        }
-      }
-
-      const goDetail = (id) => {
-        location.href = "/detail/" + id;
-      }
-      const movePage = (destination) => {
-        const searchState = JSON.parse(sessionStorage.getItem('searchState'));
-        const {paramPath, ...params} = searchState;
-        params["page"] = destination;
-        location.href = "/?" + new URLSearchParams(params).toString();
-      }
-
-      $(document).ready(function(){
-        $('.current-page-button')
-                .mouseover(function(){
-                  $(this).css('background-color', '#009dff');
-                })
-                .mouseout(function(){
-                  $(this).css('background-color', '#00c4ff');
-                })
-      })
-    </script>
-  <style>
-    .current-page-button {
-      background-color: #00c4ff;
-    }
-    .resultTable{
-      border: 1px solid black;
-    }
-  </style>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>유량제어 어플리케이션</title>
+	<script src="/assets/js/parameterSave.js"></script>
 </head>
 <body>
-<!--등록창 모달-->
-  <div  id="myModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h1>어플리케이션 등록</h1>
-      <form method="post" action="/createApplication">
-        <p>어플리케이션 이름</p>
-        <label>
-          <input type="text" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="application_name" required/>
-        </label>
-        <br><br>
-        <div>
-          <button type="submit">등록</button>
-        </div>
-      </form>
-    </div>
-  </div>
-<!--여기까지 모달-->
-  <h1><a href="/">유량제어 메인 페이지</a></h1>
-  <div class="searchForm">
-    <form method="get" action="/">
-      <label>
-        <input type="number" placeholder="아이디" name="id" th:value="${param.id}">
-      </label>
-      <label>
-        <input type="text" placeholder="어플리케이션 이름" name="application_name" th:value="${param.application_name}"/>
-      </label>
-      <label>
-        생성일
-        <input type="date" placeholder="생성일" name="created_date" th:value="${param.created_date}"/>
-      </label>
-      <label>
-        수정일
-        <input type="date" placeholder="수정일" name="modified_date" th:value="${param.modified_date}"/>
-      </label>
-      <button type="submit">검색</button>
-    </form>
-  </div>
-    <div class="searchResult">
-      <table border="1" class="resultTable">
-        <tr>
-          <td>id</td>
-          <td>어플리케이션 이름</td>
-          <td>생성일</td>
-          <td>수정일</td>
-          <td><button id="openModal">등록</button></td>
-        </tr>
-        <tr th:unless="${not #lists.isEmpty(results)}">
-          <td colspan="5">검색 결과가 없습니다.</td>
-        </tr>
-        <tr th:if="${not #lists.isEmpty(results)}"  th:each="config : ${results}" th:onclick="|goDetail(${config.id})|">
-          <td th:text="${config.id}"></td>
-          <td th:text="${config.application_name}"></td>
-          <td th:text="${config.created_date}"></td>
-          <td th:text="${config.modified_date}"></td>
-          <td onclick="event.stopPropagation()"><button type="button" th:onclick="|goDelete(${config.id})|">삭제</button></td>
-        </tr>
-      </table>
-    </div>
-  <br/>
-  <div class="page-button" style="display: flex;">
-    <button th:if="${page > 1}" th:onclick="|movePage(${page}-1)|">이전</button>
-    <div th:each="num : ${range}">
-      <button type="button" th:text="${num}" th:onclick="|movePage(${num})|" th:if="${num!=page}"></button>
-      <button class="current-page-button" type="button" th:text="${num}" th:onclick="|movePage(${num})|" th:if="${num==page}"></button>
-    </div>
-    <button type="button" th:if="${page < totalPage}" th:onclick="|movePage(${page}+1)|">다음</button>
-  </div>
-  <br/>
-  <script>
-    const modal = document.getElementById('myModal');
-    const btn = document.getElementById('openModal');
-    const closeBtn = document.querySelector('.close');
-    btn.onclick = () => {modal.style.display='block'};
-    closeBtn.onclick = () => {modal.style.display='none'};
-    window.onclick = function(event) {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    }
-  </script>
+<div class="page-content" layout:fragment="main">
+
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
+		<h2 class="mb-4 text-center"><a href="/admin/flow/list">유량제어 어플리케이션 목록</a></h2>
+
+		<div class="row justify-content-between align-items-center mb-2">
+			<!--  버튼 그룹  -->
+			<div class="justify-content-start col-6 p-0 gap-2">
+				<button class="btn btn-soft-primary" id="openAppCreateModal">어플리케이션 등록</button>
+			</div>
+
+			<!--  검색창  -->
+			<form action="/admin/flow/list" class="col-6 p-0 align-items-center flex-grow-1" method="get">
+				<div class="justify-content-end input-group">
+					<input aria-label="id" class="form-control ms-2" name="id" placeholder="아이디"
+					       style="max-width: 400px;" th:value="${param.applicationId}" type="number"/>
+					<input aria-label="application_name" class="form-control ms-2" name="application_name" placeholder="어플리케이션 이름"
+					       style="max-width: 400px;" th:value="${param.applicationName}" type="text"/>
+					<input aria-label="created_date" class="form-control ms-2" name="created_date" th:value="${param.createdDate}"
+					       style="max-width: 400px;" placeholder="생성날짜" type="date"/>
+					<span class="px-2">~</span>
+					<input aria-label="modified_date" class="form-control " name="modified_date" th:value="${param.modifiedDate}"
+					       style="max-width: 400px;" placeholder="수정날짜" type="date"/>
+					<button class="btn btn-sm btn-primary" type="submit">
+						<i class="ri-search-line fs-5"></i></button>
+				</div>
+			</form>
+		</div>
+		<div class="table-responsive">
+			<!-- 검색 결과 없을 때 메시지 -->
+			<div class="m-lg-5 p-lg-5 text-center" th:if="${results.size() == 0}">
+				<h4>조회 결과가 없습니다.</h4>
+			</div>
+
+			<table class="table table-hover table-centered" th:unless="${results.size() == 0}">
+				<thead>
+				<tr class="text-center">
+					<th>ID</th>
+					<th>어플리케이션 이름</th>
+					<th>생성날짜</th>
+					<th>수정날짜</th>
+					<th>삭제</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="config : ${results}" class="text-center">
+					<!-- ID -->
+					<td th:text="${config.applicationId}"></td>
+					<!-- 어플리케이션 이름 -->
+					<td class="text-start">
+						<a th:href="@{/admin/flow/detail/{id}(id=${config.applicationId})}"><span th:text="${config.applicationName}"></span></a>
+					</td>
+					<!-- 생성 날짜 -->
+					<td th:text="${config.createdDate}"></td>
+					<!-- 수정 날짜 -->
+					<td th:text="${config.modifiedDate}"></td>
+					<!-- 삭제 -->
+					<td>
+						<button class="btn btn-danger btn-sm btn-delete" th:onclick="|goDelete(${config.applicationId})|">삭제</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row" th:if="${results.size() > 0}">
+			<ul class="pagination">
+				<!-- 이전 페이지 그룹 -->
+				<li class="page-item" th:classappend="${page > 10} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/flow/list(page=${(page - 1)/10 * 10}, id=${param.applicationId}, applicationName=${param.applicationName}, createdDate=${param.createdDate}, modifiedDate=${param.modifiedDate})}"
+					   th:if="${page > 10}">
+						« 이전
+					</a>
+					<a class="page-link" href="#" th:unless="${page > 10}">
+						« 이전
+					</a>
+				</li>
+				<!-- 페이지 번호 그룹 -->
+				<li class="page-item"
+				    th:each="pageNum : ${#numbers.sequence((page - 1)/10 * 10 + 1, (((page - 1)/10 + 1) * 10 > totalPage ? totalPage : ((page - 1)/10 + 1) * 10))}">
+					<a class="page-link" th:classappend="${pageNum == page} ? 'active' : ''"
+					   th:href="@{/admin/flow/list(page=${pageNum}, id=${param.applicationId}, applicationName=${param.applicationName}, createdDate=${param.createdDate}, modifiedDate=${param.modifiedDate})}">
+						<span th:text="${pageNum}"></span>
+					</a>
+				</li>
+				<!-- 다음 페이지 그룹 -->
+				<li class="page-item"
+				    th:classappend="${((page - 1)/10 + 1) * 10 < totalPage} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/flow/list(page=${((page - 1)/10 + 1) * 10 + 1}, id=${param.applicationId}, applicationName=${param.applicationName}, createdDate=${param.createdDate}, modifiedDate=${param.modifiedDate})}"
+					   th:if="${((page - 1)/10 + 1) * 10 < totalPage}">
+						다음 »
+					</a>
+					<a class="page-link" href="#" th:unless="${((page - 1)/10 + 1) * 10 < totalPage}">
+						다음 »
+					</a>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<!-- 어플리케이션 등록 모달 팝업 -->
+	<div aria-hidden="true" aria-labelledby="applicationModalLabel" class="modal" id="appCreateModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="applicationModalLabel">어플리케이션 등록</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="/admin/flow/createApplication" id="createApplication">
+						<div class="mb-3">
+							<label class="form-label" for="appName">어플리케이션 이름</label>
+							<input class="form-control" id="appName" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="application_name" required type="text">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" form="createApplication" type="submit">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/assets/js/flow/application_list.js"></script>
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
 </body>
 </html>

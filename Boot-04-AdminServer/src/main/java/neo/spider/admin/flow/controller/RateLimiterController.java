@@ -1,12 +1,12 @@
 package neo.spider.admin.flow.controller;
 
+import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
+import neo.spider.admin.flow.service.RateLimiterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spider.neo.solution.flowadmin.dto.ratelimiter.RateLimiterDto;
-import spider.neo.solution.flowadmin.service.RateLimiterService;
 
 @RestController
-@RequestMapping("/rateLimiter")
+@RequestMapping("admin/flow/rateLimiter")
 public class RateLimiterController {
 
     private final RateLimiterService rateLimiterService;

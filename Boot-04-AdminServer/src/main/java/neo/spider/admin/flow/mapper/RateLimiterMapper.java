@@ -1,16 +1,16 @@
 package neo.spider.admin.flow.mapper;
 
+import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
+import neo.spider.admin.flow.dto.ratelimiter.RateLimiterSearchDto;
 import org.apache.ibatis.annotations.Mapper;
-import spider.neo.solution.flowadmin.dto.ratelimiter.RateLimiterDto;
-import spider.neo.solution.flowadmin.dto.ratelimiter.RateLimiterSearchDto;
 
 import java.util.List;
 
 @Mapper
 public interface RateLimiterMapper {
-    List<RateLimiterSearchDto> findByApplication(long id);
+    List<RateLimiterSearchDto> findByApplication(long applicationId);
     int create(RateLimiterDto newRateLimiter);
-    int delete(long id);
-    RateLimiterDto findById(long id);
+    int delete(long ratelimiterId);
+    RateLimiterDto findById(long ratelimiterId);
     int update(RateLimiterDto rl);
 }

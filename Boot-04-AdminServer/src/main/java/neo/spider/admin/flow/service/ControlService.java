@@ -1,12 +1,12 @@
 package neo.spider.admin.flow.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import neo.spider.admin.flow.dto.CreateApplicationDto;
+import neo.spider.admin.flow.dto.SearchApplicationResultDto;
+import neo.spider.admin.flow.dto.SearchDto;
+import neo.spider.admin.flow.dto.UpdateApplicationDto;
+import neo.spider.admin.flow.mapper.ApplicationMapper;
 import org.springframework.stereotype.Service;
-import spider.neo.solution.flowadmin.dto.CreateApplicationDto;
-import spider.neo.solution.flowadmin.dto.SearchApplicationResultDto;
-import spider.neo.solution.flowadmin.dto.SearchDto;
-import spider.neo.solution.flowadmin.dto.UpdateApplicationDto;
-import spider.neo.solution.flowadmin.mapper.ApplicationMapper;
 
 import java.util.List;
 

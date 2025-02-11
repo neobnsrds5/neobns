@@ -1,16 +1,16 @@
 package neo.spider.admin.flow.mapper;
 
+import neo.spider.admin.flow.dto.bulkhead.BulkheadDto;
+import neo.spider.admin.flow.dto.bulkhead.BulkheadSearchDto;
 import org.apache.ibatis.annotations.Mapper;
-import spider.neo.solution.flowadmin.dto.bulkhead.BulkheadDto;
-import spider.neo.solution.flowadmin.dto.bulkhead.BulkheadSearchDto;
 
 import java.util.List;
 
 @Mapper
 public interface BulkheadMapper {
-    List<BulkheadSearchDto> findByApplication(long id);
+    List<BulkheadSearchDto> findByApplication(long applicationId);
     int create(BulkheadDto newBulkhead);
-    int delete(long id);
+    int delete(long bulkheadId);
     int update(BulkheadDto dto);
-    BulkheadDto findById(long id);
+    BulkheadDto findById(long bulkheadId);
 }

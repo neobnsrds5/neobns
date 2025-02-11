@@ -1,11 +1,11 @@
 package neo.spider.admin.flow.mapper;
 
+import neo.spider.admin.flow.dto.CreateApplicationDto;
+import neo.spider.admin.flow.dto.SearchApplicationResultDto;
+import neo.spider.admin.flow.dto.SearchDto;
+import neo.spider.admin.flow.dto.UpdateApplicationDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import spider.neo.solution.flowadmin.dto.CreateApplicationDto;
-import spider.neo.solution.flowadmin.dto.SearchApplicationResultDto;
-import spider.neo.solution.flowadmin.dto.SearchDto;
-import spider.neo.solution.flowadmin.dto.UpdateApplicationDto;
 
 import java.util.List;
 

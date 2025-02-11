@@ -2,12 +2,12 @@ package neo.spider.admin.flow.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import neo.spider.admin.flow.dto.bulkhead.BulkheadDto;
+import neo.spider.admin.flow.dto.bulkhead.BulkheadSearchDto;
+import neo.spider.admin.flow.dto.redisPub.UpdateConfigDto;
+import neo.spider.admin.flow.mapper.ApplicationMapper;
+import neo.spider.admin.flow.mapper.BulkheadMapper;
 import org.springframework.stereotype.Service;
-import spider.neo.solution.flowadmin.dto.bulkhead.BulkheadDto;
-import spider.neo.solution.flowadmin.dto.bulkhead.BulkheadSearchDto;
-import spider.neo.solution.flowadmin.dto.redisPub.UpdateConfigDto;
-import spider.neo.solution.flowadmin.mapper.ApplicationMapper;
-import spider.neo.solution.flowadmin.mapper.BulkheadMapper;
 
 import java.util.List;
 
@@ -28,22 +28,22 @@ public class BulkheadService {
         this.applicationMapper = applicationMapper;
     }
 
-    public List<BulkheadSearchDto> findByApplication(long id){
-        return bulkheadMapper.findByApplication(id);
+    public List<BulkheadSearchDto> findByApplication(long applicationId){
+        return bulkheadMapper.findByApplication(applicationId);
     }
 
     public boolean create(BulkheadDto newBulkhead){
         int result = bulkheadMapper.create(newBulkhead);
         if (result > 0) {
-            applicationMapper.updateModified_date(newBulkhead.getApplication_id());
+            applicationMapper.updateModified_date(newBulkhead.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(newBulkhead.getId());
+            updateConfigDto.setId(newBulkhead.getBulkheadId());
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(0); // create, update
             updateConfigDto.setName(newBulkhead.getUrl());
             try{
                 String json = objectMapper.writeValueAsString(updateConfigDto);
-                String name = applicationMapper.findById(newBulkhead.getApplication_id()).getApplication_name();
+                String name = applicationMapper.findById(newBulkhead.getApplicationId()).getApplicationName();
                 publisher.publish(name, json);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -54,13 +54,13 @@ public class BulkheadService {
         return true;
     }
 
-    public boolean delete(long id, String application_name){
-        BulkheadDto bh = bulkheadMapper.findById(id);
-        int result = bulkheadMapper.delete(id);
+    public boolean delete(long bulkheadId, String application_name){
+        BulkheadDto bh = bulkheadMapper.findById(bulkheadId);
+        int result = bulkheadMapper.delete(bulkheadId);
         if (result > 0) {
-            applicationMapper.updateModified_date(bh.getApplication_id());
+            applicationMapper.updateModified_date(bh.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(id);
+            updateConfigDto.setId(bulkheadId);
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(1); // delete
             updateConfigDto.setName(bh.getUrl());
@@ -81,15 +81,15 @@ public class BulkheadService {
     public boolean update(BulkheadDto dto){
         int result = bulkheadMapper.update(dto);
         if (result > 0) {
-            applicationMapper.updateModified_date(dto.getApplication_id());
+            applicationMapper.updateModified_date(dto.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
-            updateConfigDto.setId(dto.getId());
+            updateConfigDto.setId(dto.getBulkheadId());
             updateConfigDto.setType(TYPE);
             updateConfigDto.setDoing(0);
             updateConfigDto.setName(dto.getUrl());
             try {
                 String json = objectMapper.writeValueAsString(updateConfigDto);
-                String name = applicationMapper.findById(dto.getApplication_id()).getApplication_name();
+                String name = applicationMapper.findById(dto.getApplicationId()).getApplicationName();
                 publisher.publish(name, json);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -100,7 +100,7 @@ public class BulkheadService {
         return true;
     }
 
-    public BulkheadDto findById(long id){
-        return bulkheadMapper.findById(id);
+    public BulkheadDto findById(long bulkheadId){
+        return bulkheadMapper.findById(bulkheadId);
     }
 }

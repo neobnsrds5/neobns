@@ -104,6 +104,15 @@ public class ApiServiceImpl implements ApiService {
         apiMapper.saveApi(apiDto);
 	}
 	
+	// 정규식 검증
+	private boolean containsRegex(String url) {
+	    return url.contains("[0-9]+") || 
+	           url.contains("[a-zA-Z]+") || 
+	           url.contains("[a-zA-Z0-9]+") || 
+	           url.contains("[a-zA-Z0-9-]+") || 
+	           url.contains(".*");
+	}
+	
 	// Query String을 WireMock에서 처리할 수 있도록 변환
     private Map<String, Map<String, String>> parseQueryParams(String queryParams) {
         Map<String, Map<String, String>> parsedParams = new HashMap<>();
@@ -120,8 +129,8 @@ public class ApiServiceImpl implements ApiService {
     // uri 제외 url
     private String extractDomain(String url) {
         try {
-        	boolean hasRegex = url.contains("[0-9]+"); // 정규식 포함 여부 체크
-            String processedUrl = hasRegex ? url.replace("[0-9]+", "__TEMP_PLACEHOLDER__") : url; // 임시 플레이스홀더로 변환
+        	boolean hasRegex = containsRegex(url);
+        	String processedUrl = hasRegex ? url.replaceAll("\\[.*?\\]", "__TEMP_PLACEHOLDER__") : url;
             URI uri = new URI(processedUrl);
             return uri.getScheme() + "://" + uri.getHost(); // 도메인만 반환
         } catch (Exception e) {
@@ -132,13 +141,13 @@ public class ApiServiceImpl implements ApiService {
     // URL에서 URI 추출
     private String extractUri(String url) {
         try {
-        	boolean hasRegex = url.contains("[0-9]+");
-        	String processedUrl = hasRegex ? url.replace("[0-9]+", "__TEMP_PLACEHOLDER__") : url;
+        	boolean hasRegex = containsRegex(url);
+        	String processedUrl = hasRegex ? url.replaceAll("\\[.*?\\]", "__TEMP_PLACEHOLDER__") : url;
         	URI uri = new URI(processedUrl);
         	String path = uri.getPath(); // 도메인 제외한 경로 부분만 반환 (예: "/users")
         
         	// 정규식이 포함된 경우, 원래 정규식을 복원해서 반환
-            return hasRegex ? path.replace("__TEMP_PLACEHOLDER__", "[0-9]+") : path;
+        	return hasRegex ? path.replace("__TEMP_PLACEHOLDER__", url.substring(url.indexOf("["))) : path;
         } catch (URISyntaxException e) {
             throw new RuntimeException("잘못된 URL 형식: " + url);
         }
@@ -147,8 +156,8 @@ public class ApiServiceImpl implements ApiService {
     // URL에서 Query Param 추출
     private String extractQuery(String url) {
     	 try {
-    		 boolean hasRegex = url.contains("[0-9]+"); // 정규식 포함 여부 체크
-	         String processedUrl = hasRegex ? url.replace("[0-9]+", "__TEMP_PLACEHOLDER__") : url; // 임시 플레이스홀더로 변환
+    		 boolean hasRegex = containsRegex(url);
+         	 String processedUrl = hasRegex ? url.replaceAll("\\[.*?\\]", "__TEMP_PLACEHOLDER__") : url;
     	     URI uri = new URI(processedUrl);
              return uri.getQuery();
          } catch (URISyntaxException e) {

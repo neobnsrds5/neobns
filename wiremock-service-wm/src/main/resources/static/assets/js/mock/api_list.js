@@ -127,41 +127,61 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleRequestBody("httpMethod", "requestBodyContainer");
     });
 	
-	// URL Checkbox 처리
+	// 체크박스 요소 처리
 	const apiUrlInput = document.getElementById("apiUrl");
-    const regexCheckbox = document.getElementById("enableRegex"); 
-	let originalUrl = "";
-	function checkIfRegexUrl(url) {
-        return url.includes("[0-9]+");  // URL이 정규식 패턴인지 확인
-    }
-	
-	function setRegexCheckboxState() {
-        const currentUrl = apiUrlInput.value.trim();
-        if (checkIfRegexUrl(currentUrl)) {
-            regexCheckbox.checked = true;
-            originalUrl = currentUrl.replace("/[0-9]+", "").replace("[0-9]+", ""); // 원본 URL 복원
-        } else {
-            regexCheckbox.checked = false;
-            originalUrl = currentUrl;
-        }
-    }
-	
-	regexCheckbox.addEventListener("change", function () {
-        if (this.checked) {
-            originalUrl = apiUrlInput.value.trim(); // 원래 URL 저장
-            if (!originalUrl.endsWith("/")) {
-                apiUrlInput.value = originalUrl + "/[0-9]+";
-            } else {
-                apiUrlInput.value = originalUrl + "[0-9]+";
+	const urlPatternCheckboxes = document.querySelectorAll('input[name="urlPattern"]');
+
+	// 정규식 패턴 목록
+	const regexPatterns = [
+        /\/?\[0-9\]+\/*/,
+        /\/?\[a-zA-Z\]+\/*/,
+        /\/?\[a-zA-Z0-9\]+\/*/,
+        /\/?\[a-zA-Z0-9-\]+\/*/
+    ];
+
+	// 체크박스 변경 이벤트 추가
+    urlPatternCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            let baseUrl = apiUrlInput.value.trim();
+
+            // 기존 URL에서 정규식 패턴 제거 (불필요한 + 제거)
+            regexPatterns.forEach(pattern => {
+                baseUrl = baseUrl.replace(pattern, "").replace(/\+/, "").replace(/\/$/, ""); // 마지막 / 제거
+            });
+
+            // 다른 체크박스가 선택되었을 경우, 하나만 유지하도록 처리
+            urlPatternCheckboxes.forEach(cb => {
+                if (cb !== this) {
+                    cb.checked = false;
+                }
+            });
+
+            // 체크박스 해제 시 정규식 삭제 후 원래 URL 유지
+            if (!this.checked) {
+                apiUrlInput.value = baseUrl;
+                return;
             }
-			console.log("체크박스 활성화 URL 변환: ", apiUrlInput.value)
-        } else {
-            apiUrlInput.value = originalUrl; // 체크 해제하면 원래 URL 복원
-			console.log("체크박스 비활성화 URL 원본: ", apiUrlInput.value)
-        }
+
+            // 체크된 경우 새로운 정규식 추가
+            let pattern = "";
+            if (this.value === "digits") {
+                pattern = "[0-9]+";
+            } else if (this.value === "letters") {
+                pattern = "[a-zA-Z]+";
+            } else if (this.value === "alphanumeric") {
+                pattern = "[a-zA-Z0-9]+";
+            } else if (this.value === "special") {
+                pattern = "[a-zA-Z0-9-]+";
+            } else if (this.value === "any") {
+                pattern = ".*";
+            }
+
+            // URL이 '/'로 끝나면 중복 방지 후 추가
+            const endsWithSlash = baseUrl.endsWith("/");
+            apiUrlInput.value = endsWithSlash ? baseUrl + pattern : baseUrl + "/" + pattern;
+        });
     });
-	
-	setRegexCheckboxState();
+   
 
 });
 
@@ -433,12 +453,23 @@ const loadApiDetail = (button) => {
             document.getElementById("apiName").value = dataType === "copy" ? data.api.mockApiName + "_copy" : data.api.mockApiName;
             document.getElementById("apiUrl").value = data.api.mockApiUrl;
 			
-			//  URL 값으로 체크박스 상태 설정
-            const regexCheckbox = document.getElementById("enableRegex");
-            if (checkIfRegexUrl(data.api.mockApiUrl)) {
-                regexCheckbox.checked = true;
-            } else {
-                regexCheckbox.checked = false;
+			// 체크박스 상태 초기화
+            const urlPatternCheckboxes = document.querySelectorAll('input[name="urlPattern"]');
+            urlPatternCheckboxes.forEach(cb => cb.checked = false); // 모든 체크박스 해제
+
+            // URL 값으로 체크박스 상태 설정
+            const url = data.api.mockApiUrl;
+
+            if (url.includes("[0-9]+")) {
+                document.getElementById("enableDigits").checked = true;
+            } else if (url.includes("[a-zA-Z]+")) {
+                document.getElementById("enableLetters").checked = true;
+            } else if (url.includes("[a-zA-Z0-9]+")) {
+                document.getElementById("enableAlphanumeric").checked = true;
+            } else if (url.includes("[a-zA-Z0-9-]+")) {
+                document.getElementById("enableSpecialChars").checked = true;
+            } else if (url.includes(".*")) {
+                document.getElementById("enableAny").checked = true;
             }
 
             // 2. WireMock에서 가져온 Request/Response 데이터
@@ -585,5 +616,11 @@ const isValidJson = (jsonString) => {
 
 // 정규식 포함 여부 확인 함수
 function checkIfRegexUrl(url) {
-    return url.includes("[0-9]+");  // 정규식 패턴 포함 여부 체크
+	const regexPatterns = [
+	        /\[0-9\]+/,        // 숫자 포함
+	        /\[a-zA-Z\]+/,     // 문자 포함
+	        /\[a-zA-Z0-9\]+/,  // 문자 + 숫자 포함
+	        /\[a-zA-Z0-9-\]+/ // 문자 + 숫자 + 하이픈 포함     
+	    ];
+    return regexPatterns.some(pattern => pattern.test(url)); // 정규식 포함 여부 반환
 }

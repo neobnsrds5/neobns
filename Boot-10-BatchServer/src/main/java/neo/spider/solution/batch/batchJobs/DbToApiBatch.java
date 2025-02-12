@@ -81,10 +81,10 @@ public class DbToApiBatch {
 		reader.setQueryProvider(toApiQueryProvider());
 		reader.setRowMapper((rs, rowNum) -> {
 			Map<String, Object> map = new HashMap<>();
-			map.put("id", rs.getLong("id"));
-			map.put("accountNumber", rs.getString("accountNumber"));
-			map.put("money", rs.getLong("money"));
-			map.put("name", rs.getString("name"));
+			map.put("id", rs.getLong("ACCOUNT_ID"));
+			map.put("accountNumber", rs.getString("ACCOUNT_NUMBER"));
+			map.put("money", rs.getLong("ACCOUNT_BALANCE"));
+			map.put("name", rs.getString("CUSTOMER_NAME"));
 			return map;
 		});
 		reader.setPageSize(10);
@@ -96,8 +96,8 @@ public class DbToApiBatch {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(datasource);
 		factory.setSelectClause("SELECT *");
-		factory.setFromClause("FROM Account");
-		factory.setSortKey("id");
+		factory.setFromClause("FROM FWK_BATCH_CUSTOMER_ACCOUNT");
+		factory.setSortKey("ACCOUNT_ID");
 		return factory.getObject();
 	}
 
@@ -111,10 +111,12 @@ public class DbToApiBatch {
 				String threadName = Thread.currentThread().getName();
 
 				AccountDTO result = new AccountDTO();
+
 				result.setId((long) item.get("id"));
 				result.setAccountNumber((String) item.get("accountNumber"));
 				result.setMoney((long) item.get("money"));
 				result.setName((String) item.get("name"));
+
 				return result;
 			}
 		};

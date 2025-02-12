@@ -52,9 +52,9 @@ public class DbToDbBatch {
 		reader.setQueryProvider(queryProvider());
 		reader.setRowMapper((rs, rowNum) -> {
 			Map<String, Object> map = new HashMap<>();
-			map.put("accountNumber", rs.getString("accountNumber"));
-			map.put("money", rs.getLong("money"));
-			map.put("name", rs.getString("name"));
+			map.put("accountNumber", rs.getString("ACCOUNT_NUMBER"));
+			map.put("money", rs.getLong("ACCOUNT_BALANCE"));
+			map.put("name", rs.getString("CUSTOMER_NAME"));
 			return map;
 		});
 		reader.setPageSize(10);
@@ -66,15 +66,15 @@ public class DbToDbBatch {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
 		factory.setSelectClause("SELECT *");
-		factory.setFromClause("FROM Account");
-		factory.setSortKey("id");
+		factory.setFromClause("FROM FWK_BATCH_CUSTOMER_ACCOUNT");
+		factory.setSortKey("ACCOUNT_ID");
 		return factory.getObject();
 	}
 
 	@Bean
 	public JdbcBatchItemWriter<Map<String, Object>> writer() {
 		return new JdbcBatchItemWriterBuilder<Map<String, Object>>().dataSource(targetSource)
-				.sql("INSERT INTO Account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
+				.sql("INSERT INTO FWK_BATCH_CUSTOMER_ACCOUNT(ACCOUNT_NUMBER, ACCOUNT_BALANCE, CUSTOMER_NAME) VALUES (:accountNumber, :money, :name)")
 				.itemSqlParameterSourceProvider(item -> {
 					MapSqlParameterSource params = new MapSqlParameterSource();
 					params.addValue("accountNumber", item.get("accountNumber"));

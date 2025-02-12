@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-@MapperScan(basePackages = "neo.spider.solution.batch.mapper", sqlSessionFactoryRef = "oracleSqlSessionFactory")
 public class SpiderDbConfig {
 
 	private final DBProperties dbProperties;
@@ -33,20 +32,6 @@ public class SpiderDbConfig {
 	public JdbcTemplate spiderTemplate() {
 		return new JdbcTemplate(spiderDataSource());
 
-	}
-
-	@Bean(name = "oracleSqlSessionFactory")
-	public SqlSessionFactory sqlSessionFactory(@Qualifier("spiderDataSource") DataSource datasource) throws Exception {
-		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-		sessionFactory.setDataSource(datasource);
-		sessionFactory.setMapperLocations(
-				new PathMatchingResourcePatternResolver().getResources("classpath:oraclemappers/*.xml"));
-		return sessionFactory.getObject();
-	}
-
-	@Bean(name = "oracleTemplate")
-	public SqlSessionTemplate oracleTemplate(SqlSessionFactory oracleSqlSessionFactory) throws Exception {
-		return new SqlSessionTemplate(oracleSqlSessionFactory);
 	}
 
 }

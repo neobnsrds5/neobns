@@ -1,4 +1,4 @@
-package com.example.neobns.batch;
+package neo.spider.solution.batch.batchJobs;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -44,8 +44,8 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.example.neobns.dto.LogDTO;
-import com.example.neobns.service.FileMaintenanceService;
+import neo.spider.solution.batch.dto.LogDTO;
+import neo.spider.solution.batch.service.FileMaintenanceService;
 
 @Configuration
 public class LogFileToDbBatch {
@@ -158,7 +158,7 @@ public class LogFileToDbBatch {
 		return handler;
 	}
 
-	// 마스터의 슬레이브 스텝 설정
+	// 마스터의 슬레이브 스텝 설정 pb  
 	@Bean
 	public Step logToDBStep() {
 

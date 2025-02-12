@@ -109,7 +109,7 @@ public class FileToDbBatch {
 	@Bean
 	public JdbcBatchItemWriter<AccountDTO> fileToDbWriter() {
 		return new JdbcBatchItemWriterBuilder<AccountDTO>().dataSource(datasource)
-				.sql("INSERT INTO Account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
+				.sql("INSERT INTO FWK_BATCH_CUSTOMER_ACCOUNT(ACCOUNT_NUMBER, ACCOUNT_BALANCE, CUSTOMER_NAME) VALUES (:accountNumber, :money, :name)")
 				.beanMapped().build();
 	}
 

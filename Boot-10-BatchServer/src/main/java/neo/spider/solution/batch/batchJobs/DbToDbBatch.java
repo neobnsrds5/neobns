@@ -32,16 +32,16 @@ public class DbToDbBatch {
 	private final DataSource targetSource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	// 오라클 스파이더 배치 테이블로 통합 가능하게 하는 리스너로 현재 오라클 스파이더 배치 테이블 사용할 수 없어 주석처리
-//		private final CustomBatchJobListener listener;
+	private final CustomBatchJobListener listener;
 
 	public DbToDbBatch(@Qualifier("dataDataSource") DataSource realSource,
 			@Qualifier("targetDataSource") DataSource targetSource, JobRepository jobRepository,
-			PlatformTransactionManager transactionManager) {
+			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
 		this.realSource = realSource;
 		this.targetSource = targetSource;
 		this.jobRepository = jobRepository;
 		this.transactionManager = transactionManager;
+		this.listener = listener;
 	}
 
 	@Bean
@@ -52,9 +52,9 @@ public class DbToDbBatch {
 		reader.setQueryProvider(queryProvider());
 		reader.setRowMapper((rs, rowNum) -> {
 			Map<String, Object> map = new HashMap<>();
-			map.put("accountNumber", rs.getString("accountNumber"));
-			map.put("money", rs.getLong("money"));
-			map.put("name", rs.getString("name"));
+			map.put("accountNumber", rs.getString("ACCOUNT_NUMBER"));
+			map.put("money", rs.getLong("ACCOUNT_BALANCE"));
+			map.put("name", rs.getString("CUSTOMER_NAME"));
 			return map;
 		});
 		reader.setPageSize(10);
@@ -66,15 +66,15 @@ public class DbToDbBatch {
 		SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
 		factory.setDataSource(realSource);
 		factory.setSelectClause("SELECT *");
-		factory.setFromClause("FROM Account");
-		factory.setSortKey("id");
+		factory.setFromClause("FROM FWK_BATCH_CUSTOMER_ACCOUNT");
+		factory.setSortKey("ACCOUNT_ID");
 		return factory.getObject();
 	}
 
 	@Bean
 	public JdbcBatchItemWriter<Map<String, Object>> writer() {
 		return new JdbcBatchItemWriterBuilder<Map<String, Object>>().dataSource(targetSource)
-				.sql("INSERT INTO Account(accountNumber, money, name) VALUES (:accountNumber, :money, :name)")
+				.sql("INSERT INTO FWK_BATCH_CUSTOMER_ACCOUNT(ACCOUNT_NUMBER, ACCOUNT_BALANCE, CUSTOMER_NAME) VALUES (:accountNumber, :money, :name)")
 				.itemSqlParameterSourceProvider(item -> {
 					MapSqlParameterSource params = new MapSqlParameterSource();
 					params.addValue("accountNumber", item.get("accountNumber"));
@@ -108,7 +108,7 @@ public class DbToDbBatch {
 
 	@Bean
 	public Job job() throws Exception {
-		return new JobBuilder("dbCopyJob", jobRepository)/* .listener(listener) */.start(step()).build();
+		return new JobBuilder("dbCopyJob", jobRepository).listener(listener).start(step()).build();
 	}
 
 	@Bean

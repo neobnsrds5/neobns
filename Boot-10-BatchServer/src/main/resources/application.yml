@@ -29,8 +29,8 @@ spider:
       url: jdbc:mariadb://neobns.com:13306/db3
       username: POC_USER
       password: neobns1!
-#    datasource-spiderdb:
-#      driver-class-name: oracle.jdbc.driver.OracleDriver
-#      url: jdbc:oracle:thin:@3.35.132.32:1521/xe
-#      username: system
-#      password: neobns
+    datasource-spiderdb:
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@//neobns.com:11521/XE
+      username: system
+      password: oracle

@@ -17,17 +17,18 @@ public class SubBatch2 {
 	private JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
 	private static final Logger logger = LoggerFactory.getLogger(SubBatch2.class);
-	// 오라클 스파이더 배치 테이블로 통합 가능하게 하는 리스너로 현재 오라클 스파이더 배치 테이블 사용할 수 없어 주석처리
-//		private final CustomBatchJobListener listener;
+	private final CustomBatchJobListener listener;
 
-	public SubBatch2(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
+	public SubBatch2(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,
+			CustomBatchJobListener listener) {
 		this.jobRepository = jobRepository;
 		this.platformTransactionManager = platformTransactionManager;
+		this.listener = listener;
 	}
 
 	@Bean
 	public Job subBatch2Job() {
-		return new JobBuilder("subBatch2", jobRepository)/* .listener(listener) */.start(subBatch2Step()).build();
+		return new JobBuilder("subBatch2", jobRepository).listener(listener).start(subBatch2Step()).build();
 
 	}
 

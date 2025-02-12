@@ -322,7 +322,7 @@
 		<appender-ref ref="FILE" />
 
 		<!-- min rolling file appender -->
-		<appender-ref ref="ROLLING_FILE" />
+<!-- 		<appender-ref ref="ROLLING_FILE" /> -->
 
 		<!-- async file appender -->
 		<!-- <appender-ref ref="ASYNC_FILE" /> -->

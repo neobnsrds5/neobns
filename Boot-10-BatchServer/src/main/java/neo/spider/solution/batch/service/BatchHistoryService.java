@@ -30,6 +30,7 @@ public class BatchHistoryService {
 		this.spiderTemplate = spiderTemplate;
 		this.jobRegistry = jobRegistry;
 	}
+
 	// 배치 실행 내역을 테이블 형식에 맞게 변환 해 전달
 	public void saveBatchHistory(JobExecution jobExecution) {
 
@@ -38,16 +39,16 @@ public class BatchHistoryService {
 		String batchAppId = MDC.get("batchAppId");
 		String instanceId = MDC.get("instanceId");
 		String batchDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-//		int batchExecuteSeq = 12;
+		String batchExecuteSeq = String.valueOf(jobExecution.getId());
 		String logDtime = jobExecution.getStartTime() != null
 				? jobExecution.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
-				: "2024-01-01";
+				: "2025-01-01";
 		String batchEndDtime = jobExecution.getEndTime() != null
 				? jobExecution.getEndTime().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
 				: logDtime;
 		String resRtCode = jobExecution.getStatus().isUnsuccessful() ? "1" : "0";
-		String lastUpdateUserId = MDC.get("userId");
-		String errorCode = jobExecution.getExitStatus().getExitCode().equals("COMPLETED") ? "정상" : "비정상";
+		String lastUpdateUserId = MDC.get("userId") == null ? "Anonymous-user" : MDC.get("userId");
+		String errorCode = jobExecution.getExitStatus().getExitCode();
 		String errorReason = jobExecution.getExitStatus().getExitDescription().length() > maxLen
 				? jobExecution.getExitStatus().getExitDescription().substring(0, maxLen)
 				: jobExecution.getExitStatus().getExitDescription();
@@ -58,12 +59,19 @@ public class BatchHistoryService {
 		Integer executeCount = recordCount + failCount;
 		Integer successCount = recordCount;
 
-		String jobSql = "INSERT INTO FWK_BATCH_HIS (" + "BATCH_APP_ID, INSTANCE_ID, BATCH_DATE, LOG_DTIME, "
+		String jobSql = "INSERT INTO R_SPIDERLINK.FWK_BATCH_HIS ("
+				+ "BATCH_APP_ID, INSTANCE_ID, BATCH_DATE, BATCH_EXECUTE_SEQ, LOG_DTIME, "
 				+ "BATCH_END_DTIME, RES_RT_CODE, LAST_UPDATE_USER_ID, ERROR_CODE, ERROR_REASON, "
 				+ "RECORD_COUNT, EXECUTE_COUNT, SUCCESS_COUNT, FAIL_COUNT) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		spiderTemplate.update(jobSql, batchAppId, instanceId, batchDate, logDtime, batchEndDtime, resRtCode,
-				lastUpdateUserId, errorCode, errorReason, recordCount, executeCount, successCount, failCount);
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		System.out.println(batchAppId + " " + instanceId + " " + batchDate + " " + batchExecuteSeq + " "
+				+ logDtime + " " + batchEndDtime + " " + resRtCode + " " + lastUpdateUserId + " " + errorCode + " "
+				+ errorReason + " " + recordCount + " " + executeCount + " " + successCount + " " + failCount);
+
+		spiderTemplate.update(jobSql, batchAppId, instanceId, batchDate, batchExecuteSeq, logDtime, batchEndDtime,
+				resRtCode, lastUpdateUserId, errorCode, errorReason, recordCount, executeCount, successCount,
+				failCount);
 
 	}
 

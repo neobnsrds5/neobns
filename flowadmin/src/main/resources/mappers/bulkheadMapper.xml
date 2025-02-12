@@ -6,6 +6,7 @@
         SELECT b.bulkhead_id, a.application_name, b.url, b.max_concurrent_calls, b.max_wait_duration
         FROM FWK_BULKHEAD b, FWK_APPLICATION a
         WHERE b.application_id = a.application_id and b.application_id = #{applicationId}
+        <if test="url != null and url != ''">and b.url LIKE concat('%', #{url}, '%')</if>
     </select>
     <insert id="create" useGeneratedKeys="true" parameterType="neo.spider.admin.flow.dto.bulkhead.BulkheadDto" keyProperty="bulkheadId">
         INSERT INTO FWK_BULKHEAD(application_id, url, max_concurrent_calls, max_wait_duration)

@@ -3,9 +3,11 @@
 
 <mapper namespace="neo.spider.admin.flow.mapper.RateLimiterMapper">
     <select id="findByApplication" resultType="neo.spider.admin.flow.dto.ratelimiter.RateLimiterSearchDto">
-        SELECT r.ratelimiter_id, a.application_name,r.url, r.type, r.limit_for_period, r.limit_refresh_period, r.timeout_duration
+        SELECT r.ratelimiter_id, a.application_name, r.url, r.type, r.limit_for_period, r.limit_refresh_period, r.timeout_duration
         FROM FWK_RATELIMITER r, FWK_APPLICATION a
         WHERE r.application_id = a.application_id and r.application_id = #{applicationId}
+        <if test="type != null and type >= 0">and r.type = #{type}</if>
+        <if test="url != null and url != ''">and r.url LIKE concat('%', #{url}, '%')</if>
         ORDER BY type
     </select>
 

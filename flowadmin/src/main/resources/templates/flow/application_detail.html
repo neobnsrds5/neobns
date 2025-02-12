@@ -22,18 +22,27 @@
 	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
 		<h2 class="mb-4 row justify-content-around">
 			<a class="col-1 text-start" id="backToSearch" href=""><i class="ri-arrow-left-s-line fs-1"></i></a>
-			<span class="col text-center" th:text="${app.applicationName} + ' 상세보기'"></span>
+			<a class="col text-center" th:href="@{/admin/flow/detail/{id}(id=${app.applicationId})}"><span th:text="${app.applicationName} + ' 상세보기'"></span></a>
 			<span class="col-1"><button id="openAppUpdateModal" class="btn btn-soft-primary">수정</button></span>
 		</h2>
+
+		<form id="searchForm">
 
 		<div class="card mb-3">
 			<div class="card-header">
 				<div class="row align-items-center">
 					<div class="col">
-						<h4 class="mb-0">동시 수행 제한</h4>
+						<h4 class="mb-0">
+							<span class="align-middle">동시 수행 제한</span>
+							<button id="createBulkhead" class="open-bulkhead-modal btn btn-soft-primary ms-2" data-type="create" type="button">등록</button>
+						</h4>
 					</div>
 					<div class="col-auto d-sm-block">
-						<button id="createBulkhead" class="open-bulkhead-modal btn btn-soft-primary" data-type="create">등록</button>
+						<div class="input-group">
+							<input aria-label="url" class="form-control ms-2" name="bulkheadUrl" type="text" th:value="${bulkheadUrl}" placeholder="URL 패턴"/>
+							<button class="btn btn-sm btn-primary" type="submit">
+								<i class="ri-search-line fs-5"></i></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -41,7 +50,7 @@
 				<div class="m-lg-3 p-lg-3 text-center" th:if="${bulkheads.isEmpty()}">
 					<h4>조회 결과가 없습니다.</h4>
 				</div>
-				<table th:unless="${bulkheads.isEmpty()}" class="table table-hover table-centered">
+				<table th:unless="${bulkheads.isEmpty()}" class="table table-hover table-centered table-sm">
 					<thead>
 					<tr class="text-center">
 						<td>아이디</td>
@@ -63,7 +72,7 @@
 						<td th:text="${bulkhead.url}"></td>
 						<td th:text="${bulkhead.maxConcurrentCalls}"></td>
 						<td th:text="${bulkhead.getMaxWaitDuration()}"></td>
-						<td><button class="delete-bulkhead btn btn-sm btn-danger" th:attr="data-id=${bulkhead.bulkheadId}, data-name=${bulkhead.applicationName}">삭제</button></td>
+						<td><button class="delete-bulkhead btn btn-sm btn-danger" th:attr="data-id=${bulkhead.bulkheadId}, data-name=${bulkhead.applicationName}" type="button">삭제</button></td>
 					</tr>
 					</tbody>
 				</table>
@@ -74,10 +83,23 @@
 			<div class="card-header">
 				<div class="row align-items-center">
 					<div class="col">
-						<h4 class="mb-0">단위 시간당 요청 제한</h4>
+						<h4 class="mb-0">
+							<span class="align-middle">단위 시간당 요청 제한</span>
+							<button id="createRateLimiter" class="open-rateLimiter-modal btn btn-soft-primary ms-2" data-type="create" type="button">등록</button>
+						</h4>
 					</div>
 					<div class="col-auto d-sm-block">
-						<button id="createRateLimiter" class="open-rateLimiter-modal btn btn-soft-primary" data-type="create">등록</button>
+						<div class="input-group">
+							<select aria-label="type" class="form-select ms-2" name="ratelimiterType">
+								<option value="-1" th:selected="${ratelimiterType == -1}">--타입--</option>
+								<option value="0" th:selected="${ratelimiterType == 0}">전체</option>
+								<option value="1" th:selected="${ratelimiterType == 1}">URL별</option>
+								<option value="2" th:selected="${ratelimiterType == 2}">접속자별</option>
+							</select>
+							<input aria-label="url" class="form-control ms-2" name="ratelimiterUrl" type="text" th:value="${ratelimiterUrl}" placeholder="URL 패턴"/>
+							<button class="btn btn-sm btn-primary" type="submit">
+								<i class="ri-search-line fs-5"></i></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -85,7 +107,7 @@
 				<div class="m-lg-3 p-lg-3 text-center" th:if="${rateLimiters.isEmpty()}">
 					<h4>조회 결과가 없습니다.</h4>
 				</div>
-				<table th:unless="${rateLimiters.isEmpty()}" class="table table-hover table-centered">
+				<table th:unless="${rateLimiters.isEmpty()}" class="table table-hover table-centered table-sm">
 					<thead>
 					<tr class="text-center">
 						<td>아이디</td>
@@ -113,12 +135,14 @@
 						<td th:text="${rateLimiter.limitForPeriod}"></td>
 						<td th:text="${rateLimiter.limitRefreshPeriod}"></td>
 						<td th:text="${rateLimiter.timeOutDuration}"></td>
-						<td><button class="delete-ratelimiter btn btn-sm btn-danger" th:attr="data-id=${rateLimiter.ratelimiterId}, data-name=${rateLimiter.applicationName}">삭제</button></td>
+						<td><button class="delete-ratelimiter btn btn-sm btn-danger" th:attr="data-id=${rateLimiter.ratelimiterId}, data-name=${rateLimiter.applicationName}" type="button">삭제</button></td>
 					</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
+
+		</form>
 
 	</div>
 

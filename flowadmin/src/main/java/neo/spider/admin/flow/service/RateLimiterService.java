@@ -28,8 +28,8 @@ public class RateLimiterService {
         this.messagePublisher = messagePublisher;
     }
 
-    public List<RateLimiterSearchDto> findByApplication(long applicationId){
-        return rateLimiterMapper.findByApplication(applicationId);
+    public List<RateLimiterSearchDto> findByApplication(long applicationId, int type, String url) {
+        return rateLimiterMapper.findByApplication(applicationId, type, url);
     }
 
     public boolean create(RateLimiterDto newRateLimiter){

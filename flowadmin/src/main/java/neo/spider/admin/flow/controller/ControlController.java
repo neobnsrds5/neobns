@@ -42,10 +42,10 @@ public class ControlController {
     public String findPage(Model model,
                            @ModelAttribute SearchDto dto,
                            @RequestParam(defaultValue = "1") int page,
-                           @RequestParam(defaultValue = "10") int size){
+                           @RequestParam(defaultValue = "10") int size) {
 
         try {
-            if (dto.getApplicationId() != null){
+            if (dto.getApplicationId() != null) {
                 int id = Integer.parseInt(dto.getApplicationId());
             }
         } catch (Exception e) {
@@ -61,11 +61,11 @@ public class ControlController {
         int total = controlService.count(dto);
         List<SearchApplicationResultDto> results = controlService.find(dto, page, size);
         int totalPage = (total / size) + (total % size == 0 ? 0 : 1);
-        int dix = (page/10)*10;
-        int start = dix+1;
-        int end = dix+10;
+        int dix = (page / 10) * 10;
+        int start = dix + 1;
+        int end = dix + 10;
         end = Math.min(end, totalPage);
-        int[] range = IntStream.range(start, end+1).toArray();
+        int[] range = IntStream.range(start, end + 1).toArray();
 
         model.addAttribute("results", results);
         model.addAttribute("page", page);
@@ -78,9 +78,9 @@ public class ControlController {
     }
 
     @PostMapping("/createApplication")
-    public String create(@ModelAttribute CreateApplicationDto dto){
+    public String create(@ModelAttribute CreateApplicationDto dto) {
         int result = controlService.create(dto);
-        if(result == 0){
+        if (result == 0) {
             System.out.println("create failed");
         } else {
             System.out.println("create success");
@@ -90,9 +90,9 @@ public class ControlController {
 
     @GetMapping("/delete")
     public String delete(Model model,
-                         @ModelAttribute SearchDto dto){
+                         @ModelAttribute SearchDto dto) {
         int result = controlService.delete(Long.parseLong(dto.getApplicationId()));
-        if (result == 0){
+        if (result == 0) {
             System.out.println("delete failed");
         } else {
             System.out.println("delete success");
@@ -101,20 +101,26 @@ public class ControlController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable("id") long id, Model model){
+    public String detail(Model model, @PathVariable("id") long id,
+                         @RequestParam(required = false) String bulkheadUrl,
+                         @RequestParam(required = false, defaultValue = "-1") int ratelimiterType,
+                         @RequestParam(required = false) String ratelimiterUrl) {
         SearchApplicationResultDto application = controlService.findById(id);
-        List<BulkheadSearchDto> bulkheads = bulkheadService.findByApplication(application.getApplicationId());
-        List<RateLimiterSearchDto> rateLimiters = rateLimiterService.findByApplication(application.getApplicationId());
+        List<BulkheadSearchDto> bulkheads = bulkheadService.findByApplication(application.getApplicationId(), bulkheadUrl);
+        List<RateLimiterSearchDto> rateLimiters = rateLimiterService.findByApplication(application.getApplicationId(), ratelimiterType, ratelimiterUrl);
         model.addAttribute("app", application);
         model.addAttribute("bulkheads", bulkheads);
+        model.addAttribute("bulkheadUrl", bulkheadUrl);
         model.addAttribute("rateLimiters", rateLimiters);
+        model.addAttribute("ratelimiterType", ratelimiterType);
+        model.addAttribute("ratelimiterUrl", ratelimiterUrl);
         return "flow/application_detail";
     }
 
     @PostMapping("/updateApplication")
-    public String update(@ModelAttribute UpdateApplicationDto dto){
+    public String update(@ModelAttribute UpdateApplicationDto dto) {
         int result = controlService.update(dto);
-        if (result == 0){
+        if (result == 0) {
             System.out.println("update failed");
         } else {
             System.out.println("update success");

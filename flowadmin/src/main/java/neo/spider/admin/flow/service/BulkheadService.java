@@ -28,8 +28,8 @@ public class BulkheadService {
         this.applicationMapper = applicationMapper;
     }
 
-    public List<BulkheadSearchDto> findByApplication(long applicationId){
-        return bulkheadMapper.findByApplication(applicationId);
+    public List<BulkheadSearchDto> findByApplication(long applicationId, String url){
+        return bulkheadMapper.findByApplication(applicationId, url);
     }
 
     public boolean create(BulkheadDto newBulkhead){

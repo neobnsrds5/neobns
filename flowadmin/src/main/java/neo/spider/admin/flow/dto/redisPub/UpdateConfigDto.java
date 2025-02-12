@@ -12,4 +12,6 @@ public class UpdateConfigDto {
     private int doing;
     private long id;
     private String name;
+    private BulkheadDto bulkhead;
+    private RateLimiterDto rateLimiter;
 }

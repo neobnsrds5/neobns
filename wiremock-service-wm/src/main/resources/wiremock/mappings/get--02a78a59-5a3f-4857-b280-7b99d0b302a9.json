@@ -1,0 +1,20 @@
+{
+  "id" : "02a78a59-5a3f-4857-b280-7b99d0b302a9",
+  "request" : {
+    "urlPathPattern" : "",
+    "method" : "GET",
+    "queryParameters" : {
+      "name" : {
+        "equalTo" : "nathaniel"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"test\":\"{{request.query.name}}\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "02a78a59-5a3f-4857-b280-7b99d0b302a9",
+  "persistent" : true,
+  "insertionIndex" : 0
+}

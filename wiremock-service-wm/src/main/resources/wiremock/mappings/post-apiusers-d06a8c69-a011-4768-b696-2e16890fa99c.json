@@ -1,0 +1,19 @@
+{
+  "id" : "d06a8c69-a011-4768-b696-2e16890fa99c",
+  "request" : {
+    "urlPathPattern" : "/api/users",
+    "method" : "POST",
+    "queryParameters" : { },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\n  \"name\": \"neo\",\n  \"job\": \"neobns\"\n}"
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"test1\":\"{{jsonPath request.body '$.name'}}\",\"test2\":\"{{jsonPath request.body '$.job'}}\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "d06a8c69-a011-4768-b696-2e16890fa99c",
+  "persistent" : true,
+  "insertionIndex" : 4
+}

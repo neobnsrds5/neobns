@@ -40,7 +40,7 @@ public class DataDbConfig {
             @Qualifier("dataDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        factoryBean.setTypeAliasesPackage("neo.spider.admin.common.dto, neo.spider.admin.e2e.dto, neo.spider.admin.flow.dto");
+        factoryBean.setTypeAliasesPackage("neo.spider.admin.common.dto, neo.spider.admin.e2e.dto");
         factoryBean.setMapperLocations(
             new PathMatchingResourcePatternResolver().getResources("classpath:mappers/**/*.xml")
         );

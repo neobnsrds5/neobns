@@ -101,6 +101,8 @@ document.addEventListener("DOMContentLoaded", function () {
         modalElement.setAttribute("data-type", "add");
         document.getElementById("apiModalLabel").textContent = "API 추가";
 
+        // 모달 창 value reset
+        $("#add-api-form")[0].reset();
         toggleRequestBody("httpMethod", "requestBodyContainer");
 
         const apiModal = new bootstrap.Modal(modalElement);

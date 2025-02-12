@@ -81,7 +81,12 @@ public class ControlController {
 
     @PostMapping("/createApplication")
     public String create(@ModelAttribute CreateApplicationDto dto){
-        long id = controlService.create(dto);
+        int result = controlService.create(dto);
+        if(result == 0){
+            System.out.println("create failed");
+        } else {
+            System.out.println("create success");
+        }
         return "redirect:/admin/flow/list";
     }
 

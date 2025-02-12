@@ -7,15 +7,14 @@ document.getElementById('openAppUpdateModal').onclick = () => {
 
 // 벌크해드 모달창 열기
 document.querySelectorAll(".open-bulkhead-modal").forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", function() {
         // 추가 | 수정 여부 전달
-        const dataType = button.getAttribute("data-type");
+        const dataType = this.getAttribute("data-type");
         $('#saveBulkheadBtn').attr("data-type", dataType);
-        $('#bulkheadModalLabel').text(dataType === 'create' ? "동시 수행 제한 등록" : "동시 수행 제한 수정");
 
-        // 추가 모달창의 경우 value 값 세팅
-        if(dataType === 'update') {
-            const dataId = $(this).attr('data-id');
+        if(dataType === 'update') { // 수정 모달창의 경우 value 값 세팅
+            $('#bulkheadModalLabel').text("동시 수행 제한 수정");
+            const dataId = this.getAttribute('data-id');
             $.ajax({
                 type: 'GET',
                 url: '/admin/flow/bulkhead/find?id=' + dataId,
@@ -26,6 +25,9 @@ document.querySelectorAll(".open-bulkhead-modal").forEach(button => {
                     $("#maxWaitDuration").val(parseInt(response.maxWaitDuration));
                 }
             });
+        } else if(dataType === 'create') { // 추가 모달창의 경우 value 값 리셋
+            $('#bulkheadModalLabel').text("동시 수행 제한 등록");
+            $('#bulkheadModalForm')[0].reset();
         }
 
         const modalElement = document.getElementById('bulkheadModal');
@@ -91,19 +93,18 @@ const updateBulkhead = () => {
 
 // 레이트리미터 모달창 열기
 document.querySelectorAll(".open-rateLimiter-modal").forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", function() {
         // 추가 | 수정 여부 전달
-        const dataType = button.getAttribute("data-type");
+        const dataType = this.getAttribute("data-type");
         $('#saveRateLimiter').attr("data-type", dataType);
-        $('#rateLimiterModalLabel').text(dataType === 'creat' ? "요청 제한 등록" : "요청 제한 수정");
 
-        // 추가 모달창의 경우 value 값 세팅
-        if(dataType === 'update'){
-            const dataId = $(this).attr('data-id');
+        if(dataType === 'update'){ // 수정 모달창의 경우 value 값 세팅
+            const dataId = this.getAttribute('data-id');
             $.ajax({
                 type: 'GET',
                 url: '/admin/flow/rateLimiter/find?id=' + dataId,
                 success: function(response){
+                    $('#bulkheadModalLabel').text("요청 제한 수정");
                     $('#rateLimiterId').val(response.ratelimiterId);
                     $('#rateLimiterType').val(response.type);
                     $('#rateLimiterType').prop('disabled', true);
@@ -118,6 +119,11 @@ document.querySelectorAll(".open-rateLimiter-modal").forEach(button => {
                     }
                 }
             });
+        } else if(dataType === 'create') { // 추가 모달창의 경우 value 값 리셋
+            $('#bulkheadModalLabel').text("요청 제한 등록");
+            $('#rateLimiterModalForm')[0].reset();
+            $('#rateLimiterType').prop('disabled', false);
+            $('#rateLimiterUrl').prop('disabled', false);
         }
 
         const modalElement = document.getElementById('rateLimiterModal');

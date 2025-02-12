@@ -6,11 +6,11 @@ document.getElementById('openAppCreateModal').onclick = () => {
 }
 
 // 어플리케이션 삭제
-const goDelete = (id) => {
+const deleteApplication = (applicationId) => {
     const select = confirm("삭제하시겠습니까?")
     if (select) {
         const searchState = JSON.parse(sessionStorage.getItem('searchState'));
-        const {paramPath,page, ...params} = searchState;
-        location.href = "/admin/flow/delete?id=" + id + "&" + new URLSearchParams(params).toString();
+        const {paramPath, page, ...params} = searchState;
+        location.href = "/admin/flow/delete?applicationId=" + applicationId + "&" + new URLSearchParams(params).toString();
     }
 }

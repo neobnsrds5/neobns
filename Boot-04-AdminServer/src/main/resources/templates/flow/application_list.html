@@ -23,14 +23,14 @@
 			<!--  검색창  -->
 			<form action="/admin/flow/list" class="col-6 p-0 align-items-center flex-grow-1" method="get">
 				<div class="justify-content-end input-group">
-					<input aria-label="id" class="form-control ms-2" name="id" placeholder="아이디"
+					<input aria-label="id" class="form-control ms-2" name="applicationId" placeholder="아이디"
 					       style="max-width: 400px;" th:value="${param.applicationId}" type="number"/>
-					<input aria-label="application_name" class="form-control ms-2" name="application_name" placeholder="어플리케이션 이름"
+					<input aria-label="application_name" class="form-control ms-2" name="applicationName" placeholder="어플리케이션 이름"
 					       style="max-width: 400px;" th:value="${param.applicationName}" type="text"/>
-					<input aria-label="created_date" class="form-control ms-2" name="created_date" th:value="${param.createdDate}"
+					<input aria-label="created_date" class="form-control ms-2" name="createdDate" th:value="${param.createdDate}"
 					       style="max-width: 400px;" placeholder="생성날짜" type="date"/>
 					<span class="px-2">~</span>
-					<input aria-label="modified_date" class="form-control " name="modified_date" th:value="${param.modifiedDate}"
+					<input aria-label="modified_date" class="form-control " name="modifiedDate" th:value="${param.modifiedDate}"
 					       style="max-width: 400px;" placeholder="수정날짜" type="date"/>
 					<button class="btn btn-sm btn-primary" type="submit">
 						<i class="ri-search-line fs-5"></i></button>
@@ -54,20 +54,20 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr th:each="config : ${results}" class="text-center">
+				<tr th:each="app : ${results}" class="text-center">
 					<!-- ID -->
-					<td th:text="${config.applicationId}"></td>
+					<td th:text="${app.applicationId}"></td>
 					<!-- 어플리케이션 이름 -->
 					<td class="text-start">
-						<a th:href="@{/admin/flow/detail/{id}(id=${config.applicationId})}"><span th:text="${config.applicationName}"></span></a>
+						<a th:href="@{/admin/flow/detail/{id}(id=${app.applicationId})}"><span th:text="${app.applicationName}"></span></a>
 					</td>
 					<!-- 생성 날짜 -->
-					<td th:text="${config.createdDate}"></td>
+					<td th:text="${app.createdDate}"></td>
 					<!-- 수정 날짜 -->
-					<td th:text="${config.modifiedDate}"></td>
+					<td th:text="${app.modifiedDate}"></td>
 					<!-- 삭제 -->
 					<td>
-						<button class="btn btn-danger btn-sm btn-delete" th:onclick="|goDelete(${config.applicationId})|">삭제</button>
+						<button class="btn btn-danger btn-sm btn-delete" th:onclick="|deleteApplication(${app.applicationId})|">삭제</button>
 					</td>
 				</tr>
 				</tbody>
@@ -124,7 +124,7 @@
 					<form method="post" action="/admin/flow/createApplication" id="createApplication">
 						<div class="mb-3">
 							<label class="form-label" for="appName">어플리케이션 이름</label>
-							<input class="form-control" id="appName" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="application_name" required type="text">
+							<input class="form-control" id="appName" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="applicationName" required type="text">
 						</div>
 					</form>
 				</div>

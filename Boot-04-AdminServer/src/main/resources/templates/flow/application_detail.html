@@ -30,7 +30,7 @@
 			<div class="card-header">
 				<div class="row align-items-center">
 					<div class="col">
-						<h4 class="mb-0">동시 수행 제한 설정</h4>
+						<h4 class="mb-0">동시 수행 제한</h4>
 					</div>
 					<div class="col-auto d-sm-block">
 						<button id="createBulkhead" class="open-bulkhead-modal btn btn-soft-primary" data-type="create">등록</button>
@@ -53,17 +53,17 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr th:each="bulkhead:${bulkheads}" th:if="${not bulkheads.isEmpty()}">
+					<tr th:each="bulkhead:${bulkheads}" class="text-center">
 						<td th:text="${bulkhead.bulkheadId}"></td>
-						<td class="text-start">
-							<a href="#" class="open-bulkhead-modal" th:attr="data-id=${bulkhead.bulkheadId}, data-type='update'" onclick="openBhUpdate(this)">
+						<td>
+							<a href="#" class="open-bulkhead-modal" th:attr="data-id=${bulkhead.bulkheadId}, data-type='update'">
 								<span th:text="${bulkhead.applicationName}"></span>
 							</a>
 						</td>
-						<td class="text-start" th:text="${bulkhead.url}"></td>
+						<td th:text="${bulkhead.url}"></td>
 						<td th:text="${bulkhead.maxConcurrentCalls}"></td>
 						<td th:text="${bulkhead.getMaxWaitDuration()}"></td>
-						<td><button th:attr="data-id=${bulkhead.bulkheadId}, data-name=${bulkhead.applicationName}" onclick="goDelete(this)">삭제</button></td>
+						<td><button class="delete-bulkhead btn btn-sm btn-danger" th:attr="data-id=${bulkhead.bulkheadId}, data-name=${bulkhead.applicationName}">삭제</button></td>
 					</tr>
 					</tbody>
 				</table>
@@ -74,7 +74,7 @@
 			<div class="card-header">
 				<div class="row align-items-center">
 					<div class="col">
-						<h4 class="mb-0">단위 시간당 요청 제한 설정</h4>
+						<h4 class="mb-0">단위 시간당 요청 제한</h4>
 					</div>
 					<div class="col-auto d-sm-block">
 						<button id="createRateLimiter" class="open-rateLimiter-modal btn btn-soft-primary" data-type="create">등록</button>
@@ -99,19 +99,21 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr th:each="rateLimiter:${rateLimiters}" th:if="${not rateLimiters.isEmpty()}">
+					<tr th:each="rateLimiter:${rateLimiters}" class="text-center">
 						<td th:text="${rateLimiter.ratelimiterId}"></td>
-						<td class="text-start">
-							<a href="#" class="open-rateLimiter-modal" th:attr="data-id=${rateLimiter.ratelimiterId}, data-type='update'" onclick="openRlUpdate(this)">
+						<td>
+							<a href="#" class="open-rateLimiter-modal" th:attr="data-id=${rateLimiter.ratelimiterId}, data-type='update'">
 								<span th:text="${rateLimiter.applicationName}"></span>
 							</a>
 						</td>
-						<td th:text="${rateLimiter.type}"></td>
-						<td class="text-start" th:text="${rateLimiter.url}"></td>
+						<td th:if="${rateLimiter.type == 0}">전체</td>
+						<td th:if="${rateLimiter.type == 1}">URL별</td>
+						<td th:if="${rateLimiter.type == 2}">접속자별</td>
+						<td th:text="${rateLimiter.url}"></td>
 						<td th:text="${rateLimiter.limitForPeriod}"></td>
 						<td th:text="${rateLimiter.limitRefreshPeriod}"></td>
 						<td th:text="${rateLimiter.timeOutDuration}"></td>
-						<td><button th:attr="data-id=${rateLimiter.ratelimiterId}, data-name=${rateLimiter.applicationName}" onclick="goDelete_rl(this)">삭제</button></td>
+						<td><button class="delete-ratelimiter btn btn-sm btn-danger" th:attr="data-id=${rateLimiter.ratelimiterId}, data-name=${rateLimiter.applicationName}">삭제</button></td>
 					</tr>
 					</tbody>
 				</table>
@@ -200,9 +202,9 @@
 
 						<div class="mb-3">
 							<label class="form-label" for="rateLimiterType">타입</label>
-							<select name="type" id="rateLimiterType">
+							<select class="form-select" name="type" id="rateLimiterType">
 								<option value="0">전체</option>
-								<option value="1" selected>url 지정</option>
+								<option value="1" selected>URL별</option>
 								<option value="2">접속자별</option>
 							</select>
 						</div>

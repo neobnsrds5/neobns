@@ -6,18 +6,18 @@
         SELECT *
         FROM FWK_APPLICATION
         WHERE 1=1
-        <if test="param.applicationId != null">AND ID=#{param.applicationId}</if>
+        <if test="param.applicationId != null">AND APPLICATION_ID=#{param.applicationId}</if>
         <if test="param.applicationName != null and param.applicationName != ''">AND application_name like concat("%", #{param.applicationName}, "%")</if>
         <if test="param.createdDate != null">AND created_date = #{param.createdDate}</if>
         <if test="param.modifiedDate != null">AND modified_date = #{param.modifiedDate}</if>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
-    <select id="countSelective" parameterType="neo.spider.admin.flow.dto.SearchDto">
+    <select id="countSelective" parameterType="neo.spider.admin.flow.dto.SearchDto" resultType="int">
         SELECT COUNT(*)
         FROM FWK_APPLICATION
         WHERE 1=1
-        <if test="applicationId != null">AND ID=#{applicationId}</if>
+        <if test="applicationId != null">AND APPLICATION_ID=#{applicationId}</if>
         <if test="applicationName != null and applicationName != ''">AND application_name like concat("%", #{applicationName}, "%")</if>
         <if test="createdDate != null">AND created_date = #{createdDate}</if>
         <if test="modifiedDate != null">AND modified_date = #{modifiedDate}</if>
@@ -39,8 +39,8 @@
         WHERE APPLICATION_ID=#{applicationId}
     </select>
 
-    <select id="findByApplicationCategory">
-        SELECT ID
+    <select id="findByApplicationCategory" resultType="long">
+        SELECT APPLICATION_ID
         FROM FWK_APPLICATION
         where application_name = #{applicationName}
     </select>

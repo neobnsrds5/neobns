@@ -32,9 +32,8 @@ public class ControlService {
         return applicationMapper.countSelective(dto);
     }
 
-    public long create(CreateApplicationDto dto){
-        int result = applicationMapper.create(dto);
-        return applicationMapper.findByApplicationCategory(dto);
+    public int create(CreateApplicationDto dto){
+        return applicationMapper.create(dto);
     }
 
     public int delete(long id){

@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>neo.spider.admin</groupId>
-	<artifactId>Boot-04-AdminServer</artifactId>
+	<artifactId>ADMIN_UNION</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>AdminServer</name>
-	<description>Admin Server</description>
+	<name>NeoSpiderAdmin</name>
+	<description>NeoSpiderAdmin</description>
 	<url />
 	<licenses>
 		<license />
@@ -33,6 +33,10 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -134,11 +138,6 @@
 				    </execution>
 				</executions>
 			</plugin>
-	    	<plugin>
-		        <groupId>org.sonarsource.scanner.maven</groupId>
-		        <artifactId>sonar-maven-plugin</artifactId>
-		        <version>5.0.0.4389</version>
-	      </plugin>
 	    </plugins>
 	  </pluginManagement>
 	</build>

@@ -1,7 +1,6 @@
-package neo.spider.admin.common.config;
+package neo.spider.admin.batch.config;
 
-import javax.sql.DataSource;
-
+import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -14,46 +13,42 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import lombok.RequiredArgsConstructor;
+import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(
-    basePackages = {"neo.spider.admin.common.mapper", "neo.spider.admin.e2e.mapper", "neo.spider.admin.flow.mapper"},
-    sqlSessionFactoryRef = "dataSqlSessionFactory"
+    basePackages = "neo.spider.admin.batch.mapper",
+    sqlSessionFactoryRef = "batchSqlSessionFactory"
 )
 @RequiredArgsConstructor
-public class DataDbConfig {
+public class BatchDbConfig {
 	
 	private final Environment environment;
 
-	@Bean(name = "dataDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource-data")
-	public DataSource dataDataSource() {
-	    return DataSourceBuilder
-	            .create()
-	            .url(environment.getProperty("spring.datasource-data.url"))
-	            .build();
-	}
-	
-	@Bean(name = "dataSqlSessionFactory")
-    public SqlSessionFactory dataSqlSessionFactory(
-            @Qualifier("dataDataSource") DataSource dataSource) throws Exception {
+    @Bean(name = "batchDataSource")
+    @ConfigurationProperties(prefix = "spider.admin.datasource-batch") // batch DB 관련 설정
+    public DataSource batchDataSource() {
+        return DataSourceBuilder.create().url(environment.getProperty("spider.admin.datasource-batch.url")).build();
+    }
+
+    @Bean(name = "batchSqlSessionFactory")
+    public SqlSessionFactory batchSqlSessionFactory(
+            @Qualifier("batchDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        factoryBean.setTypeAliasesPackage("neo.spider.admin.common.dto, neo.spider.admin.e2e.dto");
+        factoryBean.setTypeAliasesPackage("neo.spider.admin.batch.dto");
         factoryBean.setMapperLocations(
-            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/**/*.xml")
+            new PathMatchingResourcePatternResolver().getResources("classpath:mappers/batch/*.xml")
         );
         org.apache.ibatis.session.Configuration mybatisConfig = new org.apache.ibatis.session.Configuration();
         mybatisConfig.setMapUnderscoreToCamelCase(true); // underscore to camelCase
         factoryBean.setConfiguration(mybatisConfig);
-
         return factoryBean.getObject();
     }
 
-    @Bean(name = "dataSqlSessionTemplate")
-    public SqlSessionTemplate dataSqlSessionTemplate(
-            @Qualifier("dataSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "batchSqlSessionTemplate")
+    public SqlSessionTemplate batchSqlSessionTemplate(
+            @Qualifier("batchSqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

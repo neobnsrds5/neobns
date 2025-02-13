@@ -66,7 +66,7 @@ public class DataDbConfig {
 		SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
 
 		factory.setDataSource(dataDataSource());
-		factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml"));
+//		factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml"));
 
 		return factory.getObject();
 

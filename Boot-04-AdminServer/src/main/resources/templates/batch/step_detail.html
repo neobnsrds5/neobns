@@ -54,8 +54,8 @@
 							</div>
 							<div class="col">
 								<p class="fw-semi-bold mb-1">
-									<span th:attr="class=${job.isExitComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-										<span th:text="${job.exitCode}"></span>
+									<span class="badge">
+										<span class="exec-status" th:text="${job.exitCode}"></span>
 									</span>
 							</div>
 						</div>
@@ -86,8 +86,8 @@
 								<p class="fw-semi-bold mb-0">Status</p>
 							</div>
 							<div class="col">
-								<span th:attr="class=${job.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-									<span th:text="${job.status}"></span>
+								<span class="badge">
+									<span class="exec-status" th:text="${job.status}"></span>
 								</span>
 							</div>
 						</div>
@@ -105,8 +105,7 @@
 						</div>
 					</div>
 				</div>
-			</div><!--
-  <div class="card-footer  border-top">updateTime : ${mo.updateTime }</div>    -->
+			</div>
 		</div>
 		<div class="card mb-3">
 
@@ -155,8 +154,8 @@
 							<div class="row g-0 align-items-center py-1">
 								<div class="col-2 text-start"><code th:text="${step.stepName }"></code></div>
 								<div class="col-2">
-									<span th:attr="class=${step.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-										<span th:text="${step.status}"></span>
+									<span class="badge">
+										<span class="exec-status" th:text="${step.status}"></span>
 									</span>
 								</div>
 								<div class="col-1 " th:text="${step.commitCount }"></div>
@@ -169,8 +168,8 @@
 							<div class="row g-0 align-items-center py-1">
 								<div class="col-2">&nbsp;</div>
 								<div class="col-2">
-									<span th:attr="class=${step.isExitComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-										<span th:text="${step.exitCode}"></span>
+									<span class="badge">
+										<span class="exec-status" th:text="${step.exitCode}"></span>
 									</span></div>
 								<div class="col-1 " th:text="${step.readSkipCount }"></div>
 								<div class="col-1 " th:text="${step.writeSkipCount }"></div>
@@ -192,7 +191,8 @@
 		</div>
 
 	</div>
-
+	<!-- 상태 배지 색상 Js -->
+	<script src="/assets/js/batch/status_badge.js"></script>
 </div>
 <!-- ==================================================== -->
 <!-- End Page Content -->

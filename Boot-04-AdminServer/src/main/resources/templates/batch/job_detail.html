@@ -9,7 +9,6 @@
         const getBackQuery = () => {
             const searchState = JSON.parse(sessionStorage.getItem("searchState"));
             const {paramPath, ...params} = searchState;
-            console.log(searchState.paramPath);
             return searchState.paramPath + "?" + new URLSearchParams(params).toString();
         };
 
@@ -104,8 +103,8 @@
 								<p class="fw-semi-bold mb-1">Exit Code</p>
 							</div>
 							<div class="col">
-								<span th:attr="class=${job.exec.isExitComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-									<span th:text="${job.exec.exitCode}"></span>
+								<span class="badge">
+									<span class="exec-status" th:text="${job.exec.exitCode}"></span>
 								</span>
 							</div>
 						</div>
@@ -135,8 +134,8 @@
 								<p class="fw-semi-bold mb-0">Status</p>
 							</div>
 							<div class="col">
-								<span th:attr="class=${job.exec.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-		                            <span th:text="${job.exec.status}"></span>
+								<span class="badge">
+		                            <span class="exec-status" th:text="${job.exec.status}"></span>
 								</span>
 							</div>
 						</div>
@@ -150,7 +149,7 @@
 								<p class="fw-semi-bold mb-1">Exit Message</p>
 							</div>
 							<div class="collg-10">
-								<textarea class="form-control" readonly rows="8"
+								<textarea aria-label="" class="form-control" readonly rows="8"
 								          th:text="${job.exec.exitMessage}"></textarea></div>
 						</div>
 					</div>
@@ -177,7 +176,7 @@
 				</div>
 				<div class="row g-0 border-bottom py-2 px-2" th:each="pm, i : ${job.execParams}">
 					<div class="col-4"><code th:text="${pm.parameterName}"></code></div>
-					<div class="col-4 pe-3"><span class="badge rounded-pill bg-secondary"
+					<div class="col-4 pe-3"><span class="badge rounded-pill badge-outline-secondary"
 					                              th:text="${pm.parameterType}"></span>
 					</div>
 					<div class="col-4" th:text="${pm.parameterValue}"></div>
@@ -229,7 +228,8 @@
 		</div>
 
 	</div>
-
+	<!-- 상태 배지 색상 Js -->
+	<script src="/assets/js/batch/status_badge.js"></script>
 </div>
 <!-- ==================================================== -->
 <!-- End Page Content -->

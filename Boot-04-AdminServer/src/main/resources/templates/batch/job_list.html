@@ -41,7 +41,7 @@
 			<div class="table-responsive">
 				<!-- 검색 결과 없을 때 메시지 -->
 				<div class="m-lg-5 p-lg-5 text-center" th:if="${jobList.size() == 0}">
-					<h4>검색 결과가 없습니다.</h4>
+					<h4>조회 결과가 없습니다.</h4>
 				</div>
 
 				<table th:unless="${jobList.size() == 0}" class="table table-hover">
@@ -58,25 +58,24 @@
 					</tr>
 					</thead>
 					<tbody class="list" id="table-orders-body">
-					<tr class="btn-reveal-trigger align-middle text-center" th:each="job : ${jobList}">
-						<td class="instanceId"><a class="prd-link"
-												  th:href="@{/admin/batch/jobDetail(instanceId=${job.instanceId}, executionId=${job.exec.executionId})}"
-												  th:text="${job.instanceId}"></a></td>
-						<td class="excutionId" th:text="${job.exec.executionId}"></td>
+					<tr class="btn-reveal-trigger align-middle text-center" th:each="job : ${jobList}" style="cursor: pointer;"
+					    th:onclick="|window.location.href='@{/admin/batch/jobDetail(instanceId=${job.instanceId}, executionId=${job.exec.executionId})}'|">
+						<td class="instanceId" th:text="${job.instanceId}"></td>
+						<td class="executionId" th:text="${job.exec.executionId}"></td>
 						<td class="ver" th:text="${job.version}"></td>
 						<td class="jobName" th:text="${job.jobName}"></td>
 						<td class="status">
-							<span th:attr="class=${job.exec.isStatusComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-								<span th:text="${job.exec.status}"></span>
+							<span class="badge">
+								<span class="exec-status" th:text="${job.exec.status}"></span>
 							</span>
 						</td>
 						<td class="exitCode">
-							<span th:attr="class=${job.exec.isExitComplete ? 'badge bg-secondary' : 'badge bg-warning'}">
-								<span th:text="${job.exec.exitCode}"></span>
+							<span class="badge">
+								<span class="exec-status" th:text="${job.exec.exitCode}"></span>
 							</span>
 						</td>
-						<td class="createTime" th:text="${job.exec.createTime}"></td>
-						<td class="updateTime" th:text="${job.exec.updateTime}"></td>
+						<td class="createTime" th:text="${#dates.format(job.exec.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+						<td class="updateTime" th:text="${#dates.format(job.exec.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
 					</tr>
 					</tbody>
 				</table>
@@ -120,7 +119,8 @@
 		</form>
 
 	</div>
-
+	<!-- 상태 배지 색상 Js -->
+	<script src="/assets/js/batch/status_badge.js"></script>
 </div>
 <!-- ==================================================== -->
 <!-- End Page Content -->

@@ -1,7 +1,9 @@
 package neo.spider.solution.batch.batchJobs;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,20 +20,24 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.validation.BindException;
 
 import neo.spider.solution.batch.dto.LogDTO;
-import neo.spider.solution.batch.service.FileMaintenanceService;
 
 @Configuration
 public class LogFileToDbBatch {
@@ -39,8 +45,8 @@ public class LogFileToDbBatch {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
 	private final CustomBatchJobListener listener;
-	private String path = "../logs/application.log";
-	private int chunkSize = 200;
+	private String path = "\\spider\\logs\\rolling\\spider-*.log";
+	private int chunkSize = 500;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager, CustomBatchJobListener listener) {
@@ -60,7 +66,8 @@ public class LogFileToDbBatch {
 	public Step logToDBStep() {
 
 		return new StepBuilder("logToDBStep", jobRepository).<LogDTO, LogDTO>chunk(chunkSize, transactionManager)
-				.reader(logReader()).writer(conditionalWriters()).taskExecutor(logToDBTaskExecutor()).build();
+				.reader(multiResourceItemReader()).writer(conditionalWriters()).taskExecutor(syncTaskExecutor())
+				.build();
 	}
 
 	@Bean
@@ -98,41 +105,106 @@ public class LogFileToDbBatch {
 		return executor;
 	}
 
+	// 멀티 리소스 리더를 통해 롤링된 파일을 멀티 리소스로 지정
+	@Bean
+	public MultiResourceItemReader<LogDTO> multiResourceItemReader() {
+
+		MultiResourceItemReader<LogDTO> multiReader = new MultiResourceItemReader<>();
+		ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+
+		// 롤링된 분단위 리소스 지정
+		Resource[] resource;
+		try {
+			// 프로젝트 폴더 경로 구한 후 \를 /로 바꿈
+			String rootPath = System.getProperty("user.dir");
+			int lastIndex = rootPath.lastIndexOf("\\");
+			String rolledPath = "file:" + rootPath.substring(0, lastIndex) + path;
+			rolledPath = rolledPath.replace("\\", "/");
+			resource = patternResolver.getResources(rolledPath);
+			System.out.println("resource len : " + resource.length);
+			multiReader.setResources(resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// 개별 파일을 담당할 리더 지정
+		multiReader.setDelegate(logReader());
+
+		return multiReader;
+
+	}
+
 	@Bean
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
-
-		reader.setResource(new FileSystemResource(path));
 
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함
 			@Override
 			public LogDTO mapLine(String line, int lineNumber) throws Exception {
 				LogDTO log = super.mapLine(line, lineNumber);
-				log.setLineNumber(lineNumber);
+				log.setFileSequence(Long.valueOf(lineNumber));
 				return log;
 			}
 		};
 
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(";");
-		tokenizer.setNames("timestmp", "loggerName", "levelString", "callerClass", "callerMethod", "traceId", "userId",
-				"ipAddress", "device", "executeResult", "query", "uri");
+		tokenizer.setNames("timestmp", "solutionName", "timestamp", "traceId", "requestUrl", "userId", "userIp",
+				"userDeviceCd", "callerComponentName", "targetComponentName", "executionTime", "responseStatusCd",
+				"errorMessageText", "delayMessageText", "query");
 		lineMapper.setLineTokenizer(tokenizer);
 
-		BeanWrapperFieldSetMapper<LogDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-		fieldSetMapper.setTargetType(LogDTO.class);
+		BeanWrapperFieldSetMapper<LogDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>() {
+
+			@Override
+			public LogDTO mapFieldSet(FieldSet fs) throws BindException {
+
+				LogDTO log = new LogDTO();
+
+				log.setTimestmp(fs.readString("timestmp"));
+				log.setSolutionName(fs.readString("solutionName"));
+				log.setTimestamp(parseLongSafe(fs.readString("timestamp")));
+				log.setTraceId(fs.readString("traceId"));
+				log.setResponseStatusCd(fs.readString("requestUrl"));
+				log.setUserId(fs.readString("userId"));
+				log.setUserIp(fs.readString("userIp"));
+				log.setUserDeviceCd(fs.readString("userDeviceCd"));
+				log.setCallerComponentName(fs.readString("callerComponentName"));
+				log.setTargetComponentName(fs.readRawString("targetComponentName"));
+				log.setExecutionTime(parseLongSafe(fs.readString("executionTime")));
+				log.setResponseStatusCd(fs.readString("responseStatusCd"));
+				log.setErrorMessageText(fs.readString("errorMessageText"));
+				log.setDelayMessageText(fs.readString("delayMessageText"));
+				log.setQuery(fs.readString("query"));
+
+				return log;
+			}
+
+			// timestamp, executionTime이 빈 값인 경우 데이터 변환 예외를 막고 null 반환
+			private Long parseLongSafe(String value) {
+				value = value.trim();
+
+				try {
+					return (value == null || value.isEmpty()) ? null : Long.parseLong(value);
+				} catch (NumberFormatException e) {
+					return null;
+				}
+			}
+		};
+
 		lineMapper.setFieldSetMapper(fieldSetMapper);
 		reader.setLineMapper(lineMapper);
+
 		return reader;
 	}
 
 	@Bean
 	public ItemWriter<LogDTO> loggingEventWriter() {
 
-		String sql = "INSERT INTO logging_event (timestmp, logger_name, level_string, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, seq) "
-				+ "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO FWK_E2E_LOGGING_EVENT_TEST (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY, FILE_SEQUENCE) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new eventWriterItemPSSetter()).build();
@@ -143,17 +215,31 @@ public class LogFileToDbBatch {
 
 		@Override
 		public void setValues(LogDTO item, PreparedStatement ps) throws SQLException {
-			ps.setString(1, item.getTimestmp());
-			ps.setString(2, item.getLoggerName());
-			ps.setString(3, item.getLevelString());
-			ps.setString(4, item.getCallerClass());
-			ps.setString(5, item.getCallerMethod());
-			ps.setString(6, item.getUserId());
-			ps.setString(7, item.getTraceId());
-			ps.setString(8, item.getIpAddress());
-			ps.setString(9, item.getDevice());
-			ps.setString(10, item.getExecuteResult());
-			ps.setLong(11, item.getLineNumber());
+			if (item.getTimestamp() != null) {
+				ps.setLong(1, item.getTimestamp());
+			} else {
+				ps.setNull(1, Types.BIGINT);
+			}
+
+			ps.setString(2, item.getTraceId());
+			ps.setString(3, item.getRequestUrl());
+			ps.setString(4, item.getUserId());
+			ps.setString(5, item.getUserIp());
+			ps.setString(6, item.getUserDeviceCd());
+			ps.setString(7, item.getCallerComponentName());
+			ps.setString(8, item.getTargetComponentName());
+
+			if (item.getExecutionTime() != null) {
+				ps.setLong(9, item.getExecutionTime());
+			} else {
+				ps.setNull(9, Types.BIGINT);
+			}
+
+			ps.setString(10, item.getResponseStatusCd());
+			ps.setString(11, item.getErrorMessageText());
+			ps.setString(12, item.getDelayMessageText());
+			ps.setString(13, item.getQuery());
+			ps.setLong(14, item.getFileSequence());
 
 		}
 
@@ -162,9 +248,8 @@ public class LogFileToDbBatch {
 	@Bean
 	public ItemWriter<LogDTO> loggingSlowWriter() {
 
-		String sql = "INSERT INTO logging_slow (timestmp, caller_class, caller_method, user_id, trace_id, ip_address, device, execute_result, query, uri) "
-				+ "VALUES(?,?,?,?,?,?,?,?, "
-				+ "CASE WHEN ? = 'SQL' THEN ? ELSE NULL END, CASE WHEN ? != 'SQL' THEN ? ELSE NULL END)";
+		String sql = "INSERT INTO FWK_E2E_LOGGING_DELAY_TEST (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new slowWriterItemPSSetter()).build();
@@ -175,18 +260,31 @@ public class LogFileToDbBatch {
 
 		@Override
 		public void setValues(LogDTO item, PreparedStatement ps) throws SQLException {
-			ps.setString(1, item.getTimestmp());
-			ps.setString(2, item.getCallerClass());
-			ps.setString(3, item.getCallerMethod());
+
+			if (item.getTimestamp() != null) {
+				ps.setLong(1, item.getTimestamp());
+			} else {
+				ps.setNull(1, Types.BIGINT);
+			}
+
+			ps.setString(2, item.getTraceId());
+			ps.setString(3, item.getRequestUrl());
 			ps.setString(4, item.getUserId());
-			ps.setString(5, item.getTraceId());
-			ps.setString(6, item.getIpAddress());
-			ps.setString(7, item.getDevice());
-			ps.setString(8, item.getExecuteResult());
-			ps.setString(9, item.getCallerClass());
-			ps.setString(10, item.getCallerMethod());
-			ps.setString(11, item.getCallerClass());
-			ps.setString(12, item.getCallerClass());
+			ps.setString(5, item.getUserIp());
+			ps.setString(6, item.getUserDeviceCd());
+			ps.setString(7, item.getCallerComponentName());
+			ps.setString(8, item.getTargetComponentName());
+
+			if (item.getExecutionTime() != null) {
+				ps.setLong(9, item.getExecutionTime());
+			} else {
+				ps.setNull(9, Types.BIGINT);
+			}
+
+			ps.setString(10, item.getResponseStatusCd());
+			ps.setString(11, item.getErrorMessageText());
+			ps.setString(12, item.getDelayMessageText());
+			ps.setString(13, item.getQuery());
 
 		}
 
@@ -196,8 +294,8 @@ public class LogFileToDbBatch {
 	public ItemWriter<LogDTO> loggingErrorWriter() {
 
 		// 성능 개선을 위해 ps 방식으로 변경
-		String sql = "INSERT INTO logging_error (timestmp, user_id, trace_id, ip_address, device, caller_class, caller_method, query, uri, execute_result) "
-				+ "VALUES(?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO FWK_E2E_LOGGING_ERROR_TEST (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
 				.itemPreparedStatementSetter(new errorWriterItemPSSetter()).build();
@@ -208,16 +306,30 @@ public class LogFileToDbBatch {
 
 		@Override
 		public void setValues(LogDTO item, PreparedStatement ps) throws SQLException {
-			ps.setString(1, item.getTimestmp());
-			ps.setString(2, item.getUserId());
-			ps.setString(3, item.getTraceId());
-			ps.setString(4, item.getIpAddress());
-			ps.setString(5, item.getDevice());
-			ps.setString(6, item.getCallerClass());
-			ps.setString(7, item.getCallerMethod());
-			ps.setString(8, item.getQuery());
-			ps.setString(9, item.getUri());
-			ps.setString(10, item.getExecuteResult());
+			if (item.getTimestamp() != null) {
+				ps.setLong(1, item.getTimestamp());
+			} else {
+				ps.setNull(1, Types.BIGINT);
+			}
+
+			ps.setString(2, item.getTraceId());
+			ps.setString(3, item.getRequestUrl());
+			ps.setString(4, item.getUserId());
+			ps.setString(5, item.getUserIp());
+			ps.setString(6, item.getUserDeviceCd());
+			ps.setString(7, item.getCallerComponentName());
+			ps.setString(8, item.getTargetComponentName());
+
+			if (item.getExecutionTime() != null) {
+				ps.setLong(9, item.getExecutionTime());
+			} else {
+				ps.setNull(9, Types.BIGINT);
+			}
+
+			ps.setString(10, item.getResponseStatusCd());
+			ps.setString(11, item.getErrorMessageText());
+			ps.setString(12, item.getDelayMessageText());
+			ps.setString(13, item.getQuery());
 
 		}
 
@@ -237,15 +349,14 @@ public class LogFileToDbBatch {
 				// 이벤트 추가
 				eventList.add(log);
 
-				if ("slow".equalsIgnoreCase(log.getLoggerName())) {
+				if (!log.getDelayMessageText().trim().isEmpty()) {
 					delayList.add(log);
-				} else if ("error".equalsIgnoreCase(log.getLoggerName())) {
+				} else if (!log.getErrorMessageText().trim().isEmpty()) {
 					errorList.add(log);
 				}
 			}
 
 			Chunk<LogDTO> chunk = new Chunk<LogDTO>(eventList);
-			System.out.println("test chunk : " + chunk.size());
 
 			loggingEventWriter().write(new Chunk<LogDTO>(eventList));
 			loggingSlowWriter().write(new Chunk<LogDTO>(delayList));

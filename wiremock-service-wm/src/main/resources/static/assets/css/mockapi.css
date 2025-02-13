@@ -26,7 +26,3 @@
     vertical-align: middle;
     cursor: pointer; /* 마우스 올릴 때 클릭 가능한 것처럼 */
 }
-
-.input-group label {
-    margin-right: 10px; /* 다음 체크박스와의 간격 */
-}

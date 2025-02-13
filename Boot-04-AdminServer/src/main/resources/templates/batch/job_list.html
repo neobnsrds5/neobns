@@ -58,21 +58,21 @@
 					</tr>
 					</thead>
 					<tbody class="list" id="table-orders-body">
-					<tr class="btn-reveal-trigger align-middle text-center" th:each="job : ${jobList}" style="cursor: pointer;"
+					<tr class="align-middle text-center" th:each="job : ${jobList}" style="cursor: pointer;"
 					    th:onclick="|window.location.href='@{/admin/batch/jobDetail(instanceId=${job.instanceId}, executionId=${job.exec.executionId})}'|">
 						<td class="instanceId" th:text="${job.instanceId}"></td>
 						<td class="executionId" th:text="${job.exec.executionId}"></td>
 						<td class="ver" th:text="${job.version}"></td>
 						<td class="jobName" th:text="${job.jobName}"></td>
 						<td class="status">
-							<span class="badge">
-								<span class="exec-status" th:text="${job.exec.status}"></span>
-							</span>
+							<h4>
+								<span class="exec-status badge" th:text="${job.exec.status}"></span>
+							</h4>
 						</td>
 						<td class="exitCode">
-							<span class="badge">
-								<span class="exec-status" th:text="${job.exec.exitCode}"></span>
-							</span>
+							<h4>
+								<span class="exec-status badge" th:text="${job.exec.exitCode}"></span>
+							</h4>
 						</td>
 						<td class="createTime" th:text="${#dates.format(job.exec.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
 						<td class="updateTime" th:text="${#dates.format(job.exec.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>

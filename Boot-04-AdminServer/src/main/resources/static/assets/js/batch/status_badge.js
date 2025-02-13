@@ -1,4 +1,4 @@
-$('.exec-status').each(function() {
+$('.exec-status.badge').each(function() {
     const execStatus = $(this).text();
     let statusClass = '';
 
@@ -10,5 +10,6 @@ $('.exec-status').each(function() {
         statusClass = 'bg-warning';
     }
 
-    $(this).parent().addClass(statusClass);
+    $(this).parent().addClass('m-0');
+    $(this).addClass(statusClass);
 })

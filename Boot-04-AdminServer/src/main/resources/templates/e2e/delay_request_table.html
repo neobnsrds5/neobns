@@ -46,7 +46,7 @@
 				<h4>검색 결과가 없습니다.</h4>
 			</div>
 
-			<table class="table table-striped table-centered" th:unless="${logList.size() == 0}">
+			<table class="table table-hover table-centered" th:unless="${logList.size() == 0}">
 				<thead>
 				<tr class="text-center">
 					<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
@@ -58,26 +58,24 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr th:each="log : ${logList}">
+				<tr class="align-middle text-center" th:each="log : ${logList}" style="cursor: pointer;"
+				    th:onclick="|window.location.href='@{/admin/e2e/trace(traceId=${log.traceId})}'|">
 					<!-- 타임스탬프 -->
-					<td th:text="${#dates.format(new java.util.Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
+					<td th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
 					<!-- 추적 ID -->
 					<td class="text-start trace-id">
-	                    <span th:if="${log.traceId != null}">
-	                        <a th:href="'/admin/e2e/trace?traceId=' + ${log.traceId}"
-	                           th:text="${log.traceId}"></a>
-	                    </span>
+	                    <span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
 						<span th:unless="${log.traceId != null}">N/A</span>
 					</td>
 					<!-- 요청 -->
-					<td>
+					<td class="text-start">
 						<span th:if="${log.requestUrl != null}" th:text="${log.requestUrl}"></span>
 						<span th:unless="${log.requestUrl != null}">N/A</span>
 					</td>
 					<!-- 소요시간 -->
 					<td th:text="${log.executionTime}"></td>
 					<!-- 사용자 IP -->
-					<td class="text-start ip-address">
+					<td class="ip-address">
 						<span th:if="${log.userIp != null}" th:text="${log.userIp}"></span>
 						<span th:unless="${log.userIp != null}">N/A</span>
 					</td>

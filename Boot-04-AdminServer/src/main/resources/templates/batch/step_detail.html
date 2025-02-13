@@ -18,58 +18,58 @@
 			<div class="card-header">
 				<div class="row align-items-center">
 					<div class="col">
-						<h5 class="mb-0">Job Execution</h5>
+						<h5 class="mb-0 fw-bold">Job Execution</h5>
 					</div>
 					<div class="col-auto d-none d-sm-block">
-						<h6 class="text-uppercase text-600"><span class="far fa-caret-square-right"></span>
-							Execution<span class="far fa-caret-square-right  ms-2"></span></h6>
+						<h6 class="text-uppercase text-600">
+							Execution</h6>
 					</div>
 				</div>
 			</div>
-			<div class="card-body  border-top bg-light">
+			<div class="card-body border-top bg-light">
 
 				<div class="row py-0 ">
 					<div class="col-lg col-xxl-6 ">
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">Id</p>
+								<p class="fw-bold mb-1">Id</p>
 							</div>
 							<div class="col" th:text="${job.executionId}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">Create Time</p>
+								<p class="fw-bold mb-1">Create Time</p>
 							</div>
 							<div class="col" th:text="${#dates.format(job.createTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">Start Time</p>
+								<p class="fw-bold mb-1">Start Time</p>
 							</div>
 							<div class="col" th:text="${#dates.format(job.startTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">Exit Code</p>
+								<p class="fw-bold mb-1">Exit Code</p>
 							</div>
 							<div class="col">
-								<p class="fw-semi-bold mb-1">
-									<span class="badge">
-										<span class="exec-status" th:text="${job.exitCode}"></span>
-									</span>
+								<p class="fw-bold mb-1">
+									<h5 class="m-0">
+										<span class="exec-status badge" th:text="${job.exitCode}"></span>
+									</h5>
 							</div>
 						</div>
 					</div>
 					<div class="col-lg col-xxl-5 mt-4 mt-lg-0 ">
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">Version</p>
+								<p class="fw-bold mb-1">Version</p>
 							</div>
 							<div class="col" th:text="${job.version}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">Update Time</p>
+								<p class="fw-bold mb-1">Update Time</p>
 							</div>
 							<div class="col">
 								<p class="mb-1" th:text="${#dates.format(job.updateTime, 'yyyy-MM-dd hh:mm:ss')}"></p>
@@ -77,18 +77,18 @@
 						</div>
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-1">End Time</p>
+								<p class="fw-bold mb-1">End Time</p>
 							</div>
 							<div class="col" th:text="${#dates.format(job.endTime, 'yyyy-MM-dd hh:mm:ss')}"></div>
 						</div>
 						<div class="row">
 							<div class="col-4 ">
-								<p class="fw-semi-bold mb-0">Status</p>
+								<p class="fw-bold mb-0">Status</p>
 							</div>
 							<div class="col">
-								<span class="badge">
-									<span class="exec-status" th:text="${job.status}"></span>
-								</span>
+								<h5 class="m-0">
+									<span class="exec-status badge" th:text="${job.status}"></span>
+								</h5>
 							</div>
 						</div>
 					</div>
@@ -98,9 +98,9 @@
 					<div class="col-lg">
 						<div class="row ">
 							<div class="col-lg-2 col-sm-4 ">
-								<p class="fw-semi-bold mb-1">Exit Message</p>
+								<p class="fw-bold mb-1">Exit Message</p>
 							</div>
-							<div class="col"><textarea class="form-control" readonly rows="4"
+							<div class="col"><textarea aria-label="" class="form-control" readonly rows="4"
 							                           th:text="${job.exitMessage}"></textarea></div>
 						</div>
 					</div>
@@ -112,19 +112,18 @@
 			<div class="card-header">
 				<div class="row align-items-center">
 					<div class="col">
-						<h5 class="mb-0">Step Execution</h5>
+						<h5 class="mb-0 fw-bold">Step Execution</h5>
 					</div>
 					<div class="col-auto d-none d-sm-block">
-						<h6 class="text-uppercase text-600"><span class="far fa-caret-square-right"></span> Step
+						<h6 class="text-uppercase text-600">Step
 							Execution<span class="fas fa-fan ms-2"></span></h6>
 					</div>
 				</div>
 			</div>
 			<div class="card-body border-top bg-light">
 
-				<div class="row g-0 align-items-center border-bottom  px-2">
-					<div class="row g-0 align-items-center py-1">
-
+				<div class="row g-0 align-items-center border-bottom px-2">
+					<div class="row g-0 align-items-center py-1 fw-bold">
 						<div class="col-2">stepName</div>
 						<div class="col-2">status</div>
 						<div class="col-1">commit</div>
@@ -134,7 +133,7 @@
 						<div class="col-2">startTime</div>
 						<div class="col-md-auto">endTime</div>
 					</div>
-					<div class="row g-0 align-items-center py-1">
+					<div class="row g-0 align-items-center py-1 fw-bold">
 						<div class="col-2">&nbsp;</div>
 						<div class="col-2">exitCode</div>
 						<div class="col-1">readSkip</div>
@@ -152,11 +151,11 @@
 
 						<div class="row g-0 align-items-center border-bottom px-2">
 							<div class="row g-0 align-items-center py-1">
-								<div class="col-2 text-start"><code th:text="${step.stepName }"></code></div>
+								<div class="col-2 text-start"><code class="fw-bold" th:text="${step.stepName }"></code></div>
 								<div class="col-2">
-									<span class="badge">
-										<span class="exec-status" th:text="${step.status}"></span>
-									</span>
+									<h5 class="m-0">
+										<span class="exec-status badge" th:text="${step.status}"></span>
+									</h5>
 								</div>
 								<div class="col-1 " th:text="${step.commitCount }"></div>
 								<div class="col-1 " th:text="${step.readCount }"></div>
@@ -168,9 +167,9 @@
 							<div class="row g-0 align-items-center py-1">
 								<div class="col-2">&nbsp;</div>
 								<div class="col-2">
-									<span class="badge">
-										<span class="exec-status" th:text="${step.exitCode}"></span>
-									</span></div>
+									<h5 class="m-0">
+										<span class="exec-status badge" th:text="${step.exitCode}"></span>
+									</h5></div>
 								<div class="col-1 " th:text="${step.readSkipCount }"></div>
 								<div class="col-1 " th:text="${step.writeSkipCount }"></div>
 								<div class="col-1 " th:text="${step.processSkipCount }"></div>
@@ -180,7 +179,7 @@
 							</div>
 							<div class="row g-0 align-items-center py-1">
 								<div class="col-2">&nbsp;</div>
-								<div class="col-10"><textarea class="form-control" readonly rows="4"
+								<div class="col-10"><textarea aria-label="" class="form-control" readonly rows="4"
 								                              th:text="${step.exitMessage}"></textarea></div>
 							</div>
 						</div>

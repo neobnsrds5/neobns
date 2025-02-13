@@ -64,16 +64,18 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr th:each="log : ${logList}">
+			<tr class="align-middle" th:each="log : ${logList}">
 				<!-- 타임스탬프 -->
-				<td th:text="${#dates.format(new java.util.Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
-				<td class="logger-name">
-					<span th:if="${log.errorMessageText != null and log.delayMessageText != null}" th:style="'color: red'" th:text="'ERROR, DELAY'"></span>
-					<span th:if="${log.errorMessageText != null and log.delayMessageText == null}" th:style="'color: red'" th:text="'ERROR'"></span>
-					<span th:if="${log.errorMessageText == null and log.delayMessageText != null}" th:style="'color: orange'" th:text="'DELAY'"></span>
-					<span th:if="${log.errorMessageText == null and log.delayMessageText == null}">TRACE</span>
+				<td class="text-center" th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
+				<td class="text-center">
+					<h4>
+					<span class="logger-name badge" th:if="${log.errorMessageText != null and log.delayMessageText != null}" th:text="'ERROR, DELAY'"></span>
+					<span class="logger-name badge" th:if="${log.errorMessageText != null and log.delayMessageText == null}" th:text="'ERROR'"></span>
+					<span class="logger-name badge" th:if="${log.errorMessageText == null and log.delayMessageText != null}" th:text="'DELAY'"></span>
+					<span class="logger-name badge" th:if="${log.errorMessageText == null and log.delayMessageText == null}">TRACE</span>
+					</h4>
 				</td>
-				<td class="text-start">
+				<td>
 					<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
 					<span th:unless="${log.traceId != null}">N/A</span>
 				</td>
@@ -82,13 +84,14 @@
 				<!-- 호출상세 -->
 				<td th:text="${log.requestUrl}"></td>
 				<!-- 수행결과 -->
-				<td th:text="${log.executionTime}"></td>
+				<td class="text-center" th:text="${log.executionTime}"></td>
 			</tr>
 			</tbody>
 		</table>
 
 	</div>
-
+	<!-- 로그 종류 색상 js -->
+	<script src="/assets/js/e2e/logger_name_badge.js"></script>
 </div>
 <!-- ==================================================== -->
 <!-- End Page Content -->

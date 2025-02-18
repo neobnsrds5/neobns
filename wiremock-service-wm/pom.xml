@@ -11,8 +11,8 @@
 	<groupId>com.neobns</groupId>
 	<artifactId>wiremock-service</artifactId>
 	<version>0.0.1</version>
-	<name>wiremock-service</name>
-	<description>Wiremock Service for Spring Boot</description>
+	<name>apimock</name>
+	<description>APIMock Service for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>

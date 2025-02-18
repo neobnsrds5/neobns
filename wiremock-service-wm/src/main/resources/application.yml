@@ -1,6 +1,6 @@
 spring:
   application:
-    name: wiremock_service_wm
+    name: apiMock
   web:
     resources:
       static-locations: classpath:/resources/, classpath:/static/, classpath:/wiremock/mappings/

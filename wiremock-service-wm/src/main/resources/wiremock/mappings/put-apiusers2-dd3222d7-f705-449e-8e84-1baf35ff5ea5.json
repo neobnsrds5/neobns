@@ -11,9 +11,10 @@
   "response" : {
     "status" : 200,
     "body" : "{\"test\":\"ok\"}",
+    "proxyBaseUrl" : "https://reqres.in",
     "transformers" : [ "response-template" ]
   },
   "uuid" : "dd3222d7-f705-449e-8e84-1baf35ff5ea5",
   "persistent" : true,
-  "insertionIndex" : 10
+  "insertionIndex" : 21
 }

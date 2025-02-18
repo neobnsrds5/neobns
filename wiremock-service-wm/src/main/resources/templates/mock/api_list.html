@@ -227,7 +227,9 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="responseBody">응답 본문 (JSON)</label>
-							<textarea class="form-control" id="responseBody" placeholder='{"status": "success"}'
+							<textarea class="form-control" id="responseBody" placeholder='URL path와 매칭 : {{request.path.[0]}}
+URL Query와 매칭 : {{request.query.key값}}
+URL Body와 매칭 :  {{jsonPath request.body "$.key값"}}'
 							          rows="4"></textarea>
 						</div>
 					</form>
